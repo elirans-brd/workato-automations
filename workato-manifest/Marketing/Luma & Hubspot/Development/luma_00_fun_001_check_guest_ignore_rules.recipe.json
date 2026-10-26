@@ -93,8 +93,8 @@
               "output_schema": "[{\"control_type\":\"text\",\"label\":\"Match type\",\"optional\":true,\"type\":\"string\",\"name\":\"match_type\"}]",
               "parameters": {
                 "data": {
-                  "domain": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"email\"]}').downcase.strip.split(\"@\").last",
-                  "email": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"email\"]}').downcase.strip"
+                  "domain": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"user_email\"]}').downcase.strip.split(\"@\").last",
+                  "email": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"user_email\"]}').downcase.strip"
                 },
                 "schema": "[{\"control_type\":\"text\",\"label\":\"email\",\"name\":\"email\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"email\"},\"parent\":[\"parameters\",\"data\"]},{\"name\":\"domain\",\"type\":\"string\",\"optional\":true,\"label\":\"domain\",\"details\":{\"real_name\":\"domain\"},\"control_type\":\"text\",\"parent\":[\"parameters\",\"data\"]}]"
               },
@@ -340,17 +340,513 @@
             ]
           },
           {
-            "as": "e0f00005",
-            "comment": "ignore decision (ignore list + blocked country)",
-            "description": "Execute \u003cspan class=\"provider\"\u003eruby\u003c/span\u003e code: \u003cspan class=\"provider\"\u003echeck_guest_ignore\u003c/span\u003e",
+            "as": "afe22870",
+            "comment": "normalize_luma_guest (unchanged) + ignore decision",
+            "description": "Execute \u003cspan class=\"provider\"\u003eruby\u003c/span\u003e code: \u003cspan class=\"provider\"\u003enormalize_luma_guest\u003c/span\u003e",
+            "extended_input_schema": [
+              {
+                "control_type": "form-schema-builder",
+                "label": "Input",
+                "name": "code_input",
+                "optional": true,
+                "override": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "extends_schema": true,
+                    "label": "Schema",
+                    "name": "schema",
+                    "type": "string"
+                  },
+                  {
+                    "label": "Data",
+                    "name": "data",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "URL",
+                        "name": "url",
+                        "optional": false,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Name",
+                        "name": "name",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Guest ID",
+                        "name": "guest_id",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Approval status",
+                        "name": "approval_status",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Source",
+                        "name": "source",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Start at",
+                        "name": "start_at",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "End at",
+                        "name": "end_at",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Timezone",
+                        "name": "timezone",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "hint": "Type 2026-11-01 or leave empty",
+                        "label": "New flow start date (YYYY-MM-DD)",
+                        "name": "new_flow_start_date",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "event_date",
+                        "name": "event_date",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "User first name",
+                        "name": "user_first_name",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "User last name",
+                        "name": "user_last_name",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "User email",
+                        "name": "user_email",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Phone number",
+                        "name": "phone_number",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Check in date",
+                        "name": "check_in_date",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "registration_answers",
+                        "name": "registration_answers",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Pg match count",
+                        "name": "pg_match_count",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Pg match type",
+                        "name": "pg_match_type",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "blocked_countries",
+                        "name": "blocked_countries",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "sticky": true,
+                "type": "object"
+              }
+            ],
+            "extended_output_schema": [
+              {
+                "label": "Output",
+                "name": "output",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Event ID",
+                    "name": "event_id",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Event name",
+                    "name": "event_name",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "First name",
+                    "name": "first_name",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Last name",
+                    "name": "last_name",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Email",
+                    "name": "email",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Phone number",
+                    "name": "phone_number",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Hs linkedin URL",
+                    "name": "hs_linkedin_url",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Company",
+                    "name": "company",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Job title",
+                    "name": "job_title",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Country",
+                    "name": "country",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Luma last checked in date",
+                    "name": "luma_last_checked_in_date",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Email domain",
+                    "name": "email_domain",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Should ignore",
+                    "name": "should_ignore",
+                    "parse_output": "boolean_conversion",
+                    "render_input": "boolean_conversion",
+                    "toggle_field": {
+                      "control_type": "text",
+                      "label": "Should ignore",
+                      "name": "should_ignore",
+                      "parse_output": "boolean_conversion",
+                      "render_input": "boolean_conversion",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean"
+                    },
+                    "toggle_hint": "Select from option list",
+                    "type": "boolean"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Ignore reason",
+                    "name": "ignore_reason",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Country blocked",
+                    "name": "country_blocked",
+                    "parse_output": "boolean_conversion",
+                    "render_input": "boolean_conversion",
+                    "toggle_field": {
+                      "control_type": "text",
+                      "label": "Country blocked",
+                      "name": "country_blocked",
+                      "parse_output": "boolean_conversion",
+                      "render_input": "boolean_conversion",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean"
+                    },
+                    "toggle_hint": "Select from option list",
+                    "type": "boolean"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Blocked country ISO",
+                    "name": "blocked_country_iso",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Luma URL slug",
+                    "name": "luma_url_slug",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Luma guest ID",
+                    "name": "luma_guest_id",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Luma approval status",
+                    "name": "luma_approval_status",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Luma event checked in date",
+                    "name": "luma_event_checked_in_date",
+                    "parse_output": "date_time_conversion",
+                    "render_input": "date_time_conversion",
+                    "type": "date_time"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Contact email",
+                    "name": "contact_email",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Event date",
+                    "name": "event_date",
+                    "parse_output": "date_time_conversion",
+                    "render_input": "date_time_conversion",
+                    "type": "date_time"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Event source",
+                    "name": "event_source",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Route",
+                    "name": "route",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Route reason",
+                    "name": "route_reason",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Event day (local)",
+                    "name": "event_day",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Event start date",
+                    "name": "event_start_date",
+                    "parse_output": "date_time_conversion",
+                    "render_input": "date_time_conversion",
+                    "type": "date_time"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Event end date",
+                    "name": "event_end_date",
+                    "parse_output": "date_time_conversion",
+                    "render_input": "date_time_conversion",
+                    "type": "date_time"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Event timezone",
+                    "name": "event_timezone",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Event start local",
+                    "name": "event_start_local",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Event end local",
+                    "name": "event_end_local",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Event local date",
+                    "name": "event_local_date",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Event local time",
+                    "name": "event_local_time",
+                    "type": "string"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
             "input": {
-              "code": "clean = -\u003e(v) { (v.nil? || v.to_s.strip.empty?) ? nil : v }\nnorm  = -\u003e(v) { v.to_s.strip.downcase.gsub(/\\s+/, \" \") }\nparse = -\u003e(v) {\n  v = (parse_json(v) rescue nil) while v.is_a?(String) \u0026\u0026 !v.strip.empty?\n  v.is_a?(Array) ? v : []\n}\n\n# ===== COUNTRY: explicit input, else from Luma registration answers =====\nra = parse.(input[\"registration_answers\"])\nby_label   = -\u003e(label) { (hit = ra.find { |a| a[\"label\"] == label }) \u0026\u0026 hit[\"answer\"] }\nby_keyword = -\u003e(words) { (hit = ra.find { |a| l = a[\"label\"].to_s.downcase; words.any? { |w| l.include?(w) } }) \u0026\u0026 hit[\"answer\"] }\ncountry = clean.(input[\"country\"]) ||\n          clean.(by_label.(\"What country are you from?\")) ||\n          clean.(by_label.(\"Where are you from?\")) ||\n          clean.(by_label.(\"Country of residence\")) ||\n          clean.(by_keyword.([\"what country\", \"which country\", \"country\", \"where are you from\",\n                              \"where are you based\", \"based in\", \"residence\", \"nationality\"]))\ncountry = \"United Kingdom\" if country == \"United Kingdon\"\n\n# ===== BLOCKED COUNTRIES =====\ncountry_n = norm.(country)\nmatched_block = country_n.empty? ? nil : parse.(input[\"blocked_countries\"]).find { |b|\n  b.is_a?(Hash) \u0026\u0026\n    ((!norm.(b[\"country\"]).empty? \u0026\u0026 norm.(b[\"country\"]) == country_n) ||\n     (!norm.(b[\"country_iso_code\"]).empty? \u0026\u0026 norm.(b[\"country_iso_code\"]) == country_n))\n}\ncountry_blocked = !matched_block.nil?\n\n# ===== IGNORE LIST (Postgres marketing.ignore_list) =====\nemail  = input[\"email\"].to_s.strip.downcase\ndomain = email.include?(\"@\") ? email.split(\"@\").last : \"\"\npg_match = input[\"pg_match_count\"].to_i \u003e 0\n\nreasons = []\nreasons \u003c\u003c (clean.(input[\"pg_match_type\"]) || \"email_match\") if pg_match\nreasons \u003c\u003c \"blocked_country: #{country}\" if country_blocked\n\n{\n  email: email, email_domain: domain, country: country,\n  pg_match_type: pg_match ? (clean.(input[\"pg_match_type\"]) || \"email_match\") : nil,\n  country_blocked: country_blocked,\n  blocked_country_iso: country_blocked ? matched_block[\"country_iso_code\"] : nil,\n  should_ignore: !reasons.empty?,\n  ignore_reason: reasons.empty? ? nil : reasons.join(\" | \")\n}\n",
+              "code": "# ---- Safe parse: registration_answers may arrive as Array OR JSON string ----\nraw = input[\"registration_answers\"]\nra =\n  if raw.is_a?(Array)\n    raw\n  elsif raw.is_a?(String) \u0026\u0026 !raw.strip.empty?\n    (parse_json(raw) rescue [])\n  else\n    []\n  end\n\n# ---- YOUR logic: match by exact label ----\nby_label = -\u003e(label, key = \"answer\") {\n  hit = ra.find { |a| a[\"label\"] == label }\n  hit \u0026\u0026 hit[key]\n}\n\n# ---- MY logic: match by question_type (stable across events) ----\nby_type = -\u003e(type, key = \"answer\") {\n  hit = ra.find { |a| a[\"question_type\"] == type }\n  hit \u0026\u0026 hit[key]\n}\n\n# ---- MY logic: keyword fallback on label ----\nby_keyword = -\u003e(words, key = \"answer\") {\n  hit = ra.find { |a|\n    l = a[\"label\"].to_s.downcase\n    words.any? { |w| l.include?(w) }\n  }\n  hit \u0026\u0026 hit[key]\n}\n\n# treat empty strings as nil so fallbacks kick in\nclean = -\u003e(v) { (v.nil? || v.to_s.strip.empty?) ? nil : v }\n\n# Safe time parser: ISO string or time object -\u003e Time, nil on failure\nparse_time = -\u003e(v) {\n  begin\n    if v.nil?\n      nil\n    elsif v.is_a?(String)\n      v.strip.empty? ? nil : Time.parse(v)\n    else\n      v.to_time\n    end\n  rescue\n    nil\n  end\n}\n\n# ===== EVENT ID (your logic, unchanged) =====\nevent_id = input[\"url\"].to_s.split(\"/\").last\n\n# ==========================================================\n# ===== LUMA IDs =====\n# ==========================================================\nurl_path      = input[\"url\"].to_s.strip.split(\"?\").first.to_s.split(\"#\").first.to_s.chomp(\"/\")\nluma_url_slug = clean.(url_path.split(\"/\").last)      # agentic-web-browser-runtime-nov11-2026\nluma_guest_id = clean.(input[\"guest_id\"].to_s.strip)   # gst-yEYYnDeyn3n8gTw\n\n# ==========================================================\n# ===== STATUS / SOURCE / CHECK-IN =====\n# ==========================================================\nluma_approval_status = clean.(input[\"approval_status\"].to_s.strip.downcase)   # approved / pending_approval\n\nsrc          = clean.(input[\"source\"].to_s.strip)\nevent_source = src ? src.capitalize : \"Luma\"\n\nchecked_in_time            = parse_time.(input[\"check_in_date\"])\nluma_event_checked_in_date = checked_in_time ? checked_in_time.utc.iso8601 : nil\n\n# ==========================================================\n# ===== EVENT START / END / TIMEZONE =====\n# ==========================================================\nstart_time     = parse_time.(clean.(input[\"start_at\"]) || input[\"event_date\"])\nend_time       = parse_time.(input[\"end_at\"])\nevent_timezone = clean.(input[\"timezone\"])\n\nevent_start_date = start_time ? start_time.utc.iso8601 : nil\nevent_end_date   = end_time   ? end_time.utc.iso8601   : nil\nevent_date       = event_start_date\n\nto_local = -\u003e(t) {\n  begin\n    (t \u0026\u0026 event_timezone) ? t.in_time_zone(event_timezone) : nil\n  rescue\n    nil\n  end\n}\nstart_local = to_local.(start_time)\nend_local   = to_local.(end_time)\n\nevent_start_local = start_local ? start_local.iso8601 : nil\nevent_end_local   = end_local   ? end_local.iso8601   : nil\nevent_local_date  = start_local ? start_local.strftime(\"%Y-%m-%d\") : nil\n\nevent_local_time =\n  if start_local \u0026\u0026 end_local\n    start_local.strftime(\"%b %-d, %Y · %-l:%M %p\") + \" – \" + end_local.strftime(\"%-l:%M %p %Z\")\n  elsif start_local\n    start_local.strftime(\"%b %-d, %Y · %-l:%M %p %Z\")\n  else\n    nil\n  end\n\n# ==========================================================\n# ===== ROUTING: new flow (Nov 1+) vs old flow =====\n# ==========================================================\ncutoff = clean.(input[\"new_flow_start_date\"]).to_s.strip\ncutoff = \"2026-11-01\" unless cutoff =~ /\\A\\d{4}-\\d{2}-\\d{2}\\z/\n\n# Local event day (falls back to UTC day if timezone missing)\nevent_day    = event_local_date || (start_time ? start_time.utc.strftime(\"%Y-%m-%d\") : nil)\nis_new_event = !event_day.nil? \u0026\u0026 event_day \u003e= cutoff\n\nnew_flow_statuses = [\"approved\", \"pending_approval\"]\nold_flow_statuses = [\"approved\"]\nstatus            = luma_approval_status.to_s\n\nroute, route_reason =\n  if event_day.nil?\n    [\"skip\", \"missing event start date\"]\n  elsif is_new_event\n    new_flow_statuses.include?(status) ? [\"new\", nil] : [\"skip\", \"new flow: status '#{status}' not handled\"]\n  else\n    old_flow_statuses.include?(status) ? [\"old\", nil] : [\"skip\", \"old flow: status '#{status}' not handled\"]\n  end\n\n# ===== LINKEDIN =====\nli = clean.(by_label.(\"What is your LinkedIn profile?\")) ||\n     clean.(by_label.(\"LinkedIn profile\")) ||\n     clean.(by_type.(\"linkedin\")) ||\n     clean.(by_keyword.([\"linkedin\"]))\nlinkedin =\n  if li.nil?\n    nil\n  elsif li.start_with?(\"http\")\n    li\n  else\n    \"https://www.linkedin.com\" + (li.start_with?(\"/\") ? li : \"/#{li}\")\n  end\n\n# ===== COMPANY =====\ncompany = clean.(by_label.(\"Where do you work?\")) ||\n          clean.(by_label.(\"What company do you work for?\")) ||\n          clean.(by_type.(\"company\", \"answer_company\")) ||\n          clean.(by_type.(\"company\")) ||\n          clean.(by_keyword.([\"company\", \"where do you work\", \"employer\"]))\n\n# ===== JOB TITLE =====\njob_title = clean.(by_label.(\"What is your job title?\")) ||\n            clean.(by_label.(\"What company do you work for?\", \"answer_job_title\")) ||\n            clean.(by_type.(\"company\", \"answer_job_title\")) ||\n            clean.(by_keyword.([\"job title\", \"role title\", \"your role\"]))\n\n# ===== COUNTRY =====\ncountry = clean.(by_label.(\"What country are you from?\")) ||\n          clean.(by_label.(\"Where are you from?\"))        ||\n          clean.(by_label.(\"Country of residence\"))        ||\n          clean.(by_keyword.([\n            \"what country\", \"which country\", \"country\",\n            \"where are you from\", \"where are you based\",\n            \"based in\", \"residence\", \"nationality\"\n          ]))\ncountry = \"United Kingdom\" if country == \"United Kingdon\"\n\n# ==========================================================\n# ===== BLOCKED COUNTRIES =====\n# ==========================================================\nraw_bc = input[\"blocked_countries\"]\nblocked_list =\n  if raw_bc.is_a?(Array)\n    raw_bc\n  elsif raw_bc.is_a?(String) \u0026\u0026 !raw_bc.strip.empty?\n    (parse_json(raw_bc) rescue [])\n  else\n    []\n  end\nblocked_list = [] unless blocked_list.is_a?(Array)\n\nnorm = -\u003e(v) { v.to_s.strip.downcase.gsub(/\\s+/, \" \") }\ncountry_n = norm.(country)\n\nmatched_block =\n  if country_n.empty?\n    nil\n  else\n    blocked_list.find { |b|\n      next false unless b.is_a?(Hash)\n      b_name = norm.(b[\"country\"])\n      b_iso  = norm.(b[\"country_iso_code\"])\n      (!b_name.empty? \u0026\u0026 b_name == country_n) ||\n      (!b_iso.empty?  \u0026\u0026 b_iso  == country_n)\n    }\n  end\n\ncountry_blocked     = !matched_block.nil?\nblocked_country_iso = country_blocked ? matched_block[\"country_iso_code\"] : nil\n\n# ==========================================================\n# ===== email/domain + ignore decision (from Postgres) =====\n# ==========================================================\nfull_email    = input[\"user_email\"].to_s.strip.downcase\ndomain        = full_email.include?(\"@\") ? full_email.split(\"@\").last : \"\"\ncontact_email = clean.(full_email)\n\npg_match = input[\"pg_match_count\"].to_i \u003e 0\n\nreasons = []\nreasons \u003c\u003c (clean.(input[\"pg_match_type\"]) || \"email_match\") if pg_match\nreasons \u003c\u003c \"blocked_country: #{country}\"                     if country_blocked\n\nshould_ignore = !reasons.empty?\nignore_reason = should_ignore ? reasons.join(\" | \") : nil\n\n{\n  # ===== existing outputs (unchanged) =====\n  \"event_id\"                   =\u003e event_id,\n  \"event_name\"                 =\u003e input[\"name\"],\n  \"first_name\"                 =\u003e input[\"user_first_name\"],\n  \"last_name\"                  =\u003e input[\"user_last_name\"],\n  \"email\"                      =\u003e input[\"user_email\"],\n  \"phone_number\"               =\u003e input[\"phone_number\"],\n  \"hs_linkedin_url\"            =\u003e linkedin,\n  \"company\"                    =\u003e company,\n  \"job_title\"                  =\u003e job_title,\n  \"country\"                    =\u003e country,\n  \"luma_last_checked_in_date\"  =\u003e input[\"check_in_date\"],\n  \"email_domain\"               =\u003e domain,\n  \"should_ignore\"              =\u003e should_ignore,\n  \"ignore_reason\"              =\u003e ignore_reason,\n  \"country_blocked\"            =\u003e country_blocked,\n  \"blocked_country_iso\"        =\u003e blocked_country_iso,\n\n  # ===== HubSpot \"Event registration\" fields =====\n  \"luma_url_slug\"              =\u003e luma_url_slug,\n  \"luma_guest_id\"              =\u003e luma_guest_id,\n  \"luma_approval_status\"       =\u003e luma_approval_status,\n  \"luma_event_checked_in_date\" =\u003e luma_event_checked_in_date,\n  \"contact_email\"              =\u003e contact_email,\n  \"event_date\"                 =\u003e event_date,\n  \"event_source\"               =\u003e event_source,\n\n  # ===== routing =====\n  \"route\"                      =\u003e route,\n  \"route_reason\"               =\u003e route_reason,\n  \"event_day\"                  =\u003e event_day,\n\n  # ===== extra event timing =====\n  \"event_start_date\"           =\u003e event_start_date,\n  \"event_end_date\"             =\u003e event_end_date,\n  \"event_timezone\"             =\u003e event_timezone,\n  \"event_start_local\"          =\u003e event_start_local,\n  \"event_end_local\"            =\u003e event_end_local,\n  \"event_local_date\"           =\u003e event_local_date,\n  \"event_local_time\"           =\u003e event_local_time\n}\n",
               "code_input": {
-                "data": {},
-                "schema": "[{\"name\": \"email\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Email\", \"parent\": [\"code_input\", \"data\"]}, {\"name\": \"country\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Country\", \"parent\": [\"code_input\", \"data\"]}, {\"name\": \"registration_answers\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Registration answers\", \"parent\": [\"code_input\", \"data\"]}, {\"name\": \"pg_match_count\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Pg match count\", \"parent\": [\"code_input\", \"data\"]}, {\"name\": \"pg_match_type\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Pg match type\", \"parent\": [\"code_input\", \"data\"]}, {\"name\": \"blocked_countries\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Blocked countries\", \"parent\": [\"code_input\", \"data\"]}]"
+                "data": {
+                  "approval_status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"approval_status\"]}')}",
+                  "blocked_countries": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"9175719c\",\"path\":[\"list_items\"]}')",
+                  "check_in_date": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"check_in_date\"]}')}",
+                  "end_at": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"end_at\"]}')}",
+                  "event_date": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"event_date\"]}')}",
+                  "guest_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"guest_id\"]}')}",
+                  "name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"name\"]}')}",
+                  "new_flow_start_date": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"new_flow_start_date\"]}')}",
+                  "pg_match_count": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a50b7f3\",\"path\":[\"rows\",{\"path_element_type\":\"size\"}]}')}",
+                  "pg_match_type": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a50b7f3\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"match_type\"]}')}",
+                  "phone_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"phone_number\"]}')}",
+                  "registration_answers": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"registration_answers\"]}')}",
+                  "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"source\"]}')}",
+                  "start_at": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"start_at\"]}')}",
+                  "timezone": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"timezone\"]}')}",
+                  "url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"url\"]}')}",
+                  "user_email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"user_email\"]}')}",
+                  "user_first_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"user_first_name\"]}')}",
+                  "user_last_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"user_last_name\"]}')}"
+                },
+                "schema": "[{\"control_type\":\"text\",\"label\":\"URL\",\"name\":\"url\",\"type\":\"string\",\"optional\":false,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Name\",\"name\":\"name\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Guest ID\",\"name\":\"guest_id\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Approval status\",\"name\":\"approval_status\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Source\",\"name\":\"source\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Start at\",\"name\":\"start_at\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"End at\",\"name\":\"end_at\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Timezone\",\"name\":\"timezone\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"New flow start date (YYYY-MM-DD)\",\"name\":\"new_flow_start_date\",\"type\":\"string\",\"optional\":true,\"hint\":\"Type 2026-11-01 or leave empty\",\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"event_date\",\"name\":\"event_date\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"User first name\",\"name\":\"user_first_name\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"User last name\",\"name\":\"user_last_name\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"User email\",\"name\":\"user_email\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Phone number\",\"name\":\"phone_number\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Check in date\",\"name\":\"check_in_date\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"registration_answers\",\"name\":\"registration_answers\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Pg match count\",\"name\":\"pg_match_count\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Pg match type\",\"name\":\"pg_match_type\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"blocked_countries\",\"name\":\"blocked_countries\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]}]"
               },
-              "code_output_schema_json": "[{\"name\": \"email\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Email\"}, {\"name\": \"email_domain\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Email domain\"}, {\"name\": \"country\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Country\"}, {\"name\": \"pg_match_type\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Pg match type\"}, {\"name\": \"country_blocked\", \"type\": \"boolean\", \"optional\": true, \"control_type\": \"checkbox\", \"label\": \"Country blocked\"}, {\"name\": \"blocked_country_iso\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Blocked country iso\"}, {\"name\": \"should_ignore\", \"type\": \"boolean\", \"optional\": true, \"control_type\": \"checkbox\", \"label\": \"Should ignore\"}, {\"name\": \"ignore_reason\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Ignore reason\"}]",
-              "name": "check_guest_ignore",
+              "code_output_schema_json": "[{\"control_type\":\"text\",\"label\":\"Event ID\",\"name\":\"event_id\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Event name\",\"name\":\"event_name\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"First name\",\"name\":\"first_name\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Last name\",\"name\":\"last_name\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Email\",\"name\":\"email\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Phone number\",\"name\":\"phone_number\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Hs linkedin URL\",\"name\":\"hs_linkedin_url\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Company\",\"name\":\"company\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Job title\",\"name\":\"job_title\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Country\",\"name\":\"country\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Luma last checked in date\",\"name\":\"luma_last_checked_in_date\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Email domain\",\"name\":\"email_domain\",\"type\":\"string\"},{\"control_type\":\"checkbox\",\"label\":\"Should ignore\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"should_ignore\",\"type\":\"boolean\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Should ignore\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"should_ignore\",\"type\":\"boolean\"}},{\"control_type\":\"text\",\"label\":\"Ignore reason\",\"name\":\"ignore_reason\",\"type\":\"string\"},{\"control_type\":\"checkbox\",\"label\":\"Country blocked\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"country_blocked\",\"type\":\"boolean\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Country blocked\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"country_blocked\",\"type\":\"boolean\"}},{\"control_type\":\"text\",\"label\":\"Blocked country ISO\",\"name\":\"blocked_country_iso\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Luma URL slug\",\"name\":\"luma_url_slug\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Luma guest ID\",\"name\":\"luma_guest_id\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Luma approval status\",\"name\":\"luma_approval_status\",\"type\":\"string\"},{\"control_type\":\"date_time\",\"label\":\"Luma event checked in date\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"name\":\"luma_event_checked_in_date\",\"type\":\"date_time\"},{\"control_type\":\"text\",\"label\":\"Contact email\",\"name\":\"contact_email\",\"type\":\"string\"},{\"control_type\":\"date_time\",\"label\":\"Event date\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"name\":\"event_date\",\"type\":\"date_time\"},{\"control_type\":\"text\",\"label\":\"Event source\",\"name\":\"event_source\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Route\",\"name\":\"route\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Route reason\",\"name\":\"route_reason\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Event day (local)\",\"name\":\"event_day\",\"type\":\"string\"},{\"control_type\":\"date_time\",\"label\":\"Event start date\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"name\":\"event_start_date\",\"type\":\"date_time\"},{\"control_type\":\"date_time\",\"label\":\"Event end date\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"name\":\"event_end_date\",\"type\":\"date_time\"},{\"control_type\":\"text\",\"label\":\"Event timezone\",\"name\":\"event_timezone\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Event start local\",\"name\":\"event_start_local\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Event end local\",\"name\":\"event_end_local\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Event local date\",\"name\":\"event_local_date\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Event local time\",\"name\":\"event_local_time\",\"type\":\"string\"}]",
+              "name": "normalize_luma_guest",
               "payload_asset_type": "inline"
             },
             "keyword": "action",
@@ -358,7 +854,49 @@
             "number": 5,
             "provider": "workato_custom_code",
             "title": null,
-            "uuid": "a2bef612-58ab-5e1b-adc4-b186e4e263c1"
+            "uuid": "89821693-e957-5d16-b5b3-158a89337d15",
+            "visible_config_fields": [
+              "name",
+              "code_input",
+              "code_output_schema_json",
+              "payload_asset_type",
+              "code",
+              "code_input.data.url",
+              "code_input.data.name",
+              "code_input.data.user_first_name",
+              "code_input.data.user_last_name",
+              "code_input.data.user_email",
+              "code_input.data.phone_number",
+              "code_input.data.check_in_date",
+              "code_input.data.registration_answers",
+              "registration_answers.label",
+              "registration_answers.answer",
+              "registration_answers.value",
+              "registration_answers.question_id",
+              "registration_answers.question_type",
+              "registration_answers.answer_company",
+              "registration_answers.answer_job_title",
+              "code_input.schema",
+              "code_input.data.registration_answers.answer_job_title",
+              "code_input.data.registration_answers.answer_company",
+              "code_input.data.registration_answers.question_type",
+              "code_input.data.registration_answers.question_id",
+              "code_input.data.registration_answers.value",
+              "code_input.data.registration_answers.answer",
+              "code_input.data.registration_answers.label",
+              "code_input.data",
+              "code_input.data.pg_match_count",
+              "code_input.data.pg_match_type",
+              "code_input.data.blocked_countries",
+              "code_input.data.event_date",
+              "code_input.data.guest_id",
+              "code_input.data.approval_status",
+              "code_input.data.source",
+              "code_input.data.start_at",
+              "code_input.data.end_at",
+              "code_input.data.timezone",
+              "code_input.data.new_flow_start_date"
+            ]
           },
           {
             "as": "e0f00006",
@@ -424,58 +962,232 @@
           },
           {
             "control_type": "text",
-            "label": "Email",
-            "name": "email",
-            "optional": true,
+            "label": "Event ID",
+            "name": "event_id",
             "type": "string"
           },
           {
             "control_type": "text",
-            "label": "Email domain",
-            "name": "email_domain",
-            "optional": true,
+            "label": "Event name",
+            "name": "event_name",
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "First name",
+            "name": "first_name",
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Last name",
+            "name": "last_name",
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Email",
+            "name": "email",
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Phone number",
+            "name": "phone_number",
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Hs linkedin URL",
+            "name": "hs_linkedin_url",
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Company",
+            "name": "company",
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Job title",
+            "name": "job_title",
             "type": "string"
           },
           {
             "control_type": "text",
             "label": "Country",
             "name": "country",
-            "optional": true,
             "type": "string"
           },
           {
             "control_type": "text",
-            "label": "Pg match type",
-            "name": "pg_match_type",
-            "optional": true,
+            "label": "Luma last checked in date",
+            "name": "luma_last_checked_in_date",
             "type": "string"
           },
           {
-            "control_type": "checkbox",
-            "label": "Country blocked",
-            "name": "country_blocked",
-            "optional": true,
-            "type": "boolean"
-          },
-          {
             "control_type": "text",
-            "label": "Blocked country iso",
-            "name": "blocked_country_iso",
-            "optional": true,
+            "label": "Email domain",
+            "name": "email_domain",
             "type": "string"
           },
           {
             "control_type": "checkbox",
             "label": "Should ignore",
             "name": "should_ignore",
-            "optional": true,
+            "parse_output": "boolean_conversion",
+            "render_input": "boolean_conversion",
+            "toggle_field": {
+              "control_type": "text",
+              "label": "Should ignore",
+              "name": "should_ignore",
+              "parse_output": "boolean_conversion",
+              "render_input": "boolean_conversion",
+              "toggle_hint": "Use custom value",
+              "type": "boolean"
+            },
+            "toggle_hint": "Select from option list",
             "type": "boolean"
           },
           {
             "control_type": "text",
             "label": "Ignore reason",
             "name": "ignore_reason",
-            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "checkbox",
+            "label": "Country blocked",
+            "name": "country_blocked",
+            "parse_output": "boolean_conversion",
+            "render_input": "boolean_conversion",
+            "toggle_field": {
+              "control_type": "text",
+              "label": "Country blocked",
+              "name": "country_blocked",
+              "parse_output": "boolean_conversion",
+              "render_input": "boolean_conversion",
+              "toggle_hint": "Use custom value",
+              "type": "boolean"
+            },
+            "toggle_hint": "Select from option list",
+            "type": "boolean"
+          },
+          {
+            "control_type": "text",
+            "label": "Blocked country ISO",
+            "name": "blocked_country_iso",
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Luma URL slug",
+            "name": "luma_url_slug",
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Luma guest ID",
+            "name": "luma_guest_id",
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Luma approval status",
+            "name": "luma_approval_status",
+            "type": "string"
+          },
+          {
+            "control_type": "date_time",
+            "label": "Luma event checked in date",
+            "name": "luma_event_checked_in_date",
+            "parse_output": "date_time_conversion",
+            "render_input": "date_time_conversion",
+            "type": "date_time"
+          },
+          {
+            "control_type": "text",
+            "label": "Contact email",
+            "name": "contact_email",
+            "type": "string"
+          },
+          {
+            "control_type": "date_time",
+            "label": "Event date",
+            "name": "event_date",
+            "parse_output": "date_time_conversion",
+            "render_input": "date_time_conversion",
+            "type": "date_time"
+          },
+          {
+            "control_type": "text",
+            "label": "Event source",
+            "name": "event_source",
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Route",
+            "name": "route",
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Route reason",
+            "name": "route_reason",
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Event day (local)",
+            "name": "event_day",
+            "type": "string"
+          },
+          {
+            "control_type": "date_time",
+            "label": "Event start date",
+            "name": "event_start_date",
+            "parse_output": "date_time_conversion",
+            "render_input": "date_time_conversion",
+            "type": "date_time"
+          },
+          {
+            "control_type": "date_time",
+            "label": "Event end date",
+            "name": "event_end_date",
+            "parse_output": "date_time_conversion",
+            "render_input": "date_time_conversion",
+            "type": "date_time"
+          },
+          {
+            "control_type": "text",
+            "label": "Event timezone",
+            "name": "event_timezone",
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Event start local",
+            "name": "event_start_local",
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Event end local",
+            "name": "event_end_local",
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Event local date",
+            "name": "event_local_date",
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Event local time",
+            "name": "event_local_time",
             "type": "string"
           }
         ],
@@ -489,21 +1201,113 @@
         "properties": [
           {
             "control_type": "text",
-            "label": "Email",
-            "name": "email",
+            "label": "URL",
+            "name": "url",
             "optional": false,
             "type": "string"
           },
           {
             "control_type": "text",
-            "label": "Country",
-            "name": "country",
+            "label": "Name",
+            "name": "name",
             "optional": true,
             "type": "string"
           },
           {
             "control_type": "text",
-            "label": "Registration answers (JSON)",
+            "label": "Guest ID",
+            "name": "guest_id",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Approval status",
+            "name": "approval_status",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Source",
+            "name": "source",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Start at",
+            "name": "start_at",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "End at",
+            "name": "end_at",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Timezone",
+            "name": "timezone",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "hint": "Type 2026-11-01 or leave empty",
+            "label": "New flow start date (YYYY-MM-DD)",
+            "name": "new_flow_start_date",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "event_date",
+            "name": "event_date",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "User first name",
+            "name": "user_first_name",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "User last name",
+            "name": "user_last_name",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "User email",
+            "name": "user_email",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Phone number",
+            "name": "phone_number",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Check in date",
+            "name": "check_in_date",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "registration_answers",
             "name": "registration_answers",
             "optional": true,
             "type": "string"
@@ -513,16 +1317,20 @@
       }
     ],
     "input": {
-      "parameters_schema_json": "[{\"name\": \"email\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Email\"}, {\"name\": \"country\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Country\"}, {\"name\": \"registration_answers\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Registration answers (JSON)\"}]",
-      "result_schema_json": "[{\"name\": \"status\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Status\"}, {\"name\": \"message\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Message\"}, {\"name\": \"email\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Email\"}, {\"name\": \"email_domain\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Email domain\"}, {\"name\": \"country\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Country\"}, {\"name\": \"pg_match_type\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Pg match type\"}, {\"name\": \"country_blocked\", \"type\": \"boolean\", \"optional\": true, \"control_type\": \"checkbox\", \"label\": \"Country blocked\"}, {\"name\": \"blocked_country_iso\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Blocked country iso\"}, {\"name\": \"should_ignore\", \"type\": \"boolean\", \"optional\": true, \"control_type\": \"checkbox\", \"label\": \"Should ignore\"}, {\"name\": \"ignore_reason\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Ignore reason\"}]"
+      "parameters_schema_json": "[{\"control_type\": \"text\", \"label\": \"URL\", \"name\": \"url\", \"type\": \"string\", \"optional\": false}, {\"control_type\": \"text\", \"label\": \"Name\", \"name\": \"name\", \"type\": \"string\", \"optional\": true}, {\"control_type\": \"text\", \"label\": \"Guest ID\", \"name\": \"guest_id\", \"type\": \"string\", \"optional\": true}, {\"control_type\": \"text\", \"label\": \"Approval status\", \"name\": \"approval_status\", \"type\": \"string\", \"optional\": true}, {\"control_type\": \"text\", \"label\": \"Source\", \"name\": \"source\", \"type\": \"string\", \"optional\": true}, {\"control_type\": \"text\", \"label\": \"Start at\", \"name\": \"start_at\", \"type\": \"string\", \"optional\": true}, {\"control_type\": \"text\", \"label\": \"End at\", \"name\": \"end_at\", \"type\": \"string\", \"optional\": true}, {\"control_type\": \"text\", \"label\": \"Timezone\", \"name\": \"timezone\", \"type\": \"string\", \"optional\": true}, {\"control_type\": \"text\", \"label\": \"New flow start date (YYYY-MM-DD)\", \"name\": \"new_flow_start_date\", \"type\": \"string\", \"optional\": true, \"hint\": \"Type 2026-11-01 or leave empty\"}, {\"control_type\": \"text\", \"label\": \"event_date\", \"name\": \"event_date\", \"type\": \"string\", \"optional\": true}, {\"control_type\": \"text\", \"label\": \"User first name\", \"name\": \"user_first_name\", \"type\": \"string\", \"optional\": true}, {\"control_type\": \"text\", \"label\": \"User last name\", \"name\": \"user_last_name\", \"type\": \"string\", \"optional\": true}, {\"control_type\": \"text\", \"label\": \"User email\", \"name\": \"user_email\", \"type\": \"string\", \"optional\": true}, {\"control_type\": \"text\", \"label\": \"Phone number\", \"name\": \"phone_number\", \"type\": \"string\", \"optional\": true}, {\"control_type\": \"text\", \"label\": \"Check in date\", \"name\": \"check_in_date\", \"type\": \"string\", \"optional\": true}, {\"control_type\": \"text\", \"label\": \"registration_answers\", \"name\": \"registration_answers\", \"type\": \"string\", \"optional\": true}]",
+      "result_schema_json": "[{\"name\": \"status\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Status\"}, {\"name\": \"message\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Message\"}, {\"control_type\": \"text\", \"label\": \"Event ID\", \"name\": \"event_id\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Event name\", \"name\": \"event_name\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"First name\", \"name\": \"first_name\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Last name\", \"name\": \"last_name\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Email\", \"name\": \"email\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Phone number\", \"name\": \"phone_number\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Hs linkedin URL\", \"name\": \"hs_linkedin_url\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Company\", \"name\": \"company\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Job title\", \"name\": \"job_title\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Country\", \"name\": \"country\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Luma last checked in date\", \"name\": \"luma_last_checked_in_date\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Email domain\", \"name\": \"email_domain\", \"type\": \"string\"}, {\"control_type\": \"checkbox\", \"label\": \"Should ignore\", \"render_input\": \"boolean_conversion\", \"parse_output\": \"boolean_conversion\", \"name\": \"should_ignore\", \"type\": \"boolean\", \"toggle_hint\": \"Select from option list\", \"toggle_field\": {\"label\": \"Should ignore\", \"control_type\": \"text\", \"toggle_hint\": \"Use custom value\", \"render_input\": \"boolean_conversion\", \"parse_output\": \"boolean_conversion\", \"name\": \"should_ignore\", \"type\": \"boolean\"}}, {\"control_type\": \"text\", \"label\": \"Ignore reason\", \"name\": \"ignore_reason\", \"type\": \"string\"}, {\"control_type\": \"checkbox\", \"label\": \"Country blocked\", \"render_input\": \"boolean_conversion\", \"parse_output\": \"boolean_conversion\", \"name\": \"country_blocked\", \"type\": \"boolean\", \"toggle_hint\": \"Select from option list\", \"toggle_field\": {\"label\": \"Country blocked\", \"control_type\": \"text\", \"toggle_hint\": \"Use custom value\", \"render_input\": \"boolean_conversion\", \"parse_output\": \"boolean_conversion\", \"name\": \"country_blocked\", \"type\": \"boolean\"}}, {\"control_type\": \"text\", \"label\": \"Blocked country ISO\", \"name\": \"blocked_country_iso\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Luma URL slug\", \"name\": \"luma_url_slug\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Luma guest ID\", \"name\": \"luma_guest_id\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Luma approval status\", \"name\": \"luma_approval_status\", \"type\": \"string\"}, {\"control_type\": \"date_time\", \"label\": \"Luma event checked in date\", \"render_input\": \"date_time_conversion\", \"parse_output\": \"date_time_conversion\", \"name\": \"luma_event_checked_in_date\", \"type\": \"date_time\"}, {\"control_type\": \"text\", \"label\": \"Contact email\", \"name\": \"contact_email\", \"type\": \"string\"}, {\"control_type\": \"date_time\", \"label\": \"Event date\", \"render_input\": \"date_time_conversion\", \"parse_output\": \"date_time_conversion\", \"name\": \"event_date\", \"type\": \"date_time\"}, {\"control_type\": \"text\", \"label\": \"Event source\", \"name\": \"event_source\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Route\", \"name\": \"route\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Route reason\", \"name\": \"route_reason\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Event day (local)\", \"name\": \"event_day\", \"type\": \"string\"}, {\"control_type\": \"date_time\", \"label\": \"Event start date\", \"render_input\": \"date_time_conversion\", \"parse_output\": \"date_time_conversion\", \"name\": \"event_start_date\", \"type\": \"date_time\"}, {\"control_type\": \"date_time\", \"label\": \"Event end date\", \"render_input\": \"date_time_conversion\", \"parse_output\": \"date_time_conversion\", \"name\": \"event_end_date\", \"type\": \"date_time\"}, {\"control_type\": \"text\", \"label\": \"Event timezone\", \"name\": \"event_timezone\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Event start local\", \"name\": \"event_start_local\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Event end local\", \"name\": \"event_end_local\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Event local date\", \"name\": \"event_local_date\", \"type\": \"string\"}, {\"control_type\": \"text\", \"label\": \"Event local time\", \"name\": \"event_local_time\", \"type\": \"string\"}]"
     },
     "job_report_config": {
-      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"email\"]}')}",
-      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"e0f00005\",\"path\":[\"output\",\"country\"]}')}",
-      "custom_column_2": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"e0f00005\",\"path\":[\"output\",\"should_ignore\"]}').is_true? ? \"Yes\" : \"No\"",
-      "custom_column_3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"e0f00005\",\"path\":[\"output\",\"ignore_reason\"]}')}",
-      "custom_column_4": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"e0f0c001\",\"path\":[\"message\"]}').present? ? \"Error\" : \"Success\"",
-      "custom_column_5": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"e0f0c001\",\"path\":[\"message\"]}').presence"
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"user_email\"]}')}",
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"afe22870\",\"path\":[\"output\",\"event_name\"]}')}",
+      "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"afe22870\",\"path\":[\"output\",\"luma_url_slug\"]}')}",
+      "custom_column_3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"afe22870\",\"path\":[\"output\",\"country\"]}')}",
+      "custom_column_4": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"afe22870\",\"path\":[\"output\",\"luma_approval_status\"]}')}",
+      "custom_column_5": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"afe22870\",\"path\":[\"output\",\"should_ignore\"]}').is_true? ? \"Yes\" : \"No\"",
+      "custom_column_6": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"afe22870\",\"path\":[\"output\",\"ignore_reason\"]}')}",
+      "custom_column_7": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"afe22870\",\"path\":[\"output\",\"route\"]}').to_s + (_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"afe22870\",\"path\":[\"output\",\"route_reason\"]}').present? ? \" (\" + _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"afe22870\",\"path\":[\"output\",\"route_reason\"]}') + \")\" : \"\")",
+      "custom_column_8": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"e0f0c001\",\"path\":[\"message\"]}').present? ? \"Error\" : \"Success\"",
+      "custom_column_9": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"e0f0c001\",\"path\":[\"message\"]}').presence"
     },
     "job_report_schema": [
       {
@@ -530,24 +1338,40 @@
         "name": "custom_column_0"
       },
       {
-        "label": "Country",
+        "label": "Event",
         "name": "custom_column_1"
       },
       {
-        "label": "Should Ignore",
+        "label": "Luma Slug",
         "name": "custom_column_2"
       },
       {
-        "label": "Ignore Reason",
+        "label": "Country",
         "name": "custom_column_3"
       },
       {
-        "label": "Status",
+        "label": "Approval Status",
         "name": "custom_column_4"
       },
       {
-        "label": "Message",
+        "label": "Should Ignore",
         "name": "custom_column_5"
+      },
+      {
+        "label": "Ignore Reason",
+        "name": "custom_column_6"
+      },
+      {
+        "label": "Route",
+        "name": "custom_column_7"
+      },
+      {
+        "label": "Status",
+        "name": "custom_column_8"
+      },
+      {
+        "label": "Message",
+        "name": "custom_column_9"
       }
     ],
     "keyword": "trigger",
@@ -595,8 +1419,8 @@
       "skip_validation": false
     }
   ],
-  "description": "# LUMA-00 | Fun 001 | Check Guest Ignore Rules\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** Called by `Webhook: Luma-to-HubSpot Guest Sync` (first step). Reusable by any Luma / event process.\n\n**PURPOSE:** Decide whether a guest must be ignored (ignore list or blocked country) before any processing.\n\n**FLOW:**\n1. Match email / domain against `marketing.ignore_list` → PostgreSQL\n2. Get active `blocked_countries` → Data table\n3. Ruby: country (input, else Luma registration answers) + ignore decision\n\n**DB / TABLES:** `marketing.ignore_list` (read), `blocked_countries` data table (read)\n**UPSTREAM:** Webhook: Luma-to-HubSpot Guest Sync  \n**DOWNSTREAM:** none\n\n## Important logic\n- `should_ignore` = ignore-list match OR blocked country. `ignore_reason` joins all reasons with ` | `.\n- `registration_answers`: pass a JSON string (array or already-encoded string both work).\n- Caller must stop when `status = Error` or `should_ignore = true`.\n",
+  "description": "# LUMA-00 | Fun 001 | Check Guest Ignore Rules\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** Called by `Webhook: Luma-to-HubSpot Guest Sync` (first step). Reusable by any Luma / event process.\n\n**PURPOSE:** Normalize a Luma guest and decide whether it must be ignored (ignore list or blocked country) before any processing.\n\n**FLOW:**\n1. Match email / domain against `marketing.ignore_list` → PostgreSQL\n2. Get active `blocked_countries` → Data table → list\n3. Ruby `normalize_luma_guest` (unchanged): Luma fields, HubSpot fields, routing, ignore decision\n\n**DB / TABLES:** `marketing.ignore_list` (read), `blocked_countries` data table (read)\n**UPSTREAM:** Webhook: Luma-to-HubSpot Guest Sync  \n**DOWNSTREAM:** none\n\n## Important logic\n- Inputs = the Luma webhook fields of the original Ruby step; outputs = all its outputs + `status` / `message`.\n- `should_ignore` = ignore-list match OR blocked country. `ignore_reason` joins all reasons with ` | `.\n- `registration_answers`: pass a JSON string (`.to_json`).\n- Caller must stop when `status = Error` or `should_ignore = true`.\n",
   "name": "LUMA-00 | Fun 001 | Check Guest Ignore Rules",
   "private": false,
-  "version": 1
+  "version": 2
 }
