@@ -72,7 +72,7 @@
           },
           {
             "as": "c3c00011",
-            "comment": "marketing.luma_sf_campaign_queue: new Not found rows (after 3h)",
+            "comment": "marketing.luma_sf_campaign_queue: new Not found / Campaign not found rows (after 3h)",
             "description": "Select \u003cspan class=\"provider\"\u003erows\u003c/span\u003e using \u003cspan class=\"provider\"\u003ecustom SQL\u003c/span\u003e in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
             "input": {
               "output_schema": "[{\"name\": \"nf_count\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Nf count\"}, {\"name\": \"lines\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Lines\"}]",
@@ -80,7 +80,7 @@
                 "data": {},
                 "schema": "[]"
               },
-              "sql": "SELECT count(*)::text AS nf_count,\n       string_agg('• ' || email || ' | ' || coalesce(sf_campaign_name, sf_campaign_id, luma_url_slug) || ' | ' || coalesce(sf_member_status, approval_status, ''), E'\\n' ORDER BY id) AS lines\nFROM marketing.luma_sf_campaign_queue\nWHERE queue_status = 'Not found' AND NOT not_found_notified"
+              "sql": "SELECT count(*)::text AS nf_count,\n       string_agg('• ' || email || ' | ' || coalesce(sf_campaign_name, sf_campaign_id, luma_url_slug) || ' | ' || coalesce(sf_member_status, approval_status, '') || ' | ' || CASE queue_status WHEN 'Not found' THEN 'No SF Contact/Lead' ELSE 'Campaign not found: ' || coalesce(message, '') END, E'\\n' ORDER BY id) AS lines\nFROM marketing.luma_sf_campaign_queue\nWHERE queue_status IN ('Not found', 'Campaign not found') AND NOT not_found_notified"
             },
             "keyword": "action",
             "name": "search_rows_sql",
@@ -93,11 +93,11 @@
             "block": [
               {
                 "as": "c3c00013",
-                "comment": "notify field marketing: no SF Contact/Lead after 3h",
+                "comment": "notify field marketing: not synced after 3h",
                 "description": "Post \u003cspan class=\"provider\"\u003emessage\u003c/span\u003e as \u003cspan class=\"provider\"\u003eSlack Workbot\u003c/span\u003e",
                 "input": {
                   "channel": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"lsc_field_marketing_channel\"}')}",
-                  "text": ":warning: *Luma → SF campaign:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00011\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"nf_count\"]}')} guest(s) still have no Salesforce Contact/Lead after 3 hours.\n*Email | SF campaign | Member status*\n#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00011\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"lines\"]}')}"
+                  "text": ":warning: *Luma → SF campaign:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00011\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"nf_count\"]}')} guest(s) could not be added to a Salesforce campaign after 3 hours.\n*Email | SF campaign | Member status | Reason*\n#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00011\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"lines\"]}')}"
                 },
                 "keyword": "action",
                 "name": "post_bot_message",
@@ -115,7 +115,7 @@
                 "description": "Update \u003cspan class=\"provider\"\u003erows\u003c/span\u003e in \u003cspan class=\"provider\"\u003emarketing.luma_sf_campaign_queue\u003c/span\u003e table in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
                 "input": {
                   "table": "marketing.luma_sf_campaign_queue",
-                  "where": "queue_status = 'Not found' AND NOT not_found_notified"
+                  "where": "queue_status IN ('Not found', 'Campaign not found') AND NOT not_found_notified"
                 },
                 "keyword": "action",
                 "name": "update_rows",
@@ -128,14 +128,14 @@
                 "uuid": "4d2588e5-9961-5148-ba22-f1b9e4b6e2bb"
               }
             ],
-            "comment": "Not found rows exist",
+            "comment": "not-synced rows exist",
             "input": {
               "conditions": [
                 {
                   "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00011\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"nf_count\"]}')}",
                   "operand": "not_equals_to",
                   "rhs": "0",
-                  "uuid": "4839f313-856f-48d9-92db-bab2c470c904"
+                  "uuid": "18c32884-123b-4656-8364-04d7c8da1be9"
                 }
               ],
               "operand": "and",
@@ -202,7 +202,7 @@
                   "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00006\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"error_count\"]}')}",
                   "operand": "not_equals_to",
                   "rhs": "0",
-                  "uuid": "116ecd70-a3a4-42f5-8809-eb0fb468f863"
+                  "uuid": "4374cbb5-6f4f-4b31-b526-727635189704"
                 }
               ],
               "operand": "and",
@@ -268,7 +268,7 @@
         "name": "custom_column_0"
       },
       {
-        "label": "New Not Found",
+        "label": "New Not Synced (3h)",
         "name": "custom_column_1"
       },
       {
@@ -326,8 +326,8 @@
       "skip_validation": false
     }
   ],
-  "description": "# LSC-02 | Main | Hourly Luma Guests → SF Campaign Members\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** Scheduler — every hour, Asia/Jerusalem\n\n**PURPOSE:** Sync queued Luma guests to Salesforce campaign members 1h after registration, retrying at 3h.\n\n**FLOW:**\n1. Get Pending rows with `next_attempt_at` ≤ now → PostgreSQL\n2. For each: call Fun 002 → write Done / Skipped / Not found / Error + SF IDs back to the row\n3. Not found on 1st attempt → stay Pending, retry in 2h; on 2nd → Not found\n4. New Not found rows → Slack field marketing (email, SF campaign name, member status)\n5. If new Error rows exist → mark notified and stop with error (→ System Error Handling)\n\n**DB / TABLES:** `marketing.luma_sf_campaign_queue` (read/write)\n**UPSTREAM:** LSC-01 | Fun 001 | Queue Luma Guest for SF Campaign Sync (fills the queue)  \n**DOWNSTREAM:** LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign\n\n## Important logic\n- Attempts: +1h (Fun 001) and +3h (retry). Each Not found / Error row alerts once.\n- Slack channel: Marketing project property `lsc_field_marketing_channel`.\n- Max 500 rows per run; the rest are picked up next hour.\n",
+  "description": "# LSC-02 | Main | Hourly Luma Guests → SF Campaign Members\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** Scheduler — every hour, Asia/Jerusalem\n\n**PURPOSE:** Sync queued Luma guests to Salesforce campaign members 1h after registration, retrying at 3h.\n\n**FLOW:**\n1. Get Pending rows with `next_attempt_at` ≤ now → PostgreSQL\n2. For each: call Fun 002 → write Done / Skipped / Not found / Error + SF IDs back to the row\n3. Not found / Campaign not found on 1st attempt → stay Pending, retry in 2h; on 2nd → final status\n4. New Not found / Campaign not found rows → Slack field marketing (email, SF campaign, member status, reason)\n5. If new Error rows exist → mark notified and stop with error (→ System Error Handling)\n\n**DB / TABLES:** `marketing.luma_sf_campaign_queue` (read/write)\n**UPSTREAM:** LSC-01 | Fun 001 | Queue Luma Guest for SF Campaign Sync (fills the queue)  \n**DOWNSTREAM:** LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign\n\n## Important logic\n- Attempts: +1h (Fun 001) and +3h (retry). Each Not found / Campaign not found / Error row alerts once.\n- Slack channel: Marketing project property `lsc_field_marketing_channel`.\n- Max 500 rows per run; the rest are picked up next hour.\n",
   "name": "LSC-02 | Main | Hourly Luma Guests → SF Campaign Members",
   "private": false,
-  "version": 3
+  "version": 4
 }

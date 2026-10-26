@@ -56,7 +56,7 @@
                   "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00002\",\"path\":[\"output\",\"skip_reason\"]}')}",
                   "operand": "present",
                   "rhs": "",
-                  "uuid": "e8946b72-f659-4a83-848c-2f59ac5ecf7c"
+                  "uuid": "6e10695e-922f-4348-b6c0-789dc035e6e4"
                 }
               ],
               "operand": "and",
@@ -126,12 +126,12 @@
             "comment": "resolve person (Contact wins over Lead) + campaign",
             "description": "Execute \u003cspan class=\"provider\"\u003eruby\u003c/span\u003e code: \u003cspan class=\"provider\"\u003eresolve_person_campaign\u003c/span\u003e",
             "input": {
-              "code": "sf_id = /\\A[a-zA-Z0-9]{15}([a-zA-Z0-9]{3})?\\z/\ncontact_id = input[\"contact_id\"].to_s.strip\nlead_id    = input[\"lead_id\"].to_s.strip\ncampaign_id = input[\"campaign_id\"].to_s.strip\nperson_type, person_id =\n  if contact_id.match?(sf_id) then [\"Contact\", contact_id]\n  elsif lead_id.match?(sf_id) then [\"Lead\", lead_id]\n  else [nil, nil]\n  end\nskip_reason =\n  if campaign_id.empty? then \"Luma slug not found in campaign sheet: #{input[\"luma_url_slug\"]}\"\n  elsif !campaign_id.match?(sf_id) then \"Invalid SF campaign ID in sheet: #{campaign_id}\"\n  end\n{\n  person_type: person_type, person_id: person_id, campaign_id: campaign_id,\n  contact_id: person_type == \"Contact\" ? person_id : nil,\n  lead_id:    person_type == \"Lead\" ? person_id : nil,\n  member_query: person_id \u0026\u0026 \"CampaignId = '#{campaign_id}' AND #{person_type}Id = '#{person_id}'\",\n  skip_reason: skip_reason\n}\n",
+              "code": "sf_id = /\\A[a-zA-Z0-9]{15}([a-zA-Z0-9]{3})?\\z/\ncontact_id = input[\"contact_id\"].to_s.strip\nlead_id    = input[\"lead_id\"].to_s.strip\ncampaign_id = input[\"campaign_id\"].to_s.strip\nperson_type, person_id =\n  if contact_id.match?(sf_id) then [\"Contact\", contact_id]\n  elsif lead_id.match?(sf_id) then [\"Lead\", lead_id]\n  else [nil, nil]\n  end\ncampaign_issue =\n  if campaign_id.empty? then \"Luma slug not found in campaign sheet: #{input[\"luma_url_slug\"]}\"\n  elsif !campaign_id.match?(sf_id) then \"Invalid SF campaign ID in sheet: #{campaign_id}\"\n  end\nresult_status, result_message =\n  if person_id.nil? then [\"Not found\", [\"No Salesforce Contact or Lead for this email\", campaign_issue].compact.join(\" | \")]\n  elsif campaign_issue then [\"Campaign not found\", campaign_issue]\n  end\n{\n  person_type: person_type, person_id: person_id, campaign_id: campaign_id,\n  contact_id: person_type == \"Contact\" ? person_id : nil,\n  lead_id:    person_type == \"Lead\" ? person_id : nil,\n  member_query: person_id \u0026\u0026 \"CampaignId = '#{campaign_id}' AND #{person_type}Id = '#{person_id}'\",\n  campaign_ok: campaign_issue.nil?,\n  result_status: result_status, result_message: result_message\n}\n",
               "code_input": {
                 "data": {},
                 "schema": "[{\"name\": \"contact_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Contact id\", \"parent\": [\"code_input\", \"data\"]}, {\"name\": \"lead_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Lead id\", \"parent\": [\"code_input\", \"data\"]}, {\"name\": \"campaign_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Campaign id\", \"parent\": [\"code_input\", \"data\"]}, {\"name\": \"luma_url_slug\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Luma url slug\", \"parent\": [\"code_input\", \"data\"]}]"
               },
-              "code_output_schema_json": "[{\"name\": \"person_type\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Person type\"}, {\"name\": \"person_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Person id\"}, {\"name\": \"campaign_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Campaign id\"}, {\"name\": \"contact_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Contact id\"}, {\"name\": \"lead_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Lead id\"}, {\"name\": \"member_query\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Member query\"}, {\"name\": \"skip_reason\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Skip reason\"}]",
+              "code_output_schema_json": "[{\"name\": \"person_type\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Person type\"}, {\"name\": \"person_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Person id\"}, {\"name\": \"campaign_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Campaign id\"}, {\"name\": \"contact_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Contact id\"}, {\"name\": \"lead_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Lead id\"}, {\"name\": \"member_query\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Member query\"}, {\"name\": \"campaign_ok\", \"type\": \"boolean\", \"optional\": true, \"control_type\": \"checkbox\", \"label\": \"Campaign ok\"}, {\"name\": \"result_status\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Result status\"}, {\"name\": \"result_message\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Result message\"}]",
               "name": "resolve_person_campaign",
               "payload_asset_type": "inline"
             },
@@ -145,35 +145,34 @@
           {
             "block": [
               {
-                "as": "c2b00011",
-                "comment": "status = Skipped",
-                "description": null,
-                "input": {},
-                "keyword": "action",
-                "name": "return_result",
-                "number": 11,
-                "provider": "workato_recipe_function",
-                "title": null,
-                "uuid": "5d5a3f68-cb5c-5e30-8bc5-4659c9fcae6f"
-              },
-              {
-                "as": "c2b00012",
-                "input": {
-                  "stop_with_error": "false"
+                "as": "c2b00020",
+                "comment": "get campaign name",
+                "description": "Search \u003cspan class=\"provider\"\u003eCampaigns\u003c/span\u003e using SOQL query WHERE clause in \u003cspan class=\"provider\"\u003eSalesforce\u003c/span\u003e",
+                "dynamicPickListSelection": {
+                  "sobject_name": "Campaign"
                 },
-                "keyword": "stop",
-                "number": 12,
-                "uuid": "63f351c9-6d2f-5be9-a6ca-05fccec64709"
+                "input": {
+                  "field_list": "Id\nName",
+                  "limit": "1",
+                  "query": "Id = '#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"campaign_id\"]}')}'",
+                  "sobject_name": "Campaign"
+                },
+                "keyword": "action",
+                "name": "search_sobjects_soql",
+                "number": 11,
+                "provider": "salesforce",
+                "title": "Search Campaigns using SOQL query WHERE clause",
+                "uuid": "9a644555-a287-5f3a-8997-229c18aad911"
               }
             ],
-            "comment": "campaign not mapped / invalid",
+            "comment": "campaign ID valid",
             "input": {
               "conditions": [
                 {
-                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"skip_reason\"]}')}",
-                  "operand": "present",
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"campaign_ok\"]}')}",
+                  "operand": "is_true",
                   "rhs": "",
-                  "uuid": "4acb6e1e-b8c6-4a68-8cd0-a1f399aa96ab"
+                  "uuid": "faeb61b3-a29e-4387-8eb4-9b6ca0ac422f"
                 }
               ],
               "operand": "and",
@@ -184,35 +183,15 @@
             "uuid": "054884a3-51c9-580e-8b02-e2d7a3924cdd"
           },
           {
-            "as": "c2b00020",
-            "comment": "get campaign name",
-            "description": "Search \u003cspan class=\"provider\"\u003eCampaigns\u003c/span\u003e using SOQL query WHERE clause in \u003cspan class=\"provider\"\u003eSalesforce\u003c/span\u003e",
-            "dynamicPickListSelection": {
-              "sobject_name": "Campaign"
-            },
-            "input": {
-              "field_list": "Id\nName",
-              "limit": "1",
-              "query": "Id = '#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"campaign_id\"]}')}'",
-              "sobject_name": "Campaign"
-            },
-            "keyword": "action",
-            "name": "search_sobjects_soql",
-            "number": 13,
-            "provider": "salesforce",
-            "title": "Search Campaigns using SOQL query WHERE clause",
-            "uuid": "9a644555-a287-5f3a-8997-229c18aad911"
-          },
-          {
             "block": [
               {
                 "as": "c2b00021",
-                "comment": "status = Not found",
+                "comment": "status = Not found / Campaign not found",
                 "description": null,
                 "input": {},
                 "keyword": "action",
                 "name": "return_result",
-                "number": 15,
+                "number": 13,
                 "provider": "workato_recipe_function",
                 "title": null,
                 "uuid": "c32ece65-dfe5-575c-a7ab-1d5c6a99c63a"
@@ -223,26 +202,67 @@
                   "stop_with_error": "false"
                 },
                 "keyword": "stop",
-                "number": 16,
+                "number": 14,
                 "uuid": "14f303b3-87b5-596f-be67-e2dfa17aa30c"
               }
             ],
-            "comment": "no Contact or Lead in Salesforce",
+            "comment": "no Contact/Lead, or campaign not in sheet",
             "input": {
               "conditions": [
                 {
-                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"person_id\"]}')}",
-                  "operand": "blank",
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"result_status\"]}')}",
+                  "operand": "present",
                   "rhs": "",
-                  "uuid": "0ac33ad7-8ced-42a9-8fcd-7d3e1c6dc0aa"
+                  "uuid": "71fe6d50-2d2b-401f-9d49-bf178dfd6865"
                 }
               ],
               "operand": "and",
               "type": "compound"
             },
             "keyword": "if",
-            "number": 14,
-            "uuid": "0d3ca19c-8bdf-5b80-a9df-31a6167ec11b"
+            "number": 12,
+            "uuid": "71152dfb-5b69-5e0d-9b54-f1852c2951b2"
+          },
+          {
+            "block": [
+              {
+                "as": "c2b00011",
+                "comment": "status = Campaign not found",
+                "description": null,
+                "input": {},
+                "keyword": "action",
+                "name": "return_result",
+                "number": 16,
+                "provider": "workato_recipe_function",
+                "title": null,
+                "uuid": "5d5a3f68-cb5c-5e30-8bc5-4659c9fcae6f"
+              },
+              {
+                "as": "c2b00012",
+                "input": {
+                  "stop_with_error": "false"
+                },
+                "keyword": "stop",
+                "number": 17,
+                "uuid": "63f351c9-6d2f-5be9-a6ca-05fccec64709"
+              }
+            ],
+            "comment": "campaign ID not found in Salesforce",
+            "input": {
+              "conditions": [
+                {
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00020\",\"path\":[\"Campaign\",{\"path_element_type\":\"current_item\"},\"Id\"]}')}",
+                  "operand": "blank",
+                  "rhs": "",
+                  "uuid": "1e1e6b33-1e1c-486e-83a1-4aa243e1669e"
+                }
+              ],
+              "operand": "and",
+              "type": "compound"
+            },
+            "keyword": "if",
+            "number": 15,
+            "uuid": "239920b3-ad23-5a4b-8b69-1abe37892150"
           },
           {
             "as": "c2b00013",
@@ -259,7 +279,7 @@
             },
             "keyword": "action",
             "name": "search_sobjects_soql",
-            "number": 17,
+            "number": 18,
             "provider": "salesforce",
             "title": "Search CampaignMembers using SOQL query WHERE clause",
             "uuid": "1c11f35b-a70a-5abe-a2fb-704077c77d96"
@@ -278,7 +298,7 @@
                 },
                 "keyword": "action",
                 "name": "update_sobject",
-                "number": 19,
+                "number": 20,
                 "provider": "salesforce",
                 "title": "Update CampaignMember",
                 "uuid": "ff04b4e5-2f15-5552-9f05-e0e86865f817"
@@ -297,7 +317,7 @@
                     },
                     "keyword": "action",
                     "name": "create_custom_object",
-                    "number": 21,
+                    "number": 22,
                     "provider": "salesforce",
                     "title": "Create CampaignMember",
                     "uuid": "b0e664a7-6ab5-5195-83dc-31e7d1dfb0ad"
@@ -305,8 +325,8 @@
                 ],
                 "comment": "campaign member doesn't exist",
                 "keyword": "else",
-                "number": 20,
-                "uuid": "2697855d-5807-5841-ac54-047cdfde7c32"
+                "number": 21,
+                "uuid": "5f188db5-c242-58dd-aa7a-3bce9b8926c9"
               }
             ],
             "comment": "campaign member exists",
@@ -316,15 +336,15 @@
                   "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00013\",\"path\":[\"CampaignMember\",{\"path_element_type\":\"current_item\"},\"Id\"]}')}",
                   "operand": "present",
                   "rhs": "",
-                  "uuid": "6c534821-4f07-420a-9a15-25491230217d"
+                  "uuid": "7b5db1cd-a3fd-47d4-bb0d-951a9fc4cef1"
                 }
               ],
               "operand": "and",
               "type": "compound"
             },
             "keyword": "if",
-            "number": 18,
-            "uuid": "8a6d350b-295b-570a-b66f-2387c6dec544"
+            "number": 19,
+            "uuid": "73b1688a-e5e2-5eaa-a415-145bc6a804b2"
           },
           {
             "as": "c2b00018",
@@ -333,7 +353,7 @@
             "input": {},
             "keyword": "action",
             "name": "return_result",
-            "number": 22,
+            "number": 23,
             "provider": "workato_recipe_function",
             "title": null,
             "uuid": "7884b145-1eb9-5dbe-9efc-128a1324c428"
@@ -353,7 +373,7 @@
             "input": {},
             "keyword": "action",
             "name": "return_result",
-            "number": 24,
+            "number": 25,
             "provider": "workato_recipe_function",
             "title": null,
             "uuid": "802192d9-292a-5c22-afa0-d2d2a348c543"
@@ -364,7 +384,7 @@
           "retry_interval": "2"
         },
         "keyword": "catch",
-        "number": 23,
+        "number": 24,
         "uuid": "74c99e0c-9271-5ba0-b375-ce3bfb091aff"
       }
     ],
@@ -484,8 +504,8 @@
       "custom_column_5": "=_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00020\",\"path\":[\"Campaign\",{\"path_element_type\":\"current_item\"},\"Name\"]}').presence || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"campaign_id\"]}')",
       "custom_column_6": "=_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00013\",\"path\":[\"CampaignMember\",{\"path_element_type\":\"current_item\"},\"Id\"]}').presence || _dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00017\",\"path\":[\"id\"]}')",
       "custom_column_7": "=_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00013\",\"path\":[\"CampaignMember\",{\"path_element_type\":\"current_item\"},\"Id\"]}').present? ? \"Updated\" : (_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00017\",\"path\":[\"id\"]}').present? ? \"Created\" : skip)",
-      "custom_column_8": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c2b0c001\",\"path\":[\"message\"]}').present? ? \"Error\" : (_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00002\",\"path\":[\"output\",\"skip_reason\"]}').present? || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"skip_reason\"]}').present? ? \"Skipped\" : (_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"person_id\"]}').present? ? \"Success\" : \"Not found\"))",
-      "custom_column_9": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c2b0c001\",\"path\":[\"message\"]}').presence || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00002\",\"path\":[\"output\",\"skip_reason\"]}').presence || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"skip_reason\"]}').presence || skip"
+      "custom_column_8": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c2b0c001\",\"path\":[\"message\"]}').present? ? \"Error\" : (_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00002\",\"path\":[\"output\",\"skip_reason\"]}').present? ? \"Skipped\" : (_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"result_status\"]}').presence || (_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00020\",\"path\":[\"Campaign\",{\"path_element_type\":\"current_item\"},\"Id\"]}').present? ? \"Success\" : \"Campaign not found\")))",
+      "custom_column_9": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c2b0c001\",\"path\":[\"message\"]}').presence || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00002\",\"path\":[\"output\",\"skip_reason\"]}').presence || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"result_message\"]}').presence || skip"
     },
     "job_report_schema": [
       {
@@ -567,8 +587,8 @@
       "skip_validation": false
     }
   ],
-  "description": "# LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** Called by LSC-02 | Main | Hourly Luma Guests → SF Campaign Members\n\n**PURPOSE:** Add a Luma guest to the Salesforce campaign mapped to the Luma event, with the Luma approval status.\n\n**FLOW:**\n1. Normalize email, map status (approved → Registered = Approved, pending_approval → Registered = Pending)\n2. Search Contact and Lead by email → Salesforce (Contact wins when both exist)\n3. Find SF campaign ID by Luma slug → Google Sheet; get Campaign name → Salesforce\n4. Search CampaignMember → update Status or create\n\n**DB / TABLES:** Google Sheet `1rShm0qyQFdtqf8b6FEpR6F3pFOEvrdWtdrklsX3axGw` / Sheet1 (`Luma event slug` → `SF campaign ID`)\n**UPSTREAM:** LSC-02 | Main | Hourly Luma Guests → SF Campaign Members  \n**DOWNSTREAM:** none\n\n## Important logic\n- Returns `Skipped` when: invalid email, unsupported status, slug not in sheet / invalid campaign ID.\n- Returns `Not found` (with campaign name + member status) when no Contact/Lead exists yet.\n- Campaign must have member statuses **Registered = Approved** and **Registered = Pending**.\n- Email and IDs are validated in Ruby before being placed in SOQL.\n",
+  "description": "# LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** Called by LSC-02 | Main | Hourly Luma Guests → SF Campaign Members\n\n**PURPOSE:** Add a Luma guest to the Salesforce campaign mapped to the Luma event, with the Luma approval status.\n\n**FLOW:**\n1. Normalize email, map status (approved → Registered = Approved, pending_approval → Registered = Pending)\n2. Search Contact and Lead by email → Salesforce (Contact wins when both exist)\n3. Find SF campaign ID by Luma slug → Google Sheet; get Campaign name → Salesforce\n4. Search CampaignMember → update Status or create\n\n**DB / TABLES:** Google Sheet `1rShm0qyQFdtqf8b6FEpR6F3pFOEvrdWtdrklsX3axGw` / Sheet1 (`Luma event slug` → `SF campaign ID`)\n**UPSTREAM:** LSC-02 | Main | Hourly Luma Guests → SF Campaign Members  \n**DOWNSTREAM:** none\n\n## Important logic\n- Returns `Skipped` when: invalid email or unsupported Luma status.\n- Returns `Not found` when no Contact/Lead exists yet (message also notes a campaign issue).\n- Returns `Campaign not found` when Contact/Lead exists but the slug is not in the sheet, the ID is invalid, or the campaign doesn't exist in SF.\n- Campaign must have member statuses **Registered = Approved** and **Registered = Pending**.\n- Email and IDs are validated in Ruby before being placed in SOQL.\n",
   "name": "LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign",
   "private": false,
-  "version": 3
+  "version": 4
 }
