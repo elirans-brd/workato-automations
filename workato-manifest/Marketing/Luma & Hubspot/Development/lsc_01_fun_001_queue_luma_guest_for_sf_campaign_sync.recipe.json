@@ -1,0 +1,255 @@
+{
+  "code": {
+    "as": "c1a00001",
+    "block": [
+      {
+        "block": [
+          {
+            "as": "c1a00002",
+            "comment": "marketing.luma_sf_campaign_queue: existing row for guest + event",
+            "description": "Select \u003cspan class=\"provider\"\u003erows\u003c/span\u003e using \u003cspan class=\"provider\"\u003ecustom SQL\u003c/span\u003e in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
+            "input": {
+              "output_schema": "[{\"name\": \"id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Id\"}]",
+              "parameters": {
+                "data": {},
+                "schema": "[{\"name\": \"luma_guest_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Luma guest id\", \"details\": {\"real_name\": \"luma_guest_id\"}}, {\"name\": \"luma_url_slug\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Luma url slug\", \"details\": {\"real_name\": \"luma_url_slug\"}}]"
+              },
+              "sql": "SELECT id FROM marketing.luma_sf_campaign_queue\nWHERE luma_guest_id = :luma_guest_id AND luma_url_slug = :luma_url_slug\nLIMIT 1"
+            },
+            "keyword": "action",
+            "name": "search_rows_sql",
+            "number": 2,
+            "provider": "postgresql",
+            "title": "Select rows using custom SQL",
+            "uuid": "21fa5db0-33b9-5023-8d98-49a990185b5a"
+          },
+          {
+            "block": [
+              {
+                "as": "c1a00004",
+                "comment": "re-queue row (status = Pending)",
+                "description": "Update \u003cspan class=\"provider\"\u003erows\u003c/span\u003e in \u003cspan class=\"provider\"\u003emarketing.luma_sf_campaign_queue\u003c/span\u003e table in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
+                "input": {
+                  "table": "marketing.luma_sf_campaign_queue",
+                  "where": "id = #{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c1a00002\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"id\"]}')}"
+                },
+                "keyword": "action",
+                "name": "update_rows",
+                "number": 4,
+                "provider": "postgresql",
+                "title": "Update rows in marketing.luma_sf_campaign_queue",
+                "toggleCfg": {
+                  "table": true
+                },
+                "uuid": "bd0b2632-2987-5382-961a-35342e2b808c"
+              },
+              {
+                "block": [
+                  {
+                    "as": "c1a00006",
+                    "comment": "insert queue row",
+                    "description": "Insert \u003cspan class=\"provider\"\u003erow\u003c/span\u003e in \u003cspan class=\"provider\"\u003emarketing.luma_sf_campaign_queue\u003c/span\u003e table in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
+                    "input": {
+                      "table": "marketing.luma_sf_campaign_queue"
+                    },
+                    "keyword": "action",
+                    "name": "insert_row",
+                    "number": 6,
+                    "provider": "postgresql",
+                    "title": "Insert row in marketing.luma_sf_campaign_queue",
+                    "toggleCfg": {
+                      "table": true
+                    },
+                    "uuid": "f7c185ee-0245-59b5-848f-758ae6a7c0d3"
+                  }
+                ],
+                "comment": "row doesn't exist",
+                "keyword": "else",
+                "number": 5,
+                "uuid": "8bf82cb5-cb12-5f11-a002-3b8467e697e4"
+              }
+            ],
+            "comment": "row exists",
+            "input": {
+              "conditions": [
+                {
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c1a00002\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"id\"]}')}",
+                  "operand": "present",
+                  "rhs": "",
+                  "uuid": "61800768-d6b7-436c-b53e-d7a066977d62"
+                }
+              ],
+              "operand": "and",
+              "type": "compound"
+            },
+            "keyword": "if",
+            "number": 3,
+            "uuid": "0c90df76-666d-52b2-9b71-ab4ac5d17e5e"
+          },
+          {
+            "as": "c1a00007",
+            "comment": "status = Success",
+            "description": null,
+            "input": {},
+            "keyword": "action",
+            "name": "return_result",
+            "number": 7,
+            "provider": "workato_recipe_function",
+            "title": null,
+            "uuid": "e0051e18-c130-50b5-87a5-42e10b1ace06"
+          }
+        ],
+        "keyword": "try",
+        "number": 1,
+        "uuid": "c691ad47-37de-5467-89ce-1b403a8da281"
+      },
+      {
+        "as": "c1a0c001",
+        "block": [
+          {
+            "as": "c1a00008",
+            "comment": "system error function",
+            "description": "Call \u003cspan class=\"provider\"\u003e[CM] Fun | System Error Handling\u003c/span\u003e (async)",
+            "dynamicPickListSelection": {
+              "flow_id": "[CM] Fun | System Error Handling"
+            },
+            "input": {
+              "flow_id": "69020589"
+            },
+            "keyword": "action",
+            "name": "call_recipe_async",
+            "number": 9,
+            "provider": "workato_recipe_function",
+            "title": null,
+            "uuid": "a124d67d-3006-5432-ab26-d97934a0c0a1"
+          },
+          {
+            "as": "c1a00009",
+            "comment": "status = Error",
+            "description": null,
+            "input": {},
+            "keyword": "action",
+            "name": "return_result",
+            "number": 10,
+            "provider": "workato_recipe_function",
+            "title": null,
+            "uuid": "1e03a750-c2d4-5c9f-8591-d89158085162"
+          }
+        ],
+        "input": {
+          "max_retry_count": "0",
+          "retry_interval": "2"
+        },
+        "keyword": "catch",
+        "number": 8,
+        "uuid": "3070097a-8cf6-5a2c-9cea-c6cc44e3e7af"
+      }
+    ],
+    "description": null,
+    "extended_input_schema": [
+      {
+        "label": "Result",
+        "name": "result",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Status",
+            "name": "status",
+            "optional": false,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Message",
+            "name": "message",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Queue ID",
+            "name": "queue_id",
+            "optional": true,
+            "type": "string"
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "extended_output_schema": [
+      {
+        "label": "Parameters",
+        "name": "parameters",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Luma guest ID",
+            "name": "luma_guest_id",
+            "optional": false,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Luma URL slug",
+            "name": "luma_url_slug",
+            "optional": false,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Luma event ID",
+            "name": "luma_event_id",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Email",
+            "name": "email",
+            "optional": false,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Approval status",
+            "name": "approval_status",
+            "optional": true,
+            "type": "string"
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "input": {
+      "parameters_schema_json": "[{\"name\": \"luma_guest_id\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Luma guest ID\"}, {\"name\": \"luma_url_slug\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Luma URL slug\"}, {\"name\": \"luma_event_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Luma event ID\"}, {\"name\": \"email\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Email\"}, {\"name\": \"approval_status\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Approval status\"}]",
+      "result_schema_json": "[{\"name\": \"status\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Status\"}, {\"name\": \"message\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Message\"}, {\"name\": \"queue_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Queue ID\"}]"
+    },
+    "keyword": "trigger",
+    "name": "execute",
+    "number": 0,
+    "provider": "workato_recipe_function",
+    "title": null,
+    "uuid": "1544bfa8-8ec4-554d-810e-b773cb55e57e"
+  },
+  "concurrency": 1,
+  "config": [
+    {
+      "account_id": null,
+      "keyword": "application",
+      "name": "workato_recipe_function",
+      "provider": "workato_recipe_function",
+      "skip_validation": false
+    },
+    {
+      "account_id": 19837231,
+      "keyword": "application",
+      "name": "postgresql",
+      "provider": "postgresql",
+      "skip_validation": false
+    }
+  ],
+  "description": "# LSC-01 | Fun 001 | Queue Luma Guest for SF Campaign Sync\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** Called async by `Webhook: Luma-to-HubSpot Guest Sync` (end of the not-ignored path)\n\n**PURPOSE:** Queue every Luma guest registration for the hourly Salesforce campaign sync.\n\n**FLOW:**\n1. Look up the row by `luma_guest_id` + `luma_url_slug` → PostgreSQL\n2. Exists → re-queue (Pending, attempts 0, `next_attempt_at` = now + 1h); else insert\n\n**DB / TABLES:** `marketing.luma_sf_campaign_queue` (read/write)\n**UPSTREAM:** Webhook: Luma-to-HubSpot Guest Sync  \n**DOWNSTREAM:** none\n\n## Important logic\n- One row per guest + event (unique key). A webhook retry or status change re-queues the same row.\n- First sync attempt 1h after the last webhook, so HubSpot → SF can create the Lead.\n- Fire-and-forget: calls System Error Handling itself on failure.\n",
+  "name": "LSC-01 | Fun 001 | Queue Luma Guest for SF Campaign Sync",
+  "private": false,
+  "version": 2
+}
