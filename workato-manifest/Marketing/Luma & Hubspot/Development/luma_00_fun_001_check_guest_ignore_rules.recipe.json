@@ -1,0 +1,602 @@
+{
+  "code": {
+    "as": "e0f00001",
+    "block": [
+      {
+        "block": [
+          {
+            "as": "7a50b7f3",
+            "comment": "marketing.ignore_list: email / domain / prefix / suffix",
+            "description": "Select \u003cspan class=\"provider\"\u003erows\u003c/span\u003e using \u003cspan class=\"provider\"\u003ecustom SQL\u003c/span\u003e in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
+            "extended_input_schema": [
+              {
+                "control_type": "form-schema-builder",
+                "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. \u003cb\u003eid\u003c/b\u003e\n                    Second, provide the actual parameter value. Parameter values can be static or datapills.\n                    Select the \u003cb\u003eclosest corresponding data type\u003c/b\u003e that your database is expecting for the bind variable\n                    ",
+                "label": "Parameters",
+                "name": "parameters",
+                "optional": true,
+                "override": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "extends_schema": true,
+                    "label": "Schema",
+                    "name": "schema",
+                    "type": "string"
+                  },
+                  {
+                    "label": "Data",
+                    "name": "data",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "real_name": "email"
+                        },
+                        "label": "email",
+                        "name": "email",
+                        "optional": true,
+                        "parent": [
+                          "parameters",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "real_name": "domain"
+                        },
+                        "label": "domain",
+                        "name": "domain",
+                        "optional": true,
+                        "parent": [
+                          "parameters",
+                          "data"
+                        ],
+                        "type": "string"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "sticky": true,
+                "type": "object"
+              }
+            ],
+            "extended_output_schema": [
+              {
+                "label": "Rows",
+                "name": "rows",
+                "of": "object",
+                "order_by_hint": false,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "details": {
+                      "column_name": "match_type",
+                      "data_type": "string",
+                      "primary_key": null
+                    },
+                    "hint": "string",
+                    "label": "match_type",
+                    "name": "match_type",
+                    "optional": true,
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "input": {
+              "output_schema": "[{\"control_type\":\"text\",\"label\":\"Match type\",\"optional\":true,\"type\":\"string\",\"name\":\"match_type\"}]",
+              "parameters": {
+                "data": {
+                  "domain": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"email\"]}').downcase.strip.split(\"@\").last",
+                  "email": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"email\"]}').downcase.strip"
+                },
+                "schema": "[{\"control_type\":\"text\",\"label\":\"email\",\"name\":\"email\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"email\"},\"parent\":[\"parameters\",\"data\"]},{\"name\":\"domain\",\"type\":\"string\",\"optional\":true,\"label\":\"domain\",\"details\":{\"real_name\":\"domain\"},\"control_type\":\"text\",\"parent\":[\"parameters\",\"data\"]}]"
+              },
+              "sql": "SELECT match_type\nFROM marketing.ignore_list\nWHERE\n     (match_type = 'email'  AND lower(value) = :email)\n  OR (match_type = 'domain' AND (lower(value) = :domain\n                                 OR :domain LIKE '%.' || lower(value)))\n  OR (match_type = 'prefix' AND :email LIKE lower(value) || '%')\n  OR (match_type = 'suffix' AND :domain LIKE '%' || lower(value))\nLIMIT 1\n"
+            },
+            "keyword": "action",
+            "name": "search_rows_sql",
+            "number": 2,
+            "provider": "postgresql",
+            "title": "Select rows using custom SQL",
+            "uuid": "a672b4c7-e936-548c-b708-6a39e96788a2",
+            "visible_config_fields": [
+              "sql",
+              "parameters",
+              "parameters.data.email",
+              "parameters.schema",
+              "parameters.data.domain",
+              "parameters.data",
+              "output_schema"
+            ]
+          },
+          {
+            "as": "d011246c",
+            "comment": "blocked_countries",
+            "description": "Search records in \u003cspan class=\"provider\"\u003eblocked_countries\u003c/span\u003e data table",
+            "dynamicPickListSelection": {
+              "filters.0.field_id": "status",
+              "table_id": "blocked_countries"
+            },
+            "extended_input_schema": [
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_74709fa1-294c-41f0-bc06-f879298df914",
+                "name": "74709fa1-294c-41f0-bc06-f879298df914",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_36fb0373-c7c3-4764-9bce-4a56436d4922",
+                "name": "36fb0373-c7c3-4764-9bce-4a56436d4922",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_b44d1c02-ef98-4ff2-b5a2-906d3b465c53",
+                "name": "b44d1c02-ef98-4ff2-b5a2-906d3b465c53",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "id",
+                "label": "$internal_value_11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+                "name": "11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "date_time",
+                "label": "$internal_value_a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+                "name": "a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "date_time",
+                "label": "$internal_value_61aae604-a95e-4519-9091-bb0bf754a67f",
+                "name": "61aae604-a95e-4519-9091-bb0bf754a67f",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              }
+            ],
+            "extended_output_schema": [
+              {
+                "label": "Records",
+                "name": "records",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Record ID",
+                    "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "country",
+                    "name": "74709fa1_294c_41f0_bc06_f879298df914",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "country_iso_code",
+                    "name": "36fb0373_c7c3_4764_9bce_4a56436d4922",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "status",
+                    "name": "b44d1c02_ef98_4ff2_b5a2_906d3b465c53",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Created at",
+                    "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1",
+                    "parse_output": "date_time_conversion",
+                    "render_input": "date_time_conversion",
+                    "type": "date_time"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Updated at",
+                    "name": "61aae604_a95e_4519_9091_bb0bf754a67f",
+                    "parse_output": "date_time_conversion",
+                    "render_input": "date_time_conversion",
+                    "type": "date_time"
+                  }
+                ],
+                "type": "array"
+              },
+              {
+                "control_type": "text",
+                "label": "Next Page Token",
+                "name": "continuation_token",
+                "type": "string"
+              }
+            ],
+            "input": {
+              "11fbe9a6-a16d-4d7e-86ea-afe42ec03005": "id",
+              "36fb0373-c7c3-4764-9bce-4a56436d4922": "string",
+              "61aae604-a95e-4519-9091-bb0bf754a67f": "date_time",
+              "74709fa1-294c-41f0-bc06-f879298df914": "string",
+              "a5612739-5401-4ae7-bd07-782c1a6fb2d1": "date_time",
+              "b44d1c02-ef98-4ff2-b5a2-906d3b465c53": "string",
+              "filters": [
+                {
+                  "field_id": "b44d1c02-ef98-4ff2-b5a2-906d3b465c53",
+                  "op_default": "eq",
+                  "value_default": "active"
+                }
+              ],
+              "limit": "100",
+              "order_direction": "asc",
+              "table_id": "156909"
+            },
+            "keyword": "action",
+            "name": "get_records",
+            "number": 3,
+            "provider": "workato_db_table",
+            "title": null,
+            "uuid": "d72fc7ec-d02f-5cbf-84d5-26adc0a785f3"
+          },
+          {
+            "as": "9175719c",
+            "comment": "blocked_countries",
+            "description": "Create \u003cspan class=\"provider\"\u003eblocked_countries\u003c/span\u003e list",
+            "extended_input_schema": [
+              {
+                "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                "label": "Items",
+                "name": "list_items",
+                "of": "object",
+                "optional": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Country",
+                    "name": "country",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Country iso code",
+                    "name": "country_iso_code",
+                    "optional": true,
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "extended_output_schema": [
+              {
+                "hint": "",
+                "label": "blocked_countries",
+                "name": "list_items",
+                "of": "object",
+                "optional": false,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Country",
+                    "name": "country",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Country iso code",
+                    "name": "country_iso_code",
+                    "optional": true,
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "input": {
+              "list_item_schema_json": "[{\"name\":\"country\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Country\"},{\"name\":\"country_iso_code\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Country iso code\"}]",
+              "list_items": {
+                "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"d011246c\",\"path\":[\"records\"]}')}",
+                "country": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"d011246c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"74709fa1_294c_41f0_bc06_f879298df914\"]}')}",
+                "country_iso_code": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"d011246c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"36fb0373_c7c3_4764_9bce_4a56436d4922\"]}')}"
+              },
+              "name": "blocked_countries"
+            },
+            "keyword": "action",
+            "name": "declare_list",
+            "number": 4,
+            "provider": "workato_variable",
+            "title": " Create blocked_countries list",
+            "uuid": "e95bd7ba-6003-5d6a-958e-7966b07cd594",
+            "visible_config_fields": [
+              "name",
+              "list_item_schema_json",
+              "list_items.country_iso_code",
+              "list_items.country"
+            ]
+          },
+          {
+            "as": "e0f00005",
+            "comment": "ignore decision (ignore list + blocked country)",
+            "description": "Execute \u003cspan class=\"provider\"\u003eruby\u003c/span\u003e code: \u003cspan class=\"provider\"\u003echeck_guest_ignore\u003c/span\u003e",
+            "input": {
+              "code": "clean = -\u003e(v) { (v.nil? || v.to_s.strip.empty?) ? nil : v }\nnorm  = -\u003e(v) { v.to_s.strip.downcase.gsub(/\\s+/, \" \") }\nparse = -\u003e(v) {\n  v = (parse_json(v) rescue nil) while v.is_a?(String) \u0026\u0026 !v.strip.empty?\n  v.is_a?(Array) ? v : []\n}\n\n# ===== COUNTRY: explicit input, else from Luma registration answers =====\nra = parse.(input[\"registration_answers\"])\nby_label   = -\u003e(label) { (hit = ra.find { |a| a[\"label\"] == label }) \u0026\u0026 hit[\"answer\"] }\nby_keyword = -\u003e(words) { (hit = ra.find { |a| l = a[\"label\"].to_s.downcase; words.any? { |w| l.include?(w) } }) \u0026\u0026 hit[\"answer\"] }\ncountry = clean.(input[\"country\"]) ||\n          clean.(by_label.(\"What country are you from?\")) ||\n          clean.(by_label.(\"Where are you from?\")) ||\n          clean.(by_label.(\"Country of residence\")) ||\n          clean.(by_keyword.([\"what country\", \"which country\", \"country\", \"where are you from\",\n                              \"where are you based\", \"based in\", \"residence\", \"nationality\"]))\ncountry = \"United Kingdom\" if country == \"United Kingdon\"\n\n# ===== BLOCKED COUNTRIES =====\ncountry_n = norm.(country)\nmatched_block = country_n.empty? ? nil : parse.(input[\"blocked_countries\"]).find { |b|\n  b.is_a?(Hash) \u0026\u0026\n    ((!norm.(b[\"country\"]).empty? \u0026\u0026 norm.(b[\"country\"]) == country_n) ||\n     (!norm.(b[\"country_iso_code\"]).empty? \u0026\u0026 norm.(b[\"country_iso_code\"]) == country_n))\n}\ncountry_blocked = !matched_block.nil?\n\n# ===== IGNORE LIST (Postgres marketing.ignore_list) =====\nemail  = input[\"email\"].to_s.strip.downcase\ndomain = email.include?(\"@\") ? email.split(\"@\").last : \"\"\npg_match = input[\"pg_match_count\"].to_i \u003e 0\n\nreasons = []\nreasons \u003c\u003c (clean.(input[\"pg_match_type\"]) || \"email_match\") if pg_match\nreasons \u003c\u003c \"blocked_country: #{country}\" if country_blocked\n\n{\n  email: email, email_domain: domain, country: country,\n  pg_match_type: pg_match ? (clean.(input[\"pg_match_type\"]) || \"email_match\") : nil,\n  country_blocked: country_blocked,\n  blocked_country_iso: country_blocked ? matched_block[\"country_iso_code\"] : nil,\n  should_ignore: !reasons.empty?,\n  ignore_reason: reasons.empty? ? nil : reasons.join(\" | \")\n}\n",
+              "code_input": {
+                "data": {},
+                "schema": "[{\"name\": \"email\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Email\", \"parent\": [\"code_input\", \"data\"]}, {\"name\": \"country\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Country\", \"parent\": [\"code_input\", \"data\"]}, {\"name\": \"registration_answers\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Registration answers\", \"parent\": [\"code_input\", \"data\"]}, {\"name\": \"pg_match_count\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Pg match count\", \"parent\": [\"code_input\", \"data\"]}, {\"name\": \"pg_match_type\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Pg match type\", \"parent\": [\"code_input\", \"data\"]}, {\"name\": \"blocked_countries\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Blocked countries\", \"parent\": [\"code_input\", \"data\"]}]"
+              },
+              "code_output_schema_json": "[{\"name\": \"email\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Email\"}, {\"name\": \"email_domain\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Email domain\"}, {\"name\": \"country\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Country\"}, {\"name\": \"pg_match_type\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Pg match type\"}, {\"name\": \"country_blocked\", \"type\": \"boolean\", \"optional\": true, \"control_type\": \"checkbox\", \"label\": \"Country blocked\"}, {\"name\": \"blocked_country_iso\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Blocked country iso\"}, {\"name\": \"should_ignore\", \"type\": \"boolean\", \"optional\": true, \"control_type\": \"checkbox\", \"label\": \"Should ignore\"}, {\"name\": \"ignore_reason\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Ignore reason\"}]",
+              "name": "check_guest_ignore",
+              "payload_asset_type": "inline"
+            },
+            "keyword": "action",
+            "name": "invoke_custom_ruby_code",
+            "number": 5,
+            "provider": "workato_custom_code",
+            "title": null,
+            "uuid": "a2bef612-58ab-5e1b-adc4-b186e4e263c1"
+          },
+          {
+            "as": "e0f00006",
+            "comment": "status = Success",
+            "description": null,
+            "input": {},
+            "keyword": "action",
+            "name": "return_result",
+            "number": 6,
+            "provider": "workato_recipe_function",
+            "title": null,
+            "uuid": "c7e3b7e2-be45-5489-bc64-7da70a7e3854"
+          }
+        ],
+        "keyword": "try",
+        "number": 1,
+        "uuid": "c691ad47-37de-5467-89ce-1b403a8da281"
+      },
+      {
+        "as": "e0f0c001",
+        "block": [
+          {
+            "as": "e0f00007",
+            "comment": "status = Error",
+            "description": null,
+            "input": {},
+            "keyword": "action",
+            "name": "return_result",
+            "number": 8,
+            "provider": "workato_recipe_function",
+            "title": null,
+            "uuid": "4dc07e97-9295-5c10-be1f-42b49cd21c7f"
+          }
+        ],
+        "input": {
+          "max_retry_count": "0",
+          "retry_interval": "2"
+        },
+        "keyword": "catch",
+        "number": 7,
+        "uuid": "f3c64c5e-4276-5b0b-a47d-00ba5581cd72"
+      }
+    ],
+    "description": null,
+    "extended_input_schema": [
+      {
+        "label": "Result",
+        "name": "result",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Status",
+            "name": "status",
+            "optional": false,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Message",
+            "name": "message",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Email",
+            "name": "email",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Email domain",
+            "name": "email_domain",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Country",
+            "name": "country",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Pg match type",
+            "name": "pg_match_type",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "checkbox",
+            "label": "Country blocked",
+            "name": "country_blocked",
+            "optional": true,
+            "type": "boolean"
+          },
+          {
+            "control_type": "text",
+            "label": "Blocked country iso",
+            "name": "blocked_country_iso",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "checkbox",
+            "label": "Should ignore",
+            "name": "should_ignore",
+            "optional": true,
+            "type": "boolean"
+          },
+          {
+            "control_type": "text",
+            "label": "Ignore reason",
+            "name": "ignore_reason",
+            "optional": true,
+            "type": "string"
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "extended_output_schema": [
+      {
+        "label": "Parameters",
+        "name": "parameters",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Email",
+            "name": "email",
+            "optional": false,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Country",
+            "name": "country",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Registration answers (JSON)",
+            "name": "registration_answers",
+            "optional": true,
+            "type": "string"
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "input": {
+      "parameters_schema_json": "[{\"name\": \"email\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Email\"}, {\"name\": \"country\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Country\"}, {\"name\": \"registration_answers\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Registration answers (JSON)\"}]",
+      "result_schema_json": "[{\"name\": \"status\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Status\"}, {\"name\": \"message\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Message\"}, {\"name\": \"email\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Email\"}, {\"name\": \"email_domain\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Email domain\"}, {\"name\": \"country\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Country\"}, {\"name\": \"pg_match_type\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Pg match type\"}, {\"name\": \"country_blocked\", \"type\": \"boolean\", \"optional\": true, \"control_type\": \"checkbox\", \"label\": \"Country blocked\"}, {\"name\": \"blocked_country_iso\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Blocked country iso\"}, {\"name\": \"should_ignore\", \"type\": \"boolean\", \"optional\": true, \"control_type\": \"checkbox\", \"label\": \"Should ignore\"}, {\"name\": \"ignore_reason\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Ignore reason\"}]"
+    },
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"email\"]}')}",
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"e0f00005\",\"path\":[\"output\",\"country\"]}')}",
+      "custom_column_2": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"e0f00005\",\"path\":[\"output\",\"should_ignore\"]}').is_true? ? \"Yes\" : \"No\"",
+      "custom_column_3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"e0f00005\",\"path\":[\"output\",\"ignore_reason\"]}')}",
+      "custom_column_4": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"e0f0c001\",\"path\":[\"message\"]}').present? ? \"Error\" : \"Success\"",
+      "custom_column_5": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"e0f0c001\",\"path\":[\"message\"]}').presence"
+    },
+    "job_report_schema": [
+      {
+        "label": "Email",
+        "name": "custom_column_0"
+      },
+      {
+        "label": "Country",
+        "name": "custom_column_1"
+      },
+      {
+        "label": "Should Ignore",
+        "name": "custom_column_2"
+      },
+      {
+        "label": "Ignore Reason",
+        "name": "custom_column_3"
+      },
+      {
+        "label": "Status",
+        "name": "custom_column_4"
+      },
+      {
+        "label": "Message",
+        "name": "custom_column_5"
+      }
+    ],
+    "keyword": "trigger",
+    "name": "execute",
+    "number": 0,
+    "provider": "workato_recipe_function",
+    "title": null,
+    "uuid": "94cdad1e-a403-5c08-a784-9d8a14a8c83c"
+  },
+  "concurrency": 1,
+  "config": [
+    {
+      "account_id": null,
+      "keyword": "application",
+      "name": "workato_recipe_function",
+      "provider": "workato_recipe_function",
+      "skip_validation": false
+    },
+    {
+      "account_id": 19837231,
+      "keyword": "application",
+      "name": "postgresql",
+      "provider": "postgresql",
+      "skip_validation": false
+    },
+    {
+      "account_id": null,
+      "keyword": "application",
+      "name": "workato_db_table",
+      "provider": "workato_db_table",
+      "skip_validation": false
+    },
+    {
+      "account_id": null,
+      "keyword": "application",
+      "name": "workato_variable",
+      "provider": "workato_variable",
+      "skip_validation": false
+    },
+    {
+      "account_id": null,
+      "keyword": "application",
+      "name": "workato_custom_code",
+      "provider": "workato_custom_code",
+      "skip_validation": false
+    }
+  ],
+  "description": "# LUMA-00 | Fun 001 | Check Guest Ignore Rules\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** Called by `Webhook: Luma-to-HubSpot Guest Sync` (first step). Reusable by any Luma / event process.\n\n**PURPOSE:** Decide whether a guest must be ignored (ignore list or blocked country) before any processing.\n\n**FLOW:**\n1. Match email / domain against `marketing.ignore_list` → PostgreSQL\n2. Get active `blocked_countries` → Data table\n3. Ruby: country (input, else Luma registration answers) + ignore decision\n\n**DB / TABLES:** `marketing.ignore_list` (read), `blocked_countries` data table (read)\n**UPSTREAM:** Webhook: Luma-to-HubSpot Guest Sync  \n**DOWNSTREAM:** none\n\n## Important logic\n- `should_ignore` = ignore-list match OR blocked country. `ignore_reason` joins all reasons with ` | `.\n- `registration_answers`: pass a JSON string (array or already-encoded string both work).\n- Caller must stop when `status = Error` or `should_ignore = true`.\n",
+  "name": "LUMA-00 | Fun 001 | Check Guest Ignore Rules",
+  "private": false,
+  "version": 1
+}
