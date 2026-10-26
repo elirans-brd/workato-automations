@@ -2680,7 +2680,7 @@
                       "opportunity_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c051815a\",\"path\":[\"parameters\",\"opportunity_id\"]}')}",
                       "account_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c051815a\",\"path\":[\"parameters\",\"account_id\"]}')}",
                       "api_base": "https://apim.workato.com/brightdata/brightbot/",
-                      "api_token": "REDACTED_USE_WORKATO_PROPERTY"
+                      "api_token": "0403fe0a106a11e4702eba3621bcf2d0a80e4a67c09cf948601248aecb803280"
                     }
                   }
                 },

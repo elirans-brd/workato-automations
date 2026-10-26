@@ -1,0 +1,207 @@
+{
+  "name": "Migration: Luma-to-HubSpot Guest Sync",
+  "schema": [
+    {
+      "id": "11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+      "title": "Record ID",
+      "type": "short-text",
+      "read_only": true,
+      "hidden": true
+    },
+    {
+      "id": "a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+      "title": "Created time",
+      "type": "date-time",
+      "read_only": true,
+      "hidden": true
+    },
+    {
+      "id": "61aae604-a95e-4519-9091-bb0bf754a67f",
+      "title": "Last modified time",
+      "type": "date-time",
+      "read_only": true,
+      "hidden": true
+    },
+    {
+      "id": "dfdb72d6-bd77-40d7-a9ff-2b542240056f",
+      "title": "guest_id",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "e6e245d5-8554-4a14-91d9-6d434141283c",
+      "title": "first_name",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "7835f110-c159-465c-8d61-60681977399e",
+      "title": "last_name",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "59225f03-865a-40ee-a702-eaed9afafd7e",
+      "title": "email",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "d28acdcd-b2a0-45c9-a531-60b3d774cd12",
+      "title": "phone_number",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "520d678f-1986-4fde-bcdc-9cd9a493ab8c",
+      "title": "linkedin_url",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "7e7feb19-2251-4974-bb48-aba82bddf302",
+      "title": "company_name",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "055eaf86-0514-4d90-8fc5-725d72541c28",
+      "title": "job_title",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "5ba5c429-3569-40d1-877e-3c9dd520ffa8",
+      "title": "event_name",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "6981e6b7-a4a2-4818-95a0-e8a1b337a782",
+      "title": "event_date",
+      "type": "date",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "3b11ebf3-c2b3-4c55-b9c7-0af461f4f8a1",
+      "title": "event_source",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "769b2827-3aee-4015-bb21-4bcbb04981a6",
+      "title": "approval_status",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "a1e26649-eb92-46de-8a3e-e1d01a7c9bab",
+      "title": "luma_url_slug",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "7dd3a2b6-144b-42b1-853a-a968d80c9994",
+      "title": "url",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "bb54ccd6-89a9-4102-b4f6-7a9ec45e49fc",
+      "title": "check_in_at",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "4b7ef3dd-3724-46f5-a2e3-8124793042fe",
+      "title": "country",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "4be7923b-2a3f-4d8f-868a-f685393dc9a5",
+      "title": "status",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "758206e2-3a08-4094-93e9-5505ffe9514a",
+      "title": "message",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    }
+  ],
+  "project_name": "Marketing"
+}

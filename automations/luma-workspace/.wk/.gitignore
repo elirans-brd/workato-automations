@@ -1,4 +1,0 @@
-# wk CLI — tool-managed directory. Contents are machine-local state
-# (project config, sidecar metadata, folder-ID cache). Do not commit.
-*
-!.gitignore

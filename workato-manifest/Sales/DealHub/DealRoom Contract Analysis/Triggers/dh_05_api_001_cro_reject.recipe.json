@@ -1,7 +1,7 @@
 {
   "name": "DH-05 | API 001 | CRO Reject",
   "description": "",
-  "version": 21,
+  "version": 22,
   "private": true,
   "concurrency": 1,
   "code": {
@@ -812,7 +812,7 @@
                     "data": {
                       "contract_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"9426abf6\",\"path\":[\"request\",\"contract_id\"]}')}",
                       "cro_token": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"cro_token\"]}')}",
-                      "token": "REDACTED_USE_WORKATO_PROPERTY",
+                      "token": "0403fe0a106a11e4702eba3621bcf2d0a80e4a67c09cf948601248aecb803280",
                       "t": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"9426abf6\",\"path\":[\"request\",\"t\"]}')}",
                       "status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"status\"]}')}"
                     }
@@ -1121,6 +1121,35 @@
         "uuid": "b30a8d69-8a24-45bb-80af-3deca516bcc9"
       }
     ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_0",
+        "label": "Contract Id"
+      },
+      {
+        "name": "custom_column_1",
+        "label": "Customer Name"
+      },
+      {
+        "name": "custom_column_2",
+        "label": "Qutoe Number"
+      },
+      {
+        "name": "custom_column_3",
+        "label": "Status"
+      },
+      {
+        "name": "custom_column_4",
+        "label": "Message"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"9426abf6\",\"path\":[\"request\",\"contract_id\"]}')}",
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"customer_name\"]}')}",
+      "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"dealhub_quote_number\"]}')}",
+      "custom_column_3": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"f38a64b7\",\"path\":[\"response\",\"body\"]}').present? ? 'Success' : 'Error'",
+      "custom_column_4": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1ba93c57\",\"path\":[\"message\"]}')}"
+    },
     "uuid": "05ae9e2c-5839-49df-bcbe-cc5296116622"
   },
   "config": [

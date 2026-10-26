@@ -1,7 +1,7 @@
 {
   "name": "DH-05 | Fun 003 | CRO Reject",
   "description": "# DH-06 | Fun 004 | CRO Reject Deal\n\n**📋 Ticket:** [DH - DealRoom contract analysis](https://brightdata-group.monday.com/boards/8667788707/views/224418520/pulses/12251055162)\n**🔗 Board:** brightdata-group.monday.com/boards/8667788707\n\n---\n\n**TRIGGER:** Workbot command `brightmind reject deal` (Reject button) — prompts CRO for a reason\n\n**PURPOSE:** Processes CRO rejection — records the reason, notifies the salesperson + Deal Desk.\n\n**FLOW:**\n1. Select registry (status guard)\n2. IF already APPROVED/REJECTED → ephemeral notice + stop\n3. Rebuild CRO message without buttons (actions block → REJECTED status)\n4. Update registry → status=REJECTED, reject_reason\n5. DM the salesperson (submitted_by) — reason + next steps + SFDC links\n6. Post to `#dealdesk-contract-approval` (`@channel`) — rejected + reason\n7. Post confirmation reply to the CRO\n\n**DB:** `dealhub.contract_registry`\n",
-  "version": 33,
+  "version": 34,
   "private": true,
   "concurrency": 1,
   "code": {
@@ -1291,7 +1291,7 @@
                         "as": "1b0f593d",
                         "keyword": "action",
                         "input": {
-                          "email": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"dh_cro_user\"}')}"
+                          "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"832c5fc9\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"submitted_by\"]}')}"
                         },
                         "visible_config_fields": [
                           "email"

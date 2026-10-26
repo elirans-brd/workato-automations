@@ -1,7 +1,7 @@
 {
-  "name": "DH-05 | API 001 | CRO Reject-Submit",
+  "name": "DH-05 | API 001 | CRO Approve",
   "description": "",
-  "version": 10,
+  "version": 19,
   "private": true,
   "concurrency": 1,
   "code": {
@@ -14,7 +14,7 @@
       "response.content_type": "Text/XML",
       "request.content_type": "JSON",
       "response.responses.0.http_status_code": "200 - OK",
-      "response.responses.1.http_status_code": "200 - OK"
+      "response.responses.1.http_status_code": "400 - Bad Request"
     },
     "toggleCfg": {
       "response.responses.0.http_status_code": true,
@@ -24,18 +24,18 @@
       "request": {
         "content_type": "json",
         "path_params": "[]",
-        "schema": "[{\"name\":\"contract_id\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Contract ID\"},{\"name\":\"reject_reason\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Reject reason\"},{\"name\":\"t\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"T\"}]"
+        "schema": "[{\"name\":\"contract_id\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Contract ID\"},{\"name\":\"t\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"T\"}]"
       },
       "response": {
         "content_type": "raw",
         "responses": [
           {
-            "name": "success",
+            "name": "OK",
             "http_status_code": "200"
           },
           {
-            "name": "body",
-            "http_status_code": "200"
+            "name": "Bad Request",
+            "http_status_code": "400"
           }
         ],
         "headers": "[{\"name\":\"Content-Type\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Content- type\"}]"
@@ -241,13 +241,6 @@
           },
           {
             "control_type": "text",
-            "label": "Reject reason",
-            "name": "reject_reason",
-            "type": "string",
-            "optional": true
-          },
-          {
-            "control_type": "text",
             "label": "T",
             "name": "t",
             "type": "string",
@@ -268,7 +261,7 @@
             "number": 2,
             "provider": "postgresql",
             "name": "search_rows",
-            "as": "7a64d633",
+            "as": "ff25c68f",
             "keyword": "action",
             "dynamicPickListSelection": {
               "table": "dealhub.contract_registry",
@@ -820,7 +813,7 @@
               "output_columns"
             ],
             "comment": "dealhub.contract_registry table",
-            "uuid": "5b10d605-1dfa-49cc-b1a8-162f70dfcaa2"
+            "uuid": "f4f62cba-ba50-4fcf-8e4a-dbae3f3a913a"
           },
           {
             "number": 3,
@@ -831,9 +824,9 @@
               "conditions": [
                 {
                   "operand": "present",
-                  "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"contract_id\"]}')",
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"ff25c68f\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"contract_id\"]}')}",
                   "rhs": "",
-                  "uuid": "a91693d0-739c-4edc-bffb-c3825f5754ec"
+                  "uuid": "1f206443-5b60-485d-8242-4750f01df9aa"
                 }
               ]
             },
@@ -842,25 +835,24 @@
                 "number": 4,
                 "provider": "workato_custom_code",
                 "name": "invoke_custom_ruby_code",
-                "as": "b07533f8",
+                "as": "385cb97c",
                 "keyword": "action",
                 "input": {
                   "payload_asset_type": "inline",
-                  "code": "contract_id  = input['contract_id'].to_s\ncontract_id  = 'UNKNOWN' if contract_id.empty?\nt            = input['t'].to_s\nstored_token = input['cro_token'].to_s\nstatus       = input['status'].to_s.upcase\nreason       = input['reject_reason'].to_s\nreason       = 'No reason provided' if reason.strip.empty?\ncustomer     = input['customer_name'].to_s\nsubmitted_by = input['submitted_by'].to_s\n\nesc = lambda { |s| s.to_s.gsub('&','&amp;').gsub('<','&lt;').gsub('>','&gt;') }\n\ntoken_ok = !t.empty? && !stored_token.empty? && t == stored_token\ndecided  = %w[APPROVED REJECTED].include?(status)\nproceed  = token_ok && !decided\n\nbrand_head = %(<div style=\"background:#0B0F3B;padding:22px 28px;text-align:center;\">\n  <span style=\"color:#ffffff;font-size:18px;font-weight:800;letter-spacing:.3px;\">bright<span style=\"color:#4F7BFF;\">data</span></span>\n  <div style=\"color:#9aa0c7;font-size:12px;margin-top:2px;\">BrightMind · Deal Sign-off</div>\n</div>)\nbrand_foot = %(<div style=\"background:#f5f6fa;padding:16px 28px;border-top:1px solid #e6e8f0;text-align:center;\">\n  <div style=\"font-size:12px;color:#8a8fb0;\">&#129302; BrightMind · Bright Data · #{esc.call(contract_id)}</div>\n</div>)\n\nif !token_ok\n  page = %(<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>\n  <body style=\"font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f5f6fa;margin:0;padding:48px 16px;\">\n    <div style=\"max-width:520px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 24px rgba(11,15,59,0.10);\">\n      #{brand_head}\n      <div style=\"padding:40px 32px;text-align:center;\">\n        <div style=\"font-size:48px;\">&#9888;&#65039;</div>\n        <h1 style=\"color:#0B0F3B;font-size:22px;margin:16px 0 8px;\">Invalid Link</h1>\n        <p style=\"color:#5b6079;font-size:15px;\">This link isn't valid for this contract. Please contact Deal Desk.</p>\n      </div>\n      #{brand_foot}\n    </div>\n  </body></html>)\nelsif decided\n  page = %(<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>\n  <body style=\"font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f5f6fa;margin:0;padding:48px 16px;\">\n    <div style=\"max-width:520px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 24px rgba(11,15,59,0.10);\">\n      #{brand_head}\n      <div style=\"padding:40px 32px;text-align:center;\">\n        <div style=\"font-size:48px;\">&#8505;&#65039;</div>\n        <h1 style=\"color:#0B0F3B;font-size:22px;margin:16px 0 8px;\">Already Processed</h1>\n        <p style=\"color:#5b6079;font-size:15px;\">This deal was already <b>#{esc.call(status)}</b>. No further action is needed.</p>\n      </div>\n      #{brand_foot}\n    </div>\n  </body></html>)\nelse\n  cust_line = customer.strip.empty? ? '' : \" &#183; #{esc.call(customer)}\"\n  sp_line   = submitted_by.strip.empty? ? 'Salesperson notified' : \"Salesperson (#{esc.call(submitted_by)}) notified\"\n  page = %(<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>\n  <body style=\"font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f5f6fa;margin:0;padding:48px 16px;\">\n    <div style=\"max-width:560px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 24px rgba(11,15,59,0.10);\">\n      #{brand_head}\n      <div style=\"padding:36px 32px;\">\n        <div style=\"font-size:48px;text-align:center;\">&#10060;</div>\n        <h1 style=\"color:#0B0F3B;font-size:22px;text-align:center;margin:14px 0 4px;\">Deal Rejected</h1>\n        <p style=\"color:#5b6079;font-size:14px;text-align:center;margin:0 0 22px;\">Contract <b style=\"color:#0B0F3B;\">#{esc.call(contract_id)}</b>#{cust_line}</p>\n\n        <div style=\"background:#fef2f4;border:1px solid #f5c2cd;border-radius:10px;padding:16px;margin-bottom:20px;\">\n          <div style=\"font-size:13px;color:#8a8fb0;font-weight:600;margin-bottom:6px;\">Reason for rejection</div>\n          <div style=\"font-size:14px;color:#0B0F3B;line-height:1.5;\">#{esc.call(reason)}</div>\n        </div>\n\n        <div style=\"font-size:14px;color:#0B0F3B;line-height:1.9;\">\n          &#9989; #{sp_line}<br>\n          &#9989; Deal Desk notified<br>\n          &#9989; Registry updated &rarr; REJECTED\n        </div>\n        <p style=\"color:#8a8fb0;font-size:12px;text-align:center;margin-top:24px;\">You can close this tab.</p>\n      </div>\n      #{brand_foot}\n    </div>\n  </body></html>)\nend\n\n{ 'html_page' => page, 'proceed' => proceed, 'reject_reason' => reason }\n",
+                  "code": "contract_id   = input['contract_id'].to_s\ncontract_id   = 'UNKNOWN' if contract_id.strip.empty?\nt             = input['t'].to_s\nstored_token  = input['cro_token'].to_s\nstatus        = input['status'].to_s.upcase\ncustomer      = input['customer_name'].to_s\ndrive_file_id = input['drive_file_id'].to_s.strip\n\nesc = lambda { |s| s.to_s.gsub('&','&amp;').gsub('<','&lt;').gsub('>','&gt;').gsub('\"','&quot;') }\n\ntoken_ok = !t.empty? && !stored_token.empty? && t == stored_token\ndecided  = %w[APPROVED REJECTED].include?(status)\nproceed  = token_ok && !decided\n\nbrand_head = %(<div style=\"background:#0B0F3B;padding:22px 28px;text-align:center;\">\n  <span style=\"color:#ffffff;font-size:18px;font-weight:800;letter-spacing:.3px;\">bright<span style=\"color:#4F7BFF;\">data</span></span>\n  <div style=\"color:#9aa0c7;font-size:12px;margin-top:2px;\">BrightMind · Deal Sign-off</div>\n</div>)\nbrand_foot = %(<div style=\"background:#f5f6fa;padding:16px 28px;border-top:1px solid #e6e8f0;text-align:center;\">\n  <div style=\"font-size:12px;color:#8a8fb0;\">&#129302; BrightMind · Bright Data · #{esc.call(contract_id)}</div>\n</div>)\n\n# ---------- ALWAYS built: \"Something went wrong\" page ----------\nerror_page = %(<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>Something went wrong</title></head>\n<body style=\"font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f5f6fa;margin:0;padding:48px 16px;\">\n  <div style=\"max-width:520px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 24px rgba(11,15,59,0.10);\">\n    #{brand_head}\n    <div style=\"padding:40px 32px;text-align:center;\">\n      <div style=\"font-size:48px;\">&#10071;</div>\n      <h1 style=\"color:#0B0F3B;font-size:22px;margin:16px 0 8px;\">Something went wrong</h1>\n      <p style=\"color:#5b6079;font-size:15px;line-height:1.5;margin:0 0 6px;\">\n        We couldn't process your request for contract <b style=\"color:#0B0F3B;\">#{esc.call(contract_id)}</b>.\n      </p>\n      <p style=\"color:#5b6079;font-size:15px;line-height:1.5;margin:0;\">\n        Please talk with the <b style=\"color:#0B0F3B;\">Automation team</b> and share the contract ID above.\n      </p>\n    </div>\n    #{brand_foot}\n  </div>\n</body></html>)\n\nif !token_ok\n  page = %(<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>\n  <body style=\"font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f5f6fa;margin:0;padding:48px 16px;\">\n    <div style=\"max-width:520px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 24px rgba(11,15,59,0.10);\">\n      #{brand_head}\n      <div style=\"padding:40px 32px;text-align:center;\">\n        <div style=\"font-size:48px;\">&#9888;&#65039;</div>\n        <h1 style=\"color:#0B0F3B;font-size:22px;margin:16px 0 8px;\">Invalid Link</h1>\n        <p style=\"color:#5b6079;font-size:15px;\">This link isn't valid for this contract. Please contact Deal Desk.</p>\n      </div>\n      #{brand_foot}\n    </div>\n  </body></html>)\nelsif decided\n  page = %(<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>\n  <body style=\"font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f5f6fa;margin:0;padding:48px 16px;\">\n    <div style=\"max-width:520px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 24px rgba(11,15,59,0.10);\">\n      #{brand_head}\n      <div style=\"padding:40px 32px;text-align:center;\">\n        <div style=\"font-size:48px;\">&#8505;&#65039;</div>\n        <h1 style=\"color:#0B0F3B;font-size:22px;margin:16px 0 8px;\">Already Processed</h1>\n        <p style=\"color:#5b6079;font-size:15px;\">This deal was already <b>#{esc.call(status)}</b>. No further action is needed.</p>\n      </div>\n      #{brand_foot}\n    </div>\n  </body></html>)\nelse\n  cust_line   = customer.strip.empty? ? '' : \" &#183; #{esc.call(customer)}\"\n  locked_link = drive_file_id.empty? ? '' : \"https://drive.google.com/file/d/#{esc.call(drive_file_id)}/view\"\n  btn = locked_link.empty? ? '' : %(<div style=\"text-align:center;\"><a href=\"#{locked_link}\" style=\"display:inline-block;margin-top:22px;background:#2eb67d;color:#fff;font-size:14px;font-weight:700;padding:12px 28px;border-radius:10px;text-decoration:none;\">View Approved Contract</a></div>)\n\n  page = %(<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>\n  <body style=\"font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f5f6fa;margin:0;padding:48px 16px;\">\n    <div style=\"max-width:560px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 24px rgba(11,15,59,0.10);\">\n      #{brand_head}\n      <div style=\"padding:36px 32px;\">\n        <div style=\"font-size:48px;text-align:center;\">&#9989;</div>\n        <h1 style=\"color:#0B0F3B;font-size:22px;text-align:center;margin:14px 0 4px;\">Deal Approved</h1>\n        <p style=\"color:#5b6079;font-size:14px;text-align:center;margin:0 0 22px;\">Contract <b style=\"color:#0B0F3B;\">#{esc.call(contract_id)}</b>#{cust_line}</p>\n\n        <div style=\"background:#edf8f3;border:1px solid #bfe6d4;border-radius:10px;padding:16px;margin-bottom:20px;\">\n          <div style=\"font-size:14px;color:#0B0F3B;line-height:1.9;\">\n            &#128274; Contract file locked<br>\n            &#9989; Deal Desk notified<br>\n            &#9989; Registry updated &rarr; APPROVED\n          </div>\n        </div>\n        #{btn}\n        <p style=\"color:#8a8fb0;font-size:12px;text-align:center;margin-top:24px;\">You can close this tab.</p>\n      </div>\n      #{brand_foot}\n    </div>\n  </body></html>)\nend\n\n{ 'html_page' => page, 'error_page' => error_page, 'proceed' => proceed }\n",
                   "name": "The validation + confirmation Ruby",
                   "code_input": {
-                    "schema": "[{\"control_type\":\"text\",\"label\":\"contract_id\",\"name\":\"contract_id\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"t\",\"name\":\"t\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text-area\",\"label\":\"reject_reason\",\"name\":\"reject_reason\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"cro_token\",\"name\":\"cro_token\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"status\",\"name\":\"status\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"customer_name\",\"name\":\"customer_name\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"submitted_by\",\"name\":\"submitted_by\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]}]",
+                    "schema": "[{\"control_type\":\"text\",\"label\":\"contract_id\",\"name\":\"contract_id\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"t\",\"name\":\"t\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"cro_token\",\"name\":\"cro_token\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"status\",\"name\":\"status\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"customer_name\",\"name\":\"customer_name\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"drive_file_id\",\"name\":\"drive_file_id\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]}]",
                     "data": {
                       "contract_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"9426abf6\",\"path\":[\"request\",\"contract_id\"]}')}",
                       "t": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"9426abf6\",\"path\":[\"request\",\"t\"]}')}",
-                      "reject_reason": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"9426abf6\",\"path\":[\"request\",\"reject_reason\"]}')}",
-                      "cro_token": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"cro_token\"]}')}",
-                      "status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"status\"]}')}",
-                      "customer_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"customer_name\"]}')}",
-                      "submitted_by": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"submitted_by\"]}')}"
+                      "cro_token": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"ff25c68f\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"cro_token\"]}')}",
+                      "status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"ff25c68f\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"status\"]}')}",
+                      "customer_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"ff25c68f\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"customer_name\"]}')}",
+                      "drive_file_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"ff25c68f\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"drive_file_id\"]}')}"
                     }
                   },
-                  "code_output_schema_json": "[{\"control_type\":\"text-area\",\"label\":\"html_page\",\"name\":\"html_page\",\"type\":\"string\",\"optional\":true},{\"control_type\":\"checkbox\",\"label\":\"proceed\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"proceed\",\"type\":\"boolean\",\"optional\":true,\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"proceed\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"name\":\"proceed\",\"type\":\"boolean\",\"optional\":true}},{\"control_type\":\"text-area\",\"label\":\"reject_reason\",\"name\":\"reject_reason\",\"type\":\"string\",\"optional\":true}]"
+                  "code_output_schema_json": "[{\"control_type\":\"text-area\",\"label\":\"html_page\",\"name\":\"html_page\",\"type\":\"string\",\"optional\":true},{\"control_type\":\"text-area\",\"label\":\"error_page\",\"name\":\"error_page\",\"type\":\"string\",\"optional\":true},{\"control_type\":\"checkbox\",\"label\":\"proceed\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"proceed\",\"type\":\"boolean\",\"optional\":true,\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"proceed\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"name\":\"proceed\",\"type\":\"boolean\",\"optional\":true}}]"
                 },
                 "extended_output_schema": [
                   {
@@ -871,6 +863,13 @@
                         "control_type": "text-area",
                         "label": "html_page",
                         "name": "html_page",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text-area",
+                        "label": "error_page",
+                        "name": "error_page",
                         "type": "string",
                         "optional": true
                       },
@@ -891,13 +890,6 @@
                           "type": "boolean",
                           "optional": true
                         }
-                      },
-                      {
-                        "control_type": "text-area",
-                        "label": "reject_reason",
-                        "name": "reject_reason",
-                        "type": "string",
-                        "optional": true
                       }
                     ],
                     "type": "object"
@@ -943,17 +935,6 @@
                             ]
                           },
                           {
-                            "control_type": "text-area",
-                            "label": "reject_reason",
-                            "name": "reject_reason",
-                            "type": "string",
-                            "optional": true,
-                            "parent": [
-                              "code_input",
-                              "data"
-                            ]
-                          },
-                          {
                             "control_type": "text",
                             "label": "cro_token",
                             "name": "cro_token",
@@ -988,8 +969,8 @@
                           },
                           {
                             "control_type": "text",
-                            "label": "submitted_by",
-                            "name": "submitted_by",
+                            "label": "drive_file_id",
+                            "name": "drive_file_id",
                             "type": "string",
                             "optional": true,
                             "parent": [
@@ -1021,23 +1002,24 @@
                   "code_input.data.cro_token",
                   "code_input.data.status",
                   "code_input.data.customer_name",
-                  "code_input.data.submitted_by"
+                  "code_input.data.submitted_by",
+                  "code_input.data",
+                  "code_input.data.drive_file_id"
                 ],
                 "comment": "The validation + confirmation Ruby",
-                "uuid": "916fa1e6-80fe-4fbe-9fe1-b642b67fe0dd"
+                "uuid": "ce8392d6-45b1-4dfe-a445-dc360adf6991"
               },
               {
                 "number": 5,
                 "keyword": "if",
                 "input": {
                   "type": "compound",
-                  "operand": "and",
+                  "operand": "or",
                   "conditions": [
                     {
                       "operand": "is_true",
-                      "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"b07533f8\",\"path\":[\"output\",\"proceed\"]}')}",
-                      "rhs": "",
-                      "uuid": "f04aaf3b-33c3-41ab-a3e3-92812bc1a294"
+                      "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"385cb97c\",\"path\":[\"output\",\"proceed\"]}')}",
+                      "uuid": "984b2862-5b26-44f0-bfd1-7fd969fa4e16"
                     }
                   ]
                 },
@@ -1046,7 +1028,7 @@
                     "number": 6,
                     "provider": "slack_bot",
                     "name": "get_user_by_email",
-                    "as": "086150ba",
+                    "as": "a739306c",
                     "keyword": "action",
                     "input": {
                       "email": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"dh_cro_user\"}')}"
@@ -1057,796 +1039,20 @@
                     "hidden_config_fields": [
                       "id"
                     ],
-                    "comment": "cro details",
-                    "uuid": "c7e80277-bb80-4ea7-8df5-75af777f0975",
-                    "skip": false
+                    "uuid": "6f49e6d2-298f-4d2f-ada2-92bd3aea4ba0"
                   },
                   {
                     "number": 7,
-                    "provider": "postgresql",
-                    "name": "update_rows",
-                    "as": "3583e4c0",
-                    "keyword": "action",
-                    "dynamicPickListSelection": {
-                      "table": "dealhub.contract_registry"
-                    },
-                    "toggleCfg": {
-                      "table": true
-                    },
-                    "input": {
-                      "where": "contract_id = '#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"contract_id\"]}')}'",
-                      "table": "dealhub.contract_registry",
-                      "columns": {
-                        "status": "REJECTED",
-                        "reject_reason": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"9426abf6\",\"path\":[\"request\",\"reject_reason\"]}')}",
-                        "cro_approved_by": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"dh_cro_user\"}')}",
-                        "cro_approved_at": "=_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_created_at\"]}')",
-                        "cro_token": "nil"
-                      }
-                    },
-                    "extended_input_schema": [
-                      {
-                        "label": "Columns",
-                        "name": "columns",
-                        "properties": [
-                          {
-                            "control_type": "text",
-                            "label": "account_id",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "account_id"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "account_id",
-                            "sticky": true
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "contract_id",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "contract_id"
-                            },
-                            "hint": "text",
-                            "optional": true,
-                            "type": "string",
-                            "name": "contract_id"
-                          },
-                          {
-                            "control_type": "date_time",
-                            "label": "created_at",
-                            "render_input": "convert_date_time",
-                            "parse_output": "convert_date_time",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "timestamp with time zone",
-                              "column_name": "created_at"
-                            },
-                            "optional": true,
-                            "hint": "timestamp with time zone",
-                            "type": "date_time",
-                            "name": "created_at"
-                          },
-                          {
-                            "control_type": "date_time",
-                            "label": "cro_approved_at",
-                            "render_input": "convert_date_time",
-                            "parse_output": "convert_date_time",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "timestamp with time zone",
-                              "column_name": "cro_approved_at"
-                            },
-                            "optional": true,
-                            "hint": "timestamp with time zone",
-                            "type": "date_time",
-                            "name": "cro_approved_at"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "cro_approved_by",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "cro_approved_by"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "cro_approved_by"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "cro_slack_channel_id",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "cro_slack_channel_id"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "cro_slack_channel_id"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "cro_slack_message_json",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "cro_slack_message_json"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "cro_slack_message_json"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "cro_slack_message_ts",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "cro_slack_message_ts"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "cro_slack_message_ts"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "cro_token",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "cro_token"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "cro_token"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "customer_name",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "customer_name"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "customer_name"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "dealhub_quote_number",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "dealhub_quote_number"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "dealhub_quote_number"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "dealroom_link",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "dealroom_link"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "dealroom_link"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "document_origin",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "document_origin"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "document_origin"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "drive_file_id",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "drive_file_id"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "drive_file_id"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "file_type",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "file_type"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "file_type"
-                          },
-                          {
-                            "control_type": "number",
-                            "label": "id",
-                            "parse_output": "parse_integer_output",
-                            "details": {
-                              "primary_key": true,
-                              "data_type": "bigint",
-                              "column_name": "id"
-                            },
-                            "optional": true,
-                            "event_title": true,
-                            "hint": "bigint, primary key",
-                            "type": "integer",
-                            "name": "id"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "is_standard",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "boolean",
-                              "column_name": "is_standard"
-                            },
-                            "parse_output": "parse_boolean_output",
-                            "optional": true,
-                            "hint": "boolean",
-                            "type": "string",
-                            "name": "is_standard"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "new_filename",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "new_filename"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "new_filename"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "original_filename",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "original_filename"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "original_filename"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "quote_url",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "quote_url"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "quote_url"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "reject_reason",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "reject_reason"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "reject_reason"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "sfdc_opportunity_id",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "sfdc_opportunity_id"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "sfdc_opportunity_id"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "sfdc_quote_id",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "sfdc_quote_id"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "sfdc_quote_id"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "status",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "status"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "status"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "submitted_by",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "submitted_by"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "submitted_by"
-                          },
-                          {
-                            "control_type": "date_time",
-                            "label": "updated_at",
-                            "render_input": "convert_date_time",
-                            "parse_output": "convert_date_time",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "timestamp with time zone",
-                              "column_name": "updated_at"
-                            },
-                            "optional": true,
-                            "hint": "timestamp with time zone",
-                            "type": "date_time",
-                            "name": "updated_at"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "uploaded_by",
-                            "details": {
-                              "primary_key": false,
-                              "data_type": "text",
-                              "column_name": "uploaded_by"
-                            },
-                            "optional": true,
-                            "hint": "text",
-                            "type": "string",
-                            "name": "uploaded_by"
-                          }
-                        ],
-                        "type": "object"
-                      }
-                    ],
-                    "visible_config_fields": [
-                      "table",
-                      "where",
-                      "columns.status",
-                      "columns.reject_reason",
-                      "columns",
-                      "columns.cro_approved_by",
-                      "columns.cro_approved_at",
-                      "columns.cro_token"
-                    ],
-                    "hidden_config_fields": [
-                      "columns.account_id"
-                    ],
-                    "comment": "Status = REJECTED",
-                    "uuid": "8b8d94e4-23b9-4077-8469-a1421e457cd8",
-                    "skip": false
-                  },
-                  {
-                    "number": 8,
-                    "provider": "slack_bot",
-                    "name": "get_user_by_email",
-                    "as": "85f869e2",
-                    "keyword": "action",
-                    "input": {
-                      "email": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"dh_cro_user\"}')}"
-                    },
-                    "visible_config_fields": [
-                      "email"
-                    ],
-                    "hidden_config_fields": [
-                      "id"
-                    ],
-                    "comment": "Salesperson",
-                    "uuid": "608c19d3-a4ee-4088-b0a9-00b7116c5a77",
-                    "skip": false
-                  },
-                  {
-                    "number": 9,
-                    "provider": "workato_custom_code",
-                    "name": "invoke_custom_ruby_code",
-                    "as": "a271d370",
-                    "keyword": "action",
-                    "input": {
-                      "payload_asset_type": "inline",
-                      "code": "require 'json'\n\ncontract_id  = input['contract_id'].to_s\ncustomer     = input['customer_name'].to_s\nquote_number = input['quote_number'].to_s\nquote_url    = input['quote_url'].to_s\nreason       = input['reason'].to_s\ncro_name     = input['cro_name'].to_s\nsubmitted_by = input['submitted_by'].to_s\n\nopportunity_id = input['opportunity_id'].to_s\naccount_id     = input['account_id'].to_s\nsfdc_base_url  = input['sfdc_base_url'].to_s\nsfdc_base      = sfdc_base_url.strip.sub(/\\/+\\z/, '')\nopp_link_url     = (opportunity_id.strip.empty? || sfdc_base.empty?) ? '' : \"#{sfdc_base}/#{opportunity_id}\"\naccount_link_url = (account_id.strip.empty?     || sfdc_base.empty?) ? '' : \"#{sfdc_base}/#{account_id}\"\n\nreason = 'No reason provided' if reason.strip.empty?\nfirst_name = submitted_by.split('@').first\nfirst_name = 'there' if first_name.to_s.strip.empty?\ncro  = cro_name.strip.empty? ? 'CRO' : cro_name\ncust = customer.strip.empty? ? '—' : customer\nqn   = quote_number.strip.empty? ? '—' : quote_number\ncustomer_display = account_link_url.empty? ? cust : \"<#{account_link_url}|#{cust}>\"\n\n# ============ SALESPERSON MESSAGE (DM) ============\nsp_header = \":x: *Deal Rejected by CRO — Action Needed*\\n\\n\"\nsp_header += \"Hi #{first_name}, your deal was reviewed and *rejected* by the CRO. Details below.\"\n\nsp_meta = [\n  { 'title' => '*Customer:*',    'value' => customer_display },\n  { 'title' => '*Quote:*',       'value' => qn },\n  { 'title' => '*Contract:*',    'value' => contract_id },\n  { 'title' => '*Rejected by:*', 'value' => cro }\n]\n\nsp_reason = \":memo: *Reason for rejection:*\\n> #{reason}\"\n\nsp_steps = \":arrow_right: *Next steps:*\\n\"\nsp_steps += \"• Review the reason above\\n\"\nsp_steps += \"• Make the required changes to the deal\\n\"\nsp_steps += \"• Re-submit for approval\"\n\nsp_links = []\nsp_links << \":link: <#{quote_url}|View the quote in DealHub>\" unless quote_url.strip.empty?\nsp_links << \":bar_chart: <#{opp_link_url}|Open in Salesforce>\" unless opp_link_url.empty?\nsp_link = sp_links.empty? ? ' ' : sp_links.join('  ·  ')\n\nsp_footer = \":robot_face: BrightMind · Please revise and re-submit\"\n\n# ============ DEAL DESK MESSAGE (channel) ============\ndd_header = \"<!channel> :x: *Deal Rejected by CRO*\"\n\ndd_meta = [\n  { 'title' => '*Customer:*',    'value' => customer_display },\n  { 'title' => '*Quote:*',       'value' => qn },\n  { 'title' => '*Contract:*',    'value' => contract_id },\n  { 'title' => '*Rejected by:*', 'value' => cro },\n  { 'title' => '*Salesperson:*', 'value' => (submitted_by.strip.empty? ? '—' : submitted_by) },\n  { 'title' => '*Status:*',      'value' => ':red_circle: REJECTED' }\n]\n\ndd_reason = \":memo: *Reason:*\\n> #{reason}\"\n\ndd_links = []\ndd_links << \":link: <#{quote_url}|Quote in DealHub>\" unless quote_url.strip.empty?\ndd_links << \":bar_chart: <#{opp_link_url}|Opportunity in Salesforce>\" unless opp_link_url.empty?\ndd_link = dd_links.empty? ? ' ' : dd_links.join('  ·  ')\n\ndd_footer = \":robot_face: BrightMind · Salesperson (#{submitted_by}) notified · #{contract_id}\"\n\n# ============ GUNJA CONFIRMATION REPLY (Slack only) ============\ngunja_reply = \":x: *Rejected — #{contract_id}*\\n\"\ngunja_reply += \"Reason: \\\"#{reason}\\\"\\n\\n\"\ngunja_reply += \":white_check_mark: #{submitted_by} (salesperson) notified\\n\"\ngunja_reply += \":white_check_mark: Deal Desk notified\\n\"\ngunja_reply += \"Registry updated → REJECTED\"\n\n{\n  'sp_header'    => sp_header,\n  'sp_meta'      => sp_meta,\n  'sp_reason'    => sp_reason,\n  'sp_steps'     => sp_steps,\n  'sp_link'      => sp_link,\n  'sp_footer'    => sp_footer,\n  'dd_header'    => dd_header,\n  'dd_meta'      => dd_meta,\n  'dd_reason'    => dd_reason,\n  'dd_link'      => dd_link,\n  'dd_footer'    => dd_footer,\n  'gunja_reply'  => gunja_reply,\n  'submitted_by' => submitted_by,\n  'contract_id'  => contract_id\n}\n",
-                      "name": "Build salesperson reject message",
-                      "code_output_schema_json": "[{\"control_type\":\"text-area\",\"label\":\"SP header\",\"name\":\"sp_header\",\"type\":\"string\"},{\"label\":\"SP meta\",\"name\":\"sp_meta\",\"type\":\"array\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Title\",\"name\":\"title\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Value\",\"name\":\"value\",\"type\":\"string\"}]},{\"control_type\":\"text-area\",\"label\":\"SP reason\",\"name\":\"sp_reason\",\"type\":\"string\"},{\"control_type\":\"text-area\",\"label\":\"SP steps\",\"name\":\"sp_steps\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"SP link\",\"name\":\"sp_link\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"SP footer\",\"name\":\"sp_footer\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"DD header\",\"name\":\"dd_header\",\"type\":\"string\"},{\"label\":\"DD meta\",\"name\":\"dd_meta\",\"type\":\"array\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Title\",\"name\":\"title\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Value\",\"name\":\"value\",\"type\":\"string\"}]},{\"control_type\":\"text-area\",\"label\":\"DD reason\",\"name\":\"dd_reason\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"DD link\",\"name\":\"dd_link\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"DD footer\",\"name\":\"dd_footer\",\"type\":\"string\"},{\"control_type\":\"text-area\",\"label\":\"Gunja reply\",\"name\":\"gunja_reply\",\"type\":\"string\"},{\"name\":\"gunja_html\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Gunja html\"},{\"control_type\":\"text\",\"label\":\"Submitted by\",\"name\":\"submitted_by\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Contract ID\",\"name\":\"contract_id\",\"type\":\"string\"}]",
-                      "code_input": {
-                        "schema": "[{\"control_type\":\"text\",\"label\":\"contract_id\",\"name\":\"contract_id\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"contract_id\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"reason\",\"name\":\"reason\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"reason\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"cro_name\",\"name\":\"cro_name\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"cro_name\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"customer_name\",\"name\":\"customer_name\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"customer_name\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"quote_number\",\"name\":\"quote_number\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"quote_number\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"quote_url\",\"name\":\"quote_url\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"quote_url\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"submitted_by\",\"name\":\"submitted_by\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"submitted_by\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"opportunity_id\",\"name\":\"opportunity_id\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"opportunity_id\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"account_id\",\"name\":\"account_id\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"account_id\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"sfdc_base_url\",\"name\":\"sfdc_base_url\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"sfdc_base_url\"},\"parent\":[\"code_input\",\"data\"]}]",
-                        "data": {
-                          "contract_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"9426abf6\",\"path\":[\"request\",\"contract_id\"]}')}",
-                          "reason": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"9426abf6\",\"path\":[\"request\",\"reject_reason\"]}')}",
-                          "cro_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"85f869e2\",\"path\":[\"name\"]}')}",
-                          "customer_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"customer_name\"]}')}",
-                          "quote_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"dealhub_quote_number\"]}')}",
-                          "quote_url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"quote_url\"]}')}",
-                          "submitted_by": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"submitted_by\"]}')}",
-                          "account_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"account_id\"]}')}",
-                          "opportunity_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"sfdc_opportunity_id\"]}')}",
-                          "sfdc_base_url": "#{_dp('{\"pill_type\":\"account_property\",\"property_name\":\"Salesforce Domain\"}')}"
-                        }
-                      }
-                    },
-                    "extended_output_schema": [
-                      {
-                        "label": "Output",
-                        "name": "output",
-                        "properties": [
-                          {
-                            "control_type": "text-area",
-                            "label": "SP header",
-                            "name": "sp_header",
-                            "type": "string"
-                          },
-                          {
-                            "label": "SP meta",
-                            "name": "sp_meta",
-                            "type": "array",
-                            "of": "object",
-                            "properties": [
-                              {
-                                "control_type": "text",
-                                "label": "Title",
-                                "name": "title",
-                                "type": "string"
-                              },
-                              {
-                                "control_type": "text",
-                                "label": "Value",
-                                "name": "value",
-                                "type": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "control_type": "text-area",
-                            "label": "SP reason",
-                            "name": "sp_reason",
-                            "type": "string"
-                          },
-                          {
-                            "control_type": "text-area",
-                            "label": "SP steps",
-                            "name": "sp_steps",
-                            "type": "string"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "SP link",
-                            "name": "sp_link",
-                            "type": "string"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "SP footer",
-                            "name": "sp_footer",
-                            "type": "string"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "DD header",
-                            "name": "dd_header",
-                            "type": "string"
-                          },
-                          {
-                            "label": "DD meta",
-                            "name": "dd_meta",
-                            "type": "array",
-                            "of": "object",
-                            "properties": [
-                              {
-                                "control_type": "text",
-                                "label": "Title",
-                                "name": "title",
-                                "type": "string"
-                              },
-                              {
-                                "control_type": "text",
-                                "label": "Value",
-                                "name": "value",
-                                "type": "string"
-                              }
-                            ]
-                          },
-                          {
-                            "control_type": "text-area",
-                            "label": "DD reason",
-                            "name": "dd_reason",
-                            "type": "string"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "DD link",
-                            "name": "dd_link",
-                            "type": "string"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "DD footer",
-                            "name": "dd_footer",
-                            "type": "string"
-                          },
-                          {
-                            "control_type": "text-area",
-                            "label": "Gunja reply",
-                            "name": "gunja_reply",
-                            "type": "string"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "Gunja html",
-                            "name": "gunja_html",
-                            "type": "string",
-                            "optional": true
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "Submitted by",
-                            "name": "submitted_by",
-                            "type": "string"
-                          },
-                          {
-                            "control_type": "text",
-                            "label": "Contract ID",
-                            "name": "contract_id",
-                            "type": "string"
-                          }
-                        ],
-                        "type": "object"
-                      }
-                    ],
-                    "extended_input_schema": [
-                      {
-                        "control_type": "form-schema-builder",
-                        "label": "Input",
-                        "name": "code_input",
-                        "optional": true,
-                        "override": true,
-                        "properties": [
-                          {
-                            "control_type": "text",
-                            "label": "Schema",
-                            "extends_schema": true,
-                            "type": "string",
-                            "name": "schema"
-                          },
-                          {
-                            "properties": [
-                              {
-                                "control_type": "text",
-                                "label": "contract_id",
-                                "name": "contract_id",
-                                "type": "string",
-                                "optional": true,
-                                "details": {
-                                  "real_name": "contract_id"
-                                },
-                                "parent": [
-                                  "code_input",
-                                  "data"
-                                ]
-                              },
-                              {
-                                "control_type": "text",
-                                "label": "reason",
-                                "name": "reason",
-                                "type": "string",
-                                "optional": true,
-                                "details": {
-                                  "real_name": "reason"
-                                },
-                                "parent": [
-                                  "code_input",
-                                  "data"
-                                ]
-                              },
-                              {
-                                "control_type": "text",
-                                "label": "cro_name",
-                                "name": "cro_name",
-                                "type": "string",
-                                "optional": true,
-                                "details": {
-                                  "real_name": "cro_name"
-                                },
-                                "parent": [
-                                  "code_input",
-                                  "data"
-                                ]
-                              },
-                              {
-                                "control_type": "text",
-                                "label": "customer_name",
-                                "name": "customer_name",
-                                "type": "string",
-                                "optional": true,
-                                "details": {
-                                  "real_name": "customer_name"
-                                },
-                                "parent": [
-                                  "code_input",
-                                  "data"
-                                ]
-                              },
-                              {
-                                "control_type": "text",
-                                "label": "quote_number",
-                                "name": "quote_number",
-                                "type": "string",
-                                "optional": true,
-                                "details": {
-                                  "real_name": "quote_number"
-                                },
-                                "parent": [
-                                  "code_input",
-                                  "data"
-                                ]
-                              },
-                              {
-                                "control_type": "text",
-                                "label": "quote_url",
-                                "name": "quote_url",
-                                "type": "string",
-                                "optional": true,
-                                "details": {
-                                  "real_name": "quote_url"
-                                },
-                                "parent": [
-                                  "code_input",
-                                  "data"
-                                ]
-                              },
-                              {
-                                "control_type": "text",
-                                "label": "submitted_by",
-                                "name": "submitted_by",
-                                "type": "string",
-                                "optional": true,
-                                "details": {
-                                  "real_name": "submitted_by"
-                                },
-                                "parent": [
-                                  "code_input",
-                                  "data"
-                                ]
-                              },
-                              {
-                                "control_type": "text",
-                                "label": "opportunity_id",
-                                "name": "opportunity_id",
-                                "type": "string",
-                                "optional": true,
-                                "details": {
-                                  "real_name": "opportunity_id"
-                                },
-                                "parent": [
-                                  "code_input",
-                                  "data"
-                                ]
-                              },
-                              {
-                                "control_type": "text",
-                                "label": "account_id",
-                                "name": "account_id",
-                                "type": "string",
-                                "optional": true,
-                                "details": {
-                                  "real_name": "account_id"
-                                },
-                                "parent": [
-                                  "code_input",
-                                  "data"
-                                ]
-                              },
-                              {
-                                "control_type": "text",
-                                "label": "sfdc_base_url",
-                                "name": "sfdc_base_url",
-                                "type": "string",
-                                "optional": true,
-                                "details": {
-                                  "real_name": "sfdc_base_url"
-                                },
-                                "parent": [
-                                  "code_input",
-                                  "data"
-                                ]
-                              }
-                            ],
-                            "label": "Data",
-                            "type": "object",
-                            "name": "data"
-                          }
-                        ],
-                        "sticky": true,
-                        "type": "object"
-                      }
-                    ],
-                    "visible_config_fields": [
-                      "name",
-                      "code_input",
-                      "code_output_schema_json",
-                      "payload_asset_type",
-                      "code",
-                      "code_input.data.contract_id",
-                      "code_input.schema",
-                      "code_input.data.reason",
-                      "code_input.data.cro_name",
-                      "code_input.data.customer_name",
-                      "code_input.data.quote_number",
-                      "code_input.data.quote_url",
-                      "code_input.data.submitted_by",
-                      "code_input.data",
-                      "code_input.data.opportunity_id",
-                      "code_input.data.account_id",
-                      "code_input.data.sfdc_base_url"
-                    ],
-                    "comment": "Build salesperson reject message",
-                    "uuid": "182d0983-d9da-40f7-b70b-3f586fd48084",
-                    "skip": false
-                  },
-                  {
-                    "number": 10,
                     "provider": "slack_bot",
                     "name": "update_blocks_by_block_id",
-                    "as": "880c4f4d",
+                    "as": "b88eb547",
                     "keyword": "action",
                     "toggleCfg": {
                       "blocks_to_update.0.remove_block": true
                     },
                     "input": {
                       "surface": "message",
-                      "message_json": "=_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"cro_slack_message_json\"]}')",
+                      "message_json": "=_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"ff25c68f\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"cro_slack_message_json\"]}')",
                       "blocks_to_update": [
                         {
                           "block_id": "cro_action_buttons",
@@ -4902,75 +4108,1016 @@
                       }
                     ],
                     "comment": "remove buttun action from the original message",
-                    "uuid": "c7dde215-d0fe-4e6f-80b0-2b502acb7412",
+                    "uuid": "ccc74c8b-1038-4259-9227-df73ee037aaf",
                     "skip": false
+                  },
+                  {
+                    "number": 8,
+                    "provider": "postgresql",
+                    "name": "update_rows",
+                    "as": "1d9abf19",
+                    "keyword": "action",
+                    "dynamicPickListSelection": {
+                      "table": "dealhub.contract_registry"
+                    },
+                    "toggleCfg": {
+                      "table": true
+                    },
+                    "input": {
+                      "where": "contract_id = '#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"ff25c68f\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"contract_id\"]}')}'",
+                      "table": "dealhub.contract_registry",
+                      "columns": {
+                        "status": "APPROVED",
+                        "cro_approved_by": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"dh_cro_user\"}')}",
+                        "cro_approved_at": "=_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_created_at\"]}')",
+                        "cro_token": "=nil"
+                      }
+                    },
+                    "extended_input_schema": [
+                      {
+                        "label": "Columns",
+                        "name": "columns",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "account_id",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "account_id"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "account_id",
+                            "sticky": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "contract_id",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "contract_id"
+                            },
+                            "hint": "text",
+                            "optional": true,
+                            "type": "string",
+                            "name": "contract_id"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "created_at",
+                            "render_input": "convert_date_time",
+                            "parse_output": "convert_date_time",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "timestamp with time zone",
+                              "column_name": "created_at"
+                            },
+                            "optional": true,
+                            "hint": "timestamp with time zone",
+                            "type": "date_time",
+                            "name": "created_at"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "cro_approved_at",
+                            "render_input": "convert_date_time",
+                            "parse_output": "convert_date_time",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "timestamp with time zone",
+                              "column_name": "cro_approved_at"
+                            },
+                            "optional": true,
+                            "hint": "timestamp with time zone",
+                            "type": "date_time",
+                            "name": "cro_approved_at"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "cro_approved_by",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "cro_approved_by"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "cro_approved_by"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "cro_slack_channel_id",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "cro_slack_channel_id"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "cro_slack_channel_id"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "cro_slack_message_json",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "cro_slack_message_json"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "cro_slack_message_json"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "cro_slack_message_ts",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "cro_slack_message_ts"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "cro_slack_message_ts"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "cro_token",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "cro_token"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "cro_token"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "customer_name",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "customer_name"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "customer_name"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "dealhub_quote_number",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "dealhub_quote_number"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "dealhub_quote_number"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "dealroom_link",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "dealroom_link"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "dealroom_link"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "document_origin",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "document_origin"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "document_origin"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "drive_file_id",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "drive_file_id"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "drive_file_id"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "file_type",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "file_type"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "file_type"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "id",
+                            "parse_output": "parse_integer_output",
+                            "details": {
+                              "primary_key": true,
+                              "data_type": "bigint",
+                              "column_name": "id"
+                            },
+                            "optional": true,
+                            "event_title": true,
+                            "hint": "bigint, primary key",
+                            "type": "integer",
+                            "name": "id"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "is_standard",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "boolean",
+                              "column_name": "is_standard"
+                            },
+                            "parse_output": "parse_boolean_output",
+                            "optional": true,
+                            "hint": "boolean",
+                            "type": "string",
+                            "name": "is_standard"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "new_filename",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "new_filename"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "new_filename"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "original_filename",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "original_filename"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "original_filename"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "quote_url",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "quote_url"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "quote_url"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "reject_reason",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "reject_reason"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "reject_reason"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "sfdc_opportunity_id",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "sfdc_opportunity_id"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "sfdc_opportunity_id"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "sfdc_quote_id",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "sfdc_quote_id"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "sfdc_quote_id"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "status",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "status"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "status"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "submitted_by",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "submitted_by"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "submitted_by"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "updated_at",
+                            "render_input": "convert_date_time",
+                            "parse_output": "convert_date_time",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "timestamp with time zone",
+                              "column_name": "updated_at"
+                            },
+                            "optional": true,
+                            "hint": "timestamp with time zone",
+                            "type": "date_time",
+                            "name": "updated_at"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "uploaded_by",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "uploaded_by"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "uploaded_by"
+                          }
+                        ],
+                        "type": "object"
+                      }
+                    ],
+                    "visible_config_fields": [
+                      "table",
+                      "where",
+                      "columns.status",
+                      "columns",
+                      "columns.cro_approved_by",
+                      "columns.cro_approved_at",
+                      "columns.account_id",
+                      "columns.cro_token"
+                    ],
+                    "comment": "Status = APPROVED",
+                    "uuid": "a03ad412-eeb7-44a4-9e1c-f7dbb54da3c0"
+                  },
+                  {
+                    "number": 9,
+                    "provider": "google_drive",
+                    "name": "__adhoc_http_action",
+                    "as": "c4695179",
+                    "keyword": "action",
+                    "toggleCfg": {
+                      "input.data.contentRestrictions.readOnly": true
+                    },
+                    "input": {
+                      "mnemonic": "lock content",
+                      "verb": "patch",
+                      "request_type": "json",
+                      "response_type": "json",
+                      "path": "files/#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"ff25c68f\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"drive_file_id\"]}')}",
+                      "input": {
+                        "schema": "[{\"label\":\"Content restrictions\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Read only\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Read only\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"readOnly\"},\"type\":\"boolean\",\"name\":\"readOnly\",\"details\":{\"real_name\":\"readOnly\"}},{\"control_type\":\"text\",\"label\":\"Reason\",\"type\":\"string\",\"name\":\"reason\",\"details\":{\"real_name\":\"reason\"}}],\"type\":\"array\",\"name\":\"contentRestrictions\",\"details\":{\"real_name\":\"contentRestrictions\"}}]",
+                        "data": {
+                          "contentRestrictions": {
+                            "readOnly": "=true",
+                            "reason": "Final approved contract"
+                          }
+                        }
+                      },
+                      "output": "[{\"control_type\":\"text\",\"label\":\"Kind\",\"type\":\"string\",\"name\":\"kind\"},{\"control_type\":\"text\",\"label\":\"ID\",\"type\":\"string\",\"name\":\"id\"},{\"control_type\":\"text\",\"label\":\"Name\",\"type\":\"string\",\"name\":\"name\"},{\"control_type\":\"text\",\"label\":\"Mime type\",\"type\":\"string\",\"name\":\"mimeType\"}]"
+                    },
+                    "extended_output_schema": [
+                      {
+                        "control_type": "text",
+                        "label": "Kind",
+                        "name": "kind",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "ID",
+                        "name": "id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Name",
+                        "name": "name",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Mime type",
+                        "name": "mimeType",
+                        "optional": true,
+                        "type": "string"
+                      }
+                    ],
+                    "extended_input_schema": [
+                      {
+                        "control_type": "text",
+                        "hint": "Base URI is <b>https://www.googleapis.com/drive/v3/</b> - path will be appended to this URI. Use absolute URI to override this base URI.",
+                        "label": "Path",
+                        "name": "path",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "select",
+                        "default": "json",
+                        "extends_schema": true,
+                        "label": "Request type",
+                        "name": "request_type",
+                        "optional": true,
+                        "pick_list": [
+                          [
+                            "JSON request body",
+                            "json"
+                          ],
+                          [
+                            "URL encoded form",
+                            "urlencoded"
+                          ],
+                          [
+                            "Multipart form",
+                            "multipart"
+                          ],
+                          [
+                            "Raw JSON request body",
+                            "raw"
+                          ],
+                          [
+                            "XML request body",
+                            "xml"
+                          ],
+                          [
+                            "Plain text",
+                            "text"
+                          ],
+                          [
+                            "Raw request body",
+                            "rawdata"
+                          ]
+                        ],
+                        "sticky": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "select",
+                        "default": "json",
+                        "extends_schema": true,
+                        "label": "Response type",
+                        "name": "response_type",
+                        "optional": true,
+                        "pick_list": [
+                          [
+                            "JSON response",
+                            "json"
+                          ],
+                          [
+                            "Raw JSON Response",
+                            "raw"
+                          ],
+                          [
+                            "XML Response",
+                            "xml2"
+                          ],
+                          [
+                            "Raw response",
+                            "text"
+                          ]
+                        ],
+                        "sticky": false,
+                        "type": "string"
+                      },
+                      {
+                        "label": "Input",
+                        "name": "input",
+                        "optional": true,
+                        "properties": [
+                          {
+                            "control_type": "schema-designer",
+                            "label": "Request body parameters",
+                            "extends_schema": true,
+                            "schema_neutral": true,
+                            "sample_data_type": "json_input",
+                            "sticky": true,
+                            "add_field_label": "Add request body parameter",
+                            "optional": true,
+                            "type": "string",
+                            "name": "schema"
+                          },
+                          {
+                            "properties": [
+                              {
+                                "label": "Content restrictions",
+                                "details": {
+                                  "real_name": "contentRestrictions"
+                                },
+                                "sticky": true,
+                                "optional": true,
+                                "of": "object",
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "Read only",
+                                    "parse_output": "boolean_conversion",
+                                    "render_input": "boolean_conversion",
+                                    "toggle_hint": "Select from option list",
+                                    "toggle_field": {
+                                      "label": "Read only",
+                                      "control_type": "text",
+                                      "toggle_hint": "Use custom value",
+                                      "type": "boolean",
+                                      "name": "readOnly"
+                                    },
+                                    "details": {
+                                      "real_name": "readOnly"
+                                    },
+                                    "optional": true,
+                                    "type": "number",
+                                    "name": "readOnly"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Reason",
+                                    "details": {
+                                      "real_name": "reason"
+                                    },
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "reason"
+                                  }
+                                ],
+                                "type": "array",
+                                "name": "contentRestrictions"
+                              }
+                            ],
+                            "label": "Data",
+                            "optional": true,
+                            "type": "object",
+                            "name": "data"
+                          }
+                        ],
+                        "type": "object"
+                      },
+                      {
+                        "control_type": "key_value",
+                        "empty_list_text": "Refer to the API documentation and add required headers to this HTTP request",
+                        "empty_list_title": "Does this HTTP request require headers?",
+                        "item_label": "Header",
+                        "label": "Request headers",
+                        "name": "request_headers",
+                        "of": "object",
+                        "optional": true,
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Name",
+                            "optional": true,
+                            "type": "string",
+                            "name": "name"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Value",
+                            "optional": true,
+                            "type": "string",
+                            "name": "value"
+                          }
+                        ],
+                        "type": "array"
+                      },
+                      {
+                        "control_type": "schema-designer",
+                        "extends_schema": true,
+                        "label": "Response body",
+                        "name": "output",
+                        "optional": true,
+                        "sample_data_type": "json_http",
+                        "sticky": true,
+                        "type": "string",
+                        "schema_neutral": true
+                      },
+                      {
+                        "control_type": "schema-designer",
+                        "extends_schema": true,
+                        "label": "Response headers",
+                        "name": "response_headers",
+                        "optional": true,
+                        "sample_data_type": "json_http",
+                        "sticky": false,
+                        "type": "string",
+                        "schema_neutral": true
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "label": "Inspect",
+                        "name": "inspect",
+                        "ngIf": "false",
+                        "optional": true,
+                        "parse_output": "float_conversion",
+                        "type": "number"
+                      }
+                    ],
+                    "visible_config_fields": [
+                      "mnemonic",
+                      "verb",
+                      "path",
+                      "request_type",
+                      "response_type",
+                      "input",
+                      "input.schema",
+                      "input.data.contentRestrictions",
+                      "output",
+                      "input.data.contentRestrictions.reason",
+                      "input.data.contentRestrictions.readOnly"
+                    ],
+                    "comment": "Drive – Lock file (contentRestrictions)",
+                    "uuid": "58d3853a-451b-46bd-8a50-1abceb9d6c69",
+                    "wizardFinished": true,
+                    "skip": false
+                  },
+                  {
+                    "number": 10,
+                    "provider": "workato_custom_code",
+                    "name": "invoke_custom_ruby_code",
+                    "as": "a956cff6",
+                    "keyword": "action",
+                    "input": {
+                      "payload_asset_type": "inline",
+                      "code": "require 'json'\n\ncontract_id   = input['contract_id'].to_s\ncustomer      = input['customer_name'].to_s\nquote_number  = input['quote_number'].to_s\nquote_url     = input['quote_url'].to_s\ndealroom      = input['dealroom_link'].to_s\ndrive_file_id = input['drive_file_id'].to_s\ncro_name      = input['cro_name'].to_s\nsubmitted_by  = input['submitted_by'].to_s\n\n# SFDC links\nopportunity_id = input['opportunity_id'].to_s\naccount_id     = input['account_id'].to_s\nsfdc_base_url  = input['sfdc_base_url'].to_s\nsfdc_base      = sfdc_base_url.strip.sub(/\\/+\\z/, '')\nopp_link_url     = (opportunity_id.strip.empty? || sfdc_base.empty?) ? '' : \"#{sfdc_base}/#{opportunity_id}\"\naccount_link_url = (account_id.strip.empty?     || sfdc_base.empty?) ? '' : \"#{sfdc_base}/#{account_id}\"\n\ncro  = cro_name.strip.empty? ? 'CRO' : cro_name\ncust = customer.strip.empty? ? '—' : customer\nqn   = quote_number.strip.empty? ? '—' : quote_number\ncustomer_display = account_link_url.empty? ? cust : \"<#{account_link_url}|#{cust}>\"\n\nlocked_link = drive_file_id.strip.empty? ? '' : \"https://drive.google.com/file/d/#{drive_file_id}/view\"\n\n# ============ DEAL DESK MESSAGE ============\ndd_header = \"<!channel> :white_check_mark: *Deal Approved by CRO — Ready to Process*\"\n\ndd_meta = [\n  { 'title' => '*Customer:*',    'value' => customer_display },\n  { 'title' => '*Quote:*',       'value' => qn },\n  { 'title' => '*Contract:*',    'value' => contract_id },\n  { 'title' => '*Approved by:*', 'value' => cro },\n  { 'title' => '*Salesperson:*', 'value' => (submitted_by.strip.empty? ? '—' : submitted_by) },\n  { 'title' => '*Status:*',      'value' => ':lock: APPROVED & LOCKED' }\n]\n\ndd_body = \":white_check_mark: The contract is *approved and locked*, ready for signature.\"\n\ndd_links = []\ndd_links << \":page_facing_up: <#{locked_link}|Approved contract>\" unless locked_link.strip.empty?\ndd_links << \":link: <#{quote_url}|Quote in DealHub>\"              unless quote_url.strip.empty?\ndd_links << \":bar_chart: <#{opp_link_url}|Opportunity in Salesforce>\" unless opp_link_url.empty?\ndd_links << \":briefcase: <#{dealroom}|Open DealRoom>\"            unless dealroom.strip.empty?\ndd_links_text = dd_links.empty? ? ' ' : dd_links.join('  ·  ')\n\ndd_steps = \":arrow_right: *Next steps for Deal Desk:*\\n\"\ndd_steps += \"• Upload the signed file to the DealRoom\"\n\ndd_footer = \":robot_face: BrightMind · CRO sign-off complete · #{contract_id}\"\n\n# ============ GUNJA CONFIRMATION REPLY (Slack) ============\ngunja_reply = \":white_check_mark: *Approved — #{contract_id}*\\n\\n\"\ngunja_reply += \":lock: Contract file locked\\n\"\ngunja_reply += \":white_check_mark: Deal Desk notified\\n\"\ngunja_reply += \"Registry updated → APPROVED\"\n\n# ============ GUNJA SUCCESS PAGE (HTML — browser) ============\nesc = lambda { |s| s.to_s.gsub('&','&amp;').gsub('<','&lt;').gsub('>','&gt;') }\n\ncontract_btn = locked_link.strip.empty? ? '' : %(\n      <a href=\"#{locked_link}\" style=\"display:inline-block;margin-top:24px;background:#2eb67d;color:#fff;font-size:14px;font-weight:700;padding:12px 28px;border-radius:8px;text-decoration:none;\">View Approved Contract</a>)\n\ngunja_html = <<~HTML\n<!DOCTYPE html>\n<html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>\n<body style=\"font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f4f4f7;margin:0;padding:60px 20px;\">\n  <div style=\"max-width:520px;margin:0 auto;background:#fff;border-radius:12px;padding:40px;box-shadow:0 2px 8px rgba(0,0,0,0.08);text-align:center;\">\n    <div style=\"font-size:48px;\">&#9989;</div>\n    <h1 style=\"color:#1a1d29;font-size:22px;margin:16px 0 4px;\">Deal Approved</h1>\n    <p style=\"color:#616570;font-size:15px;margin:0 0 24px;\">Contract <b>#{esc.call(contract_id)}</b>#{cust == '—' ? '' : \" &#183; #{esc.call(cust)}\"}</p>\n\n    <div style=\"background:#edf8f3;border:1px solid #bfe6d4;border-radius:8px;padding:16px;margin-bottom:20px;text-align:left;\">\n      <div style=\"font-size:14px;color:#1a1d29;line-height:1.9;\">\n        &#128274; Contract file locked<br>\n        &#9989; Deal Desk notified<br>\n        &#9989; Registry updated &rarr; APPROVED\n      </div>\n    </div>\n    #{contract_btn}\n    <p style=\"color:#8a8d98;font-size:12px;margin-top:28px;\">&#129302; BrightMind &#183; CRO sign-off &#183; #{esc.call(contract_id)}</p>\n    <p style=\"color:#b4b7c0;font-size:12px;margin-top:4px;\">You can close this tab.</p>\n  </div>\n</body></html>\nHTML\n\n{\n  'dd_header'   => dd_header,\n  'dd_meta'     => dd_meta,\n  'dd_body'     => dd_body,\n  'dd_links'    => dd_links_text,\n  'dd_steps'    => dd_steps,\n  'dd_footer'   => dd_footer,\n  'gunja_reply' => gunja_reply,\n  'gunja_html'  => gunja_html,\n  'contract_id' => contract_id,\n  'locked_link' => locked_link\n}\n",
+                      "name": "Build all approve messages",
+                      "code_output_schema_json": "[{\"control_type\":\"text\",\"label\":\"DD header\",\"name\":\"dd_header\",\"type\":\"string\"},{\"label\":\"DD meta\",\"name\":\"dd_meta\",\"type\":\"array\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Title\",\"name\":\"title\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Value\",\"name\":\"value\",\"type\":\"string\"}]},{\"control_type\":\"text\",\"label\":\"DD body\",\"name\":\"dd_body\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"DD links\",\"name\":\"dd_links\",\"type\":\"string\"},{\"control_type\":\"text-area\",\"label\":\"DD steps\",\"name\":\"dd_steps\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"DD footer\",\"name\":\"dd_footer\",\"type\":\"string\"},{\"control_type\":\"text-area\",\"label\":\"Gunja reply\",\"name\":\"gunja_reply\",\"type\":\"string\"},{\"name\":\"gunja_html\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Gunja html\"},{\"control_type\":\"text\",\"label\":\"Contract ID\",\"name\":\"contract_id\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Locked link\",\"name\":\"locked_link\",\"type\":\"string\"}]",
+                      "code_input": {
+                        "schema": "[{\"control_type\":\"text\",\"label\":\"contract_id\",\"name\":\"contract_id\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"contract_id\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"cro_name\",\"name\":\"cro_name\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"cro_name\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"customer_name\",\"name\":\"customer_name\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"customer_name\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"quote_number\",\"name\":\"quote_number\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"quote_number\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"dealroom_link\",\"name\":\"dealroom_link\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"dealroom_link\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"quote_url\",\"name\":\"quote_url\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"quote_url\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"submitted_by\",\"name\":\"submitted_by\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"submitted_by\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"drive_file_id\",\"name\":\"drive_file_id\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"drive_file_id\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"opportunity_id\",\"name\":\"opportunity_id\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"opportunity_id\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"account_id\",\"name\":\"account_id\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"account_id\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"sfdc_base_url\",\"name\":\"sfdc_base_url\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"sfdc_base_url\"},\"parent\":[\"code_input\",\"data\"]}]",
+                        "data": {
+                          "contract_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"ff25c68f\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"contract_id\"]}')}",
+                          "cro_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"a739306c\",\"path\":[\"name\"]}')}",
+                          "customer_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"ff25c68f\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"customer_name\"]}')}",
+                          "quote_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"ff25c68f\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"dealhub_quote_number\"]}')}",
+                          "quote_url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"ff25c68f\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"quote_url\"]}')}",
+                          "submitted_by": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"ff25c68f\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"submitted_by\"]}')}",
+                          "drive_file_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"ff25c68f\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"drive_file_id\"]}')}",
+                          "dealroom_link": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"ff25c68f\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"dealroom_link\"]}')}",
+                          "opportunity_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"ff25c68f\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"sfdc_opportunity_id\"]}')}",
+                          "account_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"ff25c68f\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"account_id\"]}')}",
+                          "sfdc_base_url": "#{_dp('{\"pill_type\":\"account_property\",\"property_name\":\"Salesforce Domain\"}')}"
+                        }
+                      }
+                    },
+                    "extended_output_schema": [
+                      {
+                        "label": "Output",
+                        "name": "output",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "DD header",
+                            "name": "dd_header",
+                            "type": "string"
+                          },
+                          {
+                            "label": "DD meta",
+                            "name": "dd_meta",
+                            "type": "array",
+                            "of": "object",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Title",
+                                "name": "title",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Value",
+                                "name": "value",
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "DD body",
+                            "name": "dd_body",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "DD links",
+                            "name": "dd_links",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text-area",
+                            "label": "DD steps",
+                            "name": "dd_steps",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "DD footer",
+                            "name": "dd_footer",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text-area",
+                            "label": "Gunja reply",
+                            "name": "gunja_reply",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Gunja html",
+                            "name": "gunja_html",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Contract ID",
+                            "name": "contract_id",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Locked link",
+                            "name": "locked_link",
+                            "type": "string"
+                          }
+                        ],
+                        "type": "object"
+                      }
+                    ],
+                    "extended_input_schema": [
+                      {
+                        "control_type": "form-schema-builder",
+                        "label": "Input",
+                        "name": "code_input",
+                        "optional": true,
+                        "override": true,
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Schema",
+                            "extends_schema": true,
+                            "type": "string",
+                            "name": "schema"
+                          },
+                          {
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "contract_id",
+                                "name": "contract_id",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "contract_id"
+                                },
+                                "parent": [
+                                  "code_input",
+                                  "data"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "cro_name",
+                                "name": "cro_name",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "cro_name"
+                                },
+                                "parent": [
+                                  "code_input",
+                                  "data"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "customer_name",
+                                "name": "customer_name",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "customer_name"
+                                },
+                                "parent": [
+                                  "code_input",
+                                  "data"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "quote_number",
+                                "name": "quote_number",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "quote_number"
+                                },
+                                "parent": [
+                                  "code_input",
+                                  "data"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "dealroom_link",
+                                "name": "dealroom_link",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "dealroom_link"
+                                },
+                                "parent": [
+                                  "code_input",
+                                  "data"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "quote_url",
+                                "name": "quote_url",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "quote_url"
+                                },
+                                "parent": [
+                                  "code_input",
+                                  "data"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "submitted_by",
+                                "name": "submitted_by",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "submitted_by"
+                                },
+                                "parent": [
+                                  "code_input",
+                                  "data"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "drive_file_id",
+                                "name": "drive_file_id",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "drive_file_id"
+                                },
+                                "parent": [
+                                  "code_input",
+                                  "data"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "opportunity_id",
+                                "name": "opportunity_id",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "opportunity_id"
+                                },
+                                "parent": [
+                                  "code_input",
+                                  "data"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "account_id",
+                                "name": "account_id",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "account_id"
+                                },
+                                "parent": [
+                                  "code_input",
+                                  "data"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "sfdc_base_url",
+                                "name": "sfdc_base_url",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "sfdc_base_url"
+                                },
+                                "parent": [
+                                  "code_input",
+                                  "data"
+                                ]
+                              }
+                            ],
+                            "label": "Data",
+                            "type": "object",
+                            "name": "data"
+                          }
+                        ],
+                        "sticky": true,
+                        "type": "object"
+                      }
+                    ],
+                    "visible_config_fields": [
+                      "name",
+                      "code_input",
+                      "code_output_schema_json",
+                      "payload_asset_type",
+                      "code",
+                      "code_input.data.contract_id",
+                      "code_input.schema",
+                      "code_input.data.cro_name",
+                      "code_input.data.customer_name",
+                      "code_input.data.quote_number",
+                      "code_input.data.quote_url",
+                      "code_input.data.submitted_by",
+                      "code_input.data.drive_file_id",
+                      "code_input.data",
+                      "code_input.data.dealroom_link",
+                      "code_input.data.opportunity_id",
+                      "code_input.data.account_id",
+                      "code_input.data.sfdc_base_url"
+                    ],
+                    "comment": "Build all approve messages",
+                    "uuid": "1132e378-cc61-4d11-bb9c-777f6c262a56"
                   },
                   {
                     "number": 11,
                     "provider": "slack_bot",
                     "name": "post_bot_message",
-                    "as": "73a86f6a",
-                    "keyword": "action",
-                    "toggleCfg": {
-                      "channel": true
-                    },
-                    "input": {
-                      "channel": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"85f869e2\",\"path\":[\"id\"]}')}",
-                      "blocks": [
-                        {
-                          "button_type": "continue_flow",
-                          "block_type": "section_with_fields",
-                          "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a271d370\",\"path\":[\"output\",\"sp_header\"]}')}",
-                          "attachment_fields": {
-                            "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a271d370\",\"path\":[\"output\",\"sp_meta\"]}')}",
-                            "title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a271d370\",\"path\":[\"output\",\"sp_meta\",{\"path_element_type\":\"current_item\"},\"title\"]}')}",
-                            "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a271d370\",\"path\":[\"output\",\"sp_meta\",{\"path_element_type\":\"current_item\"},\"value\"]}')}"
-                          }
-                        },
-                        {
-                          "button_type": "continue_flow",
-                          "block_type": "divider"
-                        },
-                        {
-                          "button_type": "continue_flow",
-                          "block_type": "section_with_text",
-                          "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a271d370\",\"path\":[\"output\",\"sp_reason\"]}')}"
-                        },
-                        {
-                          "button_type": "continue_flow",
-                          "block_type": "divider"
-                        },
-                        {
-                          "button_type": "continue_flow",
-                          "block_type": "section_with_text",
-                          "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a271d370\",\"path\":[\"output\",\"sp_steps\"]}')}"
-                        },
-                        {
-                          "button_type": "continue_flow",
-                          "block_type": "section_with_text",
-                          "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a271d370\",\"path\":[\"output\",\"sp_link\"]}')}"
-                        },
-                        {
-                          "button_type": "continue_flow",
-                          "block_type": "context",
-                          "elements": [
-                            {
-                              "type": "text",
-                              "text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a271d370\",\"path\":[\"output\",\"sp_footer\"]}')}"
-                            }
-                          ]
-                        }
-                      ]
-                    },
-                    "comment": "DM the salesperson",
-                    "uuid": "1e5fd085-8969-41c9-bd64-c5ece916200d",
-                    "skip": false
-                  },
-                  {
-                    "number": 12,
-                    "provider": "slack_bot",
-                    "name": "post_bot_message",
-                    "as": "ee81f0a7",
+                    "as": "630c6a25",
                     "keyword": "action",
                     "toggleCfg": {
                       "channel": true
@@ -4981,11 +5128,11 @@
                         {
                           "button_type": "continue_flow",
                           "block_type": "section_with_fields",
-                          "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a271d370\",\"path\":[\"output\",\"dd_header\"]}')}",
+                          "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a956cff6\",\"path\":[\"output\",\"dd_header\"]}')}",
                           "attachment_fields": {
-                            "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a271d370\",\"path\":[\"output\",\"dd_meta\"]}')}",
-                            "title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a271d370\",\"path\":[\"output\",\"dd_meta\",{\"path_element_type\":\"current_item\"},\"title\"]}')}",
-                            "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a271d370\",\"path\":[\"output\",\"dd_meta\",{\"path_element_type\":\"current_item\"},\"value\"]}')}"
+                            "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a956cff6\",\"path\":[\"output\",\"dd_meta\"]}')}",
+                            "title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a956cff6\",\"path\":[\"output\",\"dd_meta\",{\"path_element_type\":\"current_item\"},\"title\"]}')}",
+                            "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a956cff6\",\"path\":[\"output\",\"dd_meta\",{\"path_element_type\":\"current_item\"},\"value\"]}')}"
                           }
                         },
                         {
@@ -4995,16 +5142,17 @@
                         {
                           "button_type": "continue_flow",
                           "block_type": "section_with_text",
-                          "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a271d370\",\"path\":[\"output\",\"dd_reason\"]}')}"
-                        },
-                        {
-                          "button_type": "continue_flow",
-                          "block_type": "divider"
+                          "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a956cff6\",\"path\":[\"output\",\"dd_body\"]}')}"
                         },
                         {
                           "button_type": "continue_flow",
                           "block_type": "section_with_text",
-                          "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a271d370\",\"path\":[\"output\",\"dd_link\"]}')}"
+                          "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a956cff6\",\"path\":[\"output\",\"dd_links\"]}')}"
+                        },
+                        {
+                          "button_type": "continue_flow",
+                          "block_type": "section_with_text",
+                          "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a956cff6\",\"path\":[\"output\",\"dd_steps\"]}')}"
                         },
                         {
                           "button_type": "continue_flow",
@@ -5012,59 +5160,38 @@
                           "elements": [
                             {
                               "type": "text",
-                              "text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a271d370\",\"path\":[\"output\",\"dd_footer\"]}')}"
+                              "text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a956cff6\",\"path\":[\"output\",\"dd_footer\"]}')}"
                             }
                           ]
                         }
                       ]
                     },
-                    "comment": "update dealdesk about the reject",
-                    "uuid": "f8839044-b900-46fb-bedd-50e13b3092ec",
-                    "skip": false
+                    "comment": "Slack Deal Desk (notify to publish)",
+                    "uuid": "d3919e17-e11c-4909-a56d-219a05ed3716"
                   },
                   {
-                    "number": 13,
-                    "provider": "slack_bot",
-                    "name": "get_user_by_email",
-                    "as": "87f13596",
-                    "keyword": "action",
-                    "input": {
-                      "email": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"dh_cro_user\"}')}"
-                    },
-                    "visible_config_fields": [
-                      "email"
-                    ],
-                    "hidden_config_fields": [
-                      "id"
-                    ],
-                    "comment": "cro user",
-                    "uuid": "3e054103-4d51-42e8-887d-31f9cf424055",
-                    "skip": false
-                  },
-                  {
-                    "number": 14,
+                    "number": 12,
                     "provider": "slack_bot",
                     "name": "post_bot_message",
-                    "as": "561db932",
+                    "as": "6cb7c2ee",
                     "keyword": "action",
                     "toggleCfg": {
                       "channel": true
                     },
                     "input": {
-                      "channel": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"87f13596\",\"path\":[\"id\"]}')}",
                       "blocks": [
                         {
                           "button_type": "continue_flow",
                           "block_type": "section_with_text",
-                          "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a271d370\",\"path\":[\"output\",\"gunja_reply\"]}')}"
+                          "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a956cff6\",\"path\":[\"output\",\"gunja_reply\"]}')}"
                         }
                       ],
+                      "channel": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"a739306c\",\"path\":[\"id\"]}')}",
                       "advanced": {
-                        "thread_ts": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"880c4f4d\",\"path\":[\"ts\"]}')}"
+                        "thread_ts": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"b88eb547\",\"path\":[\"ts\"]}')}"
                       }
                     },
                     "visible_config_fields": [
-                      "channel",
                       "blocks",
                       "blocks.block_type",
                       "blocks.section_text",
@@ -5172,32 +5299,29 @@
                       "attachment_items.message.color",
                       "attachment_items.attachment_fields",
                       "attachment_items.attachment_buttons",
+                      "advanced.ts",
                       "advanced.thread_ts"
                     ],
-                    "hidden_config_fields": [
-                      "advanced.ts"
-                    ],
                     "comment": "Post command reply to cro (confirmation)",
-                    "uuid": "deb26ada-97fc-4b1a-bf82-413301675750",
-                    "skip": false
+                    "uuid": "0ff781b8-09c9-49f9-ba8b-0706a646ea58"
                   }
                 ],
-                "comment": "validation succeed",
-                "uuid": "ed08c755-4faa-4269-b527-40fcb2881cb3"
+                "comment": "status doesn't contains ['APPROVED', 'REJECTED']",
+                "uuid": "b01d3f49-06e4-4a65-9962-4e14a92d53e7"
               },
               {
-                "number": 15,
+                "number": 13,
                 "provider": "workato_api_platform",
                 "name": "return_response",
-                "as": "12c932b7",
+                "as": "2f8cf9f3",
                 "keyword": "action",
                 "input": {
                   "http_status_code": "200",
+                  "response": {
+                    "body": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"385cb97c\",\"path\":[\"output\",\"html_page\"]}')}"
+                  },
                   "response_headers": {
                     "Content-Type": "text/html; charset=utf-8"
-                  },
-                  "response": {
-                    "body": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"b07533f8\",\"path\":[\"output\",\"html_page\"]}')}"
                   }
                 },
                 "extended_output_schema": [
@@ -5205,16 +5329,16 @@
                     "change_on_blur": true,
                     "control_type": "select",
                     "extends_schema": true,
-                    "help": {
-                      "title": "Responses with duplicate status codes",
-                      "text": "Responses should have unique HTTP statuses (duplicate responses defined for these HTTP status codes: 200)"
-                    },
                     "label": "Response",
                     "name": "http_status_code",
                     "pick_list": [
                       [
-                        "success",
+                        "OK",
                         "200"
+                      ],
+                      [
+                        "Bad Request",
+                        "400"
                       ]
                     ],
                     "type": "string"
@@ -5257,16 +5381,16 @@
                     "change_on_blur": true,
                     "control_type": "select",
                     "extends_schema": true,
-                    "help": {
-                      "title": "Responses with duplicate status codes",
-                      "text": "Responses should have unique HTTP statuses (duplicate responses defined for these HTTP status codes: 200)"
-                    },
                     "label": "Response",
                     "name": "http_status_code",
                     "pick_list": [
                       [
-                        "success",
+                        "OK",
                         "200"
+                      ],
+                      [
+                        "Bad Request",
+                        "400"
                       ]
                     ],
                     "type": "string"
@@ -5306,19 +5430,19 @@
                 ],
                 "visible_config_fields": [
                   "http_status_code",
+                  "response.Body",
                   "response",
-                  "response.body",
                   "response_headers.Content-Type"
                 ],
-                "uuid": "01f5d582-76ca-4d14-8df1-492b1a46034d",
-                "skip": false
+                "comment": "status = success",
+                "uuid": "355ed7e4-3ab7-427d-98cf-2e7d0593f2b8"
               }
             ],
-            "uuid": "fc59728b-9aed-466e-8f34-c7453800a6be"
+            "uuid": "5d7de0dd-758a-45ed-9d7c-dd12f44d19e9"
           },
           {
-            "number": 16,
-            "as": "1ba93c57",
+            "number": 14,
+            "as": "e0b8da67",
             "keyword": "catch",
             "input": {
               "max_retry_count": "0",
@@ -5326,10 +5450,10 @@
             },
             "block": [
               {
-                "number": 17,
+                "number": 15,
                 "provider": "workato_recipe_function",
                 "name": "call_recipe_async",
-                "as": "dcc394f8",
+                "as": "922fe453",
                 "keyword": "action",
                 "dynamicPickListSelection": {
                   "flow_id": "System Error Handling"
@@ -5348,12 +5472,12 @@
                       "process_path": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_path\"]}')}",
                       "jobUrl": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_url\"]}')}",
                       "is_repeat": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"is_repeat\"]}')}",
-                      "error_uuid": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1ba93c57\",\"path\":[\"uuid\"]}')}",
-                      "errored_app": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1ba93c57\",\"path\":[\"adapter\"]}')}",
-                      "errored_action": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1ba93c57\",\"path\":[\"action\"]}')}",
-                      "error_step_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1ba93c57\",\"path\":[\"line_number\"]}')}",
-                      "errorType": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1ba93c57\",\"path\":[\"type\"]}')}",
-                      "errorMessage": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1ba93c57\",\"path\":[\"message\"]}')}",
+                      "error_uuid": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"e0b8da67\",\"path\":[\"uuid\"]}')}",
+                      "errored_app": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"e0b8da67\",\"path\":[\"adapter\"]}')}",
+                      "errored_action": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"e0b8da67\",\"path\":[\"action\"]}')}",
+                      "error_step_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"e0b8da67\",\"path\":[\"line_number\"]}')}",
+                      "errorType": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"e0b8da67\",\"path\":[\"type\"]}')}",
+                      "errorMessage": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"e0b8da67\",\"path\":[\"message\"]}')}",
                       "Timestamp": "=now.in_time_zone(\"Asia/Jerusalem\")",
                       "job_uuid": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}"
                     }
@@ -5499,17 +5623,144 @@
                   }
                 ],
                 "comment": "system error function",
-                "uuid": "04b7c2c5-02f0-4425-8cd2-e6fc902a47af",
+                "uuid": "32b88808-80c7-49cd-a939-30690b590489",
                 "skip": false
+              },
+              {
+                "number": 16,
+                "provider": "workato_api_platform",
+                "name": "return_response",
+                "as": "55f41197",
+                "keyword": "action",
+                "input": {
+                  "http_status_code": "400",
+                  "response": {
+                    "body": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"385cb97c\",\"path\":[\"output\",\"error_page\"]}')}"
+                  },
+                  "response_headers": {
+                    "Content-Type": "text/html; charset=utf-8"
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "change_on_blur": true,
+                    "control_type": "select",
+                    "extends_schema": true,
+                    "label": "Response",
+                    "name": "http_status_code",
+                    "pick_list": [
+                      [
+                        "OK",
+                        "200"
+                      ],
+                      [
+                        "Bad Request",
+                        "400"
+                      ]
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "label": "Response body",
+                    "name": "response",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text-area",
+                        "label": "Body",
+                        "optional": true,
+                        "sticky": true,
+                        "supports_byte_streaming": true,
+                        "type": "string",
+                        "name": "body"
+                      }
+                    ],
+                    "sticky": true,
+                    "type": "object"
+                  },
+                  {
+                    "label": "Response headers",
+                    "name": "response_headers",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Content- type",
+                        "name": "Content-Type",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "change_on_blur": true,
+                    "control_type": "select",
+                    "extends_schema": true,
+                    "label": "Response",
+                    "name": "http_status_code",
+                    "pick_list": [
+                      [
+                        "OK",
+                        "200"
+                      ],
+                      [
+                        "Bad Request",
+                        "400"
+                      ]
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "label": "Response headers",
+                    "name": "response_headers",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Content- type",
+                        "name": "Content-Type",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "label": "Response body",
+                    "name": "response",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text-area",
+                        "label": "Body",
+                        "optional": true,
+                        "sticky": true,
+                        "supports_byte_streaming": true,
+                        "type": "string",
+                        "name": "body"
+                      }
+                    ],
+                    "sticky": true,
+                    "type": "object"
+                  }
+                ],
+                "visible_config_fields": [
+                  "http_status_code",
+                  "response.Body",
+                  "response",
+                  "response_headers.Content-Type"
+                ],
+                "comment": "status = error",
+                "uuid": "0927c94e-a7e6-4558-89d9-a74e83e4fc7e"
               }
             ],
-            "uuid": "d58af71f-93c0-4450-bcde-c9217188e158"
+            "uuid": "67a702a7-7c68-4f95-95ea-f499ac0b7ec5"
           }
         ],
-        "uuid": "b30a8d69-8a24-45bb-80af-3deca516bcc9"
+        "uuid": "848c9986-a384-4263-b1e8-133f669a76f2"
       }
     ],
-    "comment": "API: Reject-Submit",
     "job_report_schema": [
       {
         "name": "custom_column_0",
@@ -5517,48 +5768,36 @@
       },
       {
         "name": "custom_column_1",
-        "label": "Submitted By"
-      },
-      {
-        "name": "custom_column_2",
         "label": "File Id"
       },
       {
+        "name": "custom_column_5",
+        "label": "Contarat Status"
+      },
+      {
+        "name": "custom_column_2",
+        "label": "Dealdesk Slack Status"
+      },
+      {
         "name": "custom_column_3",
-        "label": "Submitter Slack Status"
+        "label": "Status"
       },
       {
         "name": "custom_column_4",
-        "label": "Stauts"
-      },
-      {
-        "name": "custom_column_5",
         "label": "Message"
       }
     ],
     "job_report_config": {
       "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"9426abf6\",\"path\":[\"request\",\"contract_id\"]}')}",
-      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"a271d370\",\"path\":[\"output\",\"submitted_by\"]}')}",
-      "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"drive_file_id\"]}')}",
-      "custom_column_3": "=_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"73a86f6a\",\"path\":[\"text\"]}').present? ? 'Ok' : 'Error'",
-      "custom_column_4": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1ba93c57\",\"path\":[\"message\"]}').present? ? 'Error' : 'Success'",
-      "custom_column_5": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1ba93c57\",\"path\":[\"message\"]}').presence"
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"ff25c68f\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"drive_file_id\"]}')}",
+      "custom_column_5": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"ff25c68f\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"status\"]}')}",
+      "custom_column_2": "=_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"630c6a25\",\"path\":[\"text\"]}').present? ? 'Ok' : 'Error'",
+      "custom_column_3": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"e0b8da67\",\"path\":[\"message\"]}').present? ? 'Error' : 'Success'",
+      "custom_column_4": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"e0b8da67\",\"path\":[\"message\"]}').presence"
     },
     "uuid": "05ae9e2c-5839-49df-bcbe-cc5296116622"
   },
   "config": [
-    {
-      "keyword": "application",
-      "provider": "workato_api_platform",
-      "skip_validation": false,
-      "account_id": null
-    },
-    {
-      "keyword": "application",
-      "provider": "workato_custom_code",
-      "skip_validation": false,
-      "account_id": null
-    },
     {
       "keyword": "application",
       "provider": "postgresql",
@@ -5581,7 +5820,29 @@
     },
     {
       "keyword": "application",
+      "provider": "google_drive",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Google Apps/google_drive.connection.json",
+        "name": "Google Drive",
+        "folder": "#Connections/Google Apps"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_custom_code",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
       "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_api_platform",
       "skip_validation": false,
       "account_id": null
     }

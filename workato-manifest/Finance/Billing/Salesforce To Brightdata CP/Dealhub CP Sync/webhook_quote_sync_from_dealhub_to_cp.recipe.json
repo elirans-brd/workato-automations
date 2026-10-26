@@ -1,9 +1,10 @@
 {
   "name": "Webhook: Quote Sync From Dealhub To CP",
   "description": "This recipe automates the process of handling a \"quote won\" event from Dealhub via an HTTP webhook.\n\n- The process begins when a webhook event is received, containing details about the Dealhub opportunity and quote.\n- If the environment is set to \"Dev\", it searches for related opportunities in Salesforce using a SOQL query.\n- The recipe then retrieves the quote details from Dealhub using an HTTP GET request.\n- If the quote retrieval is successful, it updates the quote in another system via an HTTP PUT request.\n- Upon successful update, a message is posted to a Slack channel with details about the new Dealhub won opportunity, including the external opportunity ID, Dealhub quote ID, the executor, and the status.\n- If any step fails, an error message is raised and posted to the Slack channel for visibility.\n\nOverall, this recipe ensures that when a quote is won in Dealhub, the relevant information is updated and communicated effectively to the team via Slack.\n\n[Monday Item Link](https://brightdata-group.monday.com/boards/8667788707/pulses/18147031001)",
-  "version": 17,
+  "version": 18,
   "private": true,
   "concurrency": 1,
+  "version_comment": "sent zone id in webhook: https://brightdata-group.monday.com/boards/18389886720/views/224786496/pulses/13123803814",
   "code": {
     "number": 0,
     "provider": "workato_webhooks",
@@ -406,92 +407,214 @@
                 ],
                 "comment": "get opportunities for test account",
                 "uuid": "28878bb0-cf11-46df-8b34-d1b2989448e6",
-                "skip": false
+                "skip": true
               }
             ],
             "comment": "Only For dev, get opportunities for test account",
-            "uuid": "7bf2f1f1-d50b-4520-940c-d609234fb3e8"
+            "uuid": "7bf2f1f1-d50b-4520-940c-d609234fb3e8",
+            "skip": true
           },
           {
             "number": 4,
-            "provider": "workato_variable",
-            "name": "declare_variable",
-            "as": "1cf5299e",
+            "provider": "salesforce",
+            "name": "search_sobjects_soql",
+            "as": "57e02cb9",
             "keyword": "action",
-            "input": {
-              "variables": {
-                "schema": "[{\"name\":\"quote_id\",\"type\":\"string\",\"optional\":true,\"label\":\"quote_id\",\"details\":{\"real_name\":\"quote_id\"},\"control_type\":\"text\",\"parent\":[\"variables\",\"data\"]}]",
-                "data": {
-                  "quote_id": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"0c977ab4\",\"path\":[\"payload\",\"external_quote_id\"]}')&.slice(0,16)"
+            "dynamicPickListSelection": {
+              "sobject_name": "Opportunity",
+              "field_list": [
+                {
+                  "label": "Opportunity ID",
+                  "value": "Id"
+                },
+                {
+                  "label": "Quote ID",
+                  "value": "SyncedQuoteId"
+                },
+                {
+                  "label": "Account ID",
+                  "value": "AccountId"
                 }
-              }
+              ]
+            },
+            "input": {
+              "limit": "150",
+              "sobject_name": "Opportunity",
+              "query": "id = '#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"0c977ab4\",\"path\":[\"payload\",\"external_opportunity_id\"]}')}'",
+              "field_list": "Id\nSyncedQuoteId\nAccountId"
             },
             "extended_output_schema": [
               {
-                "control_type": "text",
-                "label": "quote_id",
-                "name": "quote_id",
-                "optional": true,
-                "type": "string",
-                "details": {
-                  "real_name": "quote_id"
-                }
-              }
-            ],
-            "extended_input_schema": [
-              {
-                "add_field_label": "Add a variable",
-                "control_type": "form-schema-builder",
-                "empty_schema_title": "Add variables by giving them a name, type and default value",
-                "exclude_fields": [
-                  "hint"
-                ],
-                "item_label": "variable",
-                "label": "Variables",
-                "mark_as_required": true,
-                "name": "variables",
-                "ngIf": "!input.name",
-                "optional": true,
+                "label": "Opportunities",
+                "name": "Opportunity",
+                "of": "object",
                 "properties": [
                   {
                     "control_type": "text",
-                    "label": "Schema",
-                    "extends_schema": true,
-                    "broadcast_change_event": true,
+                    "label": "Account ID",
+                    "optional": true,
+                    "custom": false,
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
                     "type": "string",
-                    "name": "schema"
+                    "name": "AccountId"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Opportunity ID",
+                    "optional": true,
+                    "custom": false,
+                    "sfdc_createable": false,
+                    "sfdc_updateable": false,
+                    "type": "string",
+                    "name": "Id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Quote ID",
+                    "optional": true,
+                    "custom": false,
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "type": "string",
+                    "name": "SyncedQuoteId"
                   },
                   {
                     "properties": [
                       {
-                        "control_type": "text",
-                        "label": "quote_id",
-                        "name": "quote_id",
-                        "type": "string",
-                        "optional": true,
-                        "details": {
-                          "real_name": "quote_id"
-                        },
-                        "parent": [
-                          "variables",
-                          "data"
+                        "control_type": "number",
+                        "label": "Total size",
+                        "parse_output": "integer_conversion",
+                        "type": "integer",
+                        "name": "totalSize"
+                      },
+                      {
+                        "label": "Files",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "ID",
+                            "type": "string",
+                            "name": "Id"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Content size",
+                            "parse_output": "integer_conversion",
+                            "type": "integer",
+                            "name": "ContentSize"
+                          },
+                          {
+                            "control_type": "url",
+                            "label": "Content URL",
+                            "type": "string",
+                            "name": "ContentUrl"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File extension",
+                            "type": "string",
+                            "name": "FileExtension"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File type",
+                            "type": "string",
+                            "name": "FileType"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Parent ID",
+                            "type": "string",
+                            "name": "ParentId"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Record type",
+                            "type": "string",
+                            "name": "RecordType"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Title",
+                            "type": "string",
+                            "name": "Title"
+                          }
                         ],
-                        "hint": "Defaults to nil if not supplied.",
-                        "sticky": true
+                        "type": "array",
+                        "name": "records"
                       }
                     ],
-                    "label": "Data",
+                    "label": "Combined attachments",
+                    "sfdc_field_type": "CombinedAttachment",
                     "type": "object",
-                    "name": "data"
+                    "name": "CombinedAttachments"
                   }
                 ],
-                "type": "object"
+                "type": "array"
+              },
+              {
+                "control_type": "number",
+                "label": "List size",
+                "name": "list_size",
+                "parse_output": "integer_conversion",
+                "type": "integer"
+              },
+              {
+                "control_type": "checkbox",
+                "label": "Processed all records?",
+                "name": "done",
+                "toggle_field": {
+                  "label": "Processed all records?",
+                  "control_type": "text",
+                  "toggle_hint": "Use custom value",
+                  "type": "boolean",
+                  "render_input": null,
+                  "parse_output": null,
+                  "name": "done"
+                },
+                "toggle_hint": "Select from option list",
+                "type": "boolean"
+              },
+              {
+                "control_type": "integer",
+                "label": "Total records",
+                "name": "total_records",
+                "parse_output": "integer_conversion",
+                "type": "integer"
+              },
+              {
+                "control_type": "url",
+                "label": "Next page URL",
+                "name": "next_page_url",
+                "type": "string"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "control_type": "checkbox",
+                "disable_formula": true,
+                "extends_schema": true,
+                "hint": "Select <b>Yes</b> to obtain data from notes, attachments and files associated to the queried records. Default value is <b>Yes</b>.",
+                "label": "Select combined attachments",
+                "name": "include_combined_attachments",
+                "optional": true,
+                "support_pills": false,
+                "type": "boolean"
               }
             ],
             "visible_config_fields": [
-              "variables.data.quote_id"
+              "sobject_name",
+              "query",
+              "field_list",
+              "limit",
+              "offset",
+              "requester_email"
             ],
-            "uuid": "3bc9eb39-3860-42ca-b303-a2df89cf37fe"
+            "comment": "get Opportunity details",
+            "uuid": "d02e77e0-1279-4ee7-8605-6c509b112fe5",
+            "skip": false
           },
           {
             "number": 5,
@@ -508,7 +631,7 @@
               "request": {
                 "method": "GET",
                 "content_type": "application/json",
-                "url": "v2/quote/#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"1cf5299e\",\"path\":[\"quote_id\"]}')}?feature=all&external_identifier_flag=true",
+                "url": "v2/quote/#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"0c977ab4\",\"path\":[\"payload\",\"external_quote_id\"]}')}?feature=all&external_identifier_flag=true",
                 "headers": [
                   {
                     "header": "Accept",
@@ -1439,6 +1562,237 @@
             "block": [
               {
                 "number": 7,
+                "provider": "salesforce",
+                "name": "search_sobjects_soql",
+                "as": "d4b6ce11",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "sobject_name": "Account Zone",
+                  "field_list": [
+                    {
+                      "label": "Record ID",
+                      "value": "Id"
+                    },
+                    {
+                      "label": "Account Zone",
+                      "value": "Name"
+                    },
+                    {
+                      "label": "Display Value",
+                      "value": "Display_Value__c"
+                    },
+                    {
+                      "label": "Zone ID",
+                      "value": "Zone_ID__c"
+                    },
+                    {
+                      "label": "Resource ID",
+                      "value": "Resource_ID__c"
+                    }
+                  ]
+                },
+                "input": {
+                  "limit": "2000",
+                  "sobject_name": "Account_Zone__c",
+                  "query": "Account__c = '#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"57e02cb9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"AccountId\"]}')}'\nand Virtual_Zone__c = true",
+                  "field_list": "Id\nName\nDisplay_Value__c\nZone_ID__c\nResource_ID__c"
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Account Zones",
+                    "name": "Account_Zone__c",
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Account Zone",
+                        "optional": true,
+                        "event_title": true,
+                        "custom": false,
+                        "sfdc_createable": false,
+                        "sfdc_updateable": false,
+                        "type": "string",
+                        "name": "Name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Record ID",
+                        "optional": true,
+                        "custom": false,
+                        "sfdc_createable": false,
+                        "sfdc_updateable": false,
+                        "type": "string",
+                        "name": "Id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Display Value",
+                        "optional": true,
+                        "custom": true,
+                        "sfdc_createable": false,
+                        "sfdc_updateable": false,
+                        "type": "string",
+                        "name": "Display_Value__c"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Resource ID",
+                        "optional": true,
+                        "custom": true,
+                        "sfdc_createable": true,
+                        "sfdc_updateable": true,
+                        "type": "string",
+                        "name": "Resource_ID__c"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Zone ID",
+                        "optional": true,
+                        "custom": true,
+                        "sfdc_createable": true,
+                        "sfdc_updateable": true,
+                        "type": "string",
+                        "name": "Zone_ID__c"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "number",
+                            "label": "Total size",
+                            "parse_output": "integer_conversion",
+                            "type": "integer",
+                            "name": "totalSize"
+                          },
+                          {
+                            "label": "Files",
+                            "of": "object",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "ID",
+                                "type": "string",
+                                "name": "Id"
+                              },
+                              {
+                                "control_type": "number",
+                                "label": "Content size",
+                                "parse_output": "integer_conversion",
+                                "type": "integer",
+                                "name": "ContentSize"
+                              },
+                              {
+                                "control_type": "url",
+                                "label": "Content URL",
+                                "type": "string",
+                                "name": "ContentUrl"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "File extension",
+                                "type": "string",
+                                "name": "FileExtension"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "File type",
+                                "type": "string",
+                                "name": "FileType"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Parent ID",
+                                "type": "string",
+                                "name": "ParentId"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Record type",
+                                "type": "string",
+                                "name": "RecordType"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Title",
+                                "type": "string",
+                                "name": "Title"
+                              }
+                            ],
+                            "type": "array",
+                            "name": "records"
+                          }
+                        ],
+                        "label": "Combined attachments",
+                        "sfdc_field_type": "CombinedAttachment",
+                        "type": "object",
+                        "name": "CombinedAttachments"
+                      }
+                    ],
+                    "type": "array"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "List size",
+                    "name": "list_size",
+                    "parse_output": "integer_conversion",
+                    "type": "integer"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Processed all records?",
+                    "name": "done",
+                    "toggle_field": {
+                      "label": "Processed all records?",
+                      "control_type": "text",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean",
+                      "render_input": null,
+                      "parse_output": null,
+                      "name": "done"
+                    },
+                    "toggle_hint": "Select from option list",
+                    "type": "boolean"
+                  },
+                  {
+                    "control_type": "integer",
+                    "label": "Total records",
+                    "name": "total_records",
+                    "parse_output": "integer_conversion",
+                    "type": "integer"
+                  },
+                  {
+                    "control_type": "url",
+                    "label": "Next page URL",
+                    "name": "next_page_url",
+                    "type": "string"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "control_type": "checkbox",
+                    "disable_formula": true,
+                    "extends_schema": true,
+                    "hint": "Select <b>Yes</b> to obtain data from notes, attachments and files associated to the queried records. Default value is <b>Yes</b>.",
+                    "label": "Select combined attachments",
+                    "name": "include_combined_attachments",
+                    "optional": true,
+                    "support_pills": false,
+                    "type": "boolean"
+                  }
+                ],
+                "visible_config_fields": [
+                  "sobject_name",
+                  "query",
+                  "field_list",
+                  "limit",
+                  "offset",
+                  "requester_email"
+                ],
+                "comment": "get account zone details",
+                "uuid": "f4124d77-f7eb-4646-a201-47a2fcb38673",
+                "skip": false
+              },
+              {
+                "number": 8,
                 "provider": "workato_custom_code",
                 "name": "invoke_custom_ruby_code",
                 "as": "bb122c8a",
@@ -1573,7 +1927,7 @@
                 "uuid": "42803291-1c97-49e9-9d66-5dd8d590e3fc"
               },
               {
-                "number": 8,
+                "number": 9,
                 "keyword": "if",
                 "input": {
                   "type": "compound",
@@ -1589,20 +1943,21 @@
                 },
                 "block": [
                   {
-                    "number": 9,
+                    "number": 10,
                     "provider": "workato_custom_code",
                     "name": "invoke_custom_ruby_code",
                     "as": "0c5bf2e2",
                     "keyword": "action",
                     "input": {
                       "payload_asset_type": "inline",
-                      "code": "{ \"result\" => { \"environment\" => input[\"env\"] }.merge(input[\"quote\"]) }\n",
+                      "code": "quote = input[\"quote\"]\nsalesforce_result = input[\"account_zones\"]\n\naccount_zones =\n  if salesforce_result.is_a?(Array)\n    salesforce_result\n  elsif salesforce_result.is_a?(Hash)\n    salesforce_result[\"records\"] || []\n  else\n    []\n  end\n\n# Salesforce Display_Value__c => { zone_id, resource_id }\nzone_lookup = {}\n\naccount_zones.each do |account_zone|\n  display_value =\n    account_zone[\"Display_Value__c\"] ||\n    account_zone[\"display_value__c\"]\n\n  zone_id =\n    account_zone[\"Zone_ID__c\"] ||\n    account_zone[\"zone_id__c\"]\n\n  resource_id =\n    account_zone[\"Resource_ID__c\"] ||\n    account_zone[\"resource_id__c\"]\n\n  next if display_value.to_s.strip.empty?\n  next if zone_id.to_s.strip.empty?\n\n  key = display_value.to_s.strip.downcase\n  zone_lookup[key] = {\n    \"zone_id\"     => zone_id,\n    \"resource_id\" => resource_id\n  }\nend\n\ntransform = nil\n\ntransform = lambda do |value|\n  if value.is_a?(Hash)\n    new_hash = {}\n\n    # Find whether this object has a matching Zone.\n    zone_key = value.keys.find do |key|\n      key.to_s.downcase == \"zone\"\n    end\n\n    matching = nil\n\n    if zone_key\n      zone_value = value[zone_key]\n\n      unless zone_value.to_s.strip.empty?\n        normalized_zone = zone_value.to_s.strip.downcase\n        matching = zone_lookup[normalized_zone]\n      end\n    end\n\n    matching_zone_id     = matching && matching[\"zone_id\"]\n    matching_resource_id = matching && matching[\"resource_id\"]\n\n    value.each do |key, nested_value|\n      # If a match exists, remove old zone_id / resource_id so they\n      # can be reinserted immediately after Zone.\n      if key.to_s.downcase == \"zone_id\" && matching_zone_id\n        next\n      end\n\n      if key.to_s.downcase == \"resource_id\" && matching_resource_id\n        next\n      end\n\n      new_hash[key] = transform.call(nested_value)\n\n      # Insert zone_id then resource_id immediately after Zone.\n      if key.to_s.downcase == \"zone\" && matching_zone_id\n        new_hash[\"zone_id\"] = matching_zone_id\n        new_hash[\"resource_id\"] = matching_resource_id if matching_resource_id\n      end\n    end\n\n    new_hash\n\n  elsif value.is_a?(Array)\n    value.map do |item|\n      transform.call(item)\n    end\n\n  else\n    value\n  end\nend\n\nenriched_quote = transform.call(quote)\n\n{\n  \"result\" => {\n    \"environment\" => input[\"env\"]\n  }.merge(enriched_quote)\n}\n",
                       "name": "Add environment to quote payload",
                       "code_input": {
-                        "schema": "[{\"control_type\":\"text\",\"label\":\"env\",\"name\":\"env\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"env\"},\"parent\":[\"code_input\",\"data\"]},{\"name\":\"quote\",\"type\":\"string\",\"optional\":true,\"label\":\"quote\",\"details\":{\"real_name\":\"quote\"},\"control_type\":\"text\",\"parent\":[\"code_input\",\"data\"]}]",
+                        "schema": "[{\"control_type\":\"text\",\"label\":\"env\",\"name\":\"env\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"env\"},\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"quote\",\"name\":\"quote\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"quote\"},\"parent\":[\"code_input\",\"data\"]},{\"name\":\"account_zones\",\"type\":\"string\",\"optional\":true,\"label\":\"account_zones\",\"details\":{\"real_name\":\"account_zones\"},\"control_type\":\"text\",\"parent\":[\"code_input\",\"data\"]}]",
                         "data": {
                           "quote": "=_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"7ab7b873\",\"path\":[\"response\"]}')",
-                          "env": "#{_dp('{\"pill_type\":\"account_property\",\"property_name\":\"Environment\"}')}"
+                          "env": "#{_dp('{\"pill_type\":\"account_property\",\"property_name\":\"Environment\"}')}",
+                          "account_zones": "=_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"d4b6ce11\",\"path\":[\"Account_Zone__c\"]}')"
                         }
                       },
                       "code_output_schema_json": "[{\"name\":\"result\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Result\"}]"
@@ -1667,6 +2022,20 @@
                                   "code_input",
                                   "data"
                                 ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "account_zones",
+                                "name": "account_zones",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "account_zones"
+                                },
+                                "parent": [
+                                  "code_input",
+                                  "data"
+                                ]
                               }
                             ],
                             "label": "Data",
@@ -1686,13 +2055,15 @@
                       "code",
                       "code_input.data.env",
                       "code_input.schema",
-                      "code_input.data.quote"
+                      "code_input.data.quote",
+                      "code_input.data",
+                      "code_input.data.account_zones"
                     ],
                     "comment": "Add environment to quote payload",
                     "uuid": "b01b22ff-663c-4534-8bc5-fecf52236bba"
                   },
                   {
-                    "number": 10,
+                    "number": 11,
                     "provider": "rest_secondary",
                     "name": "make_request_v2",
                     "as": "025acd80",
@@ -1988,7 +2359,7 @@
                     "skip": false
                   },
                   {
-                    "number": 11,
+                    "number": 12,
                     "keyword": "if",
                     "input": {
                       "type": "compound",
@@ -2004,7 +2375,7 @@
                     },
                     "block": [
                       {
-                        "number": 12,
+                        "number": 13,
                         "provider": "slack_bot",
                         "name": "post_bot_message",
                         "as": "25910df2",
@@ -2029,7 +2400,7 @@
                         "uuid": "980f5d31-4b2b-42fd-b22c-fec0abd71656"
                       },
                       {
-                        "number": 13,
+                        "number": 14,
                         "keyword": "if",
                         "input": {
                           "type": "compound",
@@ -2045,7 +2416,7 @@
                         },
                         "block": [
                           {
-                            "number": 14,
+                            "number": 15,
                             "provider": "workato_db_table",
                             "name": "add_record",
                             "as": "f9e71813",
@@ -2181,13 +2552,13 @@
                             "uuid": "90d534a5-3a35-4498-9597-42270d945c13"
                           },
                           {
-                            "number": 15,
+                            "number": 16,
                             "keyword": "else",
                             "input": {
                             },
                             "block": [
                               {
-                                "number": 16,
+                                "number": 17,
                                 "as": "1c620e13",
                                 "keyword": "stop",
                                 "input": {
@@ -2203,13 +2574,13 @@
                         "uuid": "9846ecd6-48c7-4c57-945f-2ee1e7a314cd"
                       },
                       {
-                        "number": 17,
+                        "number": 18,
                         "keyword": "else",
                         "input": {
                         },
                         "block": [
                           {
-                            "number": 18,
+                            "number": 19,
                             "as": "aebf92e9",
                             "keyword": "stop",
                             "input": {
@@ -2234,13 +2605,13 @@
                 "uuid": "acf97fdc-6b7f-4548-b574-dad84636423f"
               },
               {
-                "number": 19,
+                "number": 20,
                 "keyword": "else",
                 "input": {
                 },
                 "block": [
                   {
-                    "number": 20,
+                    "number": 21,
                     "as": "a97a5f64",
                     "keyword": "stop",
                     "input": {
@@ -2258,7 +2629,7 @@
             "uuid": "a2ea1aa7-fd44-49cd-b27d-4843665da64c"
           },
           {
-            "number": 21,
+            "number": 22,
             "as": "c4153f8b",
             "keyword": "catch",
             "input": {
@@ -2267,7 +2638,7 @@
             },
             "block": [
               {
-                "number": 22,
+                "number": 23,
                 "provider": "slack_bot",
                 "name": "post_bot_message",
                 "as": "53f6b2b1",
@@ -2292,7 +2663,7 @@
                 "uuid": "05751485-f800-4535-90d3-57885ba13351"
               },
               {
-                "number": 23,
+                "number": 24,
                 "provider": "workato_recipe_function",
                 "name": "call_recipe_async",
                 "as": "20b1a002",
@@ -2589,12 +2960,6 @@
     {
       "keyword": "application",
       "provider": "workato_custom_code",
-      "skip_validation": false,
-      "account_id": null
-    },
-    {
-      "keyword": "application",
-      "provider": "workato_variable",
       "skip_validation": false,
       "account_id": null
     }

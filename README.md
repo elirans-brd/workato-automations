@@ -14,8 +14,7 @@ Promote by PR: `dev` → `qa` → `prod`.
 
 ## Layout
 
-- `manifests/automations/prod-env-home/` – export of the prod environment
-- `automations/` – `wk` CLI projects (`.wk/` local state is not committed)
+- `workato-manifest/` – manifest export of the Workato environment matching the current branch (projects, recipes, connectors, lookup tables, API endpoints). New recipes go in the relevant project folder here.
 - `skills/brightdata-workato-recipes/` – Bright Data recipe-building skill
 - `wk/`, `skills/recipe-skills/` – upstream `workato-devs` repos as git submodules
 

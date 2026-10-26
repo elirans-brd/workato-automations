@@ -8,6 +8,7 @@ profiles.env
 **/profiles.env
 .env
 .env.*
+.wk/
 
 # Python
 __pycache__/
