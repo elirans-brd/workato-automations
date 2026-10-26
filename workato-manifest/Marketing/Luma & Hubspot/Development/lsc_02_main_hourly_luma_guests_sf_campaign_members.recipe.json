@@ -135,7 +135,7 @@
                   "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00011\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"nf_count\"]}')}",
                   "operand": "not_equals_to",
                   "rhs": "0",
-                  "uuid": "e755c9f5-53d1-4ac7-bc94-ef2a9a335d11"
+                  "uuid": "4839f313-856f-48d9-92db-bab2c470c904"
                 }
               ],
               "operand": "and",
@@ -202,7 +202,7 @@
                   "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00006\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"error_count\"]}')}",
                   "operand": "not_equals_to",
                   "rhs": "0",
-                  "uuid": "6906d396-21b0-4237-b505-c433a1be0500"
+                  "uuid": "116ecd70-a3a4-42f5-8809-eb0fb468f863"
                 }
               ],
               "operand": "and",
@@ -254,6 +254,40 @@
     "input": {
       "time_unit": "hours"
     },
+    "job_report_config": {
+      "custom_column_0": "=_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00002\",\"path\":[\"rows\"]}').size",
+      "custom_column_1": "=_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00011\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"nf_count\"]}')",
+      "custom_column_2": "=_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00006\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"error_count\"]}')",
+      "custom_column_3": "=_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"c3c00013\",\"path\":[\"ts\"]}').present? ? \"Yes\" : \"No\"",
+      "custom_column_4": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c3c0c001\",\"path\":[\"message\"]}').present? ? \"Error\" : \"Success\"",
+      "custom_column_5": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c3c0c001\",\"path\":[\"message\"]}').presence"
+    },
+    "job_report_schema": [
+      {
+        "label": "Rows Due",
+        "name": "custom_column_0"
+      },
+      {
+        "label": "New Not Found",
+        "name": "custom_column_1"
+      },
+      {
+        "label": "New Errors",
+        "name": "custom_column_2"
+      },
+      {
+        "label": "Field Marketing Notified",
+        "name": "custom_column_3"
+      },
+      {
+        "label": "Status",
+        "name": "custom_column_4"
+      },
+      {
+        "label": "Message",
+        "name": "custom_column_5"
+      }
+    ],
     "keyword": "trigger",
     "name": "scheduled_event",
     "number": 0,
@@ -295,5 +329,5 @@
   "description": "# LSC-02 | Main | Hourly Luma Guests → SF Campaign Members\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** Scheduler — every hour, Asia/Jerusalem\n\n**PURPOSE:** Sync queued Luma guests to Salesforce campaign members 1h after registration, retrying at 3h.\n\n**FLOW:**\n1. Get Pending rows with `next_attempt_at` ≤ now → PostgreSQL\n2. For each: call Fun 002 → write Done / Skipped / Not found / Error + SF IDs back to the row\n3. Not found on 1st attempt → stay Pending, retry in 2h; on 2nd → Not found\n4. New Not found rows → Slack field marketing (email, SF campaign name, member status)\n5. If new Error rows exist → mark notified and stop with error (→ System Error Handling)\n\n**DB / TABLES:** `marketing.luma_sf_campaign_queue` (read/write)\n**UPSTREAM:** LSC-01 | Fun 001 | Queue Luma Guest for SF Campaign Sync (fills the queue)  \n**DOWNSTREAM:** LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign\n\n## Important logic\n- Attempts: +1h (Fun 001) and +3h (retry). Each Not found / Error row alerts once.\n- Slack channel: Marketing project property `lsc_field_marketing_channel`.\n- Max 500 rows per run; the rest are picked up next hour.\n",
   "name": "LSC-02 | Main | Hourly Luma Guests → SF Campaign Members",
   "private": false,
-  "version": 2
+  "version": 3
 }

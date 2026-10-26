@@ -56,7 +56,7 @@
                   "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00002\",\"path\":[\"output\",\"skip_reason\"]}')}",
                   "operand": "present",
                   "rhs": "",
-                  "uuid": "af0c0fc2-dfb0-4abf-821d-f5806bc296c7"
+                  "uuid": "e8946b72-f659-4a83-848c-2f59ac5ecf7c"
                 }
               ],
               "operand": "and",
@@ -173,7 +173,7 @@
                   "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"skip_reason\"]}')}",
                   "operand": "present",
                   "rhs": "",
-                  "uuid": "8e928852-c32f-4b92-aca7-16f101080246"
+                  "uuid": "4acb6e1e-b8c6-4a68-8cd0-a1f399aa96ab"
                 }
               ],
               "operand": "and",
@@ -234,7 +234,7 @@
                   "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"person_id\"]}')}",
                   "operand": "blank",
                   "rhs": "",
-                  "uuid": "78933dcc-7edf-450c-809a-ae1a3d4040a1"
+                  "uuid": "0ac33ad7-8ced-42a9-8fcd-7d3e1c6dc0aa"
                 }
               ],
               "operand": "and",
@@ -316,7 +316,7 @@
                   "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00013\",\"path\":[\"CampaignMember\",{\"path_element_type\":\"current_item\"},\"Id\"]}')}",
                   "operand": "present",
                   "rhs": "",
-                  "uuid": "459181ff-ad90-49c3-ac02-e7a5befec807"
+                  "uuid": "6c534821-4f07-420a-9a15-25491230217d"
                 }
               ],
               "operand": "and",
@@ -475,6 +475,60 @@
       "parameters_schema_json": "[{\"name\": \"queue_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Queue ID\"}, {\"name\": \"email\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Email\"}, {\"name\": \"luma_url_slug\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Luma URL slug\"}, {\"name\": \"approval_status\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Approval status\"}]",
       "result_schema_json": "[{\"name\": \"status\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Status\"}, {\"name\": \"message\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Message\"}, {\"name\": \"sf_person_type\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"SF person type\"}, {\"name\": \"sf_person_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"SF person ID\"}, {\"name\": \"sf_campaign_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"SF campaign ID\"}, {\"name\": \"sf_campaign_name\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"SF campaign name\"}, {\"name\": \"sf_campaign_member_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"SF campaign member ID\"}, {\"name\": \"sf_member_status\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"SF member status\"}]"
     },
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c2b00001\",\"path\":[\"parameters\",\"email\"]}')}",
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c2b00001\",\"path\":[\"parameters\",\"luma_url_slug\"]}')}",
+      "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c2b00001\",\"path\":[\"parameters\",\"queue_id\"]}')}",
+      "custom_column_3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00002\",\"path\":[\"output\",\"member_status\"]}')}",
+      "custom_column_4": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"person_type\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"person_type\"]}') + \" \" + _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"person_id\"]}') : skip",
+      "custom_column_5": "=_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00020\",\"path\":[\"Campaign\",{\"path_element_type\":\"current_item\"},\"Name\"]}').presence || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"campaign_id\"]}')",
+      "custom_column_6": "=_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00013\",\"path\":[\"CampaignMember\",{\"path_element_type\":\"current_item\"},\"Id\"]}').presence || _dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00017\",\"path\":[\"id\"]}')",
+      "custom_column_7": "=_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00013\",\"path\":[\"CampaignMember\",{\"path_element_type\":\"current_item\"},\"Id\"]}').present? ? \"Updated\" : (_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00017\",\"path\":[\"id\"]}').present? ? \"Created\" : skip)",
+      "custom_column_8": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c2b0c001\",\"path\":[\"message\"]}').present? ? \"Error\" : (_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00002\",\"path\":[\"output\",\"skip_reason\"]}').present? || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"skip_reason\"]}').present? ? \"Skipped\" : (_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"person_id\"]}').present? ? \"Success\" : \"Not found\"))",
+      "custom_column_9": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c2b0c001\",\"path\":[\"message\"]}').presence || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00002\",\"path\":[\"output\",\"skip_reason\"]}').presence || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"skip_reason\"]}').presence || skip"
+    },
+    "job_report_schema": [
+      {
+        "label": "Email",
+        "name": "custom_column_0"
+      },
+      {
+        "label": "Luma Slug",
+        "name": "custom_column_1"
+      },
+      {
+        "label": "Queue Id",
+        "name": "custom_column_2"
+      },
+      {
+        "label": "Member Status",
+        "name": "custom_column_3"
+      },
+      {
+        "label": "SF Person",
+        "name": "custom_column_4"
+      },
+      {
+        "label": "SF Campaign",
+        "name": "custom_column_5"
+      },
+      {
+        "label": "Campaign Member Id",
+        "name": "custom_column_6"
+      },
+      {
+        "label": "Member Action",
+        "name": "custom_column_7"
+      },
+      {
+        "label": "Result",
+        "name": "custom_column_8"
+      },
+      {
+        "label": "Message",
+        "name": "custom_column_9"
+      }
+    ],
     "keyword": "trigger",
     "name": "execute",
     "number": 0,
@@ -516,5 +570,5 @@
   "description": "# LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** Called by LSC-02 | Main | Hourly Luma Guests → SF Campaign Members\n\n**PURPOSE:** Add a Luma guest to the Salesforce campaign mapped to the Luma event, with the Luma approval status.\n\n**FLOW:**\n1. Normalize email, map status (approved → Registered = Approved, pending_approval → Registered = Pending)\n2. Search Contact and Lead by email → Salesforce (Contact wins when both exist)\n3. Find SF campaign ID by Luma slug → Google Sheet; get Campaign name → Salesforce\n4. Search CampaignMember → update Status or create\n\n**DB / TABLES:** Google Sheet `1rShm0qyQFdtqf8b6FEpR6F3pFOEvrdWtdrklsX3axGw` / Sheet1 (`Luma event slug` → `SF campaign ID`)\n**UPSTREAM:** LSC-02 | Main | Hourly Luma Guests → SF Campaign Members  \n**DOWNSTREAM:** none\n\n## Important logic\n- Returns `Skipped` when: invalid email, unsupported status, slug not in sheet / invalid campaign ID.\n- Returns `Not found` (with campaign name + member status) when no Contact/Lead exists yet.\n- Campaign must have member statuses **Registered = Approved** and **Registered = Pending**.\n- Email and IDs are validated in Ruby before being placed in SOQL.\n",
   "name": "LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign",
   "private": false,
-  "version": 2
+  "version": 3
 }

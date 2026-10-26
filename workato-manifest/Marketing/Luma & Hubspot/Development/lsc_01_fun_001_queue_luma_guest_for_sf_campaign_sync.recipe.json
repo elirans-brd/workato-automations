@@ -76,7 +76,7 @@
                   "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c1a00002\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"id\"]}')}",
                   "operand": "present",
                   "rhs": "",
-                  "uuid": "61800768-d6b7-436c-b53e-d7a066977d62"
+                  "uuid": "e5f036fb-d292-4119-af47-53e60ed1d0bb"
                 }
               ],
               "operand": "and",
@@ -224,6 +224,50 @@
       "parameters_schema_json": "[{\"name\": \"luma_guest_id\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Luma guest ID\"}, {\"name\": \"luma_url_slug\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Luma URL slug\"}, {\"name\": \"luma_event_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Luma event ID\"}, {\"name\": \"email\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Email\"}, {\"name\": \"approval_status\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Approval status\"}]",
       "result_schema_json": "[{\"name\": \"status\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Status\"}, {\"name\": \"message\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Message\"}, {\"name\": \"queue_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Queue ID\"}]"
     },
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c1a00001\",\"path\":[\"parameters\",\"email\"]}')}",
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c1a00001\",\"path\":[\"parameters\",\"luma_url_slug\"]}')}",
+      "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c1a00001\",\"path\":[\"parameters\",\"luma_guest_id\"]}')}",
+      "custom_column_3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c1a00001\",\"path\":[\"parameters\",\"approval_status\"]}')}",
+      "custom_column_4": "=_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c1a00002\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"id\"]}').present? ? \"Re-queued\" : \"Inserted\"",
+      "custom_column_5": "=_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c1a00002\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"id\"]}').presence || _dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c1a00006\",\"path\":[\"columns\",\"id\"]}')",
+      "custom_column_6": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c1a0c001\",\"path\":[\"message\"]}').present? ? \"Error\" : \"Success\"",
+      "custom_column_7": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c1a0c001\",\"path\":[\"message\"]}').presence"
+    },
+    "job_report_schema": [
+      {
+        "label": "Email",
+        "name": "custom_column_0"
+      },
+      {
+        "label": "Luma Slug",
+        "name": "custom_column_1"
+      },
+      {
+        "label": "Guest Id",
+        "name": "custom_column_2"
+      },
+      {
+        "label": "Approval Status",
+        "name": "custom_column_3"
+      },
+      {
+        "label": "Action",
+        "name": "custom_column_4"
+      },
+      {
+        "label": "Queue Id",
+        "name": "custom_column_5"
+      },
+      {
+        "label": "Status",
+        "name": "custom_column_6"
+      },
+      {
+        "label": "Message",
+        "name": "custom_column_7"
+      }
+    ],
     "keyword": "trigger",
     "name": "execute",
     "number": 0,
@@ -251,5 +295,5 @@
   "description": "# LSC-01 | Fun 001 | Queue Luma Guest for SF Campaign Sync\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** Called async by `Webhook: Luma-to-HubSpot Guest Sync` (end of the not-ignored path)\n\n**PURPOSE:** Queue every Luma guest registration for the hourly Salesforce campaign sync.\n\n**FLOW:**\n1. Look up the row by `luma_guest_id` + `luma_url_slug` → PostgreSQL\n2. Exists → re-queue (Pending, attempts 0, `next_attempt_at` = now + 1h); else insert\n\n**DB / TABLES:** `marketing.luma_sf_campaign_queue` (read/write)\n**UPSTREAM:** Webhook: Luma-to-HubSpot Guest Sync  \n**DOWNSTREAM:** none\n\n## Important logic\n- One row per guest + event (unique key). A webhook retry or status change re-queues the same row.\n- First sync attempt 1h after the last webhook, so HubSpot → SF can create the Lead.\n- Fire-and-forget: calls System Error Handling itself on failure.\n",
   "name": "LSC-01 | Fun 001 | Queue Luma Guest for SF Campaign Sync",
   "private": false,
-  "version": 2
+  "version": 3
 }
