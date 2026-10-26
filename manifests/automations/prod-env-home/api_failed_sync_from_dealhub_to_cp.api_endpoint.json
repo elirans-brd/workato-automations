@@ -1,0 +1,19 @@
+{
+  "name": "API: Failed Sync From Dealhub To CP",
+  "recipe_id": {
+    "zip_name": "Finance/Billing/Salesforce To Brightdata CP/Dealhub CP Sync/api_failed_sync_from_dealhub_to_cp.recipe.json",
+    "name": "API: Failed Sync From Dealhub To CP",
+    "folder": "Finance/Billing/Salesforce To Brightdata CP/Dealhub CP Sync"
+  },
+  "api_group_id": {
+    "zip_name": "brightdata_cp.api_group.json",
+    "name": "Brightdata CP",
+    "folder": ""
+  },
+  "method": "POST",
+  "path": "dealhub-cp/sync-failures",
+  "legacy": false,
+  "recipe_timeout": 30,
+  "validate_request": false,
+  "validation_formula": ""
+}

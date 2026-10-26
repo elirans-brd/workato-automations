@@ -1,0 +1,47 @@
+[
+  {
+    "title": "SF-Monday",
+    "description": "",
+    "color": "blue"
+  },
+  {
+    "title": "Recipe Function",
+    "description": "",
+    "color": "green"
+  },
+  {
+    "title": "Okta",
+    "description": "",
+    "color": "orange"
+  },
+  {
+    "title": "Partners",
+    "description": "",
+    "color": "indigo"
+  },
+  {
+    "title": "Endpoint",
+    "description": "",
+    "color": "plum"
+  },
+  {
+    "title": "ETL",
+    "description": "",
+    "color": "brown"
+  },
+  {
+    "title": "AI Agent",
+    "description": "",
+    "color": "blue"
+  },
+  {
+    "title": "Agent: AI Event Hunter",
+    "description": "",
+    "color": "gold"
+  },
+  {
+    "title": "API Endpoint",
+    "description": "",
+    "color": "slate"
+  }
+]

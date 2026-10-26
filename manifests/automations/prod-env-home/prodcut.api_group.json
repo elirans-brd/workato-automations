@@ -1,0 +1,9 @@
+{
+  "name": "Prodcut",
+  "version": "1.0",
+  "description": null,
+  "handle": "prodcut",
+  "use_prefix": true,
+  "soap": false,
+  "soap_config": null
+}

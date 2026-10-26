@@ -1,0 +1,14 @@
+# OS / editor
+.DS_Store
+.vscode/
+.idea/
+
+# Workato CLI credentials and local state (never commit)
+profiles.env
+**/profiles.env
+.env
+.env.*
+
+# Python
+__pycache__/
+*.pyc

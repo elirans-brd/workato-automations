@@ -1,0 +1,1154 @@
+{
+  "name": "LS-01 | Main | LinkedIn Events → HubSpot Pipeline",
+  "description": "# LS-01 | Main | LinkedIn Events → HubSpot Pipeline\n\n**Ticket:** [LinkedIn event registration forms &lt;&gt; Hubspot](https://brightdata-group.monday.com/boards/8667788707/pulses/12418264810)\n\n## What it does\nOrchestrator that runs the full LinkedIn event registration → HubSpot sync process.\n\n## Run order (important — sequential!)\n1. **Fun 001** — Events Sync (fetch events)\n2. **Fun 002** — Registrations Sync (fetch registrations per-event)\n3. **Fun 003** — HubSpot Contact Sync (push to HubSpot)\n\n## Schedule\nRuns daily. Each step waits for the previous to complete (dependencies).\n",
+  "version": 16,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "clock",
+    "name": "scheduled_event",
+    "as": "328bfeba",
+    "keyword": "trigger",
+    "dynamicPickListSelection": {
+      "time_unit": "Hours"
+    },
+    "input": {
+      "time_unit": "hours",
+      "trigger_every": "2"
+    },
+    "extended_input_schema": [
+      {
+        "control_type": "integer",
+        "default": "5",
+        "enforce_template_mode": true,
+        "extends_schema": true,
+        "hint": "Define repeating schedule. Enter whole numbers only.This field can be set to a minimum of 5 minutes.",
+        "label": "Trigger every",
+        "name": "trigger_every",
+        "optional": false,
+        "suffix": {
+          "text": "hours"
+        },
+        "type": "string"
+      },
+      {
+        "control_type": "select",
+        "hint": "Select the timezone to use. Leave it blank to use <b>{{authUser.account_timezone}}</b>",
+        "label": "Timezone",
+        "name": "timezone",
+        "optional": true,
+        "pick_list": "timezone_id_global_pick_list",
+        "pick_list_connection_less": true,
+        "type": "string"
+      },
+      {
+        "control_type": "date_time",
+        "enforce_template_mode": true,
+        "extends_schema": true,
+        "hint": "Set date and time to start or leave blank to start immediately. <b>Once recipe has been run or tested, value cannot be changed.</b>",
+        "label": "Start after",
+        "name": "start_after",
+        "optional": true,
+        "parse_output": "date_time_conversion",
+        "since_field": true,
+        "type": "date_time",
+        "ignore_timezone": true,
+        "render_input": "date_time_conversion"
+      }
+    ],
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "workato_recipe_function",
+            "name": "call_recipe",
+            "as": "5c4e4937",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+              "flow_id": "LS-01 | Fun 001 | LinkedIn Events Sync"
+            },
+            "input": {
+              "flow_id": {
+                "zip_name": "Marketing/Linkedin Event registration/ls_01_fun_001_linkedin_events_sync.recipe.json",
+                "name": "LS-01 | Fun 001 | LinkedIn Events Sync",
+                "folder": "Marketing/Linkedin Event registration"
+              }
+            },
+            "extended_output_schema": [
+              {
+                "label": "Result",
+                "name": "result",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Status",
+                    "name": "status",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Message",
+                    "name": "message",
+                    "type": "string",
+                    "optional": true
+                  },
+                  {
+                    "label": "Events",
+                    "name": "events",
+                    "type": "array",
+                    "optional": true,
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Event ID",
+                        "name": "event_id",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Event name",
+                        "name": "event_name",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ]
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "comment": "LS-01 | Fun 001 | LinkedIn Events Sync",
+            "uuid": "fc0b9b8c-7a18-4406-8d05-794187850201"
+          },
+          {
+            "number": 3,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "equals_to",
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"5c4e4937\",\"path\":[\"result\",\"status\"]}')}",
+                  "rhs": "Error",
+                  "uuid": "a5f2a73d-9d1e-4533-84de-d748b3059653"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 4,
+                "as": "1f430e40",
+                "keyword": "stop",
+                "input": {
+                  "stop_with_error": "true",
+                  "stop_reason": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"5c4e4937\",\"path\":[\"result\",\"message\"]}')}"
+                },
+                "uuid": "90e0ed32-c333-46ad-b3d4-1d20a5247a17"
+              }
+            ],
+            "comment": "staus =error(LS-01 | Fun 001 | LinkedIn Events Sync)",
+            "uuid": "314c1c2b-9911-41d3-a007-877d30edb10f"
+          },
+          {
+            "number": 5,
+            "provider": "postgresql",
+            "name": "search_rows",
+            "as": "8a7bb4e9",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+              "table": "marketing.linkedin_events",
+              "output_columns": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "name",
+                  "value": "name"
+                },
+                {
+                  "label": "vanity_name",
+                  "value": "vanity_name"
+                },
+                {
+                  "label": "lead_gen_form",
+                  "value": "lead_gen_form"
+                },
+                {
+                  "label": "organizer",
+                  "value": "organizer"
+                },
+                {
+                  "label": "event_type",
+                  "value": "event_type"
+                },
+                {
+                  "label": "discovery_mode",
+                  "value": "discovery_mode"
+                },
+                {
+                  "label": "landing_url",
+                  "value": "landing_url"
+                },
+                {
+                  "label": "description",
+                  "value": "description"
+                },
+                {
+                  "label": "starts_at",
+                  "value": "starts_at"
+                },
+                {
+                  "label": "ends_at",
+                  "value": "ends_at"
+                },
+                {
+                  "label": "synced_at",
+                  "value": "synced_at"
+                },
+                {
+                  "label": "registrations_synced",
+                  "value": "registrations_synced"
+                }
+              ]
+            },
+            "toggleCfg": {
+              "table": true
+            },
+            "input": {
+              "limit": "50000",
+              "offset": "0",
+              "table": "marketing.linkedin_events",
+              "where": "NOT (ends_at < now() - interval '2 days' AND registrations_synced = true)",
+              "output_columns": "id\nname\nvanity_name\nlead_gen_form\norganizer\nevent_type\ndiscovery_mode\nlanding_url\ndescription\nstarts_at\nends_at\nsynced_at\nregistrations_synced",
+              "orderby": "ends_at DESC"
+            },
+            "extended_output_schema": [
+              {
+                "label": "Rows",
+                "name": "rows",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "description",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "description"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "description"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "discovery_mode",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "discovery_mode"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "discovery_mode"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "ends_at",
+                    "render_input": "convert_date_time",
+                    "parse_output": "convert_date_time",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "timestamp with time zone",
+                      "column_name": "ends_at"
+                    },
+                    "optional": true,
+                    "hint": "timestamp with time zone",
+                    "type": "date_time",
+                    "name": "ends_at"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "event_type",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "event_type"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "event_type"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "id",
+                    "parse_output": "parse_integer_output",
+                    "details": {
+                      "primary_key": true,
+                      "data_type": "bigint",
+                      "column_name": "id"
+                    },
+                    "event_title": true,
+                    "hint": "bigint, primary key",
+                    "optional": true,
+                    "type": "integer",
+                    "name": "id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "landing_url",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "landing_url"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "landing_url"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "lead_gen_form",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "lead_gen_form"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "lead_gen_form"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "name",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "name"
+                    },
+                    "hint": "text",
+                    "optional": true,
+                    "type": "string",
+                    "name": "name"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "organizer",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "organizer"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "organizer"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "registrations_synced",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "boolean",
+                      "column_name": "registrations_synced"
+                    },
+                    "parse_output": "parse_boolean_output",
+                    "optional": true,
+                    "hint": "boolean",
+                    "type": "string",
+                    "name": "registrations_synced"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "starts_at",
+                    "render_input": "convert_date_time",
+                    "parse_output": "convert_date_time",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "timestamp with time zone",
+                      "column_name": "starts_at"
+                    },
+                    "optional": true,
+                    "hint": "timestamp with time zone",
+                    "type": "date_time",
+                    "name": "starts_at"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "synced_at",
+                    "render_input": "convert_date_time",
+                    "parse_output": "convert_date_time",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "timestamp with time zone",
+                      "column_name": "synced_at"
+                    },
+                    "optional": true,
+                    "hint": "timestamp with time zone",
+                    "type": "date_time",
+                    "name": "synced_at"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "vanity_name",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "vanity_name"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "vanity_name"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "control_type": "form-schema-builder",
+                "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. <b>id</b>\n                    Second, provide the actual parameter value. Parameter values can be static or datapills.\n                    Select the <b>closest corresponding data type</b> that your database is expecting for the bind variable\n                    ",
+                "label": "Parameters",
+                "name": "parameters",
+                "optional": true,
+                "override": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Schema",
+                    "extends_schema": true,
+                    "type": "string",
+                    "name": "schema"
+                  },
+                  {
+                    "properties": [
+
+                    ],
+                    "label": "Data",
+                    "optional": true,
+                    "type": "object",
+                    "name": "data"
+                  }
+                ],
+                "sticky": true,
+                "type": "object"
+              }
+            ],
+            "visible_config_fields": [
+              "table",
+              "where",
+              "parameters",
+              "orderby",
+              "limit",
+              "offset",
+              "output_columns"
+            ],
+            "comment": "This gives only:\n        - upcoming/active events, OR\n        - past events not yet fully synced\n     → SKIPS: past events already synced (nothing new possible)",
+            "uuid": "142abb61-d18e-4b6b-a505-e10597ec6328"
+          },
+          {
+            "number": 6,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "present",
+                  "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"8a7bb4e9\",\"path\":[\"rows\"]}')",
+                  "rhs": "",
+                  "uuid": "38036008-5dcc-418f-aad8-49c57bc63baf"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 7,
+                "provider": "workato_variable",
+                "name": "declare_list",
+                "as": "18191127",
+                "keyword": "action",
+                "input": {
+                  "name": "status_sync",
+                  "list_item_schema_json": "[{\"name\":\"status\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Status\"},{\"name\":\"message\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Message\"},{\"name\":\"job_url\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Job URL\"},{\"name\":\"regestrations_count\",\"type\":\"integer\",\"optional\":true,\"control_type\":\"integer\",\"label\":\"Regestrations count\",\"parse_output\":\"integer_conversion\",\"render_input\":\"integer_conversion\"}]"
+                },
+                "extended_output_schema": [
+                  {
+                    "hint": "",
+                    "label": "status_sync",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": false,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Job URL",
+                        "name": "job_url",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "integer",
+                        "label": "Regestrations count",
+                        "parse_output": "integer_conversion",
+                        "name": "regestrations_count",
+                        "type": "integer",
+                        "optional": true,
+                        "render_input": "integer_conversion"
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                    "label": "Items",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Job URL",
+                        "name": "job_url",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "integer",
+                        "label": "Regestrations count",
+                        "parse_output": "integer_conversion",
+                        "name": "regestrations_count",
+                        "type": "integer",
+                        "optional": true,
+                        "render_input": "integer_conversion"
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "comment": "status_sync",
+                "uuid": "d5d403cd-75c8-4ac3-8268-12a009f2fd77"
+              },
+              {
+                "number": 8,
+                "as": "ed3a3e76",
+                "keyword": "foreach",
+                "repeat_mode": "simple",
+                "clear_scope": "false",
+                "input": {
+                },
+                "block": [
+                  {
+                    "number": 9,
+                    "provider": "workato_recipe_function",
+                    "name": "call_recipe",
+                    "as": "2a7451fd",
+                    "keyword": "action",
+                    "dynamicPickListSelection": {
+                      "flow_id": "LS-01 | Fun 002 | LinkedIn Event Registrations Sync"
+                    },
+                    "input": {
+                      "flow_id": {
+                        "zip_name": "Marketing/Linkedin Event registration/ls_01_fun_002_linkedin_event_registrations_sync.recipe.json",
+                        "name": "LS-01 | Fun 002 | LinkedIn Event Registrations Sync",
+                        "folder": "Marketing/Linkedin Event registration"
+                      },
+                      "parameters": {
+                        "event_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"ed3a3e76\",\"path\":[\"id\"]}')}",
+                        "event_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"ed3a3e76\",\"path\":[\"name\"]}')}",
+                        "starts_at": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"ed3a3e76\",\"path\":[\"starts_at\"]}')}",
+                        "ends_at": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"ed3a3e76\",\"path\":[\"ends_at\"]}')}",
+                        "synced_at": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"ed3a3e76\",\"path\":[\"synced_at\"]}')}",
+                        "lead_gen_form": "=_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"ed3a3e76\",\"path\":[\"lead_gen_form\"]}').scan(/leadGenForm:(\\d+)/).first.first"
+                      }
+                    },
+                    "extended_output_schema": [
+                      {
+                        "label": "Result",
+                        "name": "result",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Status",
+                            "name": "status",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Message",
+                            "name": "message",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job URL",
+                            "name": "job_url",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "label": "Regestrations",
+                            "name": "regestrations",
+                            "type": "array",
+                            "optional": true,
+                            "of": "object",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Event ID",
+                                "name": "event_id",
+                                "type": "string",
+                                "optional": true
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Event name",
+                                "name": "event_name",
+                                "type": "string",
+                                "optional": true
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "ID",
+                                "name": "id",
+                                "type": "string",
+                                "optional": true
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Name",
+                                "name": "name",
+                                "type": "string",
+                                "optional": true
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Email",
+                                "name": "email",
+                                "type": "string",
+                                "optional": true
+                              }
+                            ]
+                          }
+                        ],
+                        "type": "object"
+                      }
+                    ],
+                    "extended_input_schema": [
+                      {
+                        "label": "Parameters",
+                        "name": "parameters",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Event ID",
+                            "name": "event_id",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Event name",
+                            "name": "event_name",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Lead gen form",
+                            "name": "lead_gen_form",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Starts at",
+                            "render_input": "date_time_conversion",
+                            "parse_output": "date_time_conversion",
+                            "optional": true,
+                            "type": "date_time",
+                            "name": "starts_at"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Ends at",
+                            "render_input": "date_time_conversion",
+                            "parse_output": "date_time_conversion",
+                            "optional": true,
+                            "type": "date_time",
+                            "name": "ends_at"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Synced at",
+                            "render_input": "date_time_conversion",
+                            "parse_output": "date_time_conversion",
+                            "optional": true,
+                            "type": "date_time",
+                            "name": "synced_at"
+                          }
+                        ],
+                        "type": "object"
+                      }
+                    ],
+                    "comment": "LS-01 | Fun 002 | LinkedIn Event Registrations Sync",
+                    "uuid": "1f40214a-b869-48d1-976c-3014cb2deb8d"
+                  },
+                  {
+                    "number": 10,
+                    "provider": "workato_variable",
+                    "name": "insert_to_list",
+                    "as": "111b2d11",
+                    "keyword": "action",
+                    "dynamicPickListSelection": {
+                      "name": "status_sync (step 8)"
+                    },
+                    "input": {
+                      "location": "end",
+                      "name": "d5d403cd-75c8-4ac3-8268-12a009f2fd77:18191127",
+                      "list_item": {
+                        "status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"2a7451fd\",\"path\":[\"result\",\"status\"]}')}",
+                        "message": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"2a7451fd\",\"path\":[\"result\",\"message\"]}')}",
+                        "job_url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"2a7451fd\",\"path\":[\"result\",\"job_url\"]}')}",
+                        "regestrations_count": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"2a7451fd\",\"path\":[\"result\",\"regestrations\",{\"path_element_type\":\"size\"}]}')}"
+                      }
+                    },
+                    "extended_input_schema": [
+                      {
+                        "hint": "",
+                        "label": "List item",
+                        "name": "list_item",
+                        "optional": false,
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Status",
+                            "name": "status",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Message",
+                            "name": "message",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job URL",
+                            "name": "job_url",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "integer",
+                            "label": "Regestrations count",
+                            "parse_output": "integer_conversion",
+                            "name": "regestrations_count",
+                            "type": "integer",
+                            "optional": true,
+                            "render_input": "integer_conversion"
+                          }
+                        ],
+                        "type": "object"
+                      }
+                    ],
+                    "visible_config_fields": [
+                      "name",
+                      "location",
+                      "list_item.job_url",
+                      "list_item.regestrations_count",
+                      "list_item.message",
+                      "list_item.status"
+                    ],
+                    "uuid": "9e847687-f480-4ce5-99d1-369b9924a674"
+                  },
+                  {
+                    "number": 11,
+                    "provider": "workato_recipe_function",
+                    "name": "call_recipe",
+                    "as": "8e18594f",
+                    "keyword": "action",
+                    "dynamicPickListSelection": {
+                      "flow_id": "LS-01 | Fun 003 | HubSpot Contact Sync"
+                    },
+                    "input": {
+                      "flow_id": {
+                        "zip_name": "Marketing/Linkedin Event registration/ls_01_fun_003_hubspot_contact_sync.recipe.json",
+                        "name": "LS-01 | Fun 003 | HubSpot Contact Sync",
+                        "folder": "Marketing/Linkedin Event registration"
+                      }
+                    },
+                    "extended_output_schema": [
+                      {
+                        "label": "Result",
+                        "name": "result",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Status",
+                            "name": "status",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Message",
+                            "name": "message",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Regestration count",
+                            "name": "regestration_count",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ],
+                        "type": "object"
+                      }
+                    ],
+                    "uuid": "fe9e40fb-94a1-46fa-a9f8-a5c5111a2cfe",
+                    "skip": false
+                  }
+                ],
+                "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"8a7bb4e9\",\"path\":[\"rows\"]}')}",
+                "uuid": "e3b24045-49d7-4f5d-b41c-88baf85931a5"
+              }
+            ],
+            "comment": "events to sync",
+            "uuid": "102c505f-9bd1-493e-b170-2e2339c943b2"
+          },
+          {
+            "number": 12,
+            "provider": "logger",
+            "name": "log_message",
+            "as": "a2b1cc33",
+            "keyword": "action",
+            "input": {
+              "user_logs_enabled": "false",
+              "message": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"18191127\",\"path\":[\"list_items\"]}')"
+            },
+            "extended_input_schema": [
+              {
+                "control_type": "switch",
+                "default": false,
+                "disable_formula": true,
+                "extends_schema": true,
+                "hint": "Send a copy of the message to Workato logs.\n<a href=\"https://docs.workato.com/features/logging-service.html\" target=\"_blank\" class=\"ng-scope\">\n  Learn more\n</a>\n",
+                "label": "Send to Workato log service",
+                "name": "user_logs_enabled",
+                "optional": true,
+                "type": "string"
+              }
+            ],
+            "comment": "status sync log",
+            "uuid": "87cfa5ff-d382-45e5-8bea-9b7a631a4b04"
+          },
+          {
+            "number": 13,
+            "as": "437bb00b",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 14,
+                "provider": "workato_recipe_function",
+                "name": "call_recipe_async",
+                "as": "703fc2b0",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "flow_id": "System Error Handling"
+                },
+                "input": {
+                  "flow_id": {
+                    "zip_name": "Common Functions/Error Handling Process/cm_fun_system_error_handling.recipe.json",
+                    "name": "[CM] Fun | System Error Handling",
+                    "folder": "Common Functions/Error Handling Process"
+                  },
+                  "parameters": {
+                    "ErrorDetails": {
+                      "parentProcessName": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+                      "recipe_id": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_id\"]}')}",
+                      "processName": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+                      "process_path": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_path\"]}')}",
+                      "jobUrl": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_url\"]}')}",
+                      "is_repeat": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"is_repeat\"]}')}",
+                      "error_uuid": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"437bb00b\",\"path\":[\"uuid\"]}')}",
+                      "errored_app": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"437bb00b\",\"path\":[\"adapter\"]}')}",
+                      "errored_action": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"437bb00b\",\"path\":[\"action\"]}')}",
+                      "error_step_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"437bb00b\",\"path\":[\"line_number\"]}')}",
+                      "errorType": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"437bb00b\",\"path\":[\"type\"]}')}",
+                      "errorMessage": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"437bb00b\",\"path\":[\"message\"]}')}",
+                      "Timestamp": "=now.in_time_zone(\"Asia/Jerusalem\")",
+                      "job_uuid": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}"
+                    }
+                  }
+                },
+                "extended_input_schema": [
+                  {
+                    "label": "Parameters",
+                    "name": "parameters",
+                    "properties": [
+                      {
+                        "label": "Error Details",
+                        "name": "ErrorDetails",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Parent process name",
+                            "name": "parentProcessName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Recipe Id",
+                            "name": "recipe_id",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job uuid",
+                            "name": "job_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Name",
+                            "name": "processName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Path",
+                            "name": "process_path",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job URL",
+                            "name": "jobUrl",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Is repeat",
+                            "name": "is_repeat",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error uuid",
+                            "name": "error_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored app",
+                            "name": "errored_app",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored action",
+                            "name": "errored_action",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error step number",
+                            "name": "error_step_number",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error type",
+                            "name": "errorType",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error message",
+                            "name": "errorMessage",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Timestamp",
+                            "name": "Timestamp",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Files",
+                        "name": "files",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "File name",
+                            "name": "fileName",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File content",
+                            "name": "fileContent",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "comment": "system error function",
+                "uuid": "eeada92e-681f-41f1-9861-c95411d3e934",
+                "skip": false
+              }
+            ],
+            "uuid": "a22b4b3a-aafe-49c4-bb75-d78f742cee3f"
+          }
+        ],
+        "uuid": "52973682-f4a0-47b7-a54d-6c8da8a15b19"
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_0",
+        "label": "Active Events"
+      },
+      {
+        "name": "custom_column_1",
+        "label": "Regestrations Count"
+      },
+      {
+        "name": "custom_column_2",
+        "label": "Status"
+      },
+      {
+        "name": "custom_column_3",
+        "label": "Message"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"8a7bb4e9\",\"path\":[\"rows\",{\"path_element_type\":\"size\"}]}')}",
+      "custom_column_1": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"18191127\",\"path\":[\"list_items\"]}').pluck('regestrations_count').sum",
+      "custom_column_2": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"437bb00b\",\"path\":[\"message\"]}').present? ? 'Error' : 'Success'",
+      "custom_column_3": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"437bb00b\",\"path\":[\"message\"]}').present?"
+    },
+    "uuid": "f95ea246-6f76-410f-befa-ab6f0fd713a6"
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "postgresql",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/BizOps App/postgresql_account.connection.json",
+        "name": "PostgreSQL account",
+        "folder": "#Connections/BizOps App"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_variable",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "logger",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "clock",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ]
+}

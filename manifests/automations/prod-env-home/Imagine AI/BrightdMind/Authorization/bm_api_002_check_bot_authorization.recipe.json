@@ -1,0 +1,576 @@
+{
+  "name": "[BM]API-002 | Check Bot Authorization",
+  "description": "When there is a function call, do action and other actions",
+  "version": 1,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "workato_api_platform",
+    "name": "receive_request",
+    "as": "52894513",
+    "keyword": "trigger",
+    "dynamicPickListSelection": {
+      "response.responses.0.http_status_code": "200 - OK",
+      "response.responses.1.http_status_code": "403 - Forbidden"
+    },
+    "toggleCfg": {
+      "response.responses.0.http_status_code": true,
+      "response.responses.1.http_status_code": true
+    },
+    "input": {
+      "request": {
+        "content_type": "json",
+        "schema": "[{\"control_type\":\"text\",\"label\":\"Email\",\"name\":\"email\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"bot_command\",\"name\":\"bot_command\",\"type\":\"string\",\"optional\":false},{\"name\":\"firstName\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"First name\"},{\"name\":\"lastName\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Last name\"}]"
+      },
+      "response": {
+        "content_type": "json",
+        "responses": [
+          {
+            "http_status_code": "200",
+            "body_schema": "[]"
+          },
+          {
+            "http_status_code": "403",
+            "body_schema": "[{\"name\":\"reason\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Reason\"}]"
+          }
+        ]
+      }
+    },
+    "extended_output_schema": [
+      {
+        "label": "Context",
+        "name": "context",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Calling IP address",
+            "optional": true,
+            "type": "string",
+            "name": "calling_ip"
+          },
+          {
+            "properties": [
+              {
+                "control_type": "integer",
+                "label": "Access profile ID",
+                "parse_output": "integer_conversion",
+                "optional": true,
+                "type": "integer",
+                "name": "id"
+              },
+              {
+                "control_type": "text",
+                "label": "Access profile name",
+                "optional": true,
+                "type": "string",
+                "name": "name"
+              },
+              {
+                "control_type": "text",
+                "label": "Access profile authentication type",
+                "optional": true,
+                "type": "string",
+                "name": "type"
+              }
+            ],
+            "label": "Access profile",
+            "type": "object",
+            "name": "access_profile"
+          },
+          {
+            "properties": [
+              {
+                "control_type": "text",
+                "label": "API client ID",
+                "optional": true,
+                "type": "string",
+                "name": "id"
+              },
+              {
+                "control_type": "text",
+                "label": "API client name",
+                "optional": true,
+                "type": "string",
+                "name": "name"
+              }
+            ],
+            "label": "API client",
+            "type": "object",
+            "name": "client"
+          },
+          {
+            "properties": [
+              {
+                "control_type": "integer",
+                "label": "Issued At",
+                "render_input": "date_time_conversion",
+                "parse_output": "date_time_conversion",
+                "optional": true,
+                "type": "date_time",
+                "name": "iat"
+              },
+              {
+                "control_type": "integer",
+                "label": "Not Before",
+                "render_input": "date_time_conversion",
+                "parse_output": "date_time_conversion",
+                "optional": true,
+                "type": "date_time",
+                "name": "nbf"
+              },
+              {
+                "control_type": "integer",
+                "label": "Expiration Time",
+                "render_input": "date_time_conversion",
+                "parse_output": "date_time_conversion",
+                "optional": true,
+                "type": "date_time",
+                "name": "exp"
+              },
+              {
+                "control_type": "text",
+                "label": "Audience",
+                "optional": true,
+                "type": "string",
+                "name": "aud"
+              },
+              {
+                "control_type": "text",
+                "label": "JWT ID",
+                "optional": true,
+                "type": "string",
+                "name": "jti"
+              },
+              {
+                "control_type": "text",
+                "label": "Issuer",
+                "optional": true,
+                "type": "string",
+                "name": "iss"
+              }
+            ],
+            "label": "JWT claims",
+            "type": "object",
+            "name": "jwt_payload"
+          }
+        ],
+        "type": "object"
+      },
+      {
+        "label": "Request parameters",
+        "name": "request",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Email",
+            "name": "email",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "control_type": "text",
+            "label": "bot_command",
+            "name": "bot_command",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "control_type": "text",
+            "label": "First name",
+            "name": "firstName",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "control_type": "text",
+            "label": "Last name",
+            "name": "lastName",
+            "type": "string",
+            "optional": false
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "or",
+              "conditions": [
+                {
+                  "operand": "blank",
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"52894513\",\"path\":[\"request\",\"email\"]}')}",
+                  "rhs": "",
+                  "uuid": "233be153-8a87-4bda-b337-6999fb009ffe"
+                },
+                {
+                  "operand": "blank",
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"52894513\",\"path\":[\"request\",\"bot_command\"]}')}",
+                  "rhs": "",
+                  "uuid": "ca932c29-4cb9-4517-a319-9ff53761851f"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 3,
+                "as": "5be745c1",
+                "keyword": "stop",
+                "input": {
+                  "stop_with_error": "true",
+                  "stop_reason": "missing params"
+                },
+                "uuid": "af83f6b1-4d6c-4b1a-bbfc-381a9122f1d2"
+              }
+            ],
+            "uuid": "a0f6a401-8080-46c8-a511-54c137999f94"
+          },
+          {
+            "number": 4,
+            "provider": "workato_recipe_function",
+            "name": "call_recipe",
+            "as": "d82ebde2",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+              "flow_id": "Copy of Get Assets by email and Bot Command"
+            },
+            "input": {
+              "flow_id": {
+                "zip_name": "Imagine AI/BrightdMind/Authorization/bm_fun_002_get_assets_by_email_and_bot_command.recipe.json",
+                "name": "[BM]Fun-002 | Get Assets by email and Bot Command",
+                "folder": "Imagine AI/BrightdMind/Authorization"
+              },
+              "parameters": {
+                "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"52894513\",\"path\":[\"request\",\"email\"]}')}",
+                "command_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"52894513\",\"path\":[\"request\",\"bot_command\"]}')}",
+                "firstName": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"52894513\",\"path\":[\"request\",\"firstName\"]}')}",
+                "lastName": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"52894513\",\"path\":[\"request\",\"lastName\"]}')}"
+              }
+            },
+            "extended_output_schema": [
+              {
+                "label": "Result",
+                "name": "result",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Reason",
+                    "type": "string",
+                    "name": "reason",
+                    "optional": true
+                  },
+                  {
+                    "label": "Rows",
+                    "name": "rows",
+                    "type": "array",
+                    "optional": true,
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Button title",
+                        "type": "string",
+                        "name": "Button title"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Section text",
+                        "type": "string",
+                        "name": "Section text"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Bot command",
+                        "type": "string",
+                        "name": "Bot command"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Command input values",
+                        "type": "string",
+                        "name": "Command input values"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Permissions",
+                        "type": "string",
+                        "name": "Permissions"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Question  text",
+                        "type": "string",
+                        "name": "Question Text"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Description",
+                        "type": "string",
+                        "name": "Description"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Allowed OKTA Apps",
+                        "name": "allowed_okta_apps",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ]
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "label": "Parameters",
+                "name": "parameters",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Email",
+                    "name": "email",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Command name",
+                    "name": "command_name",
+                    "type": "string",
+                    "optional": true
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "First name",
+                    "name": "firstName",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Last name",
+                    "name": "lastName",
+                    "type": "string",
+                    "optional": false
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "visible_config_fields": [
+              "flow_id",
+              "parameters",
+              "parameters.email",
+              "parameters.command_name"
+            ],
+            "uuid": "e9df74cf-d367-4dbf-8444-2e1395e5d243",
+            "skip": false
+          },
+          {
+            "number": 5,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "greater_than",
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"d82ebde2\",\"path\":[\"result\",\"rows\",{\"path_element_type\":\"size\"}]}')}",
+                  "rhs": "0",
+                  "uuid": "5dcaad73-4a4f-4ac6-81ed-f32e4690b429"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 6,
+                "provider": "workato_api_platform",
+                "name": "return_response",
+                "as": "e6016ac1",
+                "keyword": "action",
+                "input": {
+                  "http_status_code": "200"
+                },
+                "extended_output_schema": [
+                  {
+                    "change_on_blur": true,
+                    "control_type": "select",
+                    "extends_schema": true,
+                    "label": "Response",
+                    "name": "http_status_code",
+                    "pick_list": [
+                      [
+                        "200 - OK",
+                        "200"
+                      ],
+                      [
+                        "403 - Forbidden",
+                        "403"
+                      ]
+                    ],
+                    "type": "string"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "change_on_blur": true,
+                    "control_type": "select",
+                    "extends_schema": true,
+                    "label": "Response",
+                    "name": "http_status_code",
+                    "pick_list": [
+                      [
+                        "200 - OK",
+                        "200"
+                      ],
+                      [
+                        "403 - Forbidden",
+                        "403"
+                      ]
+                    ],
+                    "type": "string"
+                  }
+                ],
+                "uuid": "712807d7-bc36-4589-a270-9b084b3c0cca"
+              }
+            ],
+            "uuid": "78447fe2-df53-420c-b00f-c06a852f417d"
+          },
+          {
+            "number": 7,
+            "as": "80fbc7a4",
+            "keyword": "stop",
+            "input": {
+              "stop_with_error": "true",
+              "stop_reason": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"d82ebde2\",\"path\":[\"result\",\"reason\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"d82ebde2\",\"path\":[\"result\",\"reason\"]}') : \"#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"52894513\",\"path\":[\"request\",\"bot_command\"]}')} not found or not allowed\""
+            },
+            "uuid": "830672a4-b5c9-469c-830c-29db98080790"
+          },
+          {
+            "number": 8,
+            "as": "1ba37a14",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 9,
+                "provider": "workato_api_platform",
+                "name": "return_response",
+                "as": "d0d2970e",
+                "keyword": "action",
+                "input": {
+                  "http_status_code": "403",
+                  "response": {
+                    "reason": "Error: #{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1ba37a14\",\"path\":[\"message\"]}')}"
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "change_on_blur": true,
+                    "control_type": "select",
+                    "extends_schema": true,
+                    "label": "Response",
+                    "name": "http_status_code",
+                    "pick_list": [
+                      [
+                        "200 - OK",
+                        "200"
+                      ],
+                      [
+                        "403 - Forbidden",
+                        "403"
+                      ]
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "label": "Response body",
+                    "name": "response",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Reason",
+                        "name": "reason",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "change_on_blur": true,
+                    "control_type": "select",
+                    "extends_schema": true,
+                    "label": "Response",
+                    "name": "http_status_code",
+                    "pick_list": [
+                      [
+                        "200 - OK",
+                        "200"
+                      ],
+                      [
+                        "403 - Forbidden",
+                        "403"
+                      ]
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "label": "Response body",
+                    "name": "response",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Reason",
+                        "name": "reason",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "uuid": "0455b994-1918-42d5-b96d-fac2f40a3813"
+              }
+            ],
+            "uuid": "6c64a19f-6039-489b-9a73-959993393de7"
+          }
+        ],
+        "uuid": "85b8fa80-908a-40df-9a60-1eaf321d61e0"
+      }
+    ],
+    "uuid": "3ad624d7-9319-4418-b34d-a78d57c3737a",
+    "unfinished": false,
+    "format_version": 2
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_api_platform",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ]
+}

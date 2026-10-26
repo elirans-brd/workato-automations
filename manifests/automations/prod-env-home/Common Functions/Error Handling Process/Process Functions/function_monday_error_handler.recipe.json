@@ -1,0 +1,2189 @@
+{
+  "name": "Function: Monday Error Handler",
+  "version": 1,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "workato_recipe_function",
+    "name": "execute",
+    "as": "a88eacac",
+    "keyword": "trigger",
+    "input": {
+      "parameters_schema_json": "[{\"name\":\"job_uuid\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Job uuid\"},{\"control_type\":\"text\",\"label\":\"Error Type\",\"name\":\"error_type\",\"type\":\"string\",\"optional\":true},{\"control_type\":\"text\",\"label\":\"Parent Recipe Name\",\"name\":\"parent_recipe_name\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Recipe ID\",\"name\":\"recipe_id\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Project domain\",\"name\":\"project_domain\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Recipe_Name\",\"name\":\"recipe_name\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Folder Name\",\"name\":\"folder_name\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"Folder Name\"}},{\"control_type\":\"text\",\"label\":\"Business Project\",\"name\":\"business_project\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"Business Project\"}},{\"control_type\":\"text\",\"label\":\"Owner\",\"name\":\"Owner\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"Owner\"}},{\"control_type\":\"text\",\"label\":\"Job URL\",\"name\":\"job_url\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Timestamp\",\"name\":\"timestamp\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Error Message\",\"name\":\"error_message\",\"type\":\"string\",\"optional\":false},{\"name\":\"file_content\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"File content\"}]",
+      "result_schema_json": "[{\"control_type\":\"text\",\"label\":\"Process Status\",\"name\":\"proccess_status\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Error Message\",\"name\":\"error_message\",\"type\":\"string\",\"optional\":true},{\"control_type\":\"text\",\"label\":\"Ticket URL\",\"name\":\"ticket_url\",\"type\":\"string\",\"optional\":true}]"
+    },
+    "extended_output_schema": [
+      {
+        "label": "Parameters",
+        "name": "parameters",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Job uuid",
+            "name": "job_uuid",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "control_type": "text",
+            "label": "Error Type",
+            "name": "error_type",
+            "type": "string",
+            "optional": true
+          },
+          {
+            "control_type": "text",
+            "label": "Parent Recipe Name",
+            "name": "parent_recipe_name",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "control_type": "text",
+            "label": "Recipe ID",
+            "name": "recipe_id",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "control_type": "text",
+            "label": "Project domain",
+            "name": "project_domain",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "control_type": "text",
+            "label": "Recipe_Name",
+            "name": "recipe_name",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "control_type": "text",
+            "label": "Folder Name",
+            "name": "folder_name",
+            "type": "string",
+            "optional": true,
+            "details": {
+              "real_name": "Folder Name"
+            }
+          },
+          {
+            "control_type": "text",
+            "label": "Business Project",
+            "name": "business_project",
+            "type": "string",
+            "optional": true,
+            "details": {
+              "real_name": "Business Project"
+            }
+          },
+          {
+            "control_type": "text",
+            "label": "Owner",
+            "name": "Owner",
+            "type": "string",
+            "optional": true,
+            "details": {
+              "real_name": "Owner"
+            }
+          },
+          {
+            "control_type": "text",
+            "label": "Job URL",
+            "name": "job_url",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "control_type": "text",
+            "label": "Timestamp",
+            "name": "timestamp",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "control_type": "text",
+            "label": "Error Message",
+            "name": "error_message",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "control_type": "text",
+            "label": "File content",
+            "name": "file_content",
+            "type": "string",
+            "optional": true
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "monday_connector_5515774_1766397492",
+            "name": "search_records",
+            "as": "94c3ecca",
+            "title": null,
+            "description": "Search <span class=\"provider\">Boards</span> in <span class=\"provider\">Monday.com</span>",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+              "object": "Boards",
+              "fields_to_retrieve": [
+                {
+                  "ids": [
+                    "id~ID"
+                  ],
+                  "titles": [
+                    "ID"
+                  ]
+                },
+                {
+                  "ids": [
+                    "name~String"
+                  ],
+                  "titles": [
+                    "Name"
+                  ]
+                },
+                {
+                  "ids": [
+                    "columns~Column"
+                  ],
+                  "titles": [
+                    "Columns"
+                  ]
+                },
+                {
+                  "ids": [
+                    "description~String"
+                  ],
+                  "titles": [
+                    "Description"
+                  ]
+                },
+                {
+                  "ids": [
+                    "columns~Column",
+                    "columns.id~Column.ID"
+                  ],
+                  "titles": [
+                    "Columns",
+                    "ID"
+                  ]
+                },
+                {
+                  "ids": [
+                    "columns~Column",
+                    "columns.title~Column.String"
+                  ],
+                  "titles": [
+                    "Columns",
+                    "Title"
+                  ]
+                },
+                {
+                  "ids": [
+                    "columns~Column",
+                    "columns.description~Column.String"
+                  ],
+                  "titles": [
+                    "Columns",
+                    "Description"
+                  ]
+                },
+                {
+                  "ids": [
+                    "columns~Column",
+                    "columns.type~Column.String"
+                  ],
+                  "titles": [
+                    "Columns",
+                    "Type"
+                  ]
+                },
+                {
+                  "ids": [
+                    "columns~Column",
+                    "columns.width~Column.Int"
+                  ],
+                  "titles": [
+                    "Columns",
+                    "Width"
+                  ]
+                },
+                {
+                  "ids": [
+                    "columns~Column",
+                    "columns.archived~Column.Boolean"
+                  ],
+                  "titles": [
+                    "Columns",
+                    "Archived"
+                  ]
+                },
+                {
+                  "ids": [
+                    "columns~Column",
+                    "columns.settings_str~Column.String"
+                  ],
+                  "titles": [
+                    "Columns",
+                    "Settings str"
+                  ]
+                },
+                {
+                  "ids": [
+                    "columns~Column",
+                    "columns.pos~Column.String"
+                  ],
+                  "titles": [
+                    "Columns",
+                    "Pos"
+                  ]
+                }
+              ]
+            },
+            "toggleCfg": {
+              "board_kind": true,
+              "latest": true,
+              "state": true,
+              "order_by": true
+            },
+            "input": {
+              "recipe_api_version": "2023-07",
+              "object": "boards",
+              "limit": "100",
+              "board_kind": "public",
+              "ids": "=18390354239",
+              "latest": "true",
+              "state": "active",
+              "workspace_ids": "=_dp('{\"pill_type\":\"account_property\",\"property_name\":\"Monday Automation Monitoring Board\"}')",
+              "fields_to_retrieve": "id~ID,name~String,columns~Column,description~String,columns.id~Column.ID,columns.title~Column.String,columns.description~Column.String,columns.type~Column.String,columns.width~Column.Int,columns.archived~Column.Boolean,columns.settings_str~Column.String,columns.pos~Column.String",
+              "order_by": "created_at"
+            },
+            "extended_output_schema": [
+              {
+                "label": "Boards",
+                "name": "boards",
+                "of": "object",
+                "optional": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "ID",
+                    "hint": "The unique identifier of the board.",
+                    "optional": false,
+                    "sticky": true,
+                    "type": "string",
+                    "name": "id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Name",
+                    "hint": "The board's name.",
+                    "optional": false,
+                    "sticky": true,
+                    "type": "string",
+                    "name": "name"
+                  },
+                  {
+                    "label": "Columns",
+                    "hint": "The board's visible columns.",
+                    "optional": true,
+                    "sticky": true,
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "ID",
+                        "hint": "The column's unique identifier.",
+                        "optional": false,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Title",
+                        "hint": "The column's title.",
+                        "optional": false,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "title"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Description",
+                        "hint": "The column's description.",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "description"
+                      },
+                      {
+                        "control_type": "select",
+                        "label": "Type",
+                        "hint": "The column's type.",
+                        "optional": false,
+                        "sticky": true,
+                        "pick_list": [
+                          [
+                            "Auto number",
+                            "auto_number"
+                          ],
+                          [
+                            "Board relation",
+                            "board_relation"
+                          ],
+                          [
+                            "Button",
+                            "button"
+                          ],
+                          [
+                            "Checkbox",
+                            "checkbox"
+                          ],
+                          [
+                            "Color picker",
+                            "color_picker"
+                          ],
+                          [
+                            "Country",
+                            "country"
+                          ],
+                          [
+                            "Creation log",
+                            "creation_log"
+                          ],
+                          [
+                            "Date",
+                            "date"
+                          ],
+                          [
+                            "Dependency",
+                            "dependency"
+                          ],
+                          [
+                            "Doc",
+                            "doc"
+                          ],
+                          [
+                            "Dropdown",
+                            "dropdown"
+                          ],
+                          [
+                            "Email",
+                            "email"
+                          ],
+                          [
+                            "File",
+                            "file"
+                          ],
+                          [
+                            "Formula",
+                            "formula"
+                          ],
+                          [
+                            "Group",
+                            "group"
+                          ],
+                          [
+                            "Hour",
+                            "hour"
+                          ],
+                          [
+                            "Integration",
+                            "integration"
+                          ],
+                          [
+                            "Item assignees",
+                            "item_assignees"
+                          ],
+                          [
+                            "Item ID",
+                            "item_id"
+                          ],
+                          [
+                            "Last updated",
+                            "last_updated"
+                          ],
+                          [
+                            "Link",
+                            "link"
+                          ],
+                          [
+                            "Location",
+                            "location"
+                          ],
+                          [
+                            "Long text",
+                            "long_text"
+                          ],
+                          [
+                            "Mirror",
+                            "mirror"
+                          ],
+                          [
+                            "Numbers",
+                            "numbers"
+                          ],
+                          [
+                            "People",
+                            "people"
+                          ],
+                          [
+                            "Phone",
+                            "phone"
+                          ],
+                          [
+                            "Progress",
+                            "progress"
+                          ],
+                          [
+                            "Rating",
+                            "rating"
+                          ],
+                          [
+                            "Status",
+                            "status"
+                          ],
+                          [
+                            "Tags",
+                            "tags"
+                          ],
+                          [
+                            "Team",
+                            "team"
+                          ],
+                          [
+                            "Text",
+                            "text"
+                          ],
+                          [
+                            "Timeline",
+                            "timeline"
+                          ],
+                          [
+                            "Time tracking",
+                            "time_tracking"
+                          ],
+                          [
+                            "Vote",
+                            "vote"
+                          ],
+                          [
+                            "Week",
+                            "week"
+                          ],
+                          [
+                            "World clock",
+                            "world_clock"
+                          ],
+                          [
+                            "Unsupported",
+                            "unsupported"
+                          ],
+                          [
+                            "Name",
+                            "name"
+                          ],
+                          [
+                            "Person",
+                            "person"
+                          ],
+                          [
+                            "Direct doc",
+                            "direct_doc"
+                          ],
+                          [
+                            "Subtasks",
+                            "subtasks"
+                          ]
+                        ],
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "name": "type",
+                          "label": "Type",
+                          "hint": "The column's type.",
+                          "optional": false,
+                          "sticky": true,
+                          "type": "string",
+                          "control_type": "text",
+                          "toggle_hint": "Use custom value"
+                        },
+                        "type": "string",
+                        "name": "type"
+                      },
+                      {
+                        "control_type": "integer",
+                        "label": "Width",
+                        "parse_output": "integer_conversion",
+                        "hint": "The column's width.",
+                        "optional": true,
+                        "sticky": true,
+                        "render_input": "integer_conversion",
+                        "type": "integer",
+                        "name": "width"
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "label": "Archived",
+                        "parse_output": "float_conversion",
+                        "hint": "Is the column archived or not.",
+                        "optional": false,
+                        "sticky": true,
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "name": "archived",
+                          "label": "Archived",
+                          "hint": "Is the column archived or not. Allowed values are <b>true</b>, <b>false</b>",
+                          "optional": false,
+                          "sticky": true,
+                          "type": "string",
+                          "control_type": "text",
+                          "convert_input": "boolean_conversion",
+                          "toggle_hint": "Use custom value"
+                        },
+                        "render_input": "boolean_conversion",
+                        "type": "number",
+                        "name": "archived"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Settings str",
+                        "hint": "The column's settings in a string form.",
+                        "optional": false,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "settings_str"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Pos",
+                        "optional": true,
+                        "type": "string",
+                        "name": "pos"
+                      }
+                    ],
+                    "type": "array",
+                    "name": "columns"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Description",
+                    "hint": "The board's description.",
+                    "optional": true,
+                    "sticky": true,
+                    "type": "string",
+                    "name": "description"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Pos",
+                    "optional": true,
+                    "type": "string",
+                    "name": "pos"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "control_type": "select",
+                "hint": "The board's kind (public / private / share)",
+                "label": "Board kind",
+                "name": "board_kind",
+                "optional": true,
+                "pick_list": [
+                  [
+                    "Private",
+                    "private"
+                  ],
+                  [
+                    "Public",
+                    "public"
+                  ],
+                  [
+                    "Share",
+                    "share"
+                  ]
+                ],
+                "sticky": true,
+                "toggle_field": {
+                  "name": "board_kind",
+                  "label": "Board kind",
+                  "hint": "The board's kind (public / private / share)",
+                  "optional": true,
+                  "sticky": true,
+                  "type": "string",
+                  "control_type": "text",
+                  "toggle_hint": "Use custom value"
+                },
+                "toggle_hint": "Select from list",
+                "type": "string"
+              },
+              {
+                "hint": "A list of boards unique identifiers.",
+                "label": "Ids",
+                "name": "ids",
+                "of": "integer",
+                "optional": true,
+                "sticky": true,
+                "type": "array"
+              },
+              {
+                "control_type": "checkbox",
+                "hint": "Boolean that brings the latest data",
+                "label": "Latest",
+                "name": "latest",
+                "optional": true,
+                "parse_output": "float_conversion",
+                "sticky": true,
+                "toggle_field": {
+                  "name": "latest",
+                  "label": "Latest",
+                  "hint": "Boolean that brings the latest data Allowed values are <b>true</b>, <b>false</b>",
+                  "optional": true,
+                  "sticky": true,
+                  "type": "string",
+                  "control_type": "text",
+                  "convert_input": "boolean_conversion",
+                  "toggle_hint": "Use custom value"
+                },
+                "toggle_hint": "Select from list",
+                "type": "number",
+                "render_input": "boolean_conversion"
+              },
+              {
+                "control_type": "integer",
+                "hint": "Number of items to get, the default is 25.",
+                "label": "Limit",
+                "name": "limit",
+                "optional": true,
+                "parse_output": "integer_conversion",
+                "sticky": true,
+                "type": "integer",
+                "render_input": "integer_conversion"
+              },
+              {
+                "control_type": "select",
+                "hint": "Property to order by (created_at / used_at).",
+                "label": "Order by",
+                "name": "order_by",
+                "optional": true,
+                "pick_list": [
+                  [
+                    "Created at",
+                    "created_at"
+                  ],
+                  [
+                    "Used at",
+                    "used_at"
+                  ]
+                ],
+                "sticky": true,
+                "toggle_field": {
+                  "name": "order_by",
+                  "label": "Order by",
+                  "hint": "Property to order by (created_at / used_at).",
+                  "optional": true,
+                  "sticky": true,
+                  "type": "string",
+                  "control_type": "text",
+                  "toggle_hint": "Use custom value"
+                },
+                "toggle_hint": "Select from list",
+                "type": "string"
+              },
+              {
+                "control_type": "integer",
+                "hint": "Page number to get, starting at 1.",
+                "label": "Page",
+                "name": "page",
+                "optional": true,
+                "parse_output": "integer_conversion",
+                "sticky": true,
+                "type": "integer",
+                "render_input": "integer_conversion"
+              },
+              {
+                "control_type": "select",
+                "hint": "The state of the board (all / active / archived / deleted), the default is active.",
+                "label": "State",
+                "name": "state",
+                "optional": true,
+                "pick_list": [
+                  [
+                    "Active",
+                    "active"
+                  ],
+                  [
+                    "All",
+                    "all"
+                  ],
+                  [
+                    "Archived",
+                    "archived"
+                  ],
+                  [
+                    "Deleted",
+                    "deleted"
+                  ]
+                ],
+                "sticky": true,
+                "toggle_field": {
+                  "name": "state",
+                  "label": "State",
+                  "hint": "The state of the board (all / active / archived / deleted), the default is active.",
+                  "optional": true,
+                  "sticky": true,
+                  "type": "string",
+                  "control_type": "text",
+                  "toggle_hint": "Use custom value"
+                },
+                "toggle_hint": "Select from list",
+                "type": "string"
+              },
+              {
+                "hint": "A list of workspace ids the boards are contained in.",
+                "label": "Workspace ids",
+                "name": "workspace_ids",
+                "of": "integer",
+                "optional": true,
+                "sticky": true,
+                "type": "array"
+              },
+              {
+                "control_type": "tree",
+                "extends_schema": true,
+                "hint": "Select all fields (including the nested object fields) to be returned in the response.",
+                "label": "Select fields to retrieve",
+                "name": "fields_to_retrieve",
+                "optional": true,
+                "pick_list": "query_fields_list",
+                "pick_list_params": {
+                  "recipe_api_version": "recipe_api_version",
+                  "object": "object"
+                },
+                "sticky": true,
+                "tree_options": {
+                  "selectable_folder": true,
+                  "multi_select": true
+                },
+                "type": "string"
+              }
+            ],
+            "uuid": "e4935794-94bc-4c58-87ff-b55af4bd8b0f"
+          },
+          {
+            "number": 3,
+            "provider": "monday_connector_5515774_1766397492",
+            "name": "search_records",
+            "as": "e5ce9b99",
+            "title": null,
+            "description": "Search <span class=\"provider\">Users</span> in <span class=\"provider\">Monday.com</span>",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+              "object": "Users",
+              "fields_to_retrieve": [
+                {
+                  "ids": [
+                    "id~Int"
+                  ],
+                  "titles": [
+                    "ID"
+                  ]
+                }
+              ]
+            },
+            "input": {
+              "recipe_api_version": "2023-07",
+              "object": "users",
+              "emails": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"Owner\"]}')",
+              "fields_to_retrieve": "id~Int"
+            },
+            "extended_output_schema": [
+              {
+                "label": "Users",
+                "name": "users",
+                "of": "object",
+                "optional": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "ID",
+                    "hint": "The user's unique identifier.",
+                    "optional": false,
+                    "sticky": true,
+                    "type": "string",
+                    "name": "id"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "hint": "A list of users' emails.",
+                "label": "Emails",
+                "name": "emails",
+                "of": "string",
+                "optional": true,
+                "sticky": true,
+                "type": "array"
+              },
+              {
+                "hint": "A list of users' unique identifiers.",
+                "label": "Ids",
+                "name": "ids",
+                "of": "integer",
+                "optional": true,
+                "sticky": true,
+                "type": "array"
+              },
+              {
+                "control_type": "select",
+                "hint": "The kind to search users by (all / non_guests / guests / non_pending).",
+                "label": "Kind",
+                "name": "kind",
+                "optional": true,
+                "pick_list": [
+                  [
+                    "All",
+                    "all"
+                  ],
+                  [
+                    "Guests",
+                    "guests"
+                  ],
+                  [
+                    "Non guests",
+                    "non_guests"
+                  ],
+                  [
+                    "Non pending",
+                    "non_pending"
+                  ]
+                ],
+                "sticky": true,
+                "toggle_field": {
+                  "name": "kind",
+                  "label": "Kind",
+                  "hint": "The kind to search users by (all / non_guests / guests / non_pending).",
+                  "optional": true,
+                  "sticky": true,
+                  "type": "string",
+                  "control_type": "text",
+                  "toggle_hint": "Use custom value"
+                },
+                "toggle_hint": "Select from list",
+                "type": "string"
+              },
+              {
+                "control_type": "integer",
+                "hint": "Number of users to get.",
+                "label": "Limit",
+                "name": "limit",
+                "optional": true,
+                "parse_output": "integer_conversion",
+                "sticky": true,
+                "type": "integer",
+                "render_input": "integer_conversion"
+              },
+              {
+                "control_type": "text",
+                "hint": "Allows to fuzzy search by name",
+                "label": "Name",
+                "name": "name",
+                "optional": true,
+                "sticky": true,
+                "type": "string"
+              },
+              {
+                "control_type": "checkbox",
+                "hint": "Get the recently created users at the top of the list",
+                "label": "Newest first",
+                "name": "newest_first",
+                "optional": true,
+                "parse_output": "float_conversion",
+                "sticky": true,
+                "toggle_field": {
+                  "name": "newest_first",
+                  "label": "Newest first",
+                  "hint": "Get the recently created users at the top of the list Allowed values are <b>true</b>, <b>false</b>",
+                  "optional": true,
+                  "sticky": true,
+                  "type": "string",
+                  "control_type": "text",
+                  "convert_input": "boolean_conversion",
+                  "toggle_hint": "Use custom value"
+                },
+                "toggle_hint": "Select from list",
+                "type": "number",
+                "render_input": "boolean_conversion"
+              },
+              {
+                "control_type": "checkbox",
+                "hint": "Return non active users in the account.",
+                "label": "Non active",
+                "name": "non_active",
+                "optional": true,
+                "parse_output": "float_conversion",
+                "sticky": true,
+                "toggle_field": {
+                  "name": "non_active",
+                  "label": "Non active",
+                  "hint": "Return non active users in the account. Allowed values are <b>true</b>, <b>false</b>",
+                  "optional": true,
+                  "sticky": true,
+                  "type": "string",
+                  "control_type": "text",
+                  "convert_input": "boolean_conversion",
+                  "toggle_hint": "Use custom value"
+                },
+                "toggle_hint": "Select from list",
+                "type": "number",
+                "render_input": "boolean_conversion"
+              },
+              {
+                "control_type": "integer",
+                "hint": "Page number to get, starting at 1.",
+                "label": "Page",
+                "name": "page",
+                "optional": true,
+                "parse_output": "integer_conversion",
+                "sticky": true,
+                "type": "integer",
+                "render_input": "integer_conversion"
+              },
+              {
+                "control_type": "tree",
+                "extends_schema": true,
+                "hint": "Select all fields (including the nested object fields) to be returned in the response.",
+                "label": "Select fields to retrieve",
+                "name": "fields_to_retrieve",
+                "optional": true,
+                "pick_list": "query_fields_list",
+                "pick_list_params": {
+                  "recipe_api_version": "recipe_api_version",
+                  "object": "object"
+                },
+                "sticky": true,
+                "tree_options": {
+                  "selectable_folder": true,
+                  "multi_select": true
+                },
+                "type": "string"
+              }
+            ],
+            "visible_config_fields": [
+              "object",
+              "recipe_api_version",
+              "emails",
+              "fields_to_retrieve"
+            ],
+            "hidden_config_fields": [
+              "ids",
+              "kind",
+              "limit",
+              "name",
+              "newest_first",
+              "non_active",
+              "page"
+            ],
+            "uuid": "2ba58167-b88a-4dc4-8615-3f056e69479c"
+          },
+          {
+            "number": 4,
+            "provider": "monday_connector_5515774_1766397492",
+            "name": "create_record",
+            "as": "5218198e",
+            "title": null,
+            "description": "Create <span class=\"provider\">Item</span> in <span class=\"provider\">Monday.com</span>",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+              "object": "Item",
+              "board_id": "🔧  automation  error  handling",
+              "fields_to_retrieve": [
+                {
+                  "ids": [
+                    "id~ID"
+                  ],
+                  "titles": [
+                    "ID"
+                  ]
+                },
+                {
+                  "ids": [
+                    "name~String"
+                  ],
+                  "titles": [
+                    "Name"
+                  ]
+                },
+                {
+                  "ids": [
+                    "updated_at~Date"
+                  ],
+                  "titles": [
+                    "Updated at"
+                  ]
+                },
+                {
+                  "ids": [
+                    "url~String"
+                  ],
+                  "titles": [
+                    "URL"
+                  ]
+                },
+                {
+                  "ids": [
+                    "relative_link~String"
+                  ],
+                  "titles": [
+                    "Relative link"
+                  ]
+                },
+                {
+                  "ids": [
+                    "creator_id~String"
+                  ],
+                  "titles": [
+                    "Creator ID"
+                  ]
+                },
+                {
+                  "ids": [
+                    "email~String"
+                  ],
+                  "titles": [
+                    "Email"
+                  ]
+                },
+                {
+                  "ids": [
+                    "created_at~Date"
+                  ],
+                  "titles": [
+                    "Created at"
+                  ]
+                }
+              ]
+            },
+            "toggleCfg": {
+              "create_labels_if_missing": true,
+              "board_id": true,
+              "column_values.person.personsAndTeams.kind": true,
+              "column_values.status.label": true,
+              "column_values.color_mky6jn4z.label": true
+            },
+            "input": {
+              "recipe_api_version": "2023-07",
+              "object": "create_item",
+              "item_name": "Workato – #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"recipe_name\"]}')}",
+              "board_id": "18390354239",
+              "create_labels_if_missing": "true",
+              "column_values": {
+                "person": {
+                  "personsAndTeams": {
+                    "kind": "person",
+                    "id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"monday_connector_5515774_1766397492\",\"line\":\"e5ce9b99\",\"path\":[\"users\",{\"path_element_type\":\"current_item\"},\"id\"]}')}"
+                  }
+                },
+                "status": {
+                  "label": "🆕 New Error"
+                },
+                "color_mky6jn4z": {
+                  "label": "Meduim"
+                },
+                "dropdown_mky6jmbm": {
+                  "labels": "=[_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"business_project\"]}')]"
+                },
+                "dropdown_mky6pdej": {
+                  "labels": "=[_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"project_domain\"]}')]"
+                },
+                "long_text_mky6xbza": {
+                  "text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"error_message\"]}')}"
+                },
+                "dropdown_mky6cmt1": {
+                  "labels": "=['Workato']"
+                },
+                "dropdown_mkydt2gh": {
+                  "labels": "=[_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"error_type\"]}')]"
+                },
+                "link_mkyq63e0": {
+                  "url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"job_url\"]}')}",
+                  "text": "Job UUID: #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"job_uuid\"]}')}"
+                },
+                "date4": {
+                  "date": "=_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_created_at\"]}').in_time_zone(\"Etc/UTC\").strftime(\"%d/%m/%Y\")",
+                  "time": "=_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_created_at\"]}').in_time_zone(\"Etc/UTC\").strftime(\"%H:%M:%S\")"
+                }
+              },
+              "fields_to_retrieve": "id~ID,name~String,updated_at~Date,url~String,relative_link~String,creator_id~String,email~String,created_at~Date"
+            },
+            "extended_output_schema": [
+              {
+                "control_type": "text",
+                "hint": "The item's unique identifier.",
+                "label": "ID",
+                "name": "id",
+                "optional": false,
+                "sticky": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "hint": "The item's name.",
+                "label": "Name",
+                "name": "name",
+                "optional": false,
+                "sticky": true,
+                "type": "string"
+              },
+              {
+                "control_type": "date_time",
+                "hint": "The item's last update date.",
+                "label": "Updated at",
+                "name": "updated_at",
+                "optional": true,
+                "parse_output": "format_date_time_utc",
+                "sticky": true,
+                "type": "date_time",
+                "render_input": "date_time_conversion"
+              },
+              {
+                "control_type": "text",
+                "hint": "The item's link",
+                "label": "URL",
+                "name": "url",
+                "optional": false,
+                "sticky": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "hint": "The item's relative path",
+                "label": "Relative link",
+                "name": "relative_link",
+                "optional": true,
+                "sticky": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "hint": "The unique identifier of the item creator.",
+                "label": "Creator ID",
+                "name": "creator_id",
+                "optional": false,
+                "sticky": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "hint": "The item's email.",
+                "label": "Email",
+                "name": "email",
+                "optional": false,
+                "sticky": true,
+                "type": "string"
+              },
+              {
+                "control_type": "date_time",
+                "hint": "The item's create date.",
+                "label": "Created at",
+                "name": "created_at",
+                "optional": true,
+                "parse_output": "format_date_time_utc",
+                "sticky": true,
+                "type": "date_time",
+                "render_input": "date_time_conversion"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "control_type": "text",
+                "hint": "The new item's name.",
+                "label": "Item name",
+                "name": "item_name",
+                "optional": false,
+                "sticky": true,
+                "type": "string"
+              },
+              {
+                "control_type": "select",
+                "extends_schema": true,
+                "label": "Board name",
+                "name": "board_id",
+                "optional": false,
+                "pick_list": "board_list",
+                "sticky": true,
+                "toggle_field": {
+                  "name": "board_id",
+                  "label": "Board ID",
+                  "optional": false,
+                  "sticky": true,
+                  "extends_schema": true,
+                  "change_on_blur": true,
+                  "support_pills": false,
+                  "type": "integer",
+                  "control_type": "integer",
+                  "convert_output": "integer_conversion",
+                  "toggle_hint": "Use custom value",
+                  "hint": "Provide a valid Board ID. e.g. <b>123456</b>"
+                },
+                "toggle_hint": "Select from list",
+                "type": "string"
+              },
+              {
+                "control_type": "checkbox",
+                "hint": "Create Status/Dropdown labels if they're missing. (Requires permission to change board structure)",
+                "label": "Create labels if missing",
+                "name": "create_labels_if_missing",
+                "optional": true,
+                "parse_output": "float_conversion",
+                "sticky": true,
+                "toggle_field": {
+                  "name": "create_labels_if_missing",
+                  "label": "Create labels if missing",
+                  "hint": "Create Status/Dropdown labels if they're missing. (Requires permission to change board structure) Allowed values are <b>true</b>, <b>false</b>",
+                  "optional": true,
+                  "sticky": true,
+                  "type": "string",
+                  "control_type": "text",
+                  "convert_input": "boolean_conversion",
+                  "toggle_hint": "Use custom value"
+                },
+                "toggle_hint": "Select from list",
+                "type": "number",
+                "render_input": "boolean_conversion"
+              },
+              {
+                "control_type": "text",
+                "hint": "The group's unique identifier.",
+                "label": "Group ID",
+                "name": "group_id",
+                "optional": true,
+                "sticky": true,
+                "type": "string"
+              },
+              {
+                "control_type": "select",
+                "hint": "The position relative method to another item (before_at / after_at)",
+                "label": "Position relative method",
+                "name": "position_relative_method",
+                "optional": true,
+                "pick_list": [
+                  [
+                    "After at",
+                    "after_at"
+                  ],
+                  [
+                    "Before at",
+                    "before_at"
+                  ]
+                ],
+                "sticky": true,
+                "toggle_field": {
+                  "name": "position_relative_method",
+                  "label": "Position relative method",
+                  "hint": "The position relative method to another item (before_at / after_at)",
+                  "optional": true,
+                  "sticky": true,
+                  "type": "string",
+                  "control_type": "text",
+                  "toggle_hint": "Use custom value"
+                },
+                "toggle_hint": "Select from list",
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "hint": "The item to set the position next to.",
+                "label": "Relative to",
+                "name": "relative_to",
+                "optional": true,
+                "sticky": true,
+                "type": "string"
+              },
+              {
+                "control_type": "tree",
+                "extends_schema": true,
+                "hint": "Select all fields (including the nested object fields) to be returned in the response.",
+                "label": "Select fields to retrieve",
+                "name": "fields_to_retrieve",
+                "optional": true,
+                "pick_list": "mutate_fields_list",
+                "pick_list_params": {
+                  "recipe_api_version": "recipe_api_version",
+                  "object": "object"
+                },
+                "sticky": true,
+                "tree_options": {
+                  "selectable_folder": true,
+                  "multi_select": true
+                },
+                "type": "string"
+              },
+              {
+                "control_type": "select",
+                "label": "Column ID",
+                "name": "column_id",
+                "ngIf": "false",
+                "optional": true,
+                "pick_list": "column_value_list",
+                "pick_list_params": {
+                  "board_id": "board_id"
+                },
+                "type": "string"
+              },
+              {
+                "label": "Column values",
+                "name": "column_values",
+                "optional": true,
+                "properties": [
+                  {
+                    "properties": [
+                      {
+                        "label": "👤 Owner",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "number",
+                            "label": "Person/Team ID",
+                            "parse_output": "integer_conversion",
+                            "optional": true,
+                            "render_input": "integer_conversion",
+                            "type": "integer",
+                            "name": "id"
+                          },
+                          {
+                            "control_type": "select",
+                            "label": "Kind",
+                            "pick_list": [
+                              [
+                                "Person",
+                                "person"
+                              ],
+                              [
+                                "Team",
+                                "team"
+                              ]
+                            ],
+                            "toggle_hint": "Select from list",
+                            "toggle_field": {
+                              "name": "kind",
+                              "label": "Kind",
+                              "type": "string",
+                              "control_type": "text",
+                              "optional": true,
+                              "toggle_hint": "Use custom value",
+                              "hint": "Allowed values are <b>person</b> or <b>team</b>"
+                            },
+                            "optional": true,
+                            "type": "string",
+                            "name": "kind"
+                          }
+                        ],
+                        "type": "array",
+                        "name": "personsAndTeams"
+                      }
+                    ],
+                    "label": "👤 Owner",
+                    "optional": true,
+                    "type": "object",
+                    "name": "person"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "select",
+                        "label": "🚦 Stage",
+                        "pick_list": [
+                          [
+                            "🏗️  in  progress",
+                            "🏗️ In Progress"
+                          ],
+                          [
+                            "🔍  under  investigation",
+                            "🔍 Under Investigation"
+                          ],
+                          [
+                            "✅  resolved /  monitoring",
+                            "✅ Resolved / Monitoring"
+                          ],
+                          [
+                            "📋  backlog /  won’t  fix",
+                            "📋 Backlog / Won’t Fix"
+                          ],
+                          [
+                            "🆕  new  error",
+                            "🆕 New Error"
+                          ],
+                          [
+                            "🛠️  workaround  only",
+                            "🛠️ Workaround Only"
+                          ],
+                          [
+                            "❓  needs  more  info",
+                            "❓ Needs More Info"
+                          ]
+                        ],
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "name": "label",
+                          "label": "🚦 Stage",
+                          "type": "string",
+                          "control_type": "text",
+                          "optional": true,
+                          "toggle_hint": "Use custom value",
+                          "hint": "Enter the label of the value."
+                        },
+                        "optional": true,
+                        "type": "string",
+                        "name": "label"
+                      }
+                    ],
+                    "label": "🚦 Stage",
+                    "optional": true,
+                    "type": "object",
+                    "name": "status"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "select",
+                        "label": "🚨 Priority",
+                        "pick_list": [
+                          [
+                            "Critical",
+                            "Critical"
+                          ],
+                          [
+                            "High",
+                            "High"
+                          ],
+                          [
+                            "Meduim",
+                            "Meduim"
+                          ],
+                          [
+                            "Critical",
+                            "Critical"
+                          ],
+                          [
+                            "Low",
+                            "Low"
+                          ],
+                          [
+                            "",
+                            ""
+                          ]
+                        ],
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "name": "label",
+                          "label": "🚨 Priority",
+                          "type": "string",
+                          "control_type": "text",
+                          "optional": true,
+                          "toggle_hint": "Use custom value",
+                          "hint": "Enter the label of the value."
+                        },
+                        "optional": true,
+                        "type": "string",
+                        "name": "label"
+                      }
+                    ],
+                    "label": "🚨 Priority",
+                    "optional": true,
+                    "type": "object",
+                    "name": "color_mky6jn4z"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Text",
+                        "optional": true,
+                        "type": "string",
+                        "name": "text"
+                      }
+                    ],
+                    "label": "ℹ️ Description",
+                    "optional": true,
+                    "type": "object",
+                    "name": "long_text_mky6xbza"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "date",
+                        "label": "Date",
+                        "render_input": "date_conversion",
+                        "parse_output": "date_conversion",
+                        "optional": true,
+                        "type": "date_time",
+                        "name": "date"
+                      },
+                      {
+                        "control_type": "time",
+                        "label": "Time",
+                        "optional": true,
+                        "type": "string",
+                        "name": "time"
+                      }
+                    ],
+                    "label": "Date",
+                    "optional": true,
+                    "type": "object",
+                    "name": "date4"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "label": "💻 System Involved",
+                        "hint": "Enter the label of the value.",
+                        "optional": true,
+                        "of": "string",
+                        "type": "array",
+                        "name": "labels"
+                      }
+                    ],
+                    "label": "💻 System Involved",
+                    "optional": true,
+                    "type": "object",
+                    "name": "dropdown_mky6cmt1"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "label": "Business Domain",
+                        "hint": "Enter the label of the value.",
+                        "optional": true,
+                        "of": "string",
+                        "type": "array",
+                        "name": "labels"
+                      }
+                    ],
+                    "label": "Business Domain",
+                    "optional": true,
+                    "type": "object",
+                    "name": "dropdown_mky6jmbm"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "label": "Project Domain",
+                        "hint": "Enter the label of the value.",
+                        "optional": true,
+                        "of": "string",
+                        "type": "array",
+                        "name": "labels"
+                      }
+                    ],
+                    "label": "Project Domain",
+                    "optional": true,
+                    "type": "object",
+                    "name": "dropdown_mky6pdej"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "monday Doc v2",
+                    "optional": true,
+                    "type": "string",
+                    "name": "direct_doc_mkydmxe7"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "label": "‼️ Error Type",
+                        "hint": "Enter the label of the value.",
+                        "optional": true,
+                        "of": "string",
+                        "type": "array",
+                        "name": "labels"
+                      }
+                    ],
+                    "label": "‼️ Error Type",
+                    "optional": true,
+                    "type": "object",
+                    "name": "dropdown_mkydt2gh"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "url",
+                        "label": "URL",
+                        "optional": true,
+                        "type": "string",
+                        "name": "url"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Text",
+                        "optional": true,
+                        "type": "string",
+                        "name": "text"
+                      }
+                    ],
+                    "label": "🔗 Job URL",
+                    "optional": true,
+                    "type": "object",
+                    "name": "link_mkyq63e0"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "visible_config_fields": [
+              "object",
+              "recipe_api_version",
+              "item_name",
+              "board_id",
+              "create_labels_if_missing",
+              "fields_to_retrieve",
+              "column_values.person.personsAndTeams.id",
+              "column_values.person.personsAndTeams.kind",
+              "column_values.status.label",
+              "column_values.color_mky6jn4z.label",
+              "column_values.long_text_mky6xbza.text",
+              "column_values",
+              "column_values.person",
+              "column_values.person.personsAndTeams",
+              "column_values.date4",
+              "column_values.dropdown_mky6pdej.labels",
+              "column_values.dropdown_mky6jmbm.labels",
+              "column_values.status",
+              "column_values.color_mky6jn4z",
+              "column_values.dropdown_mky6jmbm",
+              "column_values.dropdown_mky6pdej",
+              "column_values.long_text_mky6xbza",
+              "column_values.dropdown_mky6cmt1.labels",
+              "column_values.dropdown_mky6cmt1",
+              "column_values.dropdown_mkydt2gh.labels",
+              "column_values.dropdown_mkydt2gh",
+              "column_values.date4.date",
+              "column_values.link_mkyq63e0.text",
+              "column_values.link_mkyq63e0.url",
+              "column_values.link_mkyq63e0",
+              "column_values.date4.time"
+            ],
+            "hidden_config_fields": [
+              "position_relative_method",
+              "relative_to",
+              "group_id"
+            ],
+            "uuid": "0fcc2c9b-bc06-43c4-ae2b-4d15fdc41bb5",
+            "skip": false
+          },
+          {
+            "number": 5,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "equals_to",
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"error_type\"]}')}",
+                  "rhs": "Application Error",
+                  "uuid": "e412ebd9-86a6-4b4f-8c57-0769d8fed331"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 6,
+                "provider": "monday_connector_5515774_1766397492",
+                "name": "upload_file",
+                "as": "3bd733da",
+                "title": null,
+                "description": "Upload <span class=\"provider\">File to column</span> in <span class=\"provider\">Monday.com</span>",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "object": "File to column",
+                  "fields_to_retrieve": [
+                    {
+                      "ids": [
+                        "id~ID"
+                      ],
+                      "titles": [
+                        "ID"
+                      ]
+                    },
+                    {
+                      "ids": [
+                        "name~String"
+                      ],
+                      "titles": [
+                        "Name"
+                      ]
+                    },
+                    {
+                      "ids": [
+                        "file_extension~String"
+                      ],
+                      "titles": [
+                        "File extension"
+                      ]
+                    },
+                    {
+                      "ids": [
+                        "created_at~Date"
+                      ],
+                      "titles": [
+                        "Created at"
+                      ]
+                    },
+                    {
+                      "ids": [
+                        "file_size~Int"
+                      ],
+                      "titles": [
+                        "File size"
+                      ]
+                    },
+                    {
+                      "ids": [
+                        "uploaded_by~User",
+                        "uploaded_by.id~User.Int"
+                      ],
+                      "titles": [
+                        "Uploaded by",
+                        "ID"
+                      ]
+                    },
+                    {
+                      "ids": [
+                        "url_thumbnail~String"
+                      ],
+                      "titles": [
+                        "URL thumbnail"
+                      ]
+                    }
+                  ]
+                },
+                "input": {
+                  "recipe_api_version": "2023-07",
+                  "object": "add_file_to_column",
+                  "column_id": "file_mky67ygb",
+                  "item_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"monday_connector_5515774_1766397492\",\"line\":\"5218198e\",\"path\":[\"id\"]}')}",
+                  "file": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"file_content\"]}')}",
+                  "file_name": "=[_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"recipe_name\"]}'),_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"timestamp\"]}')].smart_join(\"_\") + '.csv'",
+                  "fields_to_retrieve": "id~ID,name~String,file_extension~String,created_at~Date,file_size~Int,uploaded_by.id~User.Int,url_thumbnail~String"
+                },
+                "extended_output_schema": [
+                  {
+                    "control_type": "text",
+                    "hint": "The file's unique identifier.",
+                    "label": "ID",
+                    "name": "id",
+                    "optional": false,
+                    "sticky": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "hint": "The file's name.",
+                    "label": "Name",
+                    "name": "name",
+                    "optional": false,
+                    "sticky": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "hint": "The file's extension.",
+                    "label": "File extension",
+                    "name": "file_extension",
+                    "optional": false,
+                    "sticky": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "hint": "The file's creation date.",
+                    "label": "Created at",
+                    "name": "created_at",
+                    "optional": true,
+                    "parse_output": "format_date_time_utc",
+                    "sticky": true,
+                    "type": "date_time",
+                    "render_input": "date_time_conversion"
+                  },
+                  {
+                    "control_type": "integer",
+                    "hint": "The file's size in bytes.",
+                    "label": "File size",
+                    "name": "file_size",
+                    "optional": false,
+                    "parse_output": "integer_conversion",
+                    "sticky": true,
+                    "type": "integer",
+                    "render_input": "integer_conversion"
+                  },
+                  {
+                    "hint": "The user who uploaded the file.",
+                    "label": "Uploaded by",
+                    "name": "uploaded_by",
+                    "optional": false,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "ID",
+                        "hint": "The user's unique identifier.",
+                        "optional": false,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "id"
+                      }
+                    ],
+                    "sticky": true,
+                    "type": "object"
+                  },
+                  {
+                    "control_type": "text",
+                    "hint": "url to view the asset in thumbnail mode. Only available for images.",
+                    "label": "URL thumbnail",
+                    "name": "url_thumbnail",
+                    "optional": true,
+                    "sticky": true,
+                    "type": "string"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "control_type": "text",
+                    "hint": "The column to add the file to.",
+                    "label": "Column ID",
+                    "name": "column_id",
+                    "optional": false,
+                    "sticky": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "hint": "The item to add the file to.",
+                    "label": "Item ID",
+                    "name": "item_id",
+                    "optional": false,
+                    "sticky": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "hint": "The file content to upload.",
+                    "label": "File content",
+                    "name": "file",
+                    "optional": false,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "hint": "File name with extension. e.g. <b>image.jpg</b>",
+                    "label": "File name",
+                    "name": "file_name",
+                    "optional": false,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "tree",
+                    "extends_schema": true,
+                    "hint": "Select all fields (including the nested object fields) to be returned in the response.",
+                    "label": "Select fields to retrieve",
+                    "name": "fields_to_retrieve",
+                    "optional": true,
+                    "pick_list": "mutate_fields_list",
+                    "pick_list_params": {
+                      "recipe_api_version": "recipe_api_version",
+                      "object": "object"
+                    },
+                    "sticky": true,
+                    "tree_options": {
+                      "selectable_folder": true,
+                      "multi_select": true
+                    },
+                    "type": "string"
+                  }
+                ],
+                "uuid": "e591a646-cf6b-4a51-9d24-66c2c30541d1"
+              }
+            ],
+            "comment": "Upload Attachment to Asana",
+            "uuid": "453649ef-07a8-475a-b849-f4b136ca1fa7",
+            "skip": false
+          },
+          {
+            "number": 7,
+            "provider": "workato_recipe_function",
+            "name": "return_result",
+            "as": "ff0317e7",
+            "keyword": "action",
+            "input": {
+              "result": {
+                "proccess_status": "Success",
+                "ticket_url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"monday_connector_5515774_1766397492\",\"line\":\"5218198e\",\"path\":[\"url\"]}')}"
+              }
+            },
+            "extended_output_schema": [
+              {
+                "label": "Result",
+                "name": "result",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Process Status",
+                    "name": "proccess_status",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Error Message",
+                    "name": "error_message",
+                    "type": "string",
+                    "optional": true
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Ticket URL",
+                    "name": "ticket_url",
+                    "type": "string",
+                    "optional": true
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "label": "Result",
+                "name": "result",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Process Status",
+                    "name": "proccess_status",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Error Message",
+                    "name": "error_message",
+                    "type": "string",
+                    "optional": true
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Ticket URL",
+                    "name": "ticket_url",
+                    "type": "string",
+                    "optional": true
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "visible_config_fields": [
+              "result",
+              "result.proccess_status",
+              "result.ticket_url"
+            ],
+            "comment": "Status =Success",
+            "uuid": "f676021d-6db8-4cbf-b792-c5194ab1840c",
+            "skip": false
+          },
+          {
+            "number": 8,
+            "as": "3dfddf82",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 9,
+                "provider": "workato_recipe_function",
+                "name": "return_result",
+                "as": "3072d4c7",
+                "keyword": "action",
+                "input": {
+                  "result": {
+                    "proccess_status": "Error",
+                    "error_message": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"3dfddf82\",\"path\":[\"message\"]}')}"
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Process Status",
+                        "name": "proccess_status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Error Message",
+                        "name": "error_message",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ticket URL",
+                        "name": "ticket_url",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Process Status",
+                        "name": "proccess_status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Error Message",
+                        "name": "error_message",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ticket URL",
+                        "name": "ticket_url",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "visible_config_fields": [
+                  "result.error_message",
+                  "result",
+                  "result.proccess_status",
+                  "result.asana_ticket_url"
+                ],
+                "comment": "Status = Error",
+                "uuid": "5bccd327-8e39-488e-910b-e276156f66f5",
+                "skip": false
+              }
+            ],
+            "uuid": "b0ec691b-38d2-4562-9da6-2d0a179882d4"
+          }
+        ],
+        "uuid": "029a0ced-878c-47bc-90a9-06979d9b489d"
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_11",
+        "label": "Recipe Id"
+      },
+      {
+        "name": "custom_column_9",
+        "label": "Project Domain"
+      },
+      {
+        "name": "custom_column_2",
+        "label": "Recipe Name"
+      },
+      {
+        "name": "custom_column_10",
+        "label": "Folder Name"
+      },
+      {
+        "name": "custom_column_8",
+        "label": "Ticket Id"
+      },
+      {
+        "name": "custom_column_3",
+        "label": "Business Project"
+      },
+      {
+        "name": "custom_column_4",
+        "label": "Owner"
+      },
+      {
+        "name": "custom_column_5",
+        "label": "Error Type"
+      },
+      {
+        "name": "custom_column_6",
+        "label": "Process Status"
+      },
+      {
+        "name": "custom_column_7",
+        "label": "Error Message"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_11": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"recipe_id\"]}')}",
+      "custom_column_9": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"project_domain\"]}')}",
+      "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"recipe_name\"]}')}",
+      "custom_column_10": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"folder_name\"]}')}",
+      "custom_column_8": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"monday_connector_5515774_1766397492\",\"line\":\"5218198e\",\"path\":[\"id\"]}')}",
+      "custom_column_3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"business_project\"]}')}",
+      "custom_column_4": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"Owner\"]}')}",
+      "custom_column_5": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"error_type\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a88eacac\",\"path\":[\"parameters\",\"error_type\"]}') : 'Global Error'",
+      "custom_column_6": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"ff0317e7\",\"path\":[\"result\",\"proccess_status\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"ff0317e7\",\"path\":[\"result\",\"proccess_status\"]}') : \n 'Error'",
+      "custom_column_7": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"ff0317e7\",\"path\":[\"result\",\"error_message\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"ff0317e7\",\"path\":[\"result\",\"error_message\"]}') : \nskip"
+    },
+    "uuid": "5d0a9231-2074-4bf2-a7be-fa8701cbf6fc",
+    "unfinished": false
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "monday_connector_5515774_1766397492",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/BizOps App/monday.connection.json",
+        "name": "Monday",
+        "folder": "#Connections/BizOps App",
+        "custom": true
+      }
+    }
+  ],
+  "tags": [
+    "Recipe Function"
+  ]
+}

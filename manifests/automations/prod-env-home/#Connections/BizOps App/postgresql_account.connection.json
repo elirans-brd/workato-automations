@@ -1,0 +1,5 @@
+{
+  "name": "PostgreSQL account",
+  "provider": "postgresql",
+  "root_folder": false
+}

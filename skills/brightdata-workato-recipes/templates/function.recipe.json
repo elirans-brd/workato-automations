@@ -1,0 +1,130 @@
+{
+  "name": "<CODE>-<NN> | Fun <NNN> | <Name>",
+  "description": "# <CODE>-<NN> | Fun <NNN> | <Name>\n\n**📋 Ticket:** [<ticket title>](<monday.com pulse URL>)\n\n---\n\n**TRIGGER:** Called by <orchestrator>\n\n**PURPOSE:** <one sentence: what business outcome this recipe delivers>\n\n**FLOW:**\n1. <step>\n2. <step>\n\n**DB / TABLES:** <tables read/written, or none>\n**UPSTREAM:** <who calls this>  \n**DOWNSTREAM:** <functions this calls>\n",
+  "version": 1,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "provider": "workato_recipe_function",
+    "name": "execute",
+    "as": "a1f00001",
+    "keyword": "trigger",
+    "input": {
+      "parameters_schema_json": "[{\"name\": \"record_id\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Record ID\"}]",
+      "result_schema_json": "[{\"name\": \"status\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Status\"}, {\"name\": \"message\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Message\"}]"
+    },
+    "extended_output_schema": [
+      {
+        "label": "Parameters",
+        "name": "parameters",
+        "type": "object",
+        "properties": [
+          {
+            "name": "record_id",
+            "type": "string",
+            "optional": false,
+            "control_type": "text",
+            "label": "Record ID"
+          }
+        ]
+      }
+    ],
+    "extended_input_schema": [
+      {
+        "label": "Result",
+        "name": "result",
+        "type": "object",
+        "properties": [
+          {
+            "name": "status",
+            "type": "string",
+            "optional": false,
+            "control_type": "text",
+            "label": "Status"
+          },
+          {
+            "name": "message",
+            "type": "string",
+            "optional": true,
+            "control_type": "text",
+            "label": "Message"
+          }
+        ]
+      }
+    ],
+    "block": [
+      {
+        "keyword": "try",
+        "block": [
+          {
+            "provider": "logger",
+            "name": "log_message",
+            "as": "a1f00002",
+            "keyword": "action",
+            "comment": "TODO: replace with business steps",
+            "input": {
+              "user_logs_enabled": "false",
+              "message": "#{_dp('{\\\"pill_type\\\":\\\"output\\\",\\\"provider\\\":\\\"workato_recipe_function\\\",\\\"line\\\":\\\"a1f00001\\\",\\\"path\\\":[\\\"parameters\\\",\\\"record_id\\\"]}')}"
+            },
+            "number": 2
+          },
+          {
+            "provider": "workato_recipe_function",
+            "name": "return_result",
+            "as": "a1f00003",
+            "keyword": "action",
+            "comment": "status = Success",
+            "input": {
+              "result": {
+                "status": "Success",
+                "message": ""
+              }
+            },
+            "number": 3
+          }
+        ],
+        "number": 1
+      },
+      {
+        "keyword": "catch",
+        "as": "a1f0c001",
+        "input": {
+          "max_retry_count": "0",
+          "retry_interval": "2"
+        },
+        "block": [
+          {
+            "provider": "workato_recipe_function",
+            "name": "return_result",
+            "as": "a1f00004",
+            "keyword": "action",
+            "comment": "status = Error",
+            "input": {
+              "result": {
+                "status": "Error",
+                "message": "#{_dp('{\\\"pill_type\\\":\\\"output\\\",\\\"provider\\\":\\\"catch\\\",\\\"line\\\":\\\"a1f0c001\\\",\\\"path\\\":[\\\"message\\\"]}')}"
+              }
+            },
+            "number": 5
+          }
+        ],
+        "number": 4
+      }
+    ],
+    "number": 0
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "logger",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ]
+}

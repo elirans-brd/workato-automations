@@ -1,0 +1,1982 @@
+{
+  "name": "LS-01 | Fun 003 | HubSpot Contact Sync",
+  "description": "# LS-01 | Fun 003 | HubSpot Contact Sync\n\n**Ticket:** [Monday](https://brightdata-group.monday.com/boards/8667788707/pulses/12418264810)\n\n## What it does\nPushes registrations not yet synced (hubspot_synced=false) to the HubSpot Form.\n\n## Details\n- **SELECT:** WHERE hubspot_synced = false AND email IS NOT NULL\n- **Ruby transform:** builds fields + UTM:\n  - last_utm_source = linkedin\n  - last_utm_medium = social\n  - last_utm_campaign = linkedin-event-[event-name]\n  - linkedin_email_consent = TRUE/FALSE (string)\n- **HubSpot Form:** 58253736-a4cb-4ae0-a440-79c914c2ddf2\n  Portal: 7697697, endpoint: /submissions/v3/integration/secure/submit\n- **After success:** hubspot_synced = true (batch update + status/error tracking)\n\n## Pending Nizan's confirmation\n- sf_sync value\n- linkedin_email_consent — needs legal approval\n- field mapping on the form\n",
+  "version": 7,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "workato_recipe_function",
+    "name": "execute",
+    "as": "execute_dd31",
+    "keyword": "trigger",
+    "input": {
+      "parameters_schema_json": "[]",
+      "result_schema_json": "[{\"name\":\"status\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\"},{\"name\":\"message\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Message\"},{\"name\":\"regestration_count\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Regestration count\"}]"
+    },
+    "visible_config_fields": [
+      "parameters_schema_json",
+      "result_schema_json"
+    ],
+    "block": [
+      {
+        "number": 1,
+        "as": "try_d034",
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "postgresql",
+            "name": "search_rows",
+            "as": "05f092cf",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+              "table": "marketing.linkedin_registrations",
+              "output_columns": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "event_id",
+                  "value": "event_id"
+                },
+                {
+                  "label": "event_name",
+                  "value": "event_name"
+                },
+                {
+                  "label": "email",
+                  "value": "email"
+                },
+                {
+                  "label": "first_name",
+                  "value": "first_name"
+                },
+                {
+                  "label": "last_name",
+                  "value": "last_name"
+                },
+                {
+                  "label": "company",
+                  "value": "company"
+                },
+                {
+                  "label": "job_title",
+                  "value": "job_title"
+                },
+                {
+                  "label": "country",
+                  "value": "country"
+                },
+                {
+                  "label": "consent",
+                  "value": "consent"
+                },
+                {
+                  "label": "submitted_at",
+                  "value": "submitted_at"
+                },
+                {
+                  "label": "synced_at",
+                  "value": "synced_at"
+                },
+                {
+                  "label": "hubspot_synced",
+                  "value": "hubspot_synced"
+                }
+              ]
+            },
+            "toggleCfg": {
+              "table": true
+            },
+            "input": {
+              "limit": "10",
+              "offset": "0",
+              "table": "marketing.linkedin_registrations",
+              "where": "hubspot_synced = false AND email IS NOT NULL",
+              "orderby": "submitted_at ASC",
+              "output_columns": "id\nevent_id\nevent_name\nemail\nfirst_name\nlast_name\ncompany\njob_title\ncountry\nconsent\nsubmitted_at\nsynced_at\nhubspot_synced"
+            },
+            "extended_output_schema": [
+              {
+                "label": "Rows",
+                "name": "rows",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "company",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "company"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "company"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "consent",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "boolean",
+                      "column_name": "consent"
+                    },
+                    "parse_output": "parse_boolean_output",
+                    "optional": true,
+                    "hint": "boolean",
+                    "type": "string",
+                    "name": "consent"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "country",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "country"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "country"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "email",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "email"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "email"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "event_id",
+                    "parse_output": "parse_integer_output",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "bigint",
+                      "column_name": "event_id"
+                    },
+                    "optional": true,
+                    "hint": "bigint",
+                    "type": "integer",
+                    "name": "event_id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "event_name",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "event_name"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "event_name"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "first_name",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "first_name"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "first_name"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "hubspot_synced",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "boolean",
+                      "column_name": "hubspot_synced"
+                    },
+                    "parse_output": "parse_boolean_output",
+                    "optional": true,
+                    "hint": "boolean",
+                    "type": "string",
+                    "name": "hubspot_synced"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "id",
+                    "details": {
+                      "primary_key": true,
+                      "data_type": "text",
+                      "column_name": "id"
+                    },
+                    "event_title": true,
+                    "hint": "text, primary key",
+                    "optional": true,
+                    "type": "string",
+                    "name": "id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "job_title",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "job_title"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "job_title"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "last_name",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "last_name"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "last_name"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "submitted_at",
+                    "render_input": "convert_date_time",
+                    "parse_output": "convert_date_time",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "timestamp with time zone",
+                      "column_name": "submitted_at"
+                    },
+                    "optional": true,
+                    "hint": "timestamp with time zone",
+                    "type": "date_time",
+                    "name": "submitted_at"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "synced_at",
+                    "render_input": "convert_date_time",
+                    "parse_output": "convert_date_time",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "timestamp with time zone",
+                      "column_name": "synced_at"
+                    },
+                    "optional": true,
+                    "hint": "timestamp with time zone",
+                    "type": "date_time",
+                    "name": "synced_at"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "control_type": "form-schema-builder",
+                "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. <b>id</b>\n                    Second, provide the actual parameter value. Parameter values can be static or datapills.\n                    Select the <b>closest corresponding data type</b> that your database is expecting for the bind variable\n                    ",
+                "label": "Parameters",
+                "name": "parameters",
+                "optional": true,
+                "override": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Schema",
+                    "extends_schema": true,
+                    "type": "string",
+                    "name": "schema"
+                  },
+                  {
+                    "properties": [
+
+                    ],
+                    "label": "Data",
+                    "optional": true,
+                    "type": "object",
+                    "name": "data"
+                  }
+                ],
+                "sticky": true,
+                "type": "object"
+              }
+            ],
+            "visible_config_fields": [
+              "table",
+              "where",
+              "parameters",
+              "orderby",
+              "limit",
+              "offset",
+              "output_columns"
+            ],
+            "comment": "marketing.linkedin_registrations",
+            "uuid": "4a43d58c-d4fb-4de8-ba28-e0f089e45973"
+          },
+          {
+            "number": 3,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "present",
+                  "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"05f092cf\",\"path\":[\"rows\"]}')",
+                  "rhs": "",
+                  "uuid": "32b65c7f-579a-409d-abf3-44e8c9a01c74"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 4,
+                "provider": "workato_variable",
+                "name": "declare_list",
+                "as": "76f25e61",
+                "keyword": "action",
+                "input": {
+                  "name": "synced_regestrations_ids",
+                  "list_item_schema_json": "[{\"name\":\"id\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"ID\"},{\"name\":\"hubspot_synced\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Hubspot synced\"},{\"name\":\"hubspot_sync_status\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Hubspot sync status\"},{\"name\":\"hubspot_sync_error\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Hubspot sync error\"},{\"name\":\"hubspot_synced_at\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Hubspot synced at\"}]"
+                },
+                "extended_output_schema": [
+                  {
+                    "hint": "",
+                    "label": "synced_regestrations_ids",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": false,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "ID",
+                        "name": "id",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Hubspot synced",
+                        "name": "hubspot_synced",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Hubspot sync status",
+                        "name": "hubspot_sync_status",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Hubspot sync error",
+                        "name": "hubspot_sync_error",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Hubspot synced at",
+                        "name": "hubspot_synced_at",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                    "label": "Items",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "ID",
+                        "name": "id",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Hubspot synced",
+                        "name": "hubspot_synced",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Hubspot sync status",
+                        "name": "hubspot_sync_status",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Hubspot sync error",
+                        "name": "hubspot_sync_error",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Hubspot synced at",
+                        "name": "hubspot_synced_at",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "uuid": "3400ad7f-fc94-4061-bb6f-8ad24e0b836f"
+              },
+              {
+                "number": 5,
+                "as": "67f35dec",
+                "keyword": "foreach",
+                "repeat_mode": "batch",
+                "batch_size": "10",
+                "clear_scope": "false",
+                "input": {
+                },
+                "block": [
+                  {
+                    "number": 6,
+                    "as": "f6239df0",
+                    "keyword": "foreach",
+                    "repeat_mode": "simple",
+                    "clear_scope": "false",
+                    "input": {
+                    },
+                    "block": [
+                      {
+                        "number": 7,
+                        "provider": "workato_custom_code",
+                        "name": "invoke_custom_ruby_code",
+                        "as": "d7f3b169",
+                        "keyword": "action",
+                        "toggleCfg": {
+                          "code_input.data.consent": false
+                        },
+                        "input": {
+                          "payload_asset_type": "inline",
+                          "code": "event_name = input[\"event_name\"].to_s\n\nclean = ->(v) { (v.nil? || v.to_s.strip.empty?) ? nil : v }\n\n# utm_campaign = linkedin-event-[event-name] (full, no truncation)\nname_slug = event_name.downcase\n  .gsub(/[^a-z0-9]+/, \"-\")\n  .gsub(/\\A-+|-+\\z/, \"\")\nutm_campaign = \"linkedin-event-#{name_slug}\"\n\nconsent_val = input[\"consent\"] ? \"TRUE\" : \"FALSE\"\n\n{\n  \"firstname\"                => clean.(input[\"first_name\"]),\n  \"lastname\"                 => clean.(input[\"last_name\"]),\n  \"email\"                    => clean.(input[\"email\"]),\n  \"company\"                  => clean.(input[\"company\"]),\n  \"jobtitle\"                 => clean.(input[\"job_title\"]),\n  \"country_dropdown\"         => clean.(input[\"country\"]),\n  \"last_utm_campaign\"        => utm_campaign,\n  \"last_utm_source\"          => \"linkedin\",\n  \"last_utm_medium\"          => \"social\",\n  \"linkedin_event_form_name\" => event_name,\n  \"linkedin_email_consent\"   => consent_val\n}\n",
+                          "code_output_schema_json": "[{\"control_type\":\"text\",\"label\":\"First name\",\"type\":\"string\",\"name\":\"firstname\"},{\"control_type\":\"text\",\"label\":\"Last name\",\"type\":\"string\",\"name\":\"lastname\"},{\"control_type\":\"text\",\"label\":\"Email\",\"type\":\"string\",\"name\":\"email\"},{\"control_type\":\"text\",\"label\":\"Company\",\"type\":\"string\",\"name\":\"company\"},{\"control_type\":\"text\",\"label\":\"Job title\",\"type\":\"string\",\"name\":\"jobtitle\"},{\"control_type\":\"text\",\"label\":\"Country dropdown\",\"type\":\"string\",\"name\":\"country_dropdown\"},{\"control_type\":\"text\",\"label\":\"Last utm campaign\",\"type\":\"string\",\"name\":\"last_utm_campaign\"},{\"control_type\":\"text\",\"label\":\"Last utm source\",\"type\":\"string\",\"name\":\"last_utm_source\"},{\"control_type\":\"text\",\"label\":\"Last utm medium\",\"type\":\"string\",\"name\":\"last_utm_medium\"},{\"control_type\":\"text\",\"label\":\"Linkedin event form name\",\"type\":\"string\",\"name\":\"linkedin_event_form_name\"},{\"control_type\":\"text\",\"label\":\"Linkedin email consent\",\"type\":\"string\",\"name\":\"linkedin_email_consent\"}]",
+                          "name": "normalize_luma_guest",
+                          "code_input": {
+                            "schema": "[{\"control_type\":\"text\",\"label\":\"Email\",\"name\":\"email\",\"type\":\"string\",\"optional\":false,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"First name\",\"name\":\"first_name\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Last name\",\"name\":\"last_name\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Company\",\"name\":\"company\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Job title\",\"name\":\"job_title\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Country\",\"name\":\"country\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Event name\",\"name\":\"event_name\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Event id\",\"name\":\"event_id\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"checkbox\",\"label\":\"Consent\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"consent\",\"type\":\"boolean\",\"optional\":true,\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Consent\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"name\":\"consent\",\"type\":\"boolean\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},\"parent\":[\"code_input\",\"data\"]}]",
+                            "data": {
+                              "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"f6239df0\",\"path\":[\"email\"]}')}",
+                              "first_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"f6239df0\",\"path\":[\"first_name\"]}')}",
+                              "last_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"f6239df0\",\"path\":[\"last_name\"]}')}",
+                              "company": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"f6239df0\",\"path\":[\"company\"]}')}",
+                              "job_title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"f6239df0\",\"path\":[\"job_title\"]}')}",
+                              "country": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"f6239df0\",\"path\":[\"country\"]}')}",
+                              "event_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"f6239df0\",\"path\":[\"event_name\"]}')}",
+                              "event_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"f6239df0\",\"path\":[\"event_id\"]}')}",
+                              "consent": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"05f092cf\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"consent\"]}')}"
+                            }
+                          }
+                        },
+                        "extended_output_schema": [
+                          {
+                            "label": "Output",
+                            "name": "output",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "First name",
+                                "type": "string",
+                                "name": "firstname"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Last name",
+                                "type": "string",
+                                "name": "lastname"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Email",
+                                "type": "string",
+                                "name": "email"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Company",
+                                "type": "string",
+                                "name": "company"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Job title",
+                                "type": "string",
+                                "name": "jobtitle"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Country dropdown",
+                                "type": "string",
+                                "name": "country_dropdown"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Last utm campaign",
+                                "type": "string",
+                                "name": "last_utm_campaign"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Last utm source",
+                                "type": "string",
+                                "name": "last_utm_source"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Last utm medium",
+                                "type": "string",
+                                "name": "last_utm_medium"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Linkedin event form name",
+                                "type": "string",
+                                "name": "linkedin_event_form_name"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Linkedin email consent",
+                                "type": "string",
+                                "name": "linkedin_email_consent"
+                              }
+                            ],
+                            "type": "object"
+                          }
+                        ],
+                        "extended_input_schema": [
+                          {
+                            "control_type": "form-schema-builder",
+                            "label": "Input",
+                            "name": "code_input",
+                            "optional": true,
+                            "override": true,
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Schema",
+                                "extends_schema": true,
+                                "type": "string",
+                                "name": "schema"
+                              },
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "Email",
+                                    "name": "email",
+                                    "type": "string",
+                                    "optional": false,
+                                    "parent": [
+                                      "code_input",
+                                      "data"
+                                    ]
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "First name",
+                                    "name": "first_name",
+                                    "type": "string",
+                                    "optional": true,
+                                    "parent": [
+                                      "code_input",
+                                      "data"
+                                    ]
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Last name",
+                                    "name": "last_name",
+                                    "type": "string",
+                                    "optional": true,
+                                    "parent": [
+                                      "code_input",
+                                      "data"
+                                    ]
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Company",
+                                    "name": "company",
+                                    "type": "string",
+                                    "optional": true,
+                                    "parent": [
+                                      "code_input",
+                                      "data"
+                                    ]
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Job title",
+                                    "name": "job_title",
+                                    "type": "string",
+                                    "optional": true,
+                                    "parent": [
+                                      "code_input",
+                                      "data"
+                                    ]
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Country",
+                                    "name": "country",
+                                    "type": "string",
+                                    "optional": true,
+                                    "parent": [
+                                      "code_input",
+                                      "data"
+                                    ]
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Event name",
+                                    "name": "event_name",
+                                    "type": "string",
+                                    "optional": true,
+                                    "parent": [
+                                      "code_input",
+                                      "data"
+                                    ]
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Event id",
+                                    "name": "event_id",
+                                    "type": "string",
+                                    "optional": true,
+                                    "parent": [
+                                      "code_input",
+                                      "data"
+                                    ]
+                                  },
+                                  {
+                                    "control_type": "checkbox",
+                                    "label": "Consent",
+                                    "render_input": "boolean_conversion",
+                                    "parse_output": "boolean_conversion",
+                                    "name": "consent",
+                                    "type": "boolean",
+                                    "optional": true,
+                                    "toggle_hint": "Select from option list",
+                                    "toggle_field": {
+                                      "label": "Consent",
+                                      "control_type": "text",
+                                      "toggle_hint": "Use custom value",
+                                      "name": "consent",
+                                      "type": "boolean",
+                                      "optional": true,
+                                      "parent": [
+                                        "code_input",
+                                        "data"
+                                      ]
+                                    },
+                                    "parent": [
+                                      "code_input",
+                                      "data"
+                                    ]
+                                  }
+                                ],
+                                "label": "Data",
+                                "type": "object",
+                                "name": "data"
+                              }
+                            ],
+                            "sticky": true,
+                            "type": "object"
+                          }
+                        ],
+                        "visible_config_fields": [
+                          "name",
+                          "code_input",
+                          "code_output_schema_json",
+                          "payload_asset_type",
+                          "code",
+                          "code_input.data.url",
+                          "code_input.data.name",
+                          "code_input.data.user_first_name",
+                          "code_input.data.user_last_name",
+                          "code_input.data.user_email",
+                          "code_input.data.phone_number",
+                          "code_input.data.check_in_date",
+                          "code_input.data.registration_answers",
+                          "registration_answers.label",
+                          "registration_answers.answer",
+                          "registration_answers.value",
+                          "registration_answers.question_id",
+                          "registration_answers.question_type",
+                          "registration_answers.answer_company",
+                          "registration_answers.answer_job_title",
+                          "code_input.schema",
+                          "code_input.data.registration_answers.answer_job_title",
+                          "code_input.data.registration_answers.answer_company",
+                          "code_input.data.registration_answers.question_type",
+                          "code_input.data.registration_answers.question_id",
+                          "code_input.data.registration_answers.value",
+                          "code_input.data.registration_answers.answer",
+                          "code_input.data.registration_answers.label",
+                          "code_input.data",
+                          "code_input.data.email",
+                          "code_input.data.first_name",
+                          "code_input.data.last_name",
+                          "code_input.data.company",
+                          "code_input.data.job_title",
+                          "code_input.data.country",
+                          "code_input.data.event_name",
+                          "code_input.data.event_id",
+                          "code_input.data.landing_url",
+                          "code_input.data.consent"
+                        ],
+                        "comment": "normalize_luma_guest",
+                        "uuid": "8a0220e0-8ec0-483f-8361-ff0b157d8a13"
+                      },
+                      {
+                        "number": 8,
+                        "keyword": "try",
+                        "input": {
+                        },
+                        "block": [
+                          {
+                            "number": 9,
+                            "provider": "hubspot",
+                            "name": "__adhoc_http_action",
+                            "as": "bb6df4d1",
+                            "keyword": "action",
+                            "dynamicPickListSelection": {
+                              "hs_object": "Contact"
+                            },
+                            "toggleCfg": {
+                              "input.data.legalConsentOptions.consent.consentToProcess": true,
+                              "input.data.legalConsentOptions.consent.communications.value": true
+                            },
+                            "input": {
+                              "mnemonic": "Submit Approved Guest to HubSpot Luma Event Form",
+                              "verb": "post",
+                              "request_type": "json",
+                              "response_type": "json",
+                              "path": "https://api.hsforms.com/submissions/v3/integration/secure/submit/#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"hs portalId\"}')}/#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"Linkedin event registration HS Form\"}')}",
+                              "input": {
+                                "schema": "[{\"control_type\":\"text\",\"label\":\"Skip validation\",\"name\":\"skipValidation\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Submitted at\",\"name\":\"submittedAt\",\"type\":\"string\",\"optional\":false},{\"label\":\"Fields\",\"type\":\"array\",\"name\":\"fields\",\"details\":{\"real_name\":\"fields\"},\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Name\",\"type\":\"string\",\"name\":\"name\",\"details\":{\"real_name\":\"name\"}},{\"control_type\":\"text\",\"label\":\"Value\",\"type\":\"string\",\"name\":\"value\",\"details\":{\"real_name\":\"value\"}}]},{\"properties\":[{\"properties\":[{\"control_type\":\"checkbox\",\"label\":\"Consent to process\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"type\":\"boolean\",\"name\":\"consentToProcess\",\"details\":{\"real_name\":\"consentToProcess\"},\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Consent to process\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"consentToProcess\",\"details\":{\"real_name\":\"consentToProcess\"}}},{\"control_type\":\"text\",\"label\":\"Text\",\"type\":\"string\",\"name\":\"text\",\"details\":{\"real_name\":\"text\"}},{\"label\":\"Communications\",\"type\":\"array\",\"name\":\"communications\",\"details\":{\"real_name\":\"communications\"},\"of\":\"object\",\"properties\":[{\"control_type\":\"checkbox\",\"label\":\"Value\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"type\":\"boolean\",\"name\":\"value\",\"details\":{\"real_name\":\"value\"},\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Value\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"value\",\"details\":{\"real_name\":\"value\"}}},{\"control_type\":\"number\",\"label\":\"Subscription Type ID\",\"parse_output\":\"integer_conversion\",\"type\":\"integer\",\"name\":\"subscriptionTypeId\",\"details\":{\"real_name\":\"subscriptionTypeId\"},\"render_input\":\"integer_conversion\"},{\"control_type\":\"text\",\"label\":\"Text\",\"type\":\"string\",\"name\":\"text\",\"details\":{\"real_name\":\"text\"}}]}],\"label\":\"Consent\",\"type\":\"object\",\"name\":\"consent\",\"details\":{\"real_name\":\"consent\"}}],\"label\":\"Legal Consent Options\",\"type\":\"object\",\"name\":\"legalConsentOptions\",\"details\":{\"real_name\":\"legalConsentOptions\"}}]",
+                                "data": {
+                                  "fields": [
+                                    {
+                                      "name": "firstname",
+                                      "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"d7f3b169\",\"path\":[\"output\",\"firstname\"]}')}"
+                                    },
+                                    {
+                                      "name": "lastname",
+                                      "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"d7f3b169\",\"path\":[\"output\",\"lastname\"]}')}"
+                                    },
+                                    {
+                                      "name": "email",
+                                      "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"d7f3b169\",\"path\":[\"output\",\"email\"]}')}"
+                                    },
+                                    {
+                                      "name": "company",
+                                      "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"d7f3b169\",\"path\":[\"output\",\"company\"]}')}"
+                                    },
+                                    {
+                                      "name": "company_name__form_field_",
+                                      "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"d7f3b169\",\"path\":[\"output\",\"company\"]}')}"
+                                    },
+                                    {
+                                      "name": "jobtitle",
+                                      "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"d7f3b169\",\"path\":[\"output\",\"jobtitle\"]}')}"
+                                    },
+                                    {
+                                      "name": "country_dropdown",
+                                      "value": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"d7f3b169\",\"path\":[\"output\",\"country_dropdown\"]}') || 'United States'"
+                                    },
+                                    {
+                                      "name": "linkedin_event_form_name",
+                                      "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"d7f3b169\",\"path\":[\"output\",\"linkedin_event_form_name\"]}')}"
+                                    },
+                                    {
+                                      "name": "linkedin_email_consent",
+                                      "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"d7f3b169\",\"path\":[\"output\",\"linkedin_email_consent\"]}')}"
+                                    },
+                                    {
+                                      "name": "last_utm_campaign",
+                                      "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"d7f3b169\",\"path\":[\"output\",\"last_utm_campaign\"]}')}"
+                                    },
+                                    {
+                                      "name": "last_utm_source",
+                                      "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"d7f3b169\",\"path\":[\"output\",\"last_utm_source\"]}')}"
+                                    },
+                                    {
+                                      "name": "last_utm_medium",
+                                      "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"d7f3b169\",\"path\":[\"output\",\"last_utm_medium\"]}')}"
+                                    },
+                                    {
+                                      "name": "sf_sync",
+                                      "value": "Yes"
+                                    }
+                                  ],
+                                  "skipValidation": "=true",
+                                  "submittedAt": "=(now.to_i * 1000).to_s",
+                                  "legalConsentOptions": {
+                                    "consent": {
+                                      "consentToProcess": "true",
+                                      "text": "I agree to allow Luminati to store and process my personal",
+                                      "communications": {
+                                        "value": "true",
+                                        "subscriptionTypeId": "1",
+                                        "text": "I agree to receive marketing communications from Luminati."
+                                      }
+                                    }
+                                  }
+                                }
+                              },
+                              "output": "[{\"control_type\":\"text\",\"label\":\"Inline message\",\"type\":\"string\",\"name\":\"inlineMessage\"}]"
+                            },
+                            "extended_output_schema": [
+                              {
+                                "control_type": "text",
+                                "label": "Inline message",
+                                "name": "inlineMessage",
+                                "optional": true,
+                                "type": "string"
+                              }
+                            ],
+                            "extended_input_schema": [
+                              {
+                                "control_type": "text",
+                                "hint": "Base URI is <b>https://api.hubapi.com/contacts/v1/</b> - path will be appended to this URI. Use absolute URI to override this base URI.",
+                                "label": "Path",
+                                "name": "path",
+                                "optional": false,
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "select",
+                                "default": "json",
+                                "extends_schema": true,
+                                "label": "Request type",
+                                "name": "request_type",
+                                "optional": true,
+                                "pick_list": [
+                                  [
+                                    "JSON request body",
+                                    "json"
+                                  ],
+                                  [
+                                    "URL encoded form",
+                                    "urlencoded"
+                                  ],
+                                  [
+                                    "Multipart form",
+                                    "multipart"
+                                  ],
+                                  [
+                                    "Raw JSON request body",
+                                    "raw"
+                                  ],
+                                  [
+                                    "XML request body",
+                                    "xml"
+                                  ],
+                                  [
+                                    "Plain text",
+                                    "text"
+                                  ],
+                                  [
+                                    "Raw request body",
+                                    "rawdata"
+                                  ]
+                                ],
+                                "sticky": false,
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "select",
+                                "default": "json",
+                                "extends_schema": true,
+                                "label": "Response type",
+                                "name": "response_type",
+                                "optional": true,
+                                "pick_list": [
+                                  [
+                                    "JSON response",
+                                    "json"
+                                  ],
+                                  [
+                                    "Raw JSON Response",
+                                    "raw"
+                                  ],
+                                  [
+                                    "XML Response",
+                                    "xml2"
+                                  ],
+                                  [
+                                    "Raw response",
+                                    "text"
+                                  ]
+                                ],
+                                "sticky": false,
+                                "type": "string"
+                              },
+                              {
+                                "label": "Input",
+                                "name": "input",
+                                "optional": true,
+                                "properties": [
+                                  {
+                                    "control_type": "schema-designer",
+                                    "label": "Request body parameters",
+                                    "extends_schema": true,
+                                    "schema_neutral": true,
+                                    "sample_data_type": "json_input",
+                                    "sticky": false,
+                                    "add_field_label": "Add request body parameter",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "schema"
+                                  },
+                                  {
+                                    "properties": [
+                                      {
+                                        "control_type": "text",
+                                        "label": "Skip validation",
+                                        "optional": false,
+                                        "sticky": true,
+                                        "type": "string",
+                                        "name": "skipValidation"
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "Submitted at",
+                                        "optional": false,
+                                        "sticky": true,
+                                        "type": "string",
+                                        "name": "submittedAt"
+                                      },
+                                      {
+                                        "label": "Fields",
+                                        "details": {
+                                          "real_name": "fields"
+                                        },
+                                        "sticky": true,
+                                        "optional": true,
+                                        "of": "object",
+                                        "properties": [
+                                          {
+                                            "control_type": "text",
+                                            "label": "Name",
+                                            "details": {
+                                              "real_name": "name"
+                                            },
+                                            "optional": true,
+                                            "type": "string",
+                                            "name": "name"
+                                          },
+                                          {
+                                            "control_type": "text",
+                                            "label": "Value",
+                                            "details": {
+                                              "real_name": "value"
+                                            },
+                                            "optional": true,
+                                            "type": "string",
+                                            "name": "value"
+                                          }
+                                        ],
+                                        "type": "array",
+                                        "name": "fields"
+                                      },
+                                      {
+                                        "properties": [
+                                          {
+                                            "properties": [
+                                              {
+                                                "control_type": "checkbox",
+                                                "label": "Consent to process",
+                                                "parse_output": "boolean_conversion",
+                                                "render_input": "boolean_conversion",
+                                                "details": {
+                                                  "real_name": "consentToProcess"
+                                                },
+                                                "toggle_hint": "Select from option list",
+                                                "toggle_field": {
+                                                  "label": "Consent to process",
+                                                  "control_type": "text",
+                                                  "toggle_hint": "Use custom value",
+                                                  "type": "boolean",
+                                                  "name": "consentToProcess",
+                                                  "details": {
+                                                    "real_name": "consentToProcess"
+                                                  }
+                                                },
+                                                "optional": true,
+                                                "type": "number",
+                                                "name": "consentToProcess"
+                                              },
+                                              {
+                                                "control_type": "text",
+                                                "label": "Text",
+                                                "details": {
+                                                  "real_name": "text"
+                                                },
+                                                "optional": true,
+                                                "type": "string",
+                                                "name": "text"
+                                              },
+                                              {
+                                                "label": "Communications",
+                                                "details": {
+                                                  "real_name": "communications"
+                                                },
+                                                "optional": true,
+                                                "of": "object",
+                                                "properties": [
+                                                  {
+                                                    "control_type": "checkbox",
+                                                    "label": "Value",
+                                                    "parse_output": "boolean_conversion",
+                                                    "render_input": "boolean_conversion",
+                                                    "details": {
+                                                      "real_name": "value"
+                                                    },
+                                                    "toggle_hint": "Select from option list",
+                                                    "toggle_field": {
+                                                      "label": "Value",
+                                                      "control_type": "text",
+                                                      "toggle_hint": "Use custom value",
+                                                      "type": "boolean",
+                                                      "name": "value",
+                                                      "details": {
+                                                        "real_name": "value"
+                                                      }
+                                                    },
+                                                    "optional": true,
+                                                    "type": "number",
+                                                    "name": "value"
+                                                  },
+                                                  {
+                                                    "control_type": "number",
+                                                    "label": "Subscription Type ID",
+                                                    "parse_output": "integer_conversion",
+                                                    "details": {
+                                                      "real_name": "subscriptionTypeId"
+                                                    },
+                                                    "render_input": "integer_conversion",
+                                                    "optional": true,
+                                                    "type": "integer",
+                                                    "name": "subscriptionTypeId"
+                                                  },
+                                                  {
+                                                    "control_type": "text",
+                                                    "label": "Text",
+                                                    "details": {
+                                                      "real_name": "text"
+                                                    },
+                                                    "optional": true,
+                                                    "type": "string",
+                                                    "name": "text"
+                                                  }
+                                                ],
+                                                "type": "array",
+                                                "name": "communications"
+                                              }
+                                            ],
+                                            "label": "Consent",
+                                            "details": {
+                                              "real_name": "consent"
+                                            },
+                                            "optional": true,
+                                            "type": "object",
+                                            "name": "consent"
+                                          }
+                                        ],
+                                        "label": "Legal Consent Options",
+                                        "details": {
+                                          "real_name": "legalConsentOptions"
+                                        },
+                                        "sticky": true,
+                                        "optional": true,
+                                        "type": "object",
+                                        "name": "legalConsentOptions"
+                                      }
+                                    ],
+                                    "label": "Data",
+                                    "optional": true,
+                                    "type": "object",
+                                    "name": "data"
+                                  }
+                                ],
+                                "type": "object"
+                              },
+                              {
+                                "control_type": "key_value",
+                                "empty_list_text": "Refer to the API documentation and add required headers to this HTTP request",
+                                "empty_list_title": "Does this HTTP request require headers?",
+                                "item_label": "Header",
+                                "label": "Request headers",
+                                "name": "request_headers",
+                                "of": "object",
+                                "optional": true,
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "Name",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "name"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Value",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "value"
+                                  }
+                                ],
+                                "type": "array"
+                              },
+                              {
+                                "control_type": "schema-designer",
+                                "extends_schema": true,
+                                "label": "Response body",
+                                "name": "output",
+                                "optional": true,
+                                "sample_data_type": "json_http",
+                                "sticky": true,
+                                "type": "string",
+                                "schema_neutral": true
+                              },
+                              {
+                                "control_type": "schema-designer",
+                                "extends_schema": true,
+                                "label": "Response headers",
+                                "name": "response_headers",
+                                "optional": true,
+                                "sample_data_type": "json_http",
+                                "sticky": false,
+                                "type": "string",
+                                "schema_neutral": true
+                              },
+                              {
+                                "control_type": "checkbox",
+                                "label": "Inspect",
+                                "name": "inspect",
+                                "ngIf": "false",
+                                "optional": true,
+                                "parse_output": "float_conversion",
+                                "type": "number"
+                              }
+                            ],
+                            "visible_config_fields": [
+                              "mnemonic",
+                              "verb",
+                              "path",
+                              "request_type",
+                              "response_type",
+                              "input",
+                              "input.schema",
+                              "input.data.fields",
+                              "input.data.context",
+                              "output",
+                              "input.data.context.pageName",
+                              "input.data.context.pageUri",
+                              "input.data.fields.value",
+                              "input.data.fields.name",
+                              "input.data",
+                              "input.data.skipValidation",
+                              "input.data.submittedAt",
+                              "input.data.legalConsentOptions",
+                              "input.data.legalConsentOptions.consent.communications.text",
+                              "input.data.legalConsentOptions.consent.communications.subscriptionTypeId",
+                              "input.data.legalConsentOptions.consent.communications.value",
+                              "input.data.legalConsentOptions.consent.text",
+                              "input.data.legalConsentOptions.consent.consentToProcess"
+                            ],
+                            "uuid": "5a801443-318a-466a-a53f-1972106ce217",
+                            "wizardFinished": true,
+                            "skip": false
+                          },
+                          {
+                            "number": 10,
+                            "provider": "workato_variable",
+                            "name": "insert_to_list",
+                            "as": "446356c4",
+                            "keyword": "action",
+                            "dynamicPickListSelection": {
+                              "name": "synced_regestrations_ids (step 5)"
+                            },
+                            "input": {
+                              "location": "end",
+                              "name": "3400ad7f-fc94-4061-bb6f-8ad24e0b836f:76f25e61",
+                              "list_item": {
+                                "id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"f6239df0\",\"path\":[\"id\"]}')}",
+                                "hubspot_synced": "true",
+                                "hubspot_sync_status": "success",
+                                "hubspot_synced_at": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_created_at\"]}')}"
+                              }
+                            },
+                            "extended_input_schema": [
+                              {
+                                "hint": "",
+                                "label": "List item",
+                                "name": "list_item",
+                                "optional": false,
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "ID",
+                                    "name": "id",
+                                    "type": "string",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Hubspot synced",
+                                    "name": "hubspot_synced",
+                                    "type": "string",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Hubspot sync status",
+                                    "name": "hubspot_sync_status",
+                                    "type": "string",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Hubspot sync error",
+                                    "name": "hubspot_sync_error",
+                                    "type": "string",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Hubspot synced at",
+                                    "name": "hubspot_synced_at",
+                                    "type": "string",
+                                    "optional": true
+                                  }
+                                ],
+                                "type": "object"
+                              }
+                            ],
+                            "visible_config_fields": [
+                              "name",
+                              "location",
+                              "list_item.hubspot_synced",
+                              "list_item.id",
+                              "list_item",
+                              "list_item.hubspot_synced_at",
+                              "list_item.hubspot_sync_status"
+                            ],
+                            "comment": "success",
+                            "uuid": "34d2dc27-6429-4a81-af38-c29c219e143d"
+                          },
+                          {
+                            "number": 11,
+                            "as": "fa73a6c8",
+                            "keyword": "catch",
+                            "input": {
+                              "max_retry_count": "0",
+                              "retry_interval": "2"
+                            },
+                            "block": [
+                              {
+                                "number": 12,
+                                "keyword": "if",
+                                "input": {
+                                  "type": "compound",
+                                  "operand": "and",
+                                  "conditions": [
+                                    {
+                                      "operand": "not_contains",
+                                      "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"fa73a6c8\",\"path\":[\"message\"]}')}",
+                                      "rhs": "Submission from this email address are not allowed",
+                                      "uuid": "0d48f804-c758-4a4b-8186-d8c3dd8c7af4"
+                                    }
+                                  ]
+                                },
+                                "block": [
+                                  {
+                                    "number": 13,
+                                    "provider": "workato_variable",
+                                    "name": "insert_to_list",
+                                    "as": "4bb06a90",
+                                    "keyword": "action",
+                                    "dynamicPickListSelection": {
+                                      "name": "synced_regestrations_ids (step 5)"
+                                    },
+                                    "input": {
+                                      "location": "end",
+                                      "name": "3400ad7f-fc94-4061-bb6f-8ad24e0b836f:76f25e61",
+                                      "list_item": {
+                                        "id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"f6239df0\",\"path\":[\"id\"]}')}",
+                                        "hubspot_synced": "false",
+                                        "hubspot_sync_status": "failed",
+                                        "hubspot_sync_error": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"fa73a6c8\",\"path\":[\"message\"]}')}"
+                                      }
+                                    },
+                                    "extended_input_schema": [
+                                      {
+                                        "hint": "",
+                                        "label": "List item",
+                                        "name": "list_item",
+                                        "optional": false,
+                                        "properties": [
+                                          {
+                                            "control_type": "text",
+                                            "label": "ID",
+                                            "name": "id",
+                                            "type": "string",
+                                            "optional": true
+                                          },
+                                          {
+                                            "control_type": "text",
+                                            "label": "Hubspot synced",
+                                            "name": "hubspot_synced",
+                                            "type": "string",
+                                            "optional": true
+                                          },
+                                          {
+                                            "control_type": "text",
+                                            "label": "Hubspot sync status",
+                                            "name": "hubspot_sync_status",
+                                            "type": "string",
+                                            "optional": true
+                                          },
+                                          {
+                                            "control_type": "text",
+                                            "label": "Hubspot sync error",
+                                            "name": "hubspot_sync_error",
+                                            "type": "string",
+                                            "optional": true
+                                          },
+                                          {
+                                            "control_type": "text",
+                                            "label": "Hubspot synced at",
+                                            "name": "hubspot_synced_at",
+                                            "type": "string",
+                                            "optional": true
+                                          }
+                                        ],
+                                        "type": "object"
+                                      }
+                                    ],
+                                    "visible_config_fields": [
+                                      "name",
+                                      "location",
+                                      "list_item.hubspot_synced",
+                                      "list_item.id",
+                                      "list_item",
+                                      "list_item.hubspot_synced_at",
+                                      "list_item.hubspot_sync_status",
+                                      "list_item.hubspot_sync_error"
+                                    ],
+                                    "comment": "error",
+                                    "uuid": "29e25fa9-6d5e-4a3b-8fd4-024c8a7f9101"
+                                  }
+                                ],
+                                "uuid": "c7a28b11-f75a-4c7b-8c88-62e93a35ea38"
+                              }
+                            ],
+                            "uuid": "97041a12-a9c9-4506-8e04-3a2a830d9b91"
+                          }
+                        ],
+                        "uuid": "02c708bf-d54f-49dc-8db2-8665c57bcb35"
+                      }
+                    ],
+                    "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"67f35dec\",\"path\":[\"batch\"]}')}",
+                    "uuid": "9c208fc9-d91f-4ed9-9c5b-09401d462db5"
+                  }
+                ],
+                "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"05f092cf\",\"path\":[\"rows\"]}')}",
+                "uuid": "1c905360-7ade-421a-b336-d41fb730e6fa"
+              },
+              {
+                "number": 14,
+                "keyword": "if",
+                "input": {
+                  "type": "compound",
+                  "operand": "and",
+                  "conditions": [
+                    {
+                      "operand": "present",
+                      "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"76f25e61\",\"path\":[\"list_items\"]}')",
+                      "rhs": "",
+                      "uuid": "c6310d18-b077-40ba-9c73-020daf24eeb7"
+                    }
+                  ]
+                },
+                "block": [
+                  {
+                    "number": 15,
+                    "provider": "postgresql",
+                    "name": "upsert_rows_batch",
+                    "as": "497d3974",
+                    "keyword": "action",
+                    "dynamicPickListSelection": {
+                      "table": "marketing.linkedin_registrations",
+                      "key_columns": [
+                        {
+                          "label": "id",
+                          "value": "id"
+                        }
+                      ]
+                    },
+                    "toggleCfg": {
+                      "table": true
+                    },
+                    "input": {
+                      "table": "marketing.linkedin_registrations",
+                      "key_columns": "id",
+                      "rows": {
+                        "hubspot_sync_error": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"76f25e61\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"hubspot_sync_error\"]}')}",
+                        "hubspot_sync_status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"76f25e61\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"hubspot_sync_status\"]}')}",
+                        "hubspot_synced": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"76f25e61\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"hubspot_synced\"]}')}",
+                        "hubspot_synced_at": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"76f25e61\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"hubspot_synced_at\"]}')}",
+                        "id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"76f25e61\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"id\"]}')}"
+                      }
+                    },
+                    "extended_input_schema": [
+                      {
+                        "label": "Rows",
+                        "name": "rows",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "company",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "company"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "company"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "consent",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "boolean",
+                              "column_name": "consent"
+                            },
+                            "parse_output": "parse_boolean_output",
+                            "optional": true,
+                            "hint": "boolean",
+                            "type": "string",
+                            "name": "consent"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "country",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "country"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "country"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "email",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "email"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "email"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "event_id",
+                            "parse_output": "parse_integer_output",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "bigint",
+                              "column_name": "event_id"
+                            },
+                            "optional": true,
+                            "hint": "bigint",
+                            "type": "integer",
+                            "name": "event_id"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "event_name",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "event_name"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "event_name"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "first_name",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "first_name"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "first_name"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "hubspot_sync_error",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "hubspot_sync_error"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "hubspot_sync_error"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "hubspot_sync_status",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "hubspot_sync_status"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "hubspot_sync_status"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "hubspot_synced",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "boolean",
+                              "column_name": "hubspot_synced"
+                            },
+                            "parse_output": "parse_boolean_output",
+                            "optional": true,
+                            "hint": "boolean",
+                            "type": "string",
+                            "name": "hubspot_synced"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "hubspot_synced_at",
+                            "render_input": "convert_date_time",
+                            "parse_output": "convert_date_time",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "timestamp with time zone",
+                              "column_name": "hubspot_synced_at"
+                            },
+                            "optional": true,
+                            "hint": "timestamp with time zone",
+                            "type": "date_time",
+                            "name": "hubspot_synced_at"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "id",
+                            "details": {
+                              "primary_key": true,
+                              "data_type": "text",
+                              "column_name": "id"
+                            },
+                            "event_title": true,
+                            "hint": "text, primary key",
+                            "optional": false,
+                            "type": "string",
+                            "name": "id"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "job_title",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "job_title"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "job_title"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "last_name",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "text",
+                              "column_name": "last_name"
+                            },
+                            "optional": true,
+                            "hint": "text",
+                            "type": "string",
+                            "name": "last_name"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "submitted_at",
+                            "render_input": "convert_date_time",
+                            "parse_output": "convert_date_time",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "timestamp with time zone",
+                              "column_name": "submitted_at"
+                            },
+                            "optional": true,
+                            "hint": "timestamp with time zone",
+                            "type": "date_time",
+                            "name": "submitted_at"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "synced_at",
+                            "render_input": "convert_date_time",
+                            "parse_output": "convert_date_time",
+                            "details": {
+                              "primary_key": false,
+                              "data_type": "timestamp with time zone",
+                              "column_name": "synced_at"
+                            },
+                            "optional": true,
+                            "hint": "timestamp with time zone",
+                            "type": "date_time",
+                            "name": "synced_at"
+                          }
+                        ],
+                        "type": "array"
+                      },
+                      {
+                        "change_on_blur": true,
+                        "control_type": "multiselect",
+                        "delimiter": "\n",
+                        "extends_schema": true,
+                        "help": {
+                          "title": "Warning",
+                          "text": "A primary key or a column with unique constraint is recommended. Otherwise, multiple rows may be updated with the same data."
+                        },
+                        "hint": "Select a unique key column to deduplicate rows. Performance can be improved if the selected unique key is indexed. <a href=\"https://docs.workato.com/connectors/postgresql.html#unique-key\" target=\"_blank\">Learn more</a>",
+                        "label": "Unique key",
+                        "name": "key_columns",
+                        "optional": true,
+                        "pick_list": "columns_list",
+                        "pick_list_params": {
+                          "table": "table"
+                        },
+                        "sticky": true,
+                        "type": "string"
+                      }
+                    ],
+                    "visible_config_fields": [
+                      "table",
+                      "key_columns",
+                      "rows.hubspot_synced_at",
+                      "rows.hubspot_synced",
+                      "rows.hubspot_sync_status",
+                      "rows.hubspot_sync_error"
+                    ],
+                    "uuid": "09ff5a55-b9ca-4d02-a0ea-b117beb403fd"
+                  }
+                ],
+                "comment": "synced_regestrations_ids",
+                "uuid": "102b8572-6ad2-4b15-a574-45ef5d705f3e"
+              },
+              {
+                "number": 16,
+                "provider": "workato_recipe_function",
+                "name": "return_result",
+                "as": "a0d5ef05",
+                "keyword": "action",
+                "input": {
+                  "result": {
+                    "status": "Success",
+                    "regestration_count": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"76f25e61\",\"path\":[\"list_items\",{\"path_element_type\":\"size\"}]}')"
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Regestration count",
+                        "name": "regestration_count",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Regestration count",
+                        "name": "regestration_count",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "visible_config_fields": [
+                  "result.regestration_count"
+                ],
+                "comment": "status = succcess",
+                "uuid": "28487d92-fe8d-4c04-8dd0-cd7b5e4df3aa"
+              }
+            ],
+            "comment": "regestrations to sync",
+            "uuid": "e138c978-1f50-4c08-83b3-57eade0fd8f3"
+          },
+          {
+            "number": 17,
+            "as": "catch_f9f7",
+            "keyword": "catch",
+            "input": {
+              "retry_interval": "5",
+              "max_retry_count": "0"
+            },
+            "block": [
+              {
+                "number": 18,
+                "provider": "workato_recipe_function",
+                "name": "return_result",
+                "as": "9680e63c",
+                "keyword": "action",
+                "input": {
+                  "result": {
+                    "status": "Success",
+                    "regestration_count": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"76f25e61\",\"path\":[\"list_items\",{\"path_element_type\":\"size\"}]}')",
+                    "message": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"catch_f9f7\",\"path\":[\"message\"]}')}"
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Regestration count",
+                        "name": "regestration_count",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Regestration count",
+                        "name": "regestration_count",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "visible_config_fields": [
+                  "result.regestration_count",
+                  "result",
+                  "result.status",
+                  "result.message"
+                ],
+                "comment": "status = error",
+                "uuid": "a226d360-9185-4125-962d-9d51a2cfc2b2"
+              }
+            ],
+            "uuid": "f9f7bcb2-a1d2-4744-96ea-e064755be728",
+            "skip": false
+          }
+        ],
+        "comment": "Wrap HubSpot API calls; on failure log payload and return error",
+        "uuid": "d034112e-635f-4038-baa3-d254b9c3726b",
+        "skip": false
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_0",
+        "label": "Leads No."
+      },
+      {
+        "name": "custom_column_1",
+        "label": "Status(Success || Error)"
+      },
+      {
+        "name": "custom_column_2",
+        "label": "Status"
+      },
+      {
+        "name": "custom_column_3",
+        "label": "Message"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"05f092cf\",\"path\":[\"rows\",{\"path_element_type\":\"size\"}]}')}",
+      "custom_column_1": "=[_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"76f25e61\",\"path\":[\"list_items\"]}').where(hubspot_sync_status:'Success').count , _dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"76f25e61\",\"path\":[\"list_items\"]}').where(hubspot_sync_status:'Error').count].smart_join(\" || \")",
+      "custom_column_2": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a0d5ef05\",\"path\":[\"result\",\"status\"]}') || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"9680e63c\",\"path\":[\"result\",\"status\"]}')",
+      "custom_column_3": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"a0d5ef05\",\"path\":[\"result\",\"message\"]}') || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"9680e63c\",\"path\":[\"result\",\"message\"]}')"
+    },
+    "uuid": "dd3130a9-9037-4668-9a8f-a61ed8bdb9b9",
+    "skip": false
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "postgresql",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/BizOps App/postgresql_account.connection.json",
+        "name": "PostgreSQL account",
+        "folder": "#Connections/BizOps App"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_custom_code",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "hubspot",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Marketing/hubspot.connection.json",
+        "name": "HubSpot",
+        "folder": "#Connections/Marketing"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_variable",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ],
+  "tags": [
+    "Recipe Function"
+  ]
+}

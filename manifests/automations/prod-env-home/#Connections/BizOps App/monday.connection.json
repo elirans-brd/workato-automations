@@ -1,0 +1,12 @@
+{
+  "name": "Monday",
+  "provider": {
+    "zip_name": "monday.custom_adapter.json",
+    "name": "Monday",
+    "folder": ""
+  },
+  "root_folder": false,
+  "tags": [
+    "SF-Monday"
+  ]
+}

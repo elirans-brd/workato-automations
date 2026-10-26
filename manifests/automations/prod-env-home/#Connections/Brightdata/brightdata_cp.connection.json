@@ -1,0 +1,5 @@
+{
+  "name": "Brightdata CP",
+  "provider": "rest_secondary",
+  "root_folder": false
+}

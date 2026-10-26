@@ -1,0 +1,4102 @@
+{
+  "name": "API: Application Approved",
+  "description": "This recipe triggers when an application is approved in PartnerStack. It creates or updates records in the following HubSpot custom objects:\n\n• Affiliates (custom object)\n• Affiliate member (custom object)\n\nReferences:\n• [Partnerstack &lt;&gt; Hubspot fields mapping (external)](https://docs.google.com/spreadsheets/d/1bvd1a0ty8jiPUEf21-XbVsBerthPtmHAQqcjxDPR5EA/edit?gid=271387103#gid=271387103)\n• [Partnerstack &lt;&gt; Hubspot Integration via Workato](https://brightdata-group.monday.com/boards/18389886720/views/224786496/pulses/11158313250)\n",
+  "version": 3,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "workato_webhooks",
+    "name": "new_event",
+    "as": "972747ce",
+    "keyword": "trigger",
+    "input": {
+      "request": {
+        "webhook_type": "json",
+        "payload_schema": "[{\"control_type\":\"text\",\"label\":\"Event\",\"type\":\"string\",\"name\":\"event\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Approved\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Approved\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"approved\"},\"type\":\"boolean\",\"name\":\"approved\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"名\",\"type\":\"string\",\"name\":\"名\"},{\"control_type\":\"text\",\"label\":\"姓\",\"type\":\"string\",\"name\":\"姓\"},{\"control_type\":\"text\",\"label\":\"邮箱\",\"type\":\"string\",\"name\":\"邮箱\"},{\"control_type\":\"text\",\"label\":\"Wechat ID\",\"type\":\"string\",\"name\":\"wechat_id\"},{\"control_type\":\"text\",\"label\":\"Business name\",\"type\":\"string\",\"name\":\"business_name\"},{\"control_type\":\"text\",\"label\":\"你位于那个国家?\",\"type\":\"string\",\"name\":\"你位于那个国家?\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Country name\",\"type\":\"string\",\"name\":\"countryName\"},{\"control_type\":\"text\",\"label\":\"Country short code\",\"type\":\"string\",\"name\":\"countryShortCode\"},{\"control_type\":\"text\",\"label\":\"Country resident name\",\"type\":\"string\",\"name\":\"countryResidentName\"}],\"label\":\"您的客户主要来自哪个国家？\",\"type\":\"object\",\"name\":\"您的客户主要来自哪个国家？\"},{\"control_type\":\"text\",\"label\":\"你主要推广的方式是什么\",\"type\":\"string\",\"name\":\"你主要推广的方式是什么\"},{\"control_type\":\"text\",\"label\":\"你怎么知道我们的\",\"type\":\"string\",\"name\":\"你怎么知道我们的\"},{\"control_type\":\"text\",\"label\":\"你在什么网站推广?\",\"type\":\"string\",\"name\":\"你在什么网站推广?\"},{\"control_type\":\"text\",\"label\":\"First name\",\"type\":\"string\",\"name\":\"first_name\"},{\"control_type\":\"text\",\"label\":\"Last name\",\"type\":\"string\",\"name\":\"last_name\"},{\"control_type\":\"text\",\"label\":\"Email\",\"type\":\"string\",\"name\":\"email\"},{\"control_type\":\"text\",\"label\":\"Which country are you in?\",\"type\":\"string\",\"name\":\"which_country_are_you_in?\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Country name\",\"type\":\"string\",\"name\":\"countryName\"},{\"control_type\":\"text\",\"label\":\"Country short code\",\"type\":\"string\",\"name\":\"countryShortCode\"},{\"control_type\":\"text\",\"label\":\"Country resident name\",\"type\":\"string\",\"name\":\"countryResidentName\"}],\"label\":\"Which country is your traffic from?\",\"type\":\"object\",\"name\":\"which_country_is_your_traffic_from?\"},{\"control_type\":\"text\",\"label\":\"What locations is your traffic from? archived\",\"type\":\"string\",\"name\":\"what_locations_is_your_traffic_from?_archived\"},{\"control_type\":\"text\",\"label\":\"Which language do you operate in? archived\",\"type\":\"string\",\"name\":\"which_language_do_you_operate_in?_archived\"},{\"control_type\":\"text\",\"label\":\"How are you generating traffic?\",\"type\":\"string\",\"name\":\"how_are_you_generating_traffic?\"},{\"control_type\":\"text\",\"label\":\"Which website do you use to promote us?\",\"type\":\"string\",\"name\":\"which_website_do_you_use_to_promote_us?\"}],\"label\":\"Content\",\"type\":\"object\",\"name\":\"content\"},{\"control_type\":\"text\",\"label\":\"Decline reason\",\"type\":\"string\",\"name\":\"decline_reason\"},{\"control_type\":\"text\",\"label\":\"Destination group name\",\"type\":\"string\",\"name\":\"destination_group_name\"},{\"control_type\":\"text\",\"label\":\"Destination group slug\",\"type\":\"string\",\"name\":\"destination_group_slug\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Key\",\"type\":\"string\",\"name\":\"key\"},{\"control_type\":\"text\",\"label\":\"Name\",\"type\":\"string\",\"name\":\"name\"},{\"control_type\":\"text\",\"label\":\"Slug\",\"type\":\"string\",\"name\":\"slug\"}],\"label\":\"Destination group\",\"type\":\"object\",\"name\":\"destination_group\"},{\"control_type\":\"text\",\"label\":\"Group name\",\"type\":\"string\",\"name\":\"group_name\"},{\"control_type\":\"text\",\"label\":\"Group slug\",\"type\":\"string\",\"name\":\"group_slug\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Key\",\"type\":\"string\",\"name\":\"key\"},{\"control_type\":\"text\",\"label\":\"Name\",\"type\":\"string\",\"name\":\"name\"},{\"control_type\":\"text\",\"label\":\"Slug\",\"type\":\"string\",\"name\":\"slug\"}],\"label\":\"Group\",\"type\":\"object\",\"name\":\"group\"},{\"control_type\":\"text\",\"label\":\"Mold key\",\"type\":\"string\",\"name\":\"mold_key\"},{\"control_type\":\"text\",\"label\":\"Partnership key\",\"type\":\"string\",\"name\":\"partnership_key\"},{\"control_type\":\"text\",\"label\":\"Partner key\",\"type\":\"string\",\"name\":\"partner_key\"},{\"control_type\":\"text\",\"label\":\"Top partner\",\"type\":\"string\",\"name\":\"top_partner\"},{\"control_type\":\"text\",\"label\":\"Premium partner\",\"type\":\"string\",\"name\":\"premium_partner\"},{\"control_type\":\"text\",\"label\":\"High potential partner\",\"type\":\"string\",\"name\":\"high_potential_partner\"},{\"control_type\":\"text\",\"label\":\"Fraud flagged\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Fraud flagged\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"fraud_flagged\"},\"type\":\"boolean\",\"name\":\"fraud_flagged\"},{\"control_type\":\"text\",\"label\":\"Team name\",\"type\":\"string\",\"name\":\"team_name\"},{\"control_type\":\"text\",\"label\":\"Team key\",\"type\":\"string\",\"name\":\"team_key\"},{\"control_type\":\"text\",\"label\":\"With profile\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"With profile\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"with_profile\"},\"type\":\"boolean\",\"name\":\"with_profile\"},{\"control_type\":\"text\",\"label\":\"Key\",\"type\":\"string\",\"name\":\"key\"},{\"control_type\":\"number\",\"label\":\"Created at\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"created_at\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Updated at\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"updated_at\",\"render_input\":\"float_conversion\"}],\"label\":\"Data\",\"type\":\"object\",\"name\":\"data\"}]"
+      },
+      "webhook_suffix": "application_approved"
+    },
+    "extended_output_schema": [
+      {
+        "label": "Headers",
+        "name": "headers",
+        "properties": [
+
+        ],
+        "type": "object"
+      },
+      {
+        "label": "Payload",
+        "name": "payload",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Event",
+            "type": "string",
+            "name": "event"
+          },
+          {
+            "properties": [
+              {
+                "control_type": "text",
+                "label": "Approved",
+                "render_input": "boolean_conversion",
+                "parse_output": "boolean_conversion",
+                "toggle_hint": "Select from option list",
+                "toggle_field": {
+                  "label": "Approved",
+                  "control_type": "text",
+                  "toggle_hint": "Use custom value",
+                  "type": "boolean",
+                  "name": "approved"
+                },
+                "type": "boolean",
+                "name": "approved"
+              },
+              {
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "名",
+                    "type": "string",
+                    "name": "名"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "姓",
+                    "type": "string",
+                    "name": "姓"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "邮箱",
+                    "type": "string",
+                    "name": "邮箱"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Wechat ID",
+                    "type": "string",
+                    "name": "wechat_id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Business name",
+                    "type": "string",
+                    "name": "business_name"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "你位于那个国家?",
+                    "type": "string",
+                    "name": "你位于那个国家?"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Country name",
+                        "type": "string",
+                        "name": "countryName"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Country short code",
+                        "type": "string",
+                        "name": "countryShortCode"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Country resident name",
+                        "type": "string",
+                        "name": "countryResidentName"
+                      }
+                    ],
+                    "label": "您的客户主要来自哪个国家？",
+                    "type": "object",
+                    "name": "您的客户主要来自哪个国家？"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "你主要推广的方式是什么",
+                    "type": "string",
+                    "name": "你主要推广的方式是什么"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "你怎么知道我们的",
+                    "type": "string",
+                    "name": "你怎么知道我们的"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "你在什么网站推广?",
+                    "type": "string",
+                    "name": "你在什么网站推广?"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "First name",
+                    "type": "string",
+                    "name": "first_name"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Last name",
+                    "type": "string",
+                    "name": "last_name"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Email",
+                    "type": "string",
+                    "name": "email"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Which country are you in?",
+                    "type": "string",
+                    "name": "which_country_are_you_in?"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Country name",
+                        "type": "string",
+                        "name": "countryName"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Country short code",
+                        "type": "string",
+                        "name": "countryShortCode"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Country resident name",
+                        "type": "string",
+                        "name": "countryResidentName"
+                      }
+                    ],
+                    "label": "Which country is your traffic from?",
+                    "type": "object",
+                    "name": "which_country_is_your_traffic_from?"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "What locations is your traffic from? archived",
+                    "type": "string",
+                    "name": "what_locations_is_your_traffic_from?_archived"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Which language do you operate in? archived",
+                    "type": "string",
+                    "name": "which_language_do_you_operate_in?_archived"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "How are you generating traffic?",
+                    "type": "string",
+                    "name": "how_are_you_generating_traffic?"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Which website do you use to promote us?",
+                    "type": "string",
+                    "name": "which_website_do_you_use_to_promote_us?"
+                  }
+                ],
+                "label": "Content",
+                "type": "object",
+                "name": "content"
+              },
+              {
+                "control_type": "text",
+                "label": "Decline reason",
+                "type": "string",
+                "name": "decline_reason"
+              },
+              {
+                "control_type": "text",
+                "label": "Destination group name",
+                "type": "string",
+                "name": "destination_group_name"
+              },
+              {
+                "control_type": "text",
+                "label": "Destination group slug",
+                "type": "string",
+                "name": "destination_group_slug"
+              },
+              {
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Key",
+                    "type": "string",
+                    "name": "key"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Name",
+                    "type": "string",
+                    "name": "name"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Slug",
+                    "type": "string",
+                    "name": "slug"
+                  }
+                ],
+                "label": "Destination group",
+                "type": "object",
+                "name": "destination_group"
+              },
+              {
+                "control_type": "text",
+                "label": "Group name",
+                "type": "string",
+                "name": "group_name"
+              },
+              {
+                "control_type": "text",
+                "label": "Group slug",
+                "type": "string",
+                "name": "group_slug"
+              },
+              {
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Key",
+                    "type": "string",
+                    "name": "key"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Name",
+                    "type": "string",
+                    "name": "name"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Slug",
+                    "type": "string",
+                    "name": "slug"
+                  }
+                ],
+                "label": "Group",
+                "type": "object",
+                "name": "group"
+              },
+              {
+                "control_type": "text",
+                "label": "Mold key",
+                "type": "string",
+                "name": "mold_key"
+              },
+              {
+                "control_type": "text",
+                "label": "Partnership key",
+                "type": "string",
+                "name": "partnership_key"
+              },
+              {
+                "control_type": "text",
+                "label": "Partner key",
+                "type": "string",
+                "name": "partner_key"
+              },
+              {
+                "control_type": "text",
+                "label": "Top partner",
+                "type": "string",
+                "name": "top_partner"
+              },
+              {
+                "control_type": "text",
+                "label": "Premium partner",
+                "type": "string",
+                "name": "premium_partner"
+              },
+              {
+                "control_type": "text",
+                "label": "High potential partner",
+                "type": "string",
+                "name": "high_potential_partner"
+              },
+              {
+                "control_type": "text",
+                "label": "Fraud flagged",
+                "render_input": "boolean_conversion",
+                "parse_output": "boolean_conversion",
+                "toggle_hint": "Select from option list",
+                "toggle_field": {
+                  "label": "Fraud flagged",
+                  "control_type": "text",
+                  "toggle_hint": "Use custom value",
+                  "type": "boolean",
+                  "name": "fraud_flagged"
+                },
+                "type": "boolean",
+                "name": "fraud_flagged"
+              },
+              {
+                "control_type": "text",
+                "label": "Team name",
+                "type": "string",
+                "name": "team_name"
+              },
+              {
+                "control_type": "text",
+                "label": "Team key",
+                "type": "string",
+                "name": "team_key"
+              },
+              {
+                "control_type": "text",
+                "label": "With profile",
+                "render_input": "boolean_conversion",
+                "parse_output": "boolean_conversion",
+                "toggle_hint": "Select from option list",
+                "toggle_field": {
+                  "label": "With profile",
+                  "control_type": "text",
+                  "toggle_hint": "Use custom value",
+                  "type": "boolean",
+                  "name": "with_profile"
+                },
+                "type": "boolean",
+                "name": "with_profile"
+              },
+              {
+                "control_type": "text",
+                "label": "Key",
+                "type": "string",
+                "name": "key"
+              },
+              {
+                "control_type": "number",
+                "label": "Created at",
+                "parse_output": "float_conversion",
+                "type": "number",
+                "name": "created_at",
+                "render_input": "float_conversion"
+              },
+              {
+                "control_type": "number",
+                "label": "Updated at",
+                "parse_output": "float_conversion",
+                "type": "number",
+                "name": "updated_at",
+                "render_input": "float_conversion"
+              }
+            ],
+            "label": "Data",
+            "type": "object",
+            "name": "data"
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "extended_input_schema": [
+      {
+        "label": "Payload configuration",
+        "name": "request",
+        "override": true,
+        "properties": [
+          {
+            "control_type": "select",
+            "label": "Webhook type",
+            "pick_list": [
+              [
+                "GET request",
+                "get"
+              ],
+              [
+                "PUT/POST with JSON payload",
+                "json"
+              ],
+              [
+                "PUT/POST with XML payload",
+                "xml"
+              ],
+              [
+                "PUT/POST with FORM encoded payload",
+                "form"
+              ],
+              [
+                "PUT/POST with raw binary data",
+                "rawdata"
+              ],
+              [
+                "PUT/POST with unicode text data",
+                "rawdatatxt"
+              ]
+            ],
+            "hint": "Select the HTTP method and payload data type used by webhook. <a href=\"https://docs.workato.com/developing-connectors/http.html#set-up-your-non-oauth-2-0-connection\" target=\"_blank\">Learn more</a>",
+            "default": "json",
+            "extends_schema": true,
+            "type": "string",
+            "name": "webhook_type"
+          },
+          {
+            "control_type": "schema-designer",
+            "label": "Payload schema",
+            "sample_data_type": "json_http",
+            "extends_schema": true,
+            "empty_schema_title": "Describe all fields in your response.",
+            "optional": true,
+            "sticky": true,
+            "type": "string",
+            "name": "payload_schema"
+          },
+          {
+            "control_type": "schema-designer",
+            "label": "Query params",
+            "extends_schema": true,
+            "empty_schema_title": "Describe all the query params",
+            "optional": true,
+            "sticky": true,
+            "type": "string",
+            "name": "query_params"
+          },
+          {
+            "control_type": "schema-designer",
+            "label": "Headers",
+            "extends_schema": true,
+            "empty_schema_title": "Describe all the webhook headers",
+            "optional": true,
+            "sticky": true,
+            "type": "string",
+            "name": "headers_schema"
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "workato_variable",
+            "name": "declare_list",
+            "as": "2f51a58c",
+            "keyword": "action",
+            "input": {
+              "name": "Affiliates",
+              "list_item_schema_json": "[{\"name\":\"partner_key\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Partner key\"},{\"name\":\"affiliate_name\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Affiliate name\"},{\"name\":\"website_url\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Website URL\"},{\"name\":\"country\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Country\"},{\"name\":\"customer_geography\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Customer geography\"},{\"name\":\"group\",\"type\":\"object\",\"optional\":false,\"label\":\"Group\",\"properties\":[{\"name\":\"key\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Key\"},{\"name\":\"name\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Name\"},{\"name\":\"slug\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Slug\"}]},{\"name\":\"program_join_date\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Program join date\"},{\"name\":\"group_join_date\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Group join date\"},{\"name\":\"wechat_id\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Wechat ID\"},{\"name\":\"affiliate_member\",\"type\":\"object\",\"optional\":false,\"label\":\"Affiliate member\",\"properties\":[{\"name\":\"first_name\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"First name\"},{\"name\":\"last_name\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Last name\"},{\"name\":\"email\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Email\"}]}]",
+              "list_items": {
+                "affiliate_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"team_name\"]}')}",
+                "website_url": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"group\",\"slug\"]}') == 'cn1000cap'  ?  _dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"content\",\"你在什么网站推广?\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"content\",\"which_website_do_you_use_to_promote_us?\"]}')",
+                "country": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"group\",\"slug\"]}') == 'cn1000cap'  ?  _dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"content\",\"你位于那个国家?\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"content\",\"which_country_are_you_in?\"]}')",
+                "group": {
+                  "key": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"group\",\"key\"]}')}",
+                  "name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"group\",\"name\"]}')}",
+                  "slug": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"group\",\"slug\"]}')}"
+                },
+                "program_join_date": "=(_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"created_at\"]}') / 1000).to_time.in_time_zone(\"Asia/Jerusalem\").strftime(\"%d/%m/%Y\")",
+                "affiliate_member": {
+                  "first_name": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"group\",\"slug\"]}') == 'cn1000cap'  ?  _dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"content\",\"名\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"content\",\"first_name\"]}')",
+                  "last_name": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"group\",\"slug\"]}') == 'cn1000cap'  ?  _dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"content\",\"姓\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"content\",\"last_name\"]}')",
+                  "email": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"group\",\"slug\"]}') == 'cn1000cap'  ?  _dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"content\",\"邮箱\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"content\",\"email\"]}')"
+                },
+                "partner_key": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"partner_key\"]}')}",
+                "wechat_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"content\",\"wechat_id\"]}')}",
+                "customer_geography": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"group\",\"slug\"]}') == 'cn1000cap'  ?  _dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"content\",\"您的客户主要来自哪个国家？\",\"countryName\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"content\",\"which_country_is_your_traffic_from?\",\"countryName\"]}')",
+                "group_join_date": "=(_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"972747ce\",\"path\":[\"payload\",\"data\",\"updated_at\"]}') / 1000).to_time.in_time_zone(\"Asia/Jerusalem\").strftime(\"%d/%m/%Y\")"
+              }
+            },
+            "extended_output_schema": [
+              {
+                "hint": "",
+                "label": "Affiliates",
+                "name": "list_items",
+                "of": "object",
+                "optional": false,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Partner key",
+                    "name": "partner_key",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Affiliate name",
+                    "name": "affiliate_name",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Website URL",
+                    "name": "website_url",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Country",
+                    "name": "country",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Customer geography",
+                    "name": "customer_geography",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Key",
+                        "name": "key",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Name",
+                        "name": "name",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Slug",
+                        "name": "slug",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "label": "Group",
+                    "name": "group",
+                    "type": "object",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Program join date",
+                    "name": "program_join_date",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Group join date",
+                    "name": "group_join_date",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Wechat ID",
+                    "name": "wechat_id",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "First name",
+                        "name": "first_name",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Last name",
+                        "name": "last_name",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Email",
+                        "name": "email",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "label": "Affiliate member",
+                    "name": "affiliate_member",
+                    "type": "object",
+                    "optional": false
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                "label": "Items",
+                "name": "list_items",
+                "of": "object",
+                "optional": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Partner key",
+                    "name": "partner_key",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Affiliate name",
+                    "name": "affiliate_name",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Website URL",
+                    "name": "website_url",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Country",
+                    "name": "country",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Customer geography",
+                    "name": "customer_geography",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Key",
+                        "name": "key",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Name",
+                        "name": "name",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Slug",
+                        "name": "slug",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "label": "Group",
+                    "name": "group",
+                    "type": "object",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Program join date",
+                    "name": "program_join_date",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Group join date",
+                    "name": "group_join_date",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Wechat ID",
+                    "name": "wechat_id",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "First name",
+                        "name": "first_name",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Last name",
+                        "name": "last_name",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Email",
+                        "name": "email",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "label": "Affiliate member",
+                    "name": "affiliate_member",
+                    "type": "object",
+                    "optional": false
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "uuid": "0ab52eaf-b2d9-419b-947c-9fdfbb412f39"
+          },
+          {
+            "number": 3,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "present",
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"affiliate_name\"]}')}",
+                  "rhs": "",
+                  "uuid": "89ba7f16-93a2-49ab-bfc7-3d5d87115cf9"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 4,
+                "provider": "hubspot",
+                "name": "create_object",
+                "as": "45611bfd",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "hs_object": "Affiliate"
+                },
+                "toggleCfg": {
+                  "properties.group": false
+                },
+                "input": {
+                  "hs_object": "p7697697_affiliates",
+                  "properties": {
+                    "affiliate_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"affiliate_name\"]}')}",
+                    "website_url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"website_url\"]}')}",
+                    "country": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"country\"]}')}",
+                    "program_join_date": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"program_join_date\"]}')",
+                    "partner_key": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"partner_key\"]}')}",
+                    "group": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"group\",\"name\"]}')}",
+                    "group_join_date": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"group_join_date\"]}')",
+                    "customer_geography": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"customer_geography\"]}')}",
+                    "group_key": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"group\",\"key\"]}')}"
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Properties",
+                    "name": "properties",
+                    "properties": [
+                      {
+                        "control_type": "select",
+                        "label": "Affiliate Manager",
+                        "hint": "Valid values are Elena Marchetti, elena@brightdata.com, Liat Hershckowits, liath@brightdata.com, Cynthia Chiao-Hsin Cheng, cynthia@brightdata.com.",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+                          [
+                            "Elena Marchetti, elena@brightdata.com",
+                            "Elena Marchetti, elena@brightdata.com"
+                          ],
+                          [
+                            "Liat Hershckowits, liath@brightdata.com",
+                            "Liat Hershckowits, liath@brightdata.com"
+                          ],
+                          [
+                            "Cynthia Chiao-Hsin Cheng, cynthia@brightdata.com",
+                            "Cynthia Chiao-Hsin Cheng, cynthia@brightdata.com"
+                          ]
+                        ],
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Affiliate Manager",
+                          "toggle_hint": "Enter text",
+                          "hint": "Valid values are Elena Marchetti, elena@brightdata.com, Liat Hershckowits, liath@brightdata.com, Cynthia Chiao-Hsin Cheng, cynthia@brightdata.com.",
+                          "optional": true,
+                          "custom": true,
+                          "sticky": false,
+                          "pick_list": [
+                            [
+                              "Elena Marchetti, elena@brightdata.com",
+                              "Elena Marchetti, elena@brightdata.com"
+                            ],
+                            [
+                              "Liat Hershckowits, liath@brightdata.com",
+                              "Liat Hershckowits, liath@brightdata.com"
+                            ],
+                            [
+                              "Cynthia Chiao-Hsin Cheng, cynthia@brightdata.com",
+                              "Cynthia Chiao-Hsin Cheng, cynthia@brightdata.com"
+                            ]
+                          ],
+                          "toggle_to_primary_hint": "Select from list",
+                          "toggle_to_secondary_hint": "Enter text",
+                          "type": "string",
+                          "name": "affiliate_manager"
+                        },
+                        "type": "string",
+                        "name": "affiliate_manager"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Affiliate Name",
+                        "hint": "",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "affiliate_name"
+                      },
+                      {
+                        "control_type": "multiselect",
+                        "label": "Affiliate Type",
+                        "delimiter": "\n",
+                        "hint": "Valid values are Website, Consultant, System Integrator, Blogger(Influencer).",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+                          [
+                            "Website",
+                            "Website"
+                          ],
+                          [
+                            "Consultant",
+                            "Consultant"
+                          ],
+                          [
+                            "System Integrator",
+                            "System Integrator"
+                          ],
+                          [
+                            "Blogger(Influencer)",
+                            "Blogger(Influencer)"
+                          ]
+                        ],
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Affiliate Type",
+                          "toggle_hint": "Enter text",
+                          "hint": "Valid values are Website, Consultant, System Integrator, Blogger(Influencer). For providing multiple values, enter values separated by <b>new line</b>. Example: <b>option1</b>.",
+                          "optional": true,
+                          "custom": true,
+                          "sticky": false,
+                          "pick_list": [
+                            [
+                              "Website",
+                              "Website"
+                            ],
+                            [
+                              "Consultant",
+                              "Consultant"
+                            ],
+                            [
+                              "System Integrator",
+                              "System Integrator"
+                            ],
+                            [
+                              "Blogger(Influencer)",
+                              "Blogger(Influencer)"
+                            ]
+                          ],
+                          "toggle_to_primary_hint": "Select from list",
+                          "toggle_to_secondary_hint": "Enter text",
+                          "type": "string",
+                          "name": "affiliate_type"
+                        },
+                        "type": "string",
+                        "name": "affiliate_type"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "BDLastCampaignID",
+                        "hint": "",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "bdlastcampaignid"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Country",
+                        "hint": "",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "country"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Customer geography",
+                        "hint": "",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "customer_geography"
+                      },
+                      {
+                        "control_type": "select",
+                        "label": "Fraud flagged",
+                        "hint": "Valid values are FALSE, TRUE.",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+                          [
+                            "FALSE",
+                            "FALSE"
+                          ],
+                          [
+                            "TRUE",
+                            "TRUE"
+                          ]
+                        ],
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Fraud flagged",
+                          "toggle_hint": "Enter text",
+                          "hint": "Valid values are FALSE, TRUE.",
+                          "optional": true,
+                          "custom": true,
+                          "sticky": false,
+                          "pick_list": [
+                            [
+                              "FALSE",
+                              "FALSE"
+                            ],
+                            [
+                              "TRUE",
+                              "TRUE"
+                            ]
+                          ],
+                          "toggle_to_primary_hint": "Select from list",
+                          "toggle_to_secondary_hint": "Enter text",
+                          "type": "string",
+                          "name": "fraud_flagged"
+                        },
+                        "type": "string",
+                        "name": "fraud_flagged"
+                      },
+                      {
+                        "control_type": "select",
+                        "label": "Group",
+                        "hint": "Valid values are $0 cap, $10,000 cap, $150 CPL, $1500 cap, $2000 cap, $2500 cap, $3000 cap, $5000 cap, $7000 Cap, APAC $1000 CAP, CN - $3500, CN $1000 CAP, CN $1500 cap, CN $2000 cap, CN $2500 cap, CN $3000 CAP, CN $5000 cap, CN $700 cap, CPC - Saasworthy, Default, Flat RS 10%, Flat RS 15%, Flat RS 20%, Fraud, Master Affiliates, Referral Program - ROW (English), ROW, RU $1000 CAP, Welcome.",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+                          [
+                            "$0 cap",
+                            "$0 cap"
+                          ],
+                          [
+                            "$10,000 cap",
+                            "$10,000 cap"
+                          ],
+                          [
+                            "$150 CPL",
+                            "$150 CPL"
+                          ],
+                          [
+                            "$1500 cap",
+                            "$1500 cap"
+                          ],
+                          [
+                            "$2000 cap",
+                            "$2000 cap"
+                          ],
+                          [
+                            "$2500 cap",
+                            "$2500 cap"
+                          ],
+                          [
+                            "$3000 cap",
+                            "$3000 cap"
+                          ],
+                          [
+                            "$5000 cap",
+                            "$5000 cap"
+                          ],
+                          [
+                            "$7000 Cap",
+                            "$7000 Cap"
+                          ],
+                          [
+                            "APAC $1000 CAP",
+                            "APAC $1000 CAP"
+                          ],
+                          [
+                            "CN - $3500",
+                            "CN - $3500"
+                          ],
+                          [
+                            "CN $1000 CAP",
+                            "CN $1000 CAP"
+                          ],
+                          [
+                            "CN $1500 cap",
+                            "CN $1500 cap"
+                          ],
+                          [
+                            "CN $2000 cap",
+                            "CN $2000 cap"
+                          ],
+                          [
+                            "CN $2500 cap",
+                            "CN $2500 cap"
+                          ],
+                          [
+                            "CN $3000 CAP",
+                            "CN $3000 CAP"
+                          ],
+                          [
+                            "CN $5000 cap",
+                            "CN $5000 cap"
+                          ],
+                          [
+                            "CN $700 cap",
+                            "CN $700 cap"
+                          ],
+                          [
+                            "CPC - Saasworthy",
+                            "CPC - Saasworthy"
+                          ],
+                          [
+                            "Default",
+                            "Default"
+                          ],
+                          [
+                            "Flat RS 10%",
+                            "Flat RS 10%"
+                          ],
+                          [
+                            "Flat RS 15%",
+                            "Flat RS 15%"
+                          ],
+                          [
+                            "Flat RS 20%",
+                            "Flat RS 20%"
+                          ],
+                          [
+                            "Fraud",
+                            "Fraud"
+                          ],
+                          [
+                            "Master Affiliates",
+                            "Master Affiliates"
+                          ],
+                          [
+                            "Referral Program - ROW (English)",
+                            "Referral Program - ROW (English)"
+                          ],
+                          [
+                            "ROW",
+                            "ROW"
+                          ],
+                          [
+                            "RU $1000 CAP",
+                            "RU $1000 CAP"
+                          ],
+                          [
+                            "Welcome",
+                            "Welcome"
+                          ]
+                        ],
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Group",
+                          "toggle_hint": "Enter text",
+                          "hint": "Valid values are $0 cap, $10,000 cap, $150 CPL, $1500 cap, $2000 cap, $2500 cap, $3000 cap, $5000 cap, $7000 Cap, APAC $1000 CAP, CN - $3500, CN $1000 CAP, CN $1500 cap, CN $2000 cap, CN $2500 cap, CN $3000 CAP, CN $5000 cap, CN $700 cap, CPC - Saasworthy, Default, Flat RS 10%, Flat RS 15%, Flat RS 20%, Fraud, Master Affiliates, Referral Program - ROW (English), ROW, RU $1000 CAP, Welcome.",
+                          "optional": true,
+                          "custom": true,
+                          "sticky": false,
+                          "pick_list": [
+                            [
+                              "$0 cap",
+                              "$0 cap"
+                            ],
+                            [
+                              "$10,000 cap",
+                              "$10,000 cap"
+                            ],
+                            [
+                              "$150 CPL",
+                              "$150 CPL"
+                            ],
+                            [
+                              "$1500 cap",
+                              "$1500 cap"
+                            ],
+                            [
+                              "$2000 cap",
+                              "$2000 cap"
+                            ],
+                            [
+                              "$2500 cap",
+                              "$2500 cap"
+                            ],
+                            [
+                              "$3000 cap",
+                              "$3000 cap"
+                            ],
+                            [
+                              "$5000 cap",
+                              "$5000 cap"
+                            ],
+                            [
+                              "$7000 Cap",
+                              "$7000 Cap"
+                            ],
+                            [
+                              "APAC $1000 CAP",
+                              "APAC $1000 CAP"
+                            ],
+                            [
+                              "CN - $3500",
+                              "CN - $3500"
+                            ],
+                            [
+                              "CN $1000 CAP",
+                              "CN $1000 CAP"
+                            ],
+                            [
+                              "CN $1500 cap",
+                              "CN $1500 cap"
+                            ],
+                            [
+                              "CN $2000 cap",
+                              "CN $2000 cap"
+                            ],
+                            [
+                              "CN $2500 cap",
+                              "CN $2500 cap"
+                            ],
+                            [
+                              "CN $3000 CAP",
+                              "CN $3000 CAP"
+                            ],
+                            [
+                              "CN $5000 cap",
+                              "CN $5000 cap"
+                            ],
+                            [
+                              "CN $700 cap",
+                              "CN $700 cap"
+                            ],
+                            [
+                              "CPC - Saasworthy",
+                              "CPC - Saasworthy"
+                            ],
+                            [
+                              "Default",
+                              "Default"
+                            ],
+                            [
+                              "Flat RS 10%",
+                              "Flat RS 10%"
+                            ],
+                            [
+                              "Flat RS 15%",
+                              "Flat RS 15%"
+                            ],
+                            [
+                              "Flat RS 20%",
+                              "Flat RS 20%"
+                            ],
+                            [
+                              "Fraud",
+                              "Fraud"
+                            ],
+                            [
+                              "Master Affiliates",
+                              "Master Affiliates"
+                            ],
+                            [
+                              "Referral Program - ROW (English)",
+                              "Referral Program - ROW (English)"
+                            ],
+                            [
+                              "ROW",
+                              "ROW"
+                            ],
+                            [
+                              "RU $1000 CAP",
+                              "RU $1000 CAP"
+                            ],
+                            [
+                              "Welcome",
+                              "Welcome"
+                            ]
+                          ],
+                          "toggle_to_primary_hint": "Select from list",
+                          "toggle_to_secondary_hint": "Enter text",
+                          "type": "string",
+                          "name": "group"
+                        },
+                        "type": "string",
+                        "name": "group"
+                      },
+                      {
+                        "control_type": "date",
+                        "label": "Group Join Date",
+                        "render_input": "date_field_to_milliseconds",
+                        "parse_output": "milliseconds_to_date_trigger",
+                        "hint": "",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "date_time",
+                        "name": "group_join_date"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Group key",
+                        "hint": "",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "group_key"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "All teams",
+                        "hint": "The team IDs, including the team hierarchy, of all default and custom owner properties for this record.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_all_accessible_team_ids"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Business units",
+                        "hint": "The business units this record is assigned to.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_all_assigned_business_unit_ids"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "All owner IDs",
+                        "hint": "Values of all default and custom owner properties for this record.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_all_owner_ids"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "All team IDs",
+                        "hint": "The team IDs of all default and custom owner properties for this record.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_all_team_ids"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Created by user ID",
+                        "parse_output": "float_conversion",
+                        "hint": "The user who created this record. This value is set automatically by HubSpot.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "number",
+                        "name": "hs_created_by_user_id"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "label": "Object create date/time",
+                        "render_input": "date_field_to_milliseconds",
+                        "parse_output": "milliseconds_to_date_trigger",
+                        "hint": "The date and time at which this object was created. This value is automatically set by HubSpot and may not be modified.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "date_time",
+                        "name": "hs_createdate"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "label": "Object last modified date/time",
+                        "render_input": "date_field_to_milliseconds",
+                        "parse_output": "milliseconds_to_date_trigger",
+                        "hint": "Most recent timestamp of any property update for this object. This includes HubSpot internal properties, which can be visible or hidden. This property is updated automatically.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "date_time",
+                        "name": "hs_lastmodifieddate"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Merged record IDs",
+                        "hint": "The list of record IDs that have been merged into this record. This value is set automatically by HubSpot.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_merged_object_ids"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Record ID",
+                        "parse_output": "float_conversion",
+                        "hint": "The unique ID for this record. This value is set automatically by HubSpot.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "number",
+                        "name": "hs_object_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Record creation source",
+                        "hint": "Raw internal PropertySource present in the RequestMeta when this record was created.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_object_source"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Record source detail 1",
+                        "hint": "First level of detail on how this record was created.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_object_source_detail_1"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Record source detail 2",
+                        "hint": "Second level of detail on how this record was created.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_object_source_detail_2"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Record source detail 3",
+                        "hint": "Third level of detail on how this record was created.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_object_source_detail_3"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Record creation source ID",
+                        "hint": "Raw internal sourceId present in the RequestMeta when this record was created.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_object_source_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Record source",
+                        "hint": "How this record was created.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_object_source_label"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Record creation source user ID",
+                        "parse_output": "float_conversion",
+                        "hint": "Raw internal userId present in the RequestMeta when this record was created.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "number",
+                        "name": "hs_object_source_user_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Owning Teams",
+                        "hint": "The teams that are attributed to this record.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_owning_teams"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Pinned Engagement ID",
+                        "parse_output": "float_conversion",
+                        "hint": "The object ID of the current pinned engagement. This will only be shown in the app if there is already an association to the engagement.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "number",
+                        "name": "hs_pinned_engagement_id"
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "label": "Read only object",
+                        "hint": "Determines whether a record can be edited by a user. Valid values are true, false.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+                          [
+                            "True",
+                            "true"
+                          ],
+                          [
+                            "False",
+                            "false"
+                          ]
+                        ],
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                          "label": "Read only object",
+                          "control_type": "text",
+                          "toggle_hint": "Use custom value",
+                          "hint": "Determines whether a record can be edited by a user. Valid values are true, false.",
+                          "optional": true,
+                          "custom": false,
+                          "sticky": false,
+                          "pick_list": [
+                            [
+                              "True",
+                              "true"
+                            ],
+                            [
+                              "False",
+                              "false"
+                            ]
+                          ],
+                          "render_input": null,
+                          "parse_output": null,
+                          "type": "boolean",
+                          "name": "hs_read_only"
+                        },
+                        "type": "boolean",
+                        "name": "hs_read_only"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Shared teams",
+                        "hint": "Additional teams whose users can access the record based on their permissions. This can be set manually or through Workflows or APIs.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_shared_team_ids"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Shared users",
+                        "hint": "Additional users that can access the record based on their permissions. This can be set manually or through Workflows and APIs.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_shared_user_ids"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Unique creation key",
+                        "hint": "Unique property used for idempotent creates",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_unique_creation_key"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Updated by user ID",
+                        "parse_output": "float_conversion",
+                        "hint": "The user who last updated this record. This value is set automatically by HubSpot.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "number",
+                        "name": "hs_updated_by_user_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "User IDs of all notification followers",
+                        "hint": "The user IDs of all users that have clicked follow within the object to opt-in to getting follow notifications",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_user_ids_of_all_notification_followers"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "User IDs of all notification unfollowers",
+                        "hint": "The user IDs of all object owners that have clicked unfollow within the object to opt-out of getting follow notifications",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_user_ids_of_all_notification_unfollowers"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "User IDs of all owners",
+                        "hint": "The user IDs of all owners of this record.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_user_ids_of_all_owners"
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "label": "Performed in an import",
+                        "hint": "Object is part of an import. Valid values are true, false.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+                          [
+                            "True",
+                            "true"
+                          ],
+                          [
+                            "False",
+                            "false"
+                          ]
+                        ],
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                          "label": "Performed in an import",
+                          "control_type": "text",
+                          "toggle_hint": "Use custom value",
+                          "hint": "Object is part of an import. Valid values are true, false.",
+                          "optional": true,
+                          "custom": false,
+                          "sticky": false,
+                          "pick_list": [
+                            [
+                              "True",
+                              "true"
+                            ],
+                            [
+                              "False",
+                              "false"
+                            ]
+                          ],
+                          "render_input": null,
+                          "parse_output": null,
+                          "type": "boolean",
+                          "name": "hs_was_imported"
+                        },
+                        "type": "boolean",
+                        "name": "hs_was_imported"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "label": "Owner assigned date",
+                        "render_input": "date_field_to_milliseconds",
+                        "parse_output": "milliseconds_to_date_trigger",
+                        "hint": "The most recent timestamp of when an owner was assigned to this record. This value is set automatically by HubSpot.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "date_time",
+                        "name": "hubspot_owner_assigneddate"
+                      },
+                      {
+                        "control_type": "select",
+                        "label": "Owner",
+                        "hint": "The owner of the object.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": "owners_picklist",
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Owner",
+                          "toggle_hint": "Enter text",
+                          "toggle_to_primary_hint": "Select from list",
+                          "toggle_to_secondary_hint": "Enter text",
+                          "hint": "The owner of the object.",
+                          "type": "string",
+                          "name": "hubspot_owner_id"
+                        },
+                        "type": "string",
+                        "name": "hubspot_owner_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Owner's main team",
+                        "hint": "The main team of the record owner. This value is set automatically by HubSpot.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hubspot_team_id"
+                      },
+                      {
+                        "control_type": "select",
+                        "label": "Languages",
+                        "hint": "Valid values are Madarin, English, Japanese, Korean, Spanish, Russian, Others.",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+                          [
+                            "Madarin",
+                            "Madarin"
+                          ],
+                          [
+                            "English",
+                            "English"
+                          ],
+                          [
+                            "Japanese",
+                            "Japanese"
+                          ],
+                          [
+                            "Korean",
+                            "Korean"
+                          ],
+                          [
+                            "Spanish",
+                            "Spanish"
+                          ],
+                          [
+                            "Russian",
+                            "Russian"
+                          ],
+                          [
+                            "Others",
+                            "Others"
+                          ]
+                        ],
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Languages",
+                          "toggle_hint": "Enter text",
+                          "hint": "Valid values are Madarin, English, Japanese, Korean, Spanish, Russian, Others.",
+                          "optional": true,
+                          "custom": true,
+                          "sticky": false,
+                          "pick_list": [
+                            [
+                              "Madarin",
+                              "Madarin"
+                            ],
+                            [
+                              "English",
+                              "English"
+                            ],
+                            [
+                              "Japanese",
+                              "Japanese"
+                            ],
+                            [
+                              "Korean",
+                              "Korean"
+                            ],
+                            [
+                              "Spanish",
+                              "Spanish"
+                            ],
+                            [
+                              "Russian",
+                              "Russian"
+                            ],
+                            [
+                              "Others",
+                              "Others"
+                            ]
+                          ],
+                          "toggle_to_primary_hint": "Select from list",
+                          "toggle_to_secondary_hint": "Enter text",
+                          "type": "string",
+                          "name": "languages"
+                        },
+                        "type": "string",
+                        "name": "languages"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Partner_key",
+                        "hint": "",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "partner_key"
+                      },
+                      {
+                        "control_type": "select",
+                        "label": "Priority",
+                        "hint": "Valid values are 1 (TOP10), 2, 3.",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+                          [
+                            "1 (TOP10)",
+                            "1 (TOP10)"
+                          ],
+                          [
+                            "2",
+                            "2"
+                          ],
+                          [
+                            "3",
+                            "3"
+                          ]
+                        ],
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Priority",
+                          "toggle_hint": "Enter text",
+                          "hint": "Valid values are 1 (TOP10), 2, 3.",
+                          "optional": true,
+                          "custom": true,
+                          "sticky": false,
+                          "pick_list": [
+                            [
+                              "1 (TOP10)",
+                              "1 (TOP10)"
+                            ],
+                            [
+                              "2",
+                              "2"
+                            ],
+                            [
+                              "3",
+                              "3"
+                            ]
+                          ],
+                          "toggle_to_primary_hint": "Select from list",
+                          "toggle_to_secondary_hint": "Enter text",
+                          "type": "string",
+                          "name": "priority"
+                        },
+                        "type": "string",
+                        "name": "priority"
+                      },
+                      {
+                        "control_type": "date",
+                        "label": "Program Join Date",
+                        "render_input": "date_field_to_milliseconds",
+                        "parse_output": "milliseconds_to_date_trigger",
+                        "hint": "",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "date_time",
+                        "name": "program_join_date"
+                      },
+                      {
+                        "control_type": "select",
+                        "label": "Status",
+                        "hint": "Valid values are Prospecting, Qualified, Onboarding, Live, Unqualified, Qualified lost, Churn, Terminate.",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+                          [
+                            "Prospecting",
+                            "Prospecting"
+                          ],
+                          [
+                            "Qualified",
+                            "Qualified"
+                          ],
+                          [
+                            "Onboarding",
+                            "Onboarding"
+                          ],
+                          [
+                            "Live",
+                            "Live"
+                          ],
+                          [
+                            "Unqualified",
+                            "Unqualified"
+                          ],
+                          [
+                            "Qualified lost",
+                            "Qualified lost"
+                          ],
+                          [
+                            "Churn",
+                            "Churn"
+                          ],
+                          [
+                            "Terminate",
+                            "Terminate"
+                          ]
+                        ],
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Status",
+                          "toggle_hint": "Enter text",
+                          "hint": "Valid values are Prospecting, Qualified, Onboarding, Live, Unqualified, Qualified lost, Churn, Terminate.",
+                          "optional": true,
+                          "custom": true,
+                          "sticky": false,
+                          "pick_list": [
+                            [
+                              "Prospecting",
+                              "Prospecting"
+                            ],
+                            [
+                              "Qualified",
+                              "Qualified"
+                            ],
+                            [
+                              "Onboarding",
+                              "Onboarding"
+                            ],
+                            [
+                              "Live",
+                              "Live"
+                            ],
+                            [
+                              "Unqualified",
+                              "Unqualified"
+                            ],
+                            [
+                              "Qualified lost",
+                              "Qualified lost"
+                            ],
+                            [
+                              "Churn",
+                              "Churn"
+                            ],
+                            [
+                              "Terminate",
+                              "Terminate"
+                            ]
+                          ],
+                          "toggle_to_primary_hint": "Select from list",
+                          "toggle_to_secondary_hint": "Enter text",
+                          "type": "string",
+                          "name": "status"
+                        },
+                        "type": "string",
+                        "name": "status"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Tags",
+                        "hint": "",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "tags"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Website URL",
+                        "hint": "",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "website_url"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "label": "Properties",
+                    "name": "properties",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Affiliate Name",
+                        "hint": "",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": true,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "affiliate_name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Partner_key",
+                        "hint": "",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": true,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "partner_key"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Website URL",
+                        "hint": "",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": true,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "website_url"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Tags",
+                        "hint": "",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": true,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "tags"
+                      },
+                      {
+                        "control_type": "select",
+                        "label": "Status",
+                        "hint": "Valid values are Prospecting, Qualified, Onboarding, Live, Unqualified, Qualified lost, Churn, Terminate.",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": true,
+                        "pick_list": [
+                          [
+                            "Prospecting",
+                            "Prospecting"
+                          ],
+                          [
+                            "Qualified",
+                            "Qualified"
+                          ],
+                          [
+                            "Onboarding",
+                            "Onboarding"
+                          ],
+                          [
+                            "Live",
+                            "Live"
+                          ],
+                          [
+                            "Unqualified",
+                            "Unqualified"
+                          ],
+                          [
+                            "Qualified lost",
+                            "Qualified lost"
+                          ],
+                          [
+                            "Churn",
+                            "Churn"
+                          ],
+                          [
+                            "Terminate",
+                            "Terminate"
+                          ]
+                        ],
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Status",
+                          "toggle_hint": "Enter text",
+                          "hint": "Valid values are Prospecting, Qualified, Onboarding, Live, Unqualified, Qualified lost, Churn, Terminate.",
+                          "optional": true,
+                          "custom": true,
+                          "sticky": true,
+                          "pick_list": [
+                            [
+                              "Prospecting",
+                              "Prospecting"
+                            ],
+                            [
+                              "Qualified",
+                              "Qualified"
+                            ],
+                            [
+                              "Onboarding",
+                              "Onboarding"
+                            ],
+                            [
+                              "Live",
+                              "Live"
+                            ],
+                            [
+                              "Unqualified",
+                              "Unqualified"
+                            ],
+                            [
+                              "Qualified lost",
+                              "Qualified lost"
+                            ],
+                            [
+                              "Churn",
+                              "Churn"
+                            ],
+                            [
+                              "Terminate",
+                              "Terminate"
+                            ]
+                          ],
+                          "toggle_to_primary_hint": "Select from list",
+                          "toggle_to_secondary_hint": "Enter text",
+                          "type": "string",
+                          "name": "status"
+                        },
+                        "type": "string",
+                        "name": "status"
+                      },
+                      {
+                        "control_type": "date",
+                        "label": "Program Join Date",
+                        "render_input": "date_field_to_milliseconds",
+                        "parse_output": "milliseconds_to_date_trigger",
+                        "hint": "",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": true,
+                        "pick_list": [
+
+                        ],
+                        "type": "date_time",
+                        "name": "program_join_date"
+                      },
+                      {
+                        "control_type": "select",
+                        "label": "Priority",
+                        "hint": "Valid values are 1 (TOP10), 2, 3.",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": true,
+                        "pick_list": [
+                          [
+                            "1 (TOP10)",
+                            "1 (TOP10)"
+                          ],
+                          [
+                            "2",
+                            "2"
+                          ],
+                          [
+                            "3",
+                            "3"
+                          ]
+                        ],
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Priority",
+                          "toggle_hint": "Enter text",
+                          "hint": "Valid values are 1 (TOP10), 2, 3.",
+                          "optional": true,
+                          "custom": true,
+                          "sticky": true,
+                          "pick_list": [
+                            [
+                              "1 (TOP10)",
+                              "1 (TOP10)"
+                            ],
+                            [
+                              "2",
+                              "2"
+                            ],
+                            [
+                              "3",
+                              "3"
+                            ]
+                          ],
+                          "toggle_to_primary_hint": "Select from list",
+                          "toggle_to_secondary_hint": "Enter text",
+                          "type": "string",
+                          "name": "priority"
+                        },
+                        "type": "string",
+                        "name": "priority"
+                      },
+                      {
+                        "control_type": "select",
+                        "label": "Languages",
+                        "hint": "Valid values are Madarin, English, Japanese, Korean, Spanish, Russian, Others.",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": true,
+                        "pick_list": [
+                          [
+                            "Madarin",
+                            "Madarin"
+                          ],
+                          [
+                            "English",
+                            "English"
+                          ],
+                          [
+                            "Japanese",
+                            "Japanese"
+                          ],
+                          [
+                            "Korean",
+                            "Korean"
+                          ],
+                          [
+                            "Spanish",
+                            "Spanish"
+                          ],
+                          [
+                            "Russian",
+                            "Russian"
+                          ],
+                          [
+                            "Others",
+                            "Others"
+                          ]
+                        ],
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Languages",
+                          "toggle_hint": "Enter text",
+                          "hint": "Valid values are Madarin, English, Japanese, Korean, Spanish, Russian, Others.",
+                          "optional": true,
+                          "custom": true,
+                          "sticky": true,
+                          "pick_list": [
+                            [
+                              "Madarin",
+                              "Madarin"
+                            ],
+                            [
+                              "English",
+                              "English"
+                            ],
+                            [
+                              "Japanese",
+                              "Japanese"
+                            ],
+                            [
+                              "Korean",
+                              "Korean"
+                            ],
+                            [
+                              "Spanish",
+                              "Spanish"
+                            ],
+                            [
+                              "Russian",
+                              "Russian"
+                            ],
+                            [
+                              "Others",
+                              "Others"
+                            ]
+                          ],
+                          "toggle_to_primary_hint": "Select from list",
+                          "toggle_to_secondary_hint": "Enter text",
+                          "type": "string",
+                          "name": "languages"
+                        },
+                        "type": "string",
+                        "name": "languages"
+                      },
+                      {
+                        "control_type": "select",
+                        "label": "Owner",
+                        "hint": "The owner of the object.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": true,
+                        "pick_list": "owners_picklist",
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Owner",
+                          "toggle_hint": "Enter text",
+                          "toggle_to_primary_hint": "Select from list",
+                          "toggle_to_secondary_hint": "Enter text",
+                          "hint": "The owner of the object.",
+                          "type": "string",
+                          "name": "hubspot_owner_id"
+                        },
+                        "type": "string",
+                        "name": "hubspot_owner_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Shared users",
+                        "hint": "Additional users that can access the record based on their permissions. This can be set manually or through Workflows and APIs.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": true,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_shared_user_ids"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Shared teams",
+                        "hint": "Additional teams whose users can access the record based on their permissions. This can be set manually or through Workflows or APIs.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": true,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_shared_team_ids"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Pinned Engagement ID",
+                        "parse_output": "float_conversion",
+                        "hint": "The object ID of the current pinned engagement. This will only be shown in the app if there is already an association to the engagement.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": true,
+                        "pick_list": [
+
+                        ],
+                        "type": "number",
+                        "name": "hs_pinned_engagement_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Owning Teams",
+                        "hint": "The teams that are attributed to this record.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": true,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_owning_teams"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Business units",
+                        "hint": "The business units this record is assigned to.",
+                        "optional": true,
+                        "custom": false,
+                        "sticky": true,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "hs_all_assigned_business_unit_ids"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Group key",
+                        "hint": "",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": true,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "group_key"
+                      },
+                      {
+                        "control_type": "date",
+                        "label": "Group Join Date",
+                        "render_input": "date_field_to_milliseconds",
+                        "parse_output": "milliseconds_to_date_trigger",
+                        "hint": "",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "date_time",
+                        "name": "group_join_date"
+                      },
+                      {
+                        "control_type": "select",
+                        "label": "Group",
+                        "hint": "Valid values are $0 cap, $10,000 cap, $150 CPL, $1500 cap, $2000 cap, $2500 cap, $3000 cap, $5000 cap, $7000 Cap, APAC $1000 CAP, CN - $3500, CN $1000 CAP, CN $1500 cap, CN $2000 cap, CN $2500 cap, CN $3000 CAP, CN $5000 cap, CN $700 cap, CPC - Saasworthy, Default, Flat RS 10%, Flat RS 15%, Flat RS 20%, Fraud, Master Affiliates, Referral Program - ROW (English), ROW, RU $1000 CAP, Welcome.",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+                          [
+                            "$0 cap",
+                            "$0 cap"
+                          ],
+                          [
+                            "$10,000 cap",
+                            "$10,000 cap"
+                          ],
+                          [
+                            "$150 CPL",
+                            "$150 CPL"
+                          ],
+                          [
+                            "$1500 cap",
+                            "$1500 cap"
+                          ],
+                          [
+                            "$2000 cap",
+                            "$2000 cap"
+                          ],
+                          [
+                            "$2500 cap",
+                            "$2500 cap"
+                          ],
+                          [
+                            "$3000 cap",
+                            "$3000 cap"
+                          ],
+                          [
+                            "$5000 cap",
+                            "$5000 cap"
+                          ],
+                          [
+                            "$7000 Cap",
+                            "$7000 Cap"
+                          ],
+                          [
+                            "APAC $1000 CAP",
+                            "APAC $1000 CAP"
+                          ],
+                          [
+                            "CN - $3500",
+                            "CN - $3500"
+                          ],
+                          [
+                            "CN $1000 CAP",
+                            "CN $1000 CAP"
+                          ],
+                          [
+                            "CN $1500 cap",
+                            "CN $1500 cap"
+                          ],
+                          [
+                            "CN $2000 cap",
+                            "CN $2000 cap"
+                          ],
+                          [
+                            "CN $2500 cap",
+                            "CN $2500 cap"
+                          ],
+                          [
+                            "CN $3000 CAP",
+                            "CN $3000 CAP"
+                          ],
+                          [
+                            "CN $5000 cap",
+                            "CN $5000 cap"
+                          ],
+                          [
+                            "CN $700 cap",
+                            "CN $700 cap"
+                          ],
+                          [
+                            "CPC - Saasworthy",
+                            "CPC - Saasworthy"
+                          ],
+                          [
+                            "Default",
+                            "Default"
+                          ],
+                          [
+                            "Flat RS 10%",
+                            "Flat RS 10%"
+                          ],
+                          [
+                            "Flat RS 15%",
+                            "Flat RS 15%"
+                          ],
+                          [
+                            "Flat RS 20%",
+                            "Flat RS 20%"
+                          ],
+                          [
+                            "Fraud",
+                            "Fraud"
+                          ],
+                          [
+                            "Master Affiliates",
+                            "Master Affiliates"
+                          ],
+                          [
+                            "Referral Program - ROW (English)",
+                            "Referral Program - ROW (English)"
+                          ],
+                          [
+                            "ROW",
+                            "ROW"
+                          ],
+                          [
+                            "RU $1000 CAP",
+                            "RU $1000 CAP"
+                          ],
+                          [
+                            "Welcome",
+                            "Welcome"
+                          ]
+                        ],
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Group",
+                          "toggle_hint": "Enter text",
+                          "hint": "Valid values are $0 cap, $10,000 cap, $150 CPL, $1500 cap, $2000 cap, $2500 cap, $3000 cap, $5000 cap, $7000 Cap, APAC $1000 CAP, CN - $3500, CN $1000 CAP, CN $1500 cap, CN $2000 cap, CN $2500 cap, CN $3000 CAP, CN $5000 cap, CN $700 cap, CPC - Saasworthy, Default, Flat RS 10%, Flat RS 15%, Flat RS 20%, Fraud, Master Affiliates, Referral Program - ROW (English), ROW, RU $1000 CAP, Welcome.",
+                          "optional": true,
+                          "custom": true,
+                          "sticky": false,
+                          "pick_list": [
+                            [
+                              "$0 cap",
+                              "$0 cap"
+                            ],
+                            [
+                              "$10,000 cap",
+                              "$10,000 cap"
+                            ],
+                            [
+                              "$150 CPL",
+                              "$150 CPL"
+                            ],
+                            [
+                              "$1500 cap",
+                              "$1500 cap"
+                            ],
+                            [
+                              "$2000 cap",
+                              "$2000 cap"
+                            ],
+                            [
+                              "$2500 cap",
+                              "$2500 cap"
+                            ],
+                            [
+                              "$3000 cap",
+                              "$3000 cap"
+                            ],
+                            [
+                              "$5000 cap",
+                              "$5000 cap"
+                            ],
+                            [
+                              "$7000 Cap",
+                              "$7000 Cap"
+                            ],
+                            [
+                              "APAC $1000 CAP",
+                              "APAC $1000 CAP"
+                            ],
+                            [
+                              "CN - $3500",
+                              "CN - $3500"
+                            ],
+                            [
+                              "CN $1000 CAP",
+                              "CN $1000 CAP"
+                            ],
+                            [
+                              "CN $1500 cap",
+                              "CN $1500 cap"
+                            ],
+                            [
+                              "CN $2000 cap",
+                              "CN $2000 cap"
+                            ],
+                            [
+                              "CN $2500 cap",
+                              "CN $2500 cap"
+                            ],
+                            [
+                              "CN $3000 CAP",
+                              "CN $3000 CAP"
+                            ],
+                            [
+                              "CN $5000 cap",
+                              "CN $5000 cap"
+                            ],
+                            [
+                              "CN $700 cap",
+                              "CN $700 cap"
+                            ],
+                            [
+                              "CPC - Saasworthy",
+                              "CPC - Saasworthy"
+                            ],
+                            [
+                              "Default",
+                              "Default"
+                            ],
+                            [
+                              "Flat RS 10%",
+                              "Flat RS 10%"
+                            ],
+                            [
+                              "Flat RS 15%",
+                              "Flat RS 15%"
+                            ],
+                            [
+                              "Flat RS 20%",
+                              "Flat RS 20%"
+                            ],
+                            [
+                              "Fraud",
+                              "Fraud"
+                            ],
+                            [
+                              "Master Affiliates",
+                              "Master Affiliates"
+                            ],
+                            [
+                              "Referral Program - ROW (English)",
+                              "Referral Program - ROW (English)"
+                            ],
+                            [
+                              "ROW",
+                              "ROW"
+                            ],
+                            [
+                              "RU $1000 CAP",
+                              "RU $1000 CAP"
+                            ],
+                            [
+                              "Welcome",
+                              "Welcome"
+                            ]
+                          ],
+                          "toggle_to_primary_hint": "Select from list",
+                          "toggle_to_secondary_hint": "Enter text",
+                          "type": "string",
+                          "name": "group"
+                        },
+                        "type": "string",
+                        "name": "group"
+                      },
+                      {
+                        "control_type": "select",
+                        "label": "Fraud flagged",
+                        "hint": "Valid values are FALSE, TRUE.",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+                          [
+                            "FALSE",
+                            "FALSE"
+                          ],
+                          [
+                            "TRUE",
+                            "TRUE"
+                          ]
+                        ],
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Fraud flagged",
+                          "toggle_hint": "Enter text",
+                          "hint": "Valid values are FALSE, TRUE.",
+                          "optional": true,
+                          "custom": true,
+                          "sticky": false,
+                          "pick_list": [
+                            [
+                              "FALSE",
+                              "FALSE"
+                            ],
+                            [
+                              "TRUE",
+                              "TRUE"
+                            ]
+                          ],
+                          "toggle_to_primary_hint": "Select from list",
+                          "toggle_to_secondary_hint": "Enter text",
+                          "type": "string",
+                          "name": "fraud_flagged"
+                        },
+                        "type": "string",
+                        "name": "fraud_flagged"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Customer geography",
+                        "hint": "",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "customer_geography"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Country",
+                        "hint": "",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "country"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "BDLastCampaignID",
+                        "hint": "",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+
+                        ],
+                        "type": "string",
+                        "name": "bdlastcampaignid"
+                      },
+                      {
+                        "control_type": "multiselect",
+                        "label": "Affiliate Type",
+                        "delimiter": "\n",
+                        "hint": "Valid values are Website, Consultant, System Integrator, Blogger(Influencer).",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+                          [
+                            "Website",
+                            "Website"
+                          ],
+                          [
+                            "Consultant",
+                            "Consultant"
+                          ],
+                          [
+                            "System Integrator",
+                            "System Integrator"
+                          ],
+                          [
+                            "Blogger(Influencer)",
+                            "Blogger(Influencer)"
+                          ]
+                        ],
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Affiliate Type",
+                          "toggle_hint": "Enter text",
+                          "hint": "Valid values are Website, Consultant, System Integrator, Blogger(Influencer). For providing multiple values, enter values separated by <b>new line</b>. Example: <b>option1</b>.",
+                          "optional": true,
+                          "custom": true,
+                          "sticky": false,
+                          "pick_list": [
+                            [
+                              "Website",
+                              "Website"
+                            ],
+                            [
+                              "Consultant",
+                              "Consultant"
+                            ],
+                            [
+                              "System Integrator",
+                              "System Integrator"
+                            ],
+                            [
+                              "Blogger(Influencer)",
+                              "Blogger(Influencer)"
+                            ]
+                          ],
+                          "toggle_to_primary_hint": "Select from list",
+                          "toggle_to_secondary_hint": "Enter text",
+                          "type": "string",
+                          "name": "affiliate_type"
+                        },
+                        "type": "string",
+                        "name": "affiliate_type"
+                      },
+                      {
+                        "control_type": "select",
+                        "label": "Affiliate Manager",
+                        "hint": "Valid values are Elena Marchetti, elena@brightdata.com, Liat Hershckowits, liath@brightdata.com, Cynthia Chiao-Hsin Cheng, cynthia@brightdata.com.",
+                        "optional": true,
+                        "custom": true,
+                        "sticky": false,
+                        "pick_list": [
+                          [
+                            "Elena Marchetti, elena@brightdata.com",
+                            "Elena Marchetti, elena@brightdata.com"
+                          ],
+                          [
+                            "Liat Hershckowits, liath@brightdata.com",
+                            "Liat Hershckowits, liath@brightdata.com"
+                          ],
+                          [
+                            "Cynthia Chiao-Hsin Cheng, cynthia@brightdata.com",
+                            "Cynthia Chiao-Hsin Cheng, cynthia@brightdata.com"
+                          ]
+                        ],
+                        "toggle_hint": "Select from list",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Affiliate Manager",
+                          "toggle_hint": "Enter text",
+                          "hint": "Valid values are Elena Marchetti, elena@brightdata.com, Liat Hershckowits, liath@brightdata.com, Cynthia Chiao-Hsin Cheng, cynthia@brightdata.com.",
+                          "optional": true,
+                          "custom": true,
+                          "sticky": false,
+                          "pick_list": [
+                            [
+                              "Elena Marchetti, elena@brightdata.com",
+                              "Elena Marchetti, elena@brightdata.com"
+                            ],
+                            [
+                              "Liat Hershckowits, liath@brightdata.com",
+                              "Liat Hershckowits, liath@brightdata.com"
+                            ],
+                            [
+                              "Cynthia Chiao-Hsin Cheng, cynthia@brightdata.com",
+                              "Cynthia Chiao-Hsin Cheng, cynthia@brightdata.com"
+                            ]
+                          ],
+                          "toggle_to_primary_hint": "Select from list",
+                          "toggle_to_secondary_hint": "Enter text",
+                          "type": "string",
+                          "name": "affiliate_manager"
+                        },
+                        "type": "string",
+                        "name": "affiliate_manager"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "visible_config_fields": [
+                  "hs_object",
+                  "properties",
+                  "properties.affiliate_name",
+                  "properties.website_url",
+                  "properties.country",
+                  "properties.group",
+                  "properties.partner_key",
+                  "properties.program_join_date",
+                  "properties.group_join_date",
+                  "properties.group_key",
+                  "properties.customer_geography"
+                ],
+                "hidden_config_fields": [
+                  "properties.languages",
+                  "properties.priority",
+                  "properties.tags",
+                  "properties.hs_all_assigned_business_unit_ids",
+                  "properties.hs_owning_teams",
+                  "properties.hs_pinned_engagement_id",
+                  "properties.hs_shared_team_ids",
+                  "properties.hs_shared_user_ids",
+                  "properties.hubspot_owner_id",
+                  "properties.status"
+                ],
+                "comment": "Create a affiliate in HubSpot",
+                "uuid": "67b148af-2060-4144-bb8b-29f0d7463b72",
+                "skip": false
+              },
+              {
+                "number": 5,
+                "keyword": "if",
+                "input": {
+                  "type": "compound",
+                  "operand": "and",
+                  "conditions": [
+                    {
+                      "operand": "present",
+                      "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"affiliate_member\",\"first_name\"]}')}",
+                      "rhs": "",
+                      "uuid": "763f66ff-5d48-40b6-bfad-5a0865dd472a"
+                    }
+                  ]
+                },
+                "block": [
+                  {
+                    "number": 6,
+                    "provider": "hubspot",
+                    "name": "create_object",
+                    "as": "9dcb5cd7",
+                    "keyword": "action",
+                    "dynamicPickListSelection": {
+                      "hs_object": "Affiliate Member"
+                    },
+                    "input": {
+                      "hs_object": "p7697697_affiliate_members",
+                      "properties": {
+                        "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"affiliate_member\",\"email\"]}')}",
+                        "first_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"affiliate_member\",\"first_name\"]}')}",
+                        "affiliate_member_partner_key": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"partner_key\"]}')}",
+                        "affiliate_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"affiliate_name\"]}')}",
+                        "last_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"affiliate_member\",\"last_name\"]}')}",
+                        "wechat_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"wechat_id\"]}')}"
+                      }
+                    },
+                    "extended_output_schema": [
+                      {
+                        "label": "Properties",
+                        "name": "properties",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Affiliate member partner key",
+                            "hint": "",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "affiliate_member_partner_key"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Affiliate Name",
+                            "hint": "",
+                            "optional": true,
+                            "custom": true,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "affiliate_name"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Email",
+                            "hint": "",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "email"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "First Name",
+                            "hint": "",
+                            "optional": true,
+                            "custom": true,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "first_name"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "All teams",
+                            "hint": "The team IDs, including the team hierarchy, of all default and custom owner properties for this record.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_all_accessible_team_ids"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Business units",
+                            "hint": "The business units this record is assigned to.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_all_assigned_business_unit_ids"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "All owner IDs",
+                            "hint": "Values of all default and custom owner properties for this record.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_all_owner_ids"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "All team IDs",
+                            "hint": "The team IDs of all default and custom owner properties for this record.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_all_team_ids"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Created by user ID",
+                            "parse_output": "float_conversion",
+                            "hint": "The user who created this record. This value is set automatically by HubSpot.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "number",
+                            "name": "hs_created_by_user_id"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Object create date/time",
+                            "render_input": "date_field_to_milliseconds",
+                            "parse_output": "milliseconds_to_date_trigger",
+                            "hint": "The date and time at which this object was created. This value is automatically set by HubSpot and may not be modified.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "date_time",
+                            "name": "hs_createdate"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Object last modified date/time",
+                            "render_input": "date_field_to_milliseconds",
+                            "parse_output": "milliseconds_to_date_trigger",
+                            "hint": "Most recent timestamp of any property update for this object. This includes HubSpot internal properties, which can be visible or hidden. This property is updated automatically.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "date_time",
+                            "name": "hs_lastmodifieddate"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Merged record IDs",
+                            "hint": "The list of record IDs that have been merged into this record. This value is set automatically by HubSpot.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_merged_object_ids"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Record ID",
+                            "parse_output": "float_conversion",
+                            "hint": "The unique ID for this record. This value is set automatically by HubSpot.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "number",
+                            "name": "hs_object_id"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Record creation source",
+                            "hint": "Raw internal PropertySource present in the RequestMeta when this record was created.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_object_source"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Record source detail 1",
+                            "hint": "First level of detail on how this record was created.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_object_source_detail_1"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Record source detail 2",
+                            "hint": "Second level of detail on how this record was created.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_object_source_detail_2"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Record source detail 3",
+                            "hint": "Third level of detail on how this record was created.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_object_source_detail_3"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Record creation source ID",
+                            "hint": "Raw internal sourceId present in the RequestMeta when this record was created.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_object_source_id"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Record source",
+                            "hint": "How this record was created.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_object_source_label"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Record creation source user ID",
+                            "parse_output": "float_conversion",
+                            "hint": "Raw internal userId present in the RequestMeta when this record was created.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "number",
+                            "name": "hs_object_source_user_id"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Owning Teams",
+                            "hint": "The teams that are attributed to this record.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_owning_teams"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Pinned Engagement ID",
+                            "parse_output": "float_conversion",
+                            "hint": "The object ID of the current pinned engagement. This will only be shown in the app if there is already an association to the engagement.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "number",
+                            "name": "hs_pinned_engagement_id"
+                          },
+                          {
+                            "control_type": "checkbox",
+                            "label": "Read only object",
+                            "hint": "Determines whether a record can be edited by a user. Valid values are true, false.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+                              [
+                                "True",
+                                "true"
+                              ],
+                              [
+                                "False",
+                                "false"
+                              ]
+                            ],
+                            "toggle_hint": "Select from option list",
+                            "toggle_field": {
+                              "label": "Read only object",
+                              "control_type": "text",
+                              "toggle_hint": "Use custom value",
+                              "hint": "Determines whether a record can be edited by a user. Valid values are true, false.",
+                              "optional": true,
+                              "custom": false,
+                              "sticky": false,
+                              "pick_list": [
+                                [
+                                  "True",
+                                  "true"
+                                ],
+                                [
+                                  "False",
+                                  "false"
+                                ]
+                              ],
+                              "render_input": null,
+                              "parse_output": null,
+                              "type": "boolean",
+                              "name": "hs_read_only"
+                            },
+                            "type": "boolean",
+                            "name": "hs_read_only"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Shared teams",
+                            "hint": "Additional teams whose users can access the record based on their permissions. This can be set manually or through Workflows or APIs.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_shared_team_ids"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Shared users",
+                            "hint": "Additional users that can access the record based on their permissions. This can be set manually or through Workflows and APIs.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_shared_user_ids"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Unique creation key",
+                            "hint": "Unique property used for idempotent creates",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_unique_creation_key"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Updated by user ID",
+                            "parse_output": "float_conversion",
+                            "hint": "The user who last updated this record. This value is set automatically by HubSpot.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "number",
+                            "name": "hs_updated_by_user_id"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "User IDs of all notification followers",
+                            "hint": "The user IDs of all users that have clicked follow within the object to opt-in to getting follow notifications",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_user_ids_of_all_notification_followers"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "User IDs of all notification unfollowers",
+                            "hint": "The user IDs of all object owners that have clicked unfollow within the object to opt-out of getting follow notifications",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_user_ids_of_all_notification_unfollowers"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "User IDs of all owners",
+                            "hint": "The user IDs of all owners of this record.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_user_ids_of_all_owners"
+                          },
+                          {
+                            "control_type": "checkbox",
+                            "label": "Performed in an import",
+                            "hint": "Object is part of an import. Valid values are true, false.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+                              [
+                                "True",
+                                "true"
+                              ],
+                              [
+                                "False",
+                                "false"
+                              ]
+                            ],
+                            "toggle_hint": "Select from option list",
+                            "toggle_field": {
+                              "label": "Performed in an import",
+                              "control_type": "text",
+                              "toggle_hint": "Use custom value",
+                              "hint": "Object is part of an import. Valid values are true, false.",
+                              "optional": true,
+                              "custom": false,
+                              "sticky": false,
+                              "pick_list": [
+                                [
+                                  "True",
+                                  "true"
+                                ],
+                                [
+                                  "False",
+                                  "false"
+                                ]
+                              ],
+                              "render_input": null,
+                              "parse_output": null,
+                              "type": "boolean",
+                              "name": "hs_was_imported"
+                            },
+                            "type": "boolean",
+                            "name": "hs_was_imported"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Owner assigned date",
+                            "render_input": "date_field_to_milliseconds",
+                            "parse_output": "milliseconds_to_date_trigger",
+                            "hint": "The most recent timestamp of when an owner was assigned to this record. This value is set automatically by HubSpot.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "date_time",
+                            "name": "hubspot_owner_assigneddate"
+                          },
+                          {
+                            "control_type": "select",
+                            "label": "Owner",
+                            "hint": "The owner of the object.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": "owners_picklist",
+                            "toggle_hint": "Select from list",
+                            "toggle_field": {
+                              "control_type": "text",
+                              "label": "Owner",
+                              "toggle_hint": "Enter text",
+                              "toggle_to_primary_hint": "Select from list",
+                              "toggle_to_secondary_hint": "Enter text",
+                              "hint": "The owner of the object.",
+                              "type": "string",
+                              "name": "hubspot_owner_id"
+                            },
+                            "type": "string",
+                            "name": "hubspot_owner_id"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Owner's main team",
+                            "hint": "The main team of the record owner. This value is set automatically by HubSpot.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hubspot_team_id"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Last Name",
+                            "hint": "",
+                            "optional": true,
+                            "custom": true,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "last_name"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Wechat ID",
+                            "hint": "",
+                            "optional": true,
+                            "custom": true,
+                            "sticky": false,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "wechat_id"
+                          }
+                        ],
+                        "type": "object"
+                      }
+                    ],
+                    "extended_input_schema": [
+                      {
+                        "label": "Properties",
+                        "name": "properties",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Affiliate member partner key",
+                            "hint": "",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": true,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "affiliate_member_partner_key"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Email",
+                            "hint": "",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": true,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "email"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Affiliate Name",
+                            "hint": "",
+                            "optional": true,
+                            "custom": true,
+                            "sticky": true,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "affiliate_name"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "First Name",
+                            "hint": "",
+                            "optional": true,
+                            "custom": true,
+                            "sticky": true,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "first_name"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Business units",
+                            "hint": "The business units this record is assigned to.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": true,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_all_assigned_business_unit_ids"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Owning Teams",
+                            "hint": "The teams that are attributed to this record.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": true,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_owning_teams"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Pinned Engagement ID",
+                            "parse_output": "float_conversion",
+                            "hint": "The object ID of the current pinned engagement. This will only be shown in the app if there is already an association to the engagement.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": true,
+                            "pick_list": [
+
+                            ],
+                            "type": "number",
+                            "name": "hs_pinned_engagement_id"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Shared teams",
+                            "hint": "Additional teams whose users can access the record based on their permissions. This can be set manually or through Workflows or APIs.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": true,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_shared_team_ids"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Shared users",
+                            "hint": "Additional users that can access the record based on their permissions. This can be set manually or through Workflows and APIs.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": true,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "hs_shared_user_ids"
+                          },
+                          {
+                            "control_type": "select",
+                            "label": "Owner",
+                            "hint": "The owner of the object.",
+                            "optional": true,
+                            "custom": false,
+                            "sticky": true,
+                            "pick_list": "owners_picklist",
+                            "toggle_hint": "Select from list",
+                            "toggle_field": {
+                              "control_type": "text",
+                              "label": "Owner",
+                              "toggle_hint": "Enter text",
+                              "toggle_to_primary_hint": "Select from list",
+                              "toggle_to_secondary_hint": "Enter text",
+                              "hint": "The owner of the object.",
+                              "type": "string",
+                              "name": "hubspot_owner_id"
+                            },
+                            "type": "string",
+                            "name": "hubspot_owner_id"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Last Name",
+                            "hint": "",
+                            "optional": true,
+                            "custom": true,
+                            "sticky": true,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "last_name"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Wechat ID",
+                            "hint": "",
+                            "optional": true,
+                            "custom": true,
+                            "sticky": true,
+                            "pick_list": [
+
+                            ],
+                            "type": "string",
+                            "name": "wechat_id"
+                          }
+                        ],
+                        "type": "object"
+                      }
+                    ],
+                    "visible_config_fields": [
+                      "hs_object",
+                      "properties",
+                      "properties.website_url",
+                      "properties.country",
+                      "properties.group",
+                      "properties.partner_key",
+                      "properties.program_join_date",
+                      "properties.email",
+                      "properties.first_name",
+                      "properties.affiliate_name",
+                      "properties.affiliate_member_partner_key"
+                    ],
+                    "hidden_config_fields": [
+                      "properties.hs_all_assigned_business_unit_ids",
+                      "properties.hs_owning_teams",
+                      "properties.hs_pinned_engagement_id",
+                      "properties.hs_shared_team_ids",
+                      "properties.hs_shared_user_ids",
+                      "properties.hubspot_owner_id"
+                    ],
+                    "comment": "Create a affiliate member in HubSpot",
+                    "uuid": "a3b644fa-26a2-4fcf-97af-6b747932fc87"
+                  },
+                  {
+                    "number": 7,
+                    "provider": "hubspot",
+                    "name": "associate_records",
+                    "as": "bcf2d528",
+                    "keyword": "action",
+                    "dynamicPickListSelection": {
+                      "hs_object": "Affiliate",
+                      "from.fromObjectType": "Affiliate Member",
+                      "to.toObjectType": "Affiliate",
+                      "association_types": [
+                        {
+                          "label": "Partner_key",
+                          "value": "USER_DEFINED--75"
+                        }
+                      ]
+                    },
+                    "toggleCfg": {
+                      "from.fromObjectType": true,
+                      "to.toObjectType": true,
+                      "association_types": true
+                    },
+                    "input": {
+                      "from": {
+                        "fromObjectType": "p7697697_affiliate_members",
+                        "fromObjectId": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"9dcb5cd7\",\"path\":[\"id\"]}')}"
+                      },
+                      "to": {
+                        "toObjectType": "p7697697_affiliates",
+                        "toObjectId": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"45611bfd\",\"path\":[\"id\"]}')}"
+                      },
+                      "association_types": "USER_DEFINED--75"
+                    },
+                    "comment": "Associate Affiliate to Affiliate member in HubSpot by ps_key",
+                    "uuid": "4b39b78a-066f-4945-bce8-9640c74fc144"
+                  }
+                ],
+                "comment": "contact validation",
+                "uuid": "dc8854eb-b9f4-46b9-960d-245194d45a5c"
+              }
+            ],
+            "comment": "affiliate validation",
+            "uuid": "7189895e-2984-4d97-9c59-629c524ddf7d"
+          },
+          {
+            "number": 8,
+            "as": "663d6842",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 9,
+                "provider": "workato_recipe_function",
+                "name": "call_recipe_async",
+                "as": "5191c962",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "flow_id": "System Error Handling"
+                },
+                "input": {
+                  "flow_id": {
+                    "zip_name": "Common Functions/Error Handling Process/cm_fun_system_error_handling.recipe.json",
+                    "name": "[CM] Fun | System Error Handling",
+                    "folder": "Common Functions/Error Handling Process"
+                  },
+                  "parameters": {
+                    "ErrorDetails": {
+                      "parentProcessName": "Partnerstack",
+                      "recipe_id": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_id\"]}')}",
+                      "processName": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+                      "process_path": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_path\"]}')}",
+                      "jobUrl": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_url\"]}')}",
+                      "is_repeat": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"is_repeat\"]}')}",
+                      "error_uuid": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"663d6842\",\"path\":[\"uuid\"]}')}",
+                      "errored_app": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"663d6842\",\"path\":[\"adapter\"]}')}",
+                      "errored_action": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"663d6842\",\"path\":[\"action\"]}')}",
+                      "error_step_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"663d6842\",\"path\":[\"line_number\"]}')}",
+                      "errorType": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"663d6842\",\"path\":[\"type\"]}')}",
+                      "errorMessage": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"663d6842\",\"path\":[\"message\"]}')}",
+                      "Timestamp": "=now.in_time_zone(\"Asia/Jerusalem\")",
+                      "job_uuid": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}"
+                    }
+                  }
+                },
+                "extended_input_schema": [
+                  {
+                    "label": "Parameters",
+                    "name": "parameters",
+                    "properties": [
+                      {
+                        "label": "Error Details",
+                        "name": "ErrorDetails",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Parent process name",
+                            "name": "parentProcessName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Recipe Id",
+                            "name": "recipe_id",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job uuid",
+                            "name": "job_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Name",
+                            "name": "processName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Path",
+                            "name": "process_path",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job URL",
+                            "name": "jobUrl",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Is repeat",
+                            "name": "is_repeat",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error uuid",
+                            "name": "error_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored app",
+                            "name": "errored_app",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored action",
+                            "name": "errored_action",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error step number",
+                            "name": "error_step_number",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error type",
+                            "name": "errorType",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error message",
+                            "name": "errorMessage",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Timestamp",
+                            "name": "Timestamp",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Files",
+                        "name": "files",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "File name",
+                            "name": "fileName",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File content",
+                            "name": "fileContent",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "comment": "system error function",
+                "uuid": "c4f47122-ec65-4496-aa04-fa87c3bc9564",
+                "skip": false
+              }
+            ],
+            "uuid": "aa1c36fb-cdef-47fe-a42f-20d53c999dd9"
+          }
+        ],
+        "uuid": "d2b239a1-c43d-4d2a-93e2-5251ccd2a348"
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_0",
+        "label": "Affiliate Name"
+      },
+      {
+        "name": "custom_column_1",
+        "label": "Country"
+      },
+      {
+        "name": "custom_column_2",
+        "label": "Partner Key"
+      },
+      {
+        "name": "custom_column_12",
+        "label": "Group Name"
+      },
+      {
+        "name": "custom_column_15",
+        "label": "Customer Geography"
+      },
+      {
+        "name": "custom_column_16",
+        "label": "Program Join Date"
+      },
+      {
+        "name": "custom_column_14",
+        "label": "Affiliate Id"
+      },
+      {
+        "name": "custom_column_13",
+        "label": "Affiliate member Id"
+      },
+      {
+        "name": "custom_column_8",
+        "label": "Process Status"
+      },
+      {
+        "name": "custom_column_9",
+        "label": "Error Message"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"affiliate_name\"]}')}",
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"country\"]}')}",
+      "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"partner_key\"]}')}",
+      "custom_column_12": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"group\",\"name\"]}')}",
+      "custom_column_15": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"customer_geography\"]}')}",
+      "custom_column_16": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"2f51a58c\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"group_join_date\"]}')}",
+      "custom_column_14": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"45611bfd\",\"path\":[\"id\"]}')}",
+      "custom_column_13": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"9dcb5cd7\",\"path\":[\"id\"]}')}",
+      "custom_column_8": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"663d6842\",\"path\":[\"message\"]}').present? ? 'Error' : 'Success'",
+      "custom_column_9": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"663d6842\",\"path\":[\"message\"]}').presence"
+    },
+    "uuid": "43fa4d42-dbcf-449e-bd90-24175d84a178",
+    "wizardFinished": true
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_webhooks",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "hubspot",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Marketing/hubspot.connection.json",
+        "name": "HubSpot",
+        "folder": "#Connections/Marketing"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_variable",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ],
+  "tags": [
+    "Partners"
+  ]
+}

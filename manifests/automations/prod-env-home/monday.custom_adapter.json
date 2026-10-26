@@ -1,0 +1,8 @@
+{
+  "title": "Monday",
+  "description": "[Monday](https://www.monday.com) is a cloud-based platform that allows users to create their own applications and work management software.\r\n\r\n## How to connect to Monday on Workato\r\n\r\n  Login to [monday.com](https://www.monday.com), go to Account -> click on your avatar (picture icon) in the bottom left corner of your screen -> Go to Admin -> API section -> Generate API v2 token. [Click here](https://developer.monday.com/api-reference/docs/authentication) for more details.\r\n\r\n## What can you do with this connector\r\n\r\nGet insights into and manage a project board with tasks, deadlines, and team members assigned to each task. You can easily track progress, set reminders, and communicate with your team in real-time.\r\n\r\n## Support\r\n\r\nThis connector was built and is supported by Workato. Send all your bug reports through our support channels, found [here](https://docs.workato.com/contact-us.html#for-reporting-bugs). Let our support team know the name of this connector and that it was installed from the community so they can route your support tickets properly. To request enhancements, use the following [link](https://docs.workato.com/contact-us.html#for-requesting-enhancements) and select your region’s data center. ",
+  "logo_file_name": "download.png",
+  "logo_content_type": "image/png",
+  "version_no": 1,
+  "note": "Installed from community"
+}

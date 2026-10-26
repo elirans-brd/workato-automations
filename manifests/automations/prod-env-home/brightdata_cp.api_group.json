@@ -1,0 +1,9 @@
+{
+  "name": "Brightdata CP",
+  "version": "1.0",
+  "description": "Brightdata CP",
+  "handle": "brightdata-cp",
+  "use_prefix": true,
+  "soap": false,
+  "soap_config": null
+}

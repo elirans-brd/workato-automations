@@ -1,0 +1,5 @@
+{
+  "name": "Snowflake: ETL_SALESFORCE",
+  "provider": "snowflake",
+  "root_folder": false
+}

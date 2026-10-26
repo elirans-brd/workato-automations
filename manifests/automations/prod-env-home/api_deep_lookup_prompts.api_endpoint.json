@@ -1,0 +1,17 @@
+{
+  "name": "API: Deep Lookup Prompts",
+  "recipe_id": {
+    "zip_name": "Product/api_deep_lookup_prompts.recipe.json",
+    "name": "API: Deep Lookup Prompts",
+    "folder": "Product"
+  },
+  "api_group_id": {
+    "zip_name": "prodcut.api_group.json",
+    "name": "Prodcut",
+    "folder": ""
+  },
+  "method": "POST",
+  "path": "api-deep-lookup-prompts",
+  "legacy": false,
+  "validate_request": false
+}

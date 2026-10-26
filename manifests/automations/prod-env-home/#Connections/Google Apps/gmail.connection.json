@@ -1,0 +1,5 @@
+{
+  "name": "Gmail",
+  "provider": "gmail",
+  "root_folder": false
+}

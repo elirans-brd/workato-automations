@@ -1,0 +1,525 @@
+{
+  "name": "Schedualed: Clear dealhub_to_cp_sync",
+  "description": "",
+  "version": 7,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "clock",
+    "name": "scheduled_event",
+    "as": "278833f8",
+    "keyword": "trigger",
+    "dynamicPickListSelection": {
+      "time_unit": "Days",
+      "timezone": "Asia/Jerusalem (+02:00)"
+    },
+    "input": {
+      "time_unit": "days",
+      "trigger_every": "1",
+      "trigger_at": "00:00:00.000",
+      "timezone": "Asia/Jerusalem"
+    },
+    "extended_input_schema": [
+      {
+        "control_type": "integer",
+        "default": "5",
+        "enforce_template_mode": true,
+        "extends_schema": true,
+        "hint": "Define repeating schedule. Enter whole numbers only.\n                        This field can be set to a minimum of 5 minutes.",
+        "label": "Trigger every",
+        "name": "trigger_every",
+        "optional": false,
+        "suffix": {
+          "text": "days"
+        },
+        "type": "string"
+      },
+      {
+        "change_on_blur": true,
+        "control_type": "time",
+        "enforce_template_mode": true,
+        "extends_schema": true,
+        "hint": "Set a time to schedule the job using supported formats only. <a href=\"https://docs.workato.com/features/scheduler.html#supported-datetime-formats\" target=\"_blank\">Learn more</a>",
+        "label": "Trigger at",
+        "name": "trigger_at",
+        "optional": false,
+        "type": "string"
+      },
+      {
+        "control_type": "select",
+        "hint": "Select the timezone to use. Leave it blank to use <b>{{authUser.account_timezone}}</b>",
+        "label": "Timezone",
+        "name": "timezone",
+        "optional": true,
+        "pick_list": "timezone_id_global_pick_list",
+        "pick_list_connection_less": true,
+        "type": "string"
+      },
+      {
+        "control_type": "date_time",
+        "enforce_template_mode": true,
+        "extends_schema": true,
+        "hint": "Set date and time to start or leave blank to start immediately. <b>Once recipe has been run or tested, value cannot be changed.</b>",
+        "label": "Start after",
+        "name": "start_after",
+        "optional": true,
+        "parse_output": "date_time_conversion",
+        "since_field": true,
+        "type": "date_time",
+        "ignore_timezone": true,
+        "render_input": "date_time_conversion"
+      }
+    ],
+    "visible_config_fields": [
+      "time_unit",
+      "trigger_every",
+      "trigger_at",
+      "timezone",
+      "start_after"
+    ],
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "workato_db_table",
+            "name": "get_records",
+            "as": "8570c506",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+              "table_id": "dealhub_to_cp_sync",
+              "filters.0.field_id": "Created time",
+              "order_by_field_id": "Created time"
+            },
+            "input": {
+              "order_direction": "asc",
+              "limit": "100",
+              "table_id": {
+                "zip_name": "Finance/Billing/Salesforce To Brightdata CP/Dealhub CP Sync/dealhub_to_cp_sync.workato_db_table.json",
+                "name": "dealhub_to_cp_sync",
+                "folder": "Finance/Billing/Salesforce To Brightdata CP/Dealhub CP Sync"
+              },
+              "dfb389d7-4e76-4a93-806d-03c18b1f445b": "string",
+              "e3a11a24-060d-4a22-86f4-93a56e291c90": "string",
+              "5305b335-cd7b-46aa-bd3d-ec49b5a69f5c": "string",
+              "c252f52b-6d3c-4caf-b7b3-d7d8f6507265": "string",
+              "221c79c1-a88b-4bb4-bd03-79c34c882dee": "string",
+              "11fbe9a6-a16d-4d7e-86ea-afe42ec03005": "id",
+              "a5612739-5401-4ae7-bd07-782c1a6fb2d1": "date_time",
+              "61aae604-a95e-4519-9091-bb0bf754a67f": "date_time",
+              "filters": [
+                {
+                  "field_id": "a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+                  "op_date_time": "lt",
+                  "value_date_time": "=_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_created_at\"]}') - 1.days"
+                }
+              ],
+              "order_by_field_id": "a5612739-5401-4ae7-bd07-782c1a6fb2d1"
+            },
+            "extended_output_schema": [
+              {
+                "label": "Records",
+                "name": "records",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Record ID",
+                    "type": "string",
+                    "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "opportunity_id",
+                    "type": "string",
+                    "name": "dfb389d7_4e76_4a93_806d_03c18b1f445b"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "dealhub_quote_id",
+                    "type": "string",
+                    "name": "e3a11a24_060d_4a22_86f4_93a56e291c90"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "executed_by",
+                    "type": "string",
+                    "name": "5305b335_cd7b_46aa_bd3d_ec49b5a69f5c"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "slack_message_id",
+                    "type": "string",
+                    "name": "c252f52b_6d3c_4caf_b7b3_d7d8f6507265"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "sync_status",
+                    "type": "string",
+                    "name": "221c79c1_a88b_4bb4_bd03_79c34c882dee"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Created at",
+                    "render_input": "date_time_conversion",
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Updated at",
+                    "render_input": "date_time_conversion",
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+                  }
+                ],
+                "type": "array"
+              },
+              {
+                "control_type": "text",
+                "label": "Next Page Token",
+                "name": "continuation_token",
+                "type": "string"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_dfb389d7-4e76-4a93-806d-03c18b1f445b",
+                "name": "dfb389d7-4e76-4a93-806d-03c18b1f445b",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_e3a11a24-060d-4a22-86f4-93a56e291c90",
+                "name": "e3a11a24-060d-4a22-86f4-93a56e291c90",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_5305b335-cd7b-46aa-bd3d-ec49b5a69f5c",
+                "name": "5305b335-cd7b-46aa-bd3d-ec49b5a69f5c",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_c252f52b-6d3c-4caf-b7b3-d7d8f6507265",
+                "name": "c252f52b-6d3c-4caf-b7b3-d7d8f6507265",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_221c79c1-a88b-4bb4-bd03-79c34c882dee",
+                "name": "221c79c1-a88b-4bb4-bd03-79c34c882dee",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "id",
+                "label": "$internal_value_11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+                "name": "11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "date_time",
+                "label": "$internal_value_a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+                "name": "a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "date_time",
+                "label": "$internal_value_61aae604-a95e-4519-9091-bb0bf754a67f",
+                "name": "61aae604-a95e-4519-9091-bb0bf754a67f",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              }
+            ],
+            "uuid": "15690d51-54d6-4fb3-ae98-8ef51b1d84e6"
+          },
+          {
+            "number": 3,
+            "provider": "workato_db_table",
+            "name": "delete_records_batch",
+            "as": "fcc71d02",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+              "table_id": "dealhub_to_cp_sync"
+            },
+            "input": {
+              "table_id": {
+                "zip_name": "Finance/Billing/Salesforce To Brightdata CP/Dealhub CP Sync/dealhub_to_cp_sync.workato_db_table.json",
+                "name": "dealhub_to_cp_sync",
+                "folder": "Finance/Billing/Salesforce To Brightdata CP/Dealhub CP Sync"
+              },
+              "records": {
+                "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"8570c506\",\"path\":[\"records\"]}')}",
+                "record_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"8570c506\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"11fbe9a6_a16d_4d7e_86ea_afe42ec03005\"]}')}"
+              }
+            },
+            "uuid": "30f606e9-c8f6-461f-b154-466c63d4e10a",
+            "skip": false
+          },
+          {
+            "number": 4,
+            "as": "5ce812ea",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 5,
+                "provider": "workato_recipe_function",
+                "name": "call_recipe_async",
+                "as": "0d4aec35",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "flow_id": "System Error Handling"
+                },
+                "input": {
+                  "flow_id": {
+                    "zip_name": "Common Functions/Error Handling Process/cm_fun_system_error_handling.recipe.json",
+                    "name": "[CM] Fun | System Error Handling",
+                    "folder": "Common Functions/Error Handling Process"
+                  },
+                  "parameters": {
+                    "ErrorDetails": {
+                      "parentProcessName": "None",
+                      "recipe_id": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_id\"]}')}",
+                      "processName": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+                      "process_path": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_path\"]}')}",
+                      "jobUrl": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_url\"]}')}",
+                      "is_repeat": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"is_repeat\"]}')}",
+                      "error_uuid": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"5ce812ea\",\"path\":[\"uuid\"]}')}",
+                      "errored_app": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"5ce812ea\",\"path\":[\"adapter\"]}')}",
+                      "errored_action": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"5ce812ea\",\"path\":[\"action\"]}')}",
+                      "error_step_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"5ce812ea\",\"path\":[\"line_number\"]}')}",
+                      "errorType": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"5ce812ea\",\"path\":[\"type\"]}')}",
+                      "errorMessage": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"5ce812ea\",\"path\":[\"message\"]}')}",
+                      "Timestamp": "=now.in_time_zone(\"Asia/Jerusalem\")",
+                      "job_uuid": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}"
+                    }
+                  }
+                },
+                "extended_input_schema": [
+                  {
+                    "label": "Parameters",
+                    "name": "parameters",
+                    "properties": [
+                      {
+                        "label": "Error Details",
+                        "name": "ErrorDetails",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Parent process name",
+                            "name": "parentProcessName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Recipe Id",
+                            "name": "recipe_id",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job uuid",
+                            "name": "job_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Name",
+                            "name": "processName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Path",
+                            "name": "process_path",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job URL",
+                            "name": "jobUrl",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Is repeat",
+                            "name": "is_repeat",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error uuid",
+                            "name": "error_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored app",
+                            "name": "errored_app",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored action",
+                            "name": "errored_action",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error step number",
+                            "name": "error_step_number",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error type",
+                            "name": "errorType",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error message",
+                            "name": "errorMessage",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Timestamp",
+                            "name": "Timestamp",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Files",
+                        "name": "files",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "File name",
+                            "name": "fileName",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File content",
+                            "name": "fileContent",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "comment": "system error function",
+                "uuid": "b13b197b-bbfe-475f-bca4-f1472061f529",
+                "skip": false
+              }
+            ],
+            "uuid": "093de744-e778-4f54-a223-42bf9039c4d0"
+          }
+        ],
+        "uuid": "cf8eb1b7-de3f-483c-a751-ca78e4f9a5ed"
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_2",
+        "label": "Deleted Records"
+      },
+      {
+        "name": "custom_column_0",
+        "label": "Process Status"
+      },
+      {
+        "name": "custom_column_1",
+        "label": "Error Message"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"8570c506\",\"path\":[\"records\",{\"path_element_type\":\"size\"}]}')}",
+      "custom_column_0": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"5ce812ea\",\"path\":[\"message\"]}').present? ? 'Error' : 'Success'",
+      "custom_column_1": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"5ce812ea\",\"path\":[\"message\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"5ce812ea\",\"path\":[\"message\"]}') : skip"
+    },
+    "uuid": "a9723eea-007c-4146-bc72-e1f15ab8f403"
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_db_table",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "clock",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+{
+  "name": "API: Account Product Pricing Plan",
+  "recipe_id": {
+    "zip_name": "Finance/Billing/Salesforce To Brightdata CP/Account Product Pricing Plan/api_account_product_pricing_plan.recipe.json",
+    "name": "API: Account Product Pricing Plan",
+    "folder": "Finance/Billing/Salesforce To Brightdata CP/Account Product Pricing Plan"
+  },
+  "api_group_id": {
+    "zip_name": "brightdata_cp.api_group.json",
+    "name": "Brightdata CP",
+    "folder": ""
+  },
+  "method": "POST",
+  "path": "account_product_pricing_plan",
+  "legacy": false,
+  "recipe_timeout": 30,
+  "validate_request": false,
+  "validation_formula": ""
+}

@@ -1,0 +1,2595 @@
+{
+  "name": "HubSpot Form Submission → AI Personalized Email Review",
+  "version": 51,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "hubspot",
+    "name": "new_or_updated_object",
+    "as": "5141b73c",
+    "keyword": "trigger",
+    "dynamicPickListSelection": {
+      "hs_object": "Contact",
+      "fields": [
+        {
+          "label": "Record ID",
+          "value": "hs_object_id"
+        },
+        {
+          "label": "First Name",
+          "value": "firstname"
+        },
+        {
+          "label": "Last Name",
+          "value": "lastname"
+        },
+        {
+          "label": "Email",
+          "value": "email"
+        },
+        {
+          "label": "Company Name",
+          "value": "company"
+        },
+        {
+          "label": "Email Domain",
+          "value": "hs_email_domain"
+        },
+        {
+          "label": "Registration form",
+          "value": "registration_form"
+        },
+        {
+          "label": "Recent Conversion",
+          "value": "recent_conversion_event_name"
+        },
+        {
+          "label": "Email Confirmed",
+          "value": "hs_content_membership_email_confirmed"
+        },
+        {
+          "label": "Website URL",
+          "value": "website"
+        },
+        {
+          "label": "verified_email​",
+          "value": "verified_email_"
+        },
+        {
+          "label": "verified_email​ checkbox",
+          "value": "verified_email__checkbox"
+        }
+      ],
+      "filterGroups.0.propertyName": "verified_email​",
+      "filterGroups.0.operator": "Has property value",
+      "filterGroups.1.propertyName": "Registration form",
+      "filterGroups.1.operator": "Equal to"
+    },
+    "toggleCfg": {
+      "___poll_interval": true
+    },
+    "input": {
+      "hs_object": "contact",
+      "since": "2026-06-04T00:00:00.000+03:00",
+      "fields": "hs_object_id,firstname,lastname,email,company,hs_email_domain,registration_form,recent_conversion_event_name,hs_content_membership_email_confirmed,website,verified_email_,verified_email__checkbox",
+      "___poll_interval": "5"
+    },
+    "filter": {
+      "conditions": [
+        {
+          "operand": "present",
+          "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"verified_email_\"]}')}",
+          "rhs": "",
+          "uuid": "c258f7ae-fe79-4e7e-aca5-1992f02ef217"
+        },
+        {
+          "operand": "equals_to",
+          "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"registration_form\"]}')}",
+          "rhs": "true",
+          "uuid": "9a0d1919-b2b3-4642-b6c3-2f6fcf77b940"
+        },
+        {
+          "operand": "is_true",
+          "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"hs_email_domain\"]}')&.to_s&.downcase&.ends_with?(\".ai\", \".io\") ",
+          "rhs": "",
+          "uuid": "e91199b7-935e-46d5-bc42-f3eda4aaa3b2"
+        },
+        {
+          "operand": "present",
+          "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"website\"]}')}",
+          "rhs": "",
+          "uuid": "b1d93347-c5cc-47c3-aa31-7141a1331a27"
+        },
+        {
+          "operand": "equals_to",
+          "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"recent_conversion_event_name\"]}')}",
+          "rhs": "Registration form - shortened with Google",
+          "uuid": "c8fce60d-871c-4e94-8e55-bad7908ef083"
+        }
+      ],
+      "operand": "and",
+      "type": "compound"
+    },
+    "extended_output_schema": [
+      {
+        "label": "Contact properties",
+        "name": "properties",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Company Name",
+            "hint": "The name of the contact's company. This is separate from the Name property of the contact's associated company and can be set independently.",
+            "optional": true,
+            "custom": false,
+            "sticky": false,
+            "pick_list": [
+
+            ],
+            "type": "string",
+            "name": "company"
+          },
+          {
+            "control_type": "text",
+            "label": "Email",
+            "hint": "A contact's email address",
+            "optional": true,
+            "custom": false,
+            "sticky": false,
+            "pick_list": [
+
+            ],
+            "type": "string",
+            "name": "email"
+          },
+          {
+            "control_type": "text",
+            "label": "First Name",
+            "hint": "A contact's first name",
+            "optional": true,
+            "custom": false,
+            "sticky": true,
+            "pick_list": [
+
+            ],
+            "type": "string",
+            "name": "firstname"
+          },
+          {
+            "control_type": "checkbox",
+            "label": "Email Confirmed",
+            "hint": "Email Confirmation status of user of Content Membership. Valid values are true, false.",
+            "optional": true,
+            "custom": false,
+            "sticky": false,
+            "pick_list": [
+              [
+                "True",
+                "true"
+              ],
+              [
+                "False",
+                "false"
+              ]
+            ],
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+              "label": "Email Confirmed",
+              "control_type": "text",
+              "toggle_hint": "Use custom value",
+              "hint": "Email Confirmation status of user of Content Membership. Valid values are true, false.",
+              "optional": true,
+              "custom": false,
+              "sticky": false,
+              "pick_list": [
+                [
+                  "True",
+                  "true"
+                ],
+                [
+                  "False",
+                  "false"
+                ]
+              ],
+              "render_input": null,
+              "parse_output": null,
+              "type": "boolean",
+              "name": "hs_content_membership_email_confirmed"
+            },
+            "type": "boolean",
+            "name": "hs_content_membership_email_confirmed"
+          },
+          {
+            "control_type": "text",
+            "label": "Email Domain",
+            "hint": "A contact's email address domain",
+            "optional": true,
+            "custom": false,
+            "sticky": false,
+            "pick_list": [
+
+            ],
+            "type": "string",
+            "name": "hs_email_domain"
+          },
+          {
+            "control_type": "number",
+            "label": "Record ID",
+            "parse_output": "float_conversion",
+            "hint": "The unique ID for this record. This value is set automatically by HubSpot.",
+            "optional": true,
+            "custom": false,
+            "sticky": false,
+            "pick_list": [
+
+            ],
+            "type": "number",
+            "name": "hs_object_id"
+          },
+          {
+            "control_type": "date_time",
+            "label": "Last Modified Date",
+            "render_input": "render_iso8601_timestamp",
+            "parse_output": "parse_iso8601_timestamp",
+            "hint": "The date any property on this contact was modified",
+            "optional": true,
+            "custom": false,
+            "sticky": false,
+            "pick_list": [
+
+            ],
+            "type": "date_time",
+            "name": "lastmodifieddate"
+          },
+          {
+            "control_type": "text",
+            "label": "Last Name",
+            "hint": "A contact's last name",
+            "optional": true,
+            "custom": false,
+            "sticky": true,
+            "pick_list": [
+
+            ],
+            "type": "string",
+            "name": "lastname"
+          },
+          {
+            "control_type": "text",
+            "label": "Recent Conversion",
+            "hint": "The last form this contact submitted",
+            "optional": true,
+            "custom": false,
+            "sticky": false,
+            "pick_list": [
+
+            ],
+            "type": "string",
+            "name": "recent_conversion_event_name"
+          },
+          {
+            "control_type": "checkbox",
+            "label": "Registration form",
+            "hint": "Does the form trigger  a signup flow. Valid values are true, false.",
+            "optional": true,
+            "custom": true,
+            "sticky": false,
+            "pick_list": [
+              [
+                "Yes",
+                "true"
+              ],
+              [
+                "No",
+                "false"
+              ]
+            ],
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+              "label": "Registration form",
+              "control_type": "text",
+              "toggle_hint": "Use custom value",
+              "hint": "Does the form trigger  a signup flow. Valid values are true, false.",
+              "optional": true,
+              "custom": true,
+              "sticky": false,
+              "pick_list": [
+                [
+                  "Yes",
+                  "true"
+                ],
+                [
+                  "No",
+                  "false"
+                ]
+              ],
+              "render_input": null,
+              "parse_output": null,
+              "type": "boolean",
+              "name": "registration_form"
+            },
+            "type": "boolean",
+            "name": "registration_form"
+          },
+          {
+            "control_type": "date",
+            "label": "verified_email​",
+            "render_input": "render_iso8601_timestamp",
+            "parse_output": "parse_iso8601_timestamp",
+            "hint": "SU verified the email",
+            "optional": true,
+            "custom": true,
+            "sticky": false,
+            "pick_list": [
+
+            ],
+            "type": "date_time",
+            "name": "verified_email_"
+          },
+          {
+            "control_type": "checkbox",
+            "label": "verified_email​ checkbox",
+            "hint": "Indication if the contact verified his email. Valid values are true, false.",
+            "optional": true,
+            "custom": true,
+            "sticky": false,
+            "pick_list": [
+              [
+                "Yes",
+                "true"
+              ],
+              [
+                "No",
+                "false"
+              ]
+            ],
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+              "label": "verified_email​ checkbox",
+              "control_type": "text",
+              "toggle_hint": "Use custom value",
+              "hint": "Indication if the contact verified his email. Valid values are true, false.",
+              "optional": true,
+              "custom": true,
+              "sticky": false,
+              "pick_list": [
+                [
+                  "Yes",
+                  "true"
+                ],
+                [
+                  "No",
+                  "false"
+                ]
+              ],
+              "render_input": null,
+              "parse_output": null,
+              "type": "boolean",
+              "name": "verified_email__checkbox"
+            },
+            "type": "boolean",
+            "name": "verified_email__checkbox"
+          },
+          {
+            "control_type": "text",
+            "label": "Website URL",
+            "hint": "The contact's company website",
+            "optional": true,
+            "custom": false,
+            "sticky": false,
+            "pick_list": [
+
+            ],
+            "type": "string",
+            "name": "website"
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "workato_variable",
+            "name": "declare_list",
+            "as": "0f46b026",
+            "keyword": "action",
+            "toggleCfg": {
+              "list_items.registration_form": false,
+              "list_items.email_confirmed": false
+            },
+            "input": {
+              "name": "Contact Details",
+              "list_item_schema_json": "[{\"control_type\":\"text\",\"label\":\"Record ID\",\"hint\":\"Insert Hubspot Contact record id\",\"type\":\"string\",\"name\":\"record_id\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"First name\",\"hint\":\"Insert contact's first name\",\"type\":\"string\",\"name\":\"first_name\"},{\"control_type\":\"text\",\"label\":\"Last name\",\"hint\":\"Insert contact's last name\",\"type\":\"string\",\"name\":\"last_name\"},{\"control_type\":\"text\",\"label\":\"Email\",\"hint\":\"Insert contact's email address\",\"type\":\"string\",\"name\":\"email\"},{\"control_type\":\"text\",\"label\":\"Email domain\",\"hint\":\"Insert the domain portion of the email (e.g., example.com)\",\"type\":\"string\",\"name\":\"email_domain\"},{\"control_type\":\"text\",\"label\":\"Company domain\",\"name\":\"company_domain\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Company name\",\"hint\":\"Insert the company name associated with the contact\",\"type\":\"string\",\"name\":\"company_name\"},{\"control_type\":\"checkbox\",\"label\":\"Registration form\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"hint\":\"Indicate whether the contact submitted a registration form\",\"type\":\"boolean\",\"name\":\"registration_form\",\"optional\":false,\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"hint\":\"Provide a custom boolean value for registration form\",\"label\":\"Registration form\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"registration_form\",\"optional\":false}},{\"control_type\":\"text\",\"label\":\"Recent conversion\",\"hint\":\"Insert the most recent conversion event for the contact\",\"type\":\"string\",\"name\":\"recent_conversion\"},{\"control_type\":\"checkbox\",\"label\":\"Email confirmed\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"hint\":\"Indicate whether the contact's email has been confirmed\",\"type\":\"boolean\",\"name\":\"email_confirmed\",\"optional\":false,\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"hint\":\"Provide a custom boolean value for email confirmed\",\"label\":\"Email confirmed\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"email_confirmed\",\"optional\":false}},{\"control_type\":\"date\",\"label\":\"Verified email\",\"render_input\":\"date_conversion\",\"parse_output\":\"date_conversion\",\"hint\":\"Select the date and time the email was verified\",\"name\":\"verified_email\",\"type\":\"date_time\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Website URL\",\"hint\":\"Insert the contact's website URL\",\"type\":\"string\",\"name\":\"website_url\"}]",
+              "list_items": {
+                "record_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"id\"]}')}",
+                "first_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"firstname\"]}')}",
+                "last_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"lastname\"]}')}",
+                "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"email\"]}')}",
+                "email_domain": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"hs_email_domain\"]}')}",
+                "company_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"company\"]}')}",
+                "registration_form": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"registration_form\"]}')}",
+                "recent_conversion": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"recent_conversion_event_name\"]}')}",
+                "email_confirmed": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"hs_content_membership_email_confirmed\"]}')}",
+                "verified_email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"verified_email_\"]}')}",
+                "website_url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"website\"]}')}",
+                "company_domain": "=_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"hs_email_domain\"]}').downcase.sub(/^www\\./, '').split('.')[-2] || _dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"hs_email_domain\"]}').downcase.sub(/^www\\./, '').split('.').first"
+              }
+            },
+            "extended_output_schema": [
+              {
+                "hint": "",
+                "label": "Contact Details",
+                "name": "list_items",
+                "of": "object",
+                "optional": false,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Record ID",
+                    "hint": "Insert Hubspot Contact record id",
+                    "type": "string",
+                    "name": "record_id",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "First name",
+                    "hint": "Insert contact's first name",
+                    "type": "string",
+                    "name": "first_name"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Last name",
+                    "hint": "Insert contact's last name",
+                    "type": "string",
+                    "name": "last_name"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Email",
+                    "hint": "Insert contact's email address",
+                    "type": "string",
+                    "name": "email"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Email domain",
+                    "hint": "Insert the domain portion of the email (e.g., example.com)",
+                    "type": "string",
+                    "name": "email_domain"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Company domain",
+                    "name": "company_domain",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Company name",
+                    "hint": "Insert the company name associated with the contact",
+                    "type": "string",
+                    "name": "company_name"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Registration form",
+                    "render_input": "boolean_conversion",
+                    "parse_output": "boolean_conversion",
+                    "hint": "Indicate whether the contact submitted a registration form",
+                    "type": "boolean",
+                    "name": "registration_form",
+                    "optional": false,
+                    "toggle_hint": "Select from option list",
+                    "toggle_field": {
+                      "hint": "Provide a custom boolean value for registration form",
+                      "label": "Registration form",
+                      "control_type": "text",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean",
+                      "name": "registration_form",
+                      "optional": false
+                    }
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Recent conversion",
+                    "hint": "Insert the most recent conversion event for the contact",
+                    "type": "string",
+                    "name": "recent_conversion"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Email confirmed",
+                    "render_input": "boolean_conversion",
+                    "parse_output": "boolean_conversion",
+                    "hint": "Indicate whether the contact's email has been confirmed",
+                    "type": "boolean",
+                    "name": "email_confirmed",
+                    "optional": false,
+                    "toggle_hint": "Select from option list",
+                    "toggle_field": {
+                      "hint": "Provide a custom boolean value for email confirmed",
+                      "label": "Email confirmed",
+                      "control_type": "text",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean",
+                      "name": "email_confirmed",
+                      "optional": false
+                    }
+                  },
+                  {
+                    "control_type": "date",
+                    "label": "Verified email",
+                    "render_input": "date_conversion",
+                    "parse_output": "date_conversion",
+                    "hint": "Select the date and time the email was verified",
+                    "name": "verified_email",
+                    "type": "date_time",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Website URL",
+                    "hint": "Insert the contact's website URL",
+                    "type": "string",
+                    "name": "website_url"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                "label": "Items",
+                "name": "list_items",
+                "of": "object",
+                "optional": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Record ID",
+                    "hint": "Insert Hubspot Contact record id",
+                    "type": "string",
+                    "name": "record_id",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "First name",
+                    "hint": "Insert contact's first name",
+                    "type": "string",
+                    "name": "first_name"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Last name",
+                    "hint": "Insert contact's last name",
+                    "type": "string",
+                    "name": "last_name"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Email",
+                    "hint": "Insert contact's email address",
+                    "type": "string",
+                    "name": "email"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Email domain",
+                    "hint": "Insert the domain portion of the email (e.g., example.com)",
+                    "type": "string",
+                    "name": "email_domain"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Company domain",
+                    "name": "company_domain",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Company name",
+                    "hint": "Insert the company name associated with the contact",
+                    "type": "string",
+                    "name": "company_name"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Registration form",
+                    "render_input": "boolean_conversion",
+                    "parse_output": "boolean_conversion",
+                    "hint": "Indicate whether the contact submitted a registration form",
+                    "type": "boolean",
+                    "name": "registration_form",
+                    "optional": false,
+                    "toggle_hint": "Select from option list",
+                    "toggle_field": {
+                      "hint": "Provide a custom boolean value for registration form",
+                      "label": "Registration form",
+                      "control_type": "text",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean",
+                      "name": "registration_form",
+                      "optional": false
+                    }
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Recent conversion",
+                    "hint": "Insert the most recent conversion event for the contact",
+                    "type": "string",
+                    "name": "recent_conversion"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Email confirmed",
+                    "render_input": "boolean_conversion",
+                    "parse_output": "boolean_conversion",
+                    "hint": "Indicate whether the contact's email has been confirmed",
+                    "type": "boolean",
+                    "name": "email_confirmed",
+                    "optional": false,
+                    "toggle_hint": "Select from option list",
+                    "toggle_field": {
+                      "hint": "Provide a custom boolean value for email confirmed",
+                      "label": "Email confirmed",
+                      "control_type": "text",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean",
+                      "name": "email_confirmed",
+                      "optional": false
+                    }
+                  },
+                  {
+                    "control_type": "date",
+                    "label": "Verified email",
+                    "render_input": "date_conversion",
+                    "parse_output": "date_conversion",
+                    "hint": "Select the date and time the email was verified",
+                    "name": "verified_email",
+                    "type": "date_time",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Website URL",
+                    "hint": "Insert the contact's website URL",
+                    "type": "string",
+                    "name": "website_url"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "uuid": "2bdd83f3-94cd-483a-b347-ae95a7f85a41",
+            "skip": false
+          },
+          {
+            "number": 3,
+            "provider": "rest",
+            "name": "make_request_v2",
+            "as": "ffb242a4",
+            "keyword": "action",
+            "toggleCfg": {
+              "response.ignore_http_errors": true,
+              "disable_retries": true
+            },
+            "input": {
+              "request_name": "Generate a report",
+              "request": {
+                "method": "GET",
+                "content_type": "application/json",
+                "url": "https://demos.brightdata.com/plan/api/report?domain=stripe.com"
+              },
+              "response": {
+                "output_type": "json",
+                "expected_encoding": "UTF-8",
+                "ignore_http_errors": "true",
+                "response_schema": "[{\"properties\":[{\"control_type\":\"text\",\"label\":\"Name\",\"type\":\"string\",\"name\":\"name\"},{\"control_type\":\"text\",\"label\":\"Domain\",\"type\":\"string\",\"name\":\"domain\"},{\"control_type\":\"text\",\"label\":\"Description\",\"type\":\"string\",\"name\":\"description\"},{\"control_type\":\"text\",\"label\":\"Category\",\"type\":\"string\",\"name\":\"category\"},{\"control_type\":\"text\",\"label\":\"Sub category\",\"type\":\"string\",\"name\":\"subCategory\"},{\"control_type\":\"text\",\"label\":\"What they sell\",\"type\":\"string\",\"name\":\"whatTheySell\"},{\"control_type\":\"text\",\"label\":\"Ai maturity\",\"type\":\"string\",\"name\":\"aiMaturity\"},{\"control_type\":\"text\",\"label\":\"Company stage\",\"type\":\"string\",\"name\":\"companyStage\"}],\"label\":\"Company\",\"type\":\"object\",\"name\":\"company\"},{\"label\":\"Data needs\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Need\",\"type\":\"string\",\"name\":\"need\"},{\"control_type\":\"text\",\"label\":\"Evidence\",\"type\":\"string\",\"name\":\"evidence\"},{\"control_type\":\"text\",\"label\":\"Source URL\",\"type\":\"string\",\"name\":\"sourceUrl\"},{\"control_type\":\"text\",\"label\":\"Bd product\",\"type\":\"string\",\"name\":\"bdProduct\"},{\"control_type\":\"text\",\"label\":\"Bd product slug\",\"type\":\"string\",\"name\":\"bdProductSlug\"},{\"control_type\":\"text\",\"label\":\"Bd page URL\",\"type\":\"string\",\"name\":\"bdPageUrl\"},{\"control_type\":\"text\",\"label\":\"Impact\",\"type\":\"string\",\"name\":\"impact\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Goal\",\"type\":\"string\",\"name\":\"goal\"},{\"control_type\":\"text\",\"label\":\"Target\",\"type\":\"string\",\"name\":\"target\"}],\"label\":\"First step\",\"type\":\"object\",\"name\":\"firstStep\"},{\"control_type\":\"text\",\"label\":\"Category\",\"type\":\"string\",\"name\":\"category\"}],\"type\":\"array\",\"name\":\"dataNeeds\"},{\"label\":\"Recommended products\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Product\",\"type\":\"string\",\"name\":\"product\"},{\"control_type\":\"text\",\"label\":\"Slug\",\"type\":\"string\",\"name\":\"slug\"},{\"control_type\":\"text\",\"label\":\"Why\",\"type\":\"string\",\"name\":\"why\"},{\"control_type\":\"text\",\"label\":\"Pricing\",\"type\":\"string\",\"name\":\"pricing\"},{\"control_type\":\"text\",\"label\":\"Page URL\",\"type\":\"string\",\"name\":\"pageUrl\"}],\"type\":\"array\",\"name\":\"recommendedProducts\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Stale data risk\",\"type\":\"string\",\"name\":\"staleDataRisk\"},{\"control_type\":\"text\",\"label\":\"Build it yourself cost\",\"type\":\"string\",\"name\":\"buildItYourselfCost\"},{\"control_type\":\"text\",\"label\":\"Unlockable capabilities\",\"of\":\"string\",\"type\":\"array\",\"name\":\"unlockableCapabilities\"}],\"label\":\"Business impact\",\"type\":\"object\",\"name\":\"businessImpact\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Type\",\"type\":\"string\",\"name\":\"type\"},{\"control_type\":\"text\",\"label\":\"Headline\",\"type\":\"string\",\"name\":\"headline\"},{\"control_type\":\"text\",\"label\":\"Body\",\"type\":\"string\",\"name\":\"body\"},{\"control_type\":\"text\",\"label\":\"Cta label\",\"type\":\"string\",\"name\":\"ctaLabel\"},{\"control_type\":\"text\",\"label\":\"Cta URL\",\"type\":\"string\",\"name\":\"ctaUrl\"}],\"label\":\"Special recommendation\",\"type\":\"object\",\"name\":\"specialRecommendation\"},{\"control_type\":\"text\",\"label\":\"Pages scraped\",\"of\":\"string\",\"type\":\"array\",\"name\":\"pagesScraped\"},{\"control_type\":\"text\",\"label\":\"Search queries\",\"of\":\"string\",\"type\":\"array\",\"name\":\"searchQueries\"},{\"control_type\":\"number\",\"label\":\"Total content length\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"totalContentLength\"},{\"properties\":[{\"control_type\":\"number\",\"label\":\"Overall score\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"overallScore\"},{\"control_type\":\"number\",\"label\":\"Specificity\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"specificity\"},{\"control_type\":\"number\",\"label\":\"Evidence\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"evidence\"},{\"control_type\":\"number\",\"label\":\"Coherence\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"coherence\"},{\"control_type\":\"text\",\"label\":\"Issues\",\"of\":\"string\",\"type\":\"array\",\"name\":\"issues\"},{\"control_type\":\"text\",\"label\":\"Passed\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Passed\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"passed\"},\"type\":\"boolean\",\"name\":\"passed\"}],\"label\":\"Eval\",\"type\":\"object\",\"name\":\"eval\"},{\"properties\":[{\"properties\":[{\"control_type\":\"number\",\"label\":\"Input\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"input\"},{\"control_type\":\"number\",\"label\":\"Output\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"output\"},{\"control_type\":\"number\",\"label\":\"Cached\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"cached\"}],\"label\":\"Classify\",\"type\":\"object\",\"name\":\"classify\"},{\"properties\":[{\"control_type\":\"number\",\"label\":\"Input\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"input\"},{\"control_type\":\"number\",\"label\":\"Output\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"output\"},{\"control_type\":\"number\",\"label\":\"Cached\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"cached\"}],\"label\":\"Synthesize\",\"type\":\"object\",\"name\":\"synthesize\"}],\"label\":\"LLM usage\",\"type\":\"object\",\"name\":\"llmUsage\"},{\"control_type\":\"text\",\"label\":\"Cache\",\"type\":\"string\",\"name\":\"_cache\"},{\"name\":\"error\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Error\"}]"
+              },
+              "wait_for_response": "true",
+              "completion_threshold_seconds": "3600",
+              "disable_retries": "true",
+              "enable_streaming": "false"
+            },
+            "extended_output_schema": [
+              {
+                "label": "Headers",
+                "name": "headers",
+                "properties": [
+
+                ],
+                "type": "object"
+              },
+              {
+                "label": "Response",
+                "name": "response",
+                "properties": [
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Name",
+                        "type": "string",
+                        "name": "name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Domain",
+                        "type": "string",
+                        "name": "domain"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Description",
+                        "type": "string",
+                        "name": "description"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Category",
+                        "type": "string",
+                        "name": "category"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Sub category",
+                        "type": "string",
+                        "name": "subCategory"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "What they sell",
+                        "type": "string",
+                        "name": "whatTheySell"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ai maturity",
+                        "type": "string",
+                        "name": "aiMaturity"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Company stage",
+                        "type": "string",
+                        "name": "companyStage"
+                      }
+                    ],
+                    "label": "Company",
+                    "type": "object",
+                    "name": "company"
+                  },
+                  {
+                    "label": "Data needs",
+                    "type": "array",
+                    "name": "dataNeeds",
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Need",
+                        "type": "string",
+                        "name": "need"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Evidence",
+                        "type": "string",
+                        "name": "evidence"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Source URL",
+                        "type": "string",
+                        "name": "sourceUrl"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Bd product",
+                        "type": "string",
+                        "name": "bdProduct"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Bd product slug",
+                        "type": "string",
+                        "name": "bdProductSlug"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Bd page URL",
+                        "type": "string",
+                        "name": "bdPageUrl"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Impact",
+                        "type": "string",
+                        "name": "impact"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Goal",
+                            "type": "string",
+                            "name": "goal"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Target",
+                            "type": "string",
+                            "name": "target"
+                          }
+                        ],
+                        "label": "First step",
+                        "type": "object",
+                        "name": "firstStep"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Category",
+                        "type": "string",
+                        "name": "category"
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Recommended products",
+                    "type": "array",
+                    "name": "recommendedProducts",
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Product",
+                        "type": "string",
+                        "name": "product"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Slug",
+                        "type": "string",
+                        "name": "slug"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Why",
+                        "type": "string",
+                        "name": "why"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Pricing",
+                        "type": "string",
+                        "name": "pricing"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Page URL",
+                        "type": "string",
+                        "name": "pageUrl"
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Stale data risk",
+                        "type": "string",
+                        "name": "staleDataRisk"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Build it yourself cost",
+                        "type": "string",
+                        "name": "buildItYourselfCost"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Unlockable capabilities",
+                        "type": "array",
+                        "name": "unlockableCapabilities",
+                        "of": "string"
+                      }
+                    ],
+                    "label": "Business impact",
+                    "type": "object",
+                    "name": "businessImpact"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Type",
+                        "type": "string",
+                        "name": "type"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Headline",
+                        "type": "string",
+                        "name": "headline"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Body",
+                        "type": "string",
+                        "name": "body"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Cta label",
+                        "type": "string",
+                        "name": "ctaLabel"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Cta URL",
+                        "type": "string",
+                        "name": "ctaUrl"
+                      }
+                    ],
+                    "label": "Special recommendation",
+                    "type": "object",
+                    "name": "specialRecommendation"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Pages scraped",
+                    "type": "array",
+                    "name": "pagesScraped",
+                    "of": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Search queries",
+                    "type": "array",
+                    "name": "searchQueries",
+                    "of": "string"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Total content length",
+                    "parse_output": "float_conversion",
+                    "type": "number",
+                    "name": "totalContentLength"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "number",
+                        "label": "Overall score",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "overallScore"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Specificity",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "specificity"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Evidence",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "evidence"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Coherence",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "coherence"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Issues",
+                        "type": "array",
+                        "name": "issues",
+                        "of": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Passed",
+                        "render_input": "boolean_conversion",
+                        "parse_output": "boolean_conversion",
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                          "label": "Passed",
+                          "control_type": "text",
+                          "toggle_hint": "Use custom value",
+                          "type": "boolean",
+                          "name": "passed"
+                        },
+                        "type": "boolean",
+                        "name": "passed"
+                      }
+                    ],
+                    "label": "Eval",
+                    "type": "object",
+                    "name": "eval"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "properties": [
+                          {
+                            "control_type": "number",
+                            "label": "Input",
+                            "parse_output": "float_conversion",
+                            "type": "number",
+                            "name": "input"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Output",
+                            "parse_output": "float_conversion",
+                            "type": "number",
+                            "name": "output"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Cached",
+                            "parse_output": "float_conversion",
+                            "type": "number",
+                            "name": "cached"
+                          }
+                        ],
+                        "label": "Classify",
+                        "type": "object",
+                        "name": "classify"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "number",
+                            "label": "Input",
+                            "parse_output": "float_conversion",
+                            "type": "number",
+                            "name": "input"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Output",
+                            "parse_output": "float_conversion",
+                            "type": "number",
+                            "name": "output"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Cached",
+                            "parse_output": "float_conversion",
+                            "type": "number",
+                            "name": "cached"
+                          }
+                        ],
+                        "label": "Synthesize",
+                        "type": "object",
+                        "name": "synthesize"
+                      }
+                    ],
+                    "label": "LLM usage",
+                    "type": "object",
+                    "name": "llmUsage"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Cache",
+                    "type": "string",
+                    "name": "_cache"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Error",
+                    "name": "error",
+                    "type": "string",
+                    "optional": false
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "label": "Response",
+                "name": "response",
+                "override": true,
+                "properties": [
+                  {
+                    "control_type": "select",
+                    "label": "Response content type",
+                    "pick_list": [
+                      [
+                        "Text",
+                        "rawdatatxt"
+                      ],
+                      [
+                        "Binary",
+                        "rawdata"
+                      ],
+                      [
+                        "JSON",
+                        "json"
+                      ],
+                      [
+                        "XML",
+                        "xml2"
+                      ],
+                      [
+                        "Multipart",
+                        "multipart"
+                      ]
+                    ],
+                    "hint": "Select expected format of data response type, e.g. JSON or XML. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+                    "default": "json",
+                    "extends_schema": true,
+                    "type": "string",
+                    "name": "output_type"
+                  },
+                  {
+                    "control_type": "select",
+                    "label": "Encoding",
+                    "pick_list": "supported_encodings_without_binary_global_pick_list",
+                    "pick_list_connection_less": true,
+                    "optional": true,
+                    "default": "UTF-8",
+                    "hint": "Default encoding type is set to UTF-8, and typically doesn't need to be changed. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+                    "type": "string",
+                    "name": "expected_encoding"
+                  },
+                  {
+                    "control_type": "schema-designer",
+                    "label": "Response schema",
+                    "sample_data_type": "json_http",
+                    "extends_schema": true,
+                    "empty_schema_title": "Describe all fields in your response.",
+                    "optional": true,
+                    "sticky": true,
+                    "type": "string",
+                    "name": "response_schema"
+                  },
+                  {
+                    "control_type": "schema-designer",
+                    "label": "HTTP response headers",
+                    "extends_schema": true,
+                    "empty_schema_title": "Describe all the response headers",
+                    "optional": true,
+                    "sticky": true,
+                    "type": "string",
+                    "name": "headers_schema"
+                  },
+                  {
+                    "control_type": "schema-designer",
+                    "label": "Multipart part headers",
+                    "extends_schema": true,
+                    "empty_schema_title": "Describe headers within each multipart part",
+                    "optional": true,
+                    "sticky": true,
+                    "hint": "Define the headers that appear in each part of the multipart response (e.g., Content-Type, Content-ID)",
+                    "ngIf": "input.response.output_type == 'multipart'",
+                    "type": "string",
+                    "name": "part_headers_schema"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Mark non-2xx response codes as success?",
+                    "default": "false",
+                    "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+                    "optional": true,
+                    "toggle_hint": "Select from option list",
+                    "toggle_field": {
+                      "label": "Mark non-2xx response codes as success?",
+                      "control_type": "text",
+                      "toggle_hint": "Use custom value",
+                      "default": false,
+                      "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+                      "optional": true,
+                      "render_input": null,
+                      "parse_output": null,
+                      "type": "boolean",
+                      "name": "ignore_http_errors"
+                    },
+                    "type": "boolean",
+                    "name": "ignore_http_errors"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "uuid": "dbe10574-bcf4-44b3-951c-203a79848cd6",
+            "wizardFinished": true,
+            "skip": false
+          },
+          {
+            "number": 4,
+            "provider": "rest",
+            "name": "make_request_v2",
+            "as": "35f26371",
+            "keyword": "action",
+            "toggleCfg": {
+              "response.ignore_http_errors": true,
+              "disable_retries": true
+            },
+            "input": {
+              "request_name": "Generate a report",
+              "request": {
+                "method": "GET",
+                "content_type": "application/json",
+                "url": "/plan/api/report",
+                "parameters": [
+                  {
+                    "param": "domain",
+                    "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"0f46b026\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"email_domain\"]}')}"
+                  }
+                ]
+              },
+              "response": {
+                "output_type": "json",
+                "expected_encoding": "UTF-8",
+                "ignore_http_errors": "true",
+                "response_schema": "[{\"properties\":[{\"control_type\":\"text\",\"label\":\"Name\",\"type\":\"string\",\"name\":\"name\"},{\"control_type\":\"text\",\"label\":\"Domain\",\"type\":\"string\",\"name\":\"domain\"},{\"control_type\":\"text\",\"label\":\"Description\",\"type\":\"string\",\"name\":\"description\"},{\"control_type\":\"text\",\"label\":\"Category\",\"type\":\"string\",\"name\":\"category\"},{\"control_type\":\"text\",\"label\":\"Sub category\",\"type\":\"string\",\"name\":\"subCategory\"},{\"control_type\":\"text\",\"label\":\"What they sell\",\"type\":\"string\",\"name\":\"whatTheySell\"},{\"control_type\":\"text\",\"label\":\"Ai maturity\",\"type\":\"string\",\"name\":\"aiMaturity\"},{\"control_type\":\"text\",\"label\":\"Company stage\",\"type\":\"string\",\"name\":\"companyStage\"}],\"label\":\"Company\",\"type\":\"object\",\"name\":\"company\"},{\"label\":\"Data needs\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Need\",\"type\":\"string\",\"name\":\"need\"},{\"control_type\":\"text\",\"label\":\"Evidence\",\"type\":\"string\",\"name\":\"evidence\"},{\"control_type\":\"text\",\"label\":\"Source URL\",\"type\":\"string\",\"name\":\"sourceUrl\"},{\"control_type\":\"text\",\"label\":\"Bd product\",\"type\":\"string\",\"name\":\"bdProduct\"},{\"control_type\":\"text\",\"label\":\"Bd product slug\",\"type\":\"string\",\"name\":\"bdProductSlug\"},{\"control_type\":\"text\",\"label\":\"Bd page URL\",\"type\":\"string\",\"name\":\"bdPageUrl\"},{\"control_type\":\"text\",\"label\":\"Impact\",\"type\":\"string\",\"name\":\"impact\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Goal\",\"type\":\"string\",\"name\":\"goal\"},{\"control_type\":\"text\",\"label\":\"Target\",\"type\":\"string\",\"name\":\"target\"}],\"label\":\"First step\",\"type\":\"object\",\"name\":\"firstStep\"},{\"control_type\":\"text\",\"label\":\"Category\",\"type\":\"string\",\"name\":\"category\"}],\"type\":\"array\",\"name\":\"dataNeeds\"},{\"label\":\"Recommended products\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Product\",\"type\":\"string\",\"name\":\"product\"},{\"control_type\":\"text\",\"label\":\"Slug\",\"type\":\"string\",\"name\":\"slug\"},{\"control_type\":\"text\",\"label\":\"Why\",\"type\":\"string\",\"name\":\"why\"},{\"control_type\":\"text\",\"label\":\"Pricing\",\"type\":\"string\",\"name\":\"pricing\"},{\"control_type\":\"text\",\"label\":\"Page URL\",\"type\":\"string\",\"name\":\"pageUrl\"}],\"type\":\"array\",\"name\":\"recommendedProducts\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Stale data risk\",\"type\":\"string\",\"name\":\"staleDataRisk\"},{\"control_type\":\"text\",\"label\":\"Build it yourself cost\",\"type\":\"string\",\"name\":\"buildItYourselfCost\"},{\"control_type\":\"text\",\"label\":\"Unlockable capabilities\",\"of\":\"string\",\"type\":\"array\",\"name\":\"unlockableCapabilities\"}],\"label\":\"Business impact\",\"type\":\"object\",\"name\":\"businessImpact\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Type\",\"type\":\"string\",\"name\":\"type\"},{\"control_type\":\"text\",\"label\":\"Headline\",\"type\":\"string\",\"name\":\"headline\"},{\"control_type\":\"text\",\"label\":\"Body\",\"type\":\"string\",\"name\":\"body\"},{\"control_type\":\"text\",\"label\":\"Cta label\",\"type\":\"string\",\"name\":\"ctaLabel\"},{\"control_type\":\"text\",\"label\":\"Cta URL\",\"type\":\"string\",\"name\":\"ctaUrl\"}],\"label\":\"Special recommendation\",\"type\":\"object\",\"name\":\"specialRecommendation\"},{\"control_type\":\"text\",\"label\":\"Pages scraped\",\"of\":\"string\",\"type\":\"array\",\"name\":\"pagesScraped\"},{\"control_type\":\"text\",\"label\":\"Search queries\",\"of\":\"string\",\"type\":\"array\",\"name\":\"searchQueries\"},{\"control_type\":\"number\",\"label\":\"Total content length\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"totalContentLength\"},{\"properties\":[{\"control_type\":\"number\",\"label\":\"Overall score\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"overallScore\"},{\"control_type\":\"number\",\"label\":\"Specificity\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"specificity\"},{\"control_type\":\"number\",\"label\":\"Evidence\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"evidence\"},{\"control_type\":\"number\",\"label\":\"Coherence\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"coherence\"},{\"control_type\":\"text\",\"label\":\"Issues\",\"of\":\"string\",\"type\":\"array\",\"name\":\"issues\"},{\"control_type\":\"text\",\"label\":\"Passed\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Passed\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"passed\"},\"type\":\"boolean\",\"name\":\"passed\"}],\"label\":\"Eval\",\"type\":\"object\",\"name\":\"eval\"},{\"properties\":[{\"properties\":[{\"control_type\":\"number\",\"label\":\"Input\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"input\"},{\"control_type\":\"number\",\"label\":\"Output\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"output\"},{\"control_type\":\"number\",\"label\":\"Cached\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"cached\"}],\"label\":\"Classify\",\"type\":\"object\",\"name\":\"classify\"},{\"properties\":[{\"control_type\":\"number\",\"label\":\"Input\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"input\"},{\"control_type\":\"number\",\"label\":\"Output\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"output\"},{\"control_type\":\"number\",\"label\":\"Cached\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"cached\"}],\"label\":\"Synthesize\",\"type\":\"object\",\"name\":\"synthesize\"}],\"label\":\"LLM usage\",\"type\":\"object\",\"name\":\"llmUsage\"},{\"control_type\":\"text\",\"label\":\"Cache\",\"type\":\"string\",\"name\":\"_cache\"},{\"name\":\"error\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Error\"}]"
+              },
+              "wait_for_response": "true",
+              "completion_threshold_seconds": "3600",
+              "disable_retries": "false",
+              "enable_streaming": "false"
+            },
+            "extended_output_schema": [
+              {
+                "label": "Headers",
+                "name": "headers",
+                "properties": [
+
+                ],
+                "type": "object"
+              },
+              {
+                "label": "Response",
+                "name": "response",
+                "properties": [
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Name",
+                        "type": "string",
+                        "name": "name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Domain",
+                        "type": "string",
+                        "name": "domain"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Description",
+                        "type": "string",
+                        "name": "description"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Category",
+                        "type": "string",
+                        "name": "category"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Sub category",
+                        "type": "string",
+                        "name": "subCategory"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "What they sell",
+                        "type": "string",
+                        "name": "whatTheySell"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ai maturity",
+                        "type": "string",
+                        "name": "aiMaturity"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Company stage",
+                        "type": "string",
+                        "name": "companyStage"
+                      }
+                    ],
+                    "label": "Company",
+                    "type": "object",
+                    "name": "company"
+                  },
+                  {
+                    "label": "Data needs",
+                    "type": "array",
+                    "name": "dataNeeds",
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Need",
+                        "type": "string",
+                        "name": "need"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Evidence",
+                        "type": "string",
+                        "name": "evidence"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Source URL",
+                        "type": "string",
+                        "name": "sourceUrl"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Bd product",
+                        "type": "string",
+                        "name": "bdProduct"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Bd product slug",
+                        "type": "string",
+                        "name": "bdProductSlug"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Bd page URL",
+                        "type": "string",
+                        "name": "bdPageUrl"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Impact",
+                        "type": "string",
+                        "name": "impact"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Goal",
+                            "type": "string",
+                            "name": "goal"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Target",
+                            "type": "string",
+                            "name": "target"
+                          }
+                        ],
+                        "label": "First step",
+                        "type": "object",
+                        "name": "firstStep"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Category",
+                        "type": "string",
+                        "name": "category"
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Recommended products",
+                    "type": "array",
+                    "name": "recommendedProducts",
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Product",
+                        "type": "string",
+                        "name": "product"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Slug",
+                        "type": "string",
+                        "name": "slug"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Why",
+                        "type": "string",
+                        "name": "why"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Pricing",
+                        "type": "string",
+                        "name": "pricing"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Page URL",
+                        "type": "string",
+                        "name": "pageUrl"
+                      }
+                    ]
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Stale data risk",
+                        "type": "string",
+                        "name": "staleDataRisk"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Build it yourself cost",
+                        "type": "string",
+                        "name": "buildItYourselfCost"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Unlockable capabilities",
+                        "type": "array",
+                        "name": "unlockableCapabilities",
+                        "of": "string"
+                      }
+                    ],
+                    "label": "Business impact",
+                    "type": "object",
+                    "name": "businessImpact"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Type",
+                        "type": "string",
+                        "name": "type"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Headline",
+                        "type": "string",
+                        "name": "headline"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Body",
+                        "type": "string",
+                        "name": "body"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Cta label",
+                        "type": "string",
+                        "name": "ctaLabel"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Cta URL",
+                        "type": "string",
+                        "name": "ctaUrl"
+                      }
+                    ],
+                    "label": "Special recommendation",
+                    "type": "object",
+                    "name": "specialRecommendation"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Pages scraped",
+                    "type": "array",
+                    "name": "pagesScraped",
+                    "of": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Search queries",
+                    "type": "array",
+                    "name": "searchQueries",
+                    "of": "string"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Total content length",
+                    "parse_output": "float_conversion",
+                    "type": "number",
+                    "name": "totalContentLength"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "number",
+                        "label": "Overall score",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "overallScore"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Specificity",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "specificity"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Evidence",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "evidence"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Coherence",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "coherence"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Issues",
+                        "type": "array",
+                        "name": "issues",
+                        "of": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Passed",
+                        "render_input": "boolean_conversion",
+                        "parse_output": "boolean_conversion",
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                          "label": "Passed",
+                          "control_type": "text",
+                          "toggle_hint": "Use custom value",
+                          "type": "boolean",
+                          "name": "passed"
+                        },
+                        "type": "boolean",
+                        "name": "passed"
+                      }
+                    ],
+                    "label": "Eval",
+                    "type": "object",
+                    "name": "eval"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "properties": [
+                          {
+                            "control_type": "number",
+                            "label": "Input",
+                            "parse_output": "float_conversion",
+                            "type": "number",
+                            "name": "input"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Output",
+                            "parse_output": "float_conversion",
+                            "type": "number",
+                            "name": "output"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Cached",
+                            "parse_output": "float_conversion",
+                            "type": "number",
+                            "name": "cached"
+                          }
+                        ],
+                        "label": "Classify",
+                        "type": "object",
+                        "name": "classify"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "number",
+                            "label": "Input",
+                            "parse_output": "float_conversion",
+                            "type": "number",
+                            "name": "input"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Output",
+                            "parse_output": "float_conversion",
+                            "type": "number",
+                            "name": "output"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Cached",
+                            "parse_output": "float_conversion",
+                            "type": "number",
+                            "name": "cached"
+                          }
+                        ],
+                        "label": "Synthesize",
+                        "type": "object",
+                        "name": "synthesize"
+                      }
+                    ],
+                    "label": "LLM usage",
+                    "type": "object",
+                    "name": "llmUsage"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Cache",
+                    "type": "string",
+                    "name": "_cache"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Error",
+                    "name": "error",
+                    "type": "string",
+                    "optional": false
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "label": "Response",
+                "name": "response",
+                "override": true,
+                "properties": [
+                  {
+                    "control_type": "select",
+                    "label": "Response content type",
+                    "pick_list": [
+                      [
+                        "Text",
+                        "rawdatatxt"
+                      ],
+                      [
+                        "Binary",
+                        "rawdata"
+                      ],
+                      [
+                        "JSON",
+                        "json"
+                      ],
+                      [
+                        "XML",
+                        "xml2"
+                      ],
+                      [
+                        "Multipart",
+                        "multipart"
+                      ]
+                    ],
+                    "hint": "Select expected format of data response type, e.g. JSON or XML. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+                    "default": "json",
+                    "extends_schema": true,
+                    "type": "string",
+                    "name": "output_type"
+                  },
+                  {
+                    "control_type": "select",
+                    "label": "Encoding",
+                    "pick_list": "supported_encodings_without_binary_global_pick_list",
+                    "pick_list_connection_less": true,
+                    "optional": true,
+                    "default": "UTF-8",
+                    "hint": "Default encoding type is set to UTF-8, and typically doesn't need to be changed. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+                    "type": "string",
+                    "name": "expected_encoding"
+                  },
+                  {
+                    "control_type": "schema-designer",
+                    "label": "Response schema",
+                    "sample_data_type": "json_http",
+                    "extends_schema": true,
+                    "empty_schema_title": "Describe all fields in your response.",
+                    "optional": true,
+                    "sticky": true,
+                    "type": "string",
+                    "name": "response_schema"
+                  },
+                  {
+                    "control_type": "schema-designer",
+                    "label": "HTTP response headers",
+                    "extends_schema": true,
+                    "empty_schema_title": "Describe all the response headers",
+                    "optional": true,
+                    "sticky": true,
+                    "type": "string",
+                    "name": "headers_schema"
+                  },
+                  {
+                    "control_type": "schema-designer",
+                    "label": "Multipart part headers",
+                    "extends_schema": true,
+                    "empty_schema_title": "Describe headers within each multipart part",
+                    "optional": true,
+                    "sticky": true,
+                    "hint": "Define the headers that appear in each part of the multipart response (e.g., Content-Type, Content-ID)",
+                    "ngIf": "input.response.output_type == 'multipart'",
+                    "type": "string",
+                    "name": "part_headers_schema"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Mark non-2xx response codes as success?",
+                    "default": "false",
+                    "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+                    "optional": true,
+                    "toggle_hint": "Select from option list",
+                    "toggle_field": {
+                      "label": "Mark non-2xx response codes as success?",
+                      "control_type": "text",
+                      "toggle_hint": "Use custom value",
+                      "default": false,
+                      "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+                      "optional": true,
+                      "render_input": null,
+                      "parse_output": null,
+                      "type": "boolean",
+                      "name": "ignore_http_errors"
+                    },
+                    "type": "boolean",
+                    "name": "ignore_http_errors"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "uuid": "5898e1bd-de11-405b-ad56-bc6f4d909ed8",
+            "wizardFinished": true,
+            "skip": true
+          },
+          {
+            "number": 5,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "equals_to",
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"ffb242a4\",\"path\":[\"status_code\"]}')}",
+                  "rhs": "200",
+                  "uuid": "b8f22255-0df0-4511-ad5c-a3cb4e0e2c3f"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 6,
+                "provider": "workato_variable",
+                "name": "declare_list",
+                "as": "b88bed15",
+                "keyword": "action",
+                "input": {
+                  "name": "AI tracking properties",
+                  "list_item_schema_json": "[{\"name\":\"ai_email_status\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Ai email status\"},{\"name\":\"ai_email_generated_at\",\"type\":\"date_time\",\"optional\":false,\"control_type\":\"date_time\",\"label\":\"Ai email generated at\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\"},{\"name\":\"ai_email_subject\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Ai email subject\"},{\"name\":\"ai_email_body\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Ai email body\"},{\"name\":\"ai_email_error\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Ai email error\"}]"
+                },
+                "extended_output_schema": [
+                  {
+                    "hint": "",
+                    "label": "AI tracking properties",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": false,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Ai email status",
+                        "name": "ai_email_status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "date_time",
+                        "label": "Ai email generated at",
+                        "render_input": "date_time_conversion",
+                        "parse_output": "date_time_conversion",
+                        "name": "ai_email_generated_at",
+                        "type": "date_time",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ai email subject",
+                        "name": "ai_email_subject",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ai email body",
+                        "name": "ai_email_body",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ai email error",
+                        "name": "ai_email_error",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                    "label": "Items",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Ai email status",
+                        "name": "ai_email_status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "date_time",
+                        "label": "Ai email generated at",
+                        "render_input": "date_time_conversion",
+                        "parse_output": "date_time_conversion",
+                        "name": "ai_email_generated_at",
+                        "type": "date_time",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ai email subject",
+                        "name": "ai_email_subject",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ai email body",
+                        "name": "ai_email_body",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ai email error",
+                        "name": "ai_email_error",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "uuid": "4a59d112-5e8f-46d5-bfa9-7441b265ce3f",
+                "skip": true
+              },
+              {
+                "number": 7,
+                "provider": "workato_custom_code",
+                "name": "invoke_custom_ruby_code",
+                "as": "cbd35ad7",
+                "keyword": "action",
+                "input": {
+                  "payload_asset_type": "inline",
+                  "code": "# --- Safely pull the report object ---\nr = input[\"report\"] || {}\n\n# --- Company (keep only useful fields) ---\ncompany = r[\"company\"] || {}\ncompany_clean = {\n  \"name\"         => company[\"name\"],\n  \"domain\"       => company[\"domain\"],\n  \"description\"  => company[\"description\"],\n  \"category\"     => company[\"category\"],\n  \"subCategory\"  => company[\"subCategory\"],\n  \"whatTheySell\" => company[\"whatTheySell\"],\n  \"aiMaturity\"   => company[\"aiMaturity\"],\n  \"companyStage\" => company[\"companyStage\"]\n}\n\n# --- Data needs (drop firstStep, keep what the email uses) ---\ndata_needs = (r[\"dataNeeds\"] || []).map do |n|\n  {\n    \"need\"      => n[\"need\"],\n    \"evidence\"  => n[\"evidence\"],\n    \"impact\"    => n[\"impact\"],\n    \"bdProduct\" => n[\"bdProduct\"],\n    \"bdPageUrl\" => n[\"bdPageUrl\"],\n    \"sourceUrl\" => n[\"sourceUrl\"],\n    \"category\"  => n[\"category\"]\n  }\nend\n\n# --- Recommended products ---\nrecommended_products = (r[\"recommendedProducts\"] || []).map do |p|\n  {\n    \"product\" => p[\"product\"],\n    \"why\"     => p[\"why\"],\n    \"pricing\" => p[\"pricing\"],\n    \"pageUrl\" => p[\"pageUrl\"]\n  }\nend\n\n# --- Business impact ---\nbi = r[\"businessImpact\"] || {}\nbusiness_impact = {\n  \"staleDataRisk\"          => bi[\"staleDataRisk\"],\n  \"buildItYourselfCost\"    => bi[\"buildItYourselfCost\"],\n  \"unlockableCapabilities\" => bi[\"unlockableCapabilities\"] || []\n}\n\n# --- Special recommendation (optional) ---\nspecial = r[\"specialRecommendation\"]\nspecial_clean = special.nil? ? nil : {\n  \"type\"     => special[\"type\"],\n  \"headline\" => special[\"headline\"],\n  \"body\"     => special[\"body\"],\n  \"ctaLabel\" => special[\"ctaLabel\"],\n  \"ctaUrl\"   => special[\"ctaUrl\"]\n}\n\n# --- Build the trimmed report ---\ntrimmed = {\n  \"company\"               => company_clean,\n  \"dataNeeds\"             => data_needs,\n  \"recommendedProducts\"   => recommended_products,\n  \"businessImpact\"        => business_impact,\n  \"specialRecommendation\" => special_clean\n}\n\n# --- Convert to JSON string for Claude ---\nreport_json = trimmed.to_json\n\n# --- Outputs ---\n{\n  \"report_json\"  => report_json,\n  \"company_name\" => company[\"name\"],\n  \"domain\"       => company[\"domain\"]\n}\n",
+                  "name": "Trim report JSON for Claude",
+                  "code_input": {
+                    "schema": "[{\"name\":\"report\",\"type\":\"string\",\"optional\":true,\"label\":\"report\",\"details\":{\"real_name\":\"report\"},\"control_type\":\"text\",\"parent\":[\"code_input\",\"data\"]}]",
+                    "data": {
+                      "report": "=_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"ffb242a4\",\"path\":[\"response\"]}')"
+                    }
+                  },
+                  "code_output_schema_json": "[{\"name\":\"report_json\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Report json\"},{\"name\":\"company_name\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Company name\"},{\"name\":\"domain\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Domain\"}]"
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Output",
+                    "name": "output",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Report json",
+                        "name": "report_json",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Company name",
+                        "name": "company_name",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Domain",
+                        "name": "domain",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "control_type": "form-schema-builder",
+                    "label": "Input",
+                    "name": "code_input",
+                    "optional": true,
+                    "override": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Schema",
+                        "extends_schema": true,
+                        "type": "string",
+                        "name": "schema"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "report",
+                            "name": "report",
+                            "type": "string",
+                            "optional": true,
+                            "details": {
+                              "real_name": "report"
+                            },
+                            "parent": [
+                              "code_input",
+                              "data"
+                            ]
+                          }
+                        ],
+                        "label": "Data",
+                        "type": "object",
+                        "name": "data"
+                      }
+                    ],
+                    "sticky": true,
+                    "type": "object"
+                  }
+                ],
+                "visible_config_fields": [
+                  "name",
+                  "code_input",
+                  "code_output_schema_json",
+                  "payload_asset_type",
+                  "code",
+                  "code_input.data.report"
+                ],
+                "uuid": "16bb8a8c-6aaa-4f82-843b-8a2f9bb28d9e"
+              },
+              {
+                "number": 8,
+                "keyword": "if",
+                "input": {
+                  "type": "compound",
+                  "operand": "and",
+                  "conditions": [
+                    {
+                      "operand": "present",
+                      "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"cbd35ad7\",\"path\":[\"output\",\"report_json\"]}')}",
+                      "rhs": "",
+                      "uuid": "f446b6c4-b815-4711-956f-a62791f15e33"
+                    }
+                  ]
+                },
+                "block": [
+                  {
+                    "number": 9,
+                    "provider": "anthropic_connector_5515774_1766397514",
+                    "name": "send_messages",
+                    "as": "cafcddd3",
+                    "title": null,
+                    "description": "Sends a message to <span class=\"provider\">Claude Sonnet 4.5</span> in <span class=\"provider\">Anthropic</span>",
+                    "keyword": "action",
+                    "dynamicPickListSelection": {
+                      "model": "Claude Sonnet 4.5",
+                      "message_type": "Single message"
+                    },
+                    "input": {
+                      "model": "claude-sonnet-4-5-20250929",
+                      "message_type": "single_message",
+                      "system": "**Role**\nYou are a Bright Data Autonomous Solutions Agent. You write ONE personalized outreach email to a lead, using a structured research report that is provided to you.\n\nYou are a technical entity, not a chatbot. You do NOT browse the web, search Google, or look anyone up. All facts come from the report. You only write the email.\n\n**Primary objective**\nShow concrete technical understanding of the company's product and likely data bottlenecks, then move the lead to one clear next action.\n\n**Audience**\nFounders, engineers, product leaders, and AI teams.\n\n**Voice and style**\n- Technical and direct.\n- Minimal and concrete.\n- No marketing language.\n- No hype, no metaphors.\n- Focus on systems, pipelines, reliability, coverage, observability, scale, and data quality.\n- Never use em-dashes.\n\n**Source of truth**\nThe provided RESEARCH REPORT (JSON) is your ONLY source of truth. Do NOT invent any fact, product, metric, customer, or detail not in the report. Do NOT perform research.\n\n**Hard rules**\n1. Grounded claims only. Use only facts in the report and lead inputs.\n2. No failure disclosure. Never mention missing data, the report, or any process.\n3. Mode selection:\n   - Person mode: real first AND last name AND non-generic email (not info/hello/sales/support/contact) -> address by first name.\n   - Use-case mode: name missing or generic email -> address the company team.\n4. Tool relevance gate. Mention only Bright Data products that appear in the report.\n5. Link count. Include 2 to 3 Bright Data product links from the report (exact bdPageUrl / pageUrl values).\n6. Required closer. End with one clear final sentence and exactly one CTA.\n7. Length. Email body: 120 to 190 words.\n\n**Email structure (natural prose)**\n1. Technical hook: identify as a Bright Data autonomous solutions agent + 1-2 concrete company signals.\n2. Diagnosis: one likely technical bottleneck.\n3. Recommendation: 2-3 Bright Data products from the report, each with one-line rationale and inline link.\n4. Outro with single CTA:\n   - If report has specialRecommendation, you may use its offer + ctaUrl.\n   - Else low-friction: \"If useful, start with the docs on these links and use the $50 credits for a small production-like test.\"\n   - Or high-intent: \"If you want, book 15 minutes here and I can map this to your current stack and volume assumptions: https://brightdata.com/#popup-170970\"\n\n**Output format (MANDATORY — JSON ONLY)**\nReturn ONLY a valid JSON object. No markdown, no code blocks, no text before or after. Use exactly these keys:\n\n{\n  \"addressed_to\": \"person full name or Company team\",\n  \"mode\": \"Person mode or Use-case mode\",\n  \"subject\": \"single subject line\",\n  \"email_body\": \"full email body as plain text, 120 to 190 words. Use \\n for line breaks.\",\n  \"sources_used\": [\"url1\", \"url2\", \"url3\"]\n}\n\nRules for the JSON:\n- Valid JSON only. Escape any double quotes inside strings.\n- email_body must be plain text with \\n for new lines.\n- sources_used is an array of URL strings taken from the report.\n- Do not add any keys other than the five above.\n\nReturn ONLY the JSON object. Output must start with { and end with }. No code fences (no ```), no explanation.\n\n",
+                      "messages": {
+                        "message": "LEAD INPUTS\nFull name: #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"0f46b026\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"first_name\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"0f46b026\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"last_name\"]}')}\nEmail: #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"0f46b026\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"email\"]}')}\nCompany domain: #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"0f46b026\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"email_domain\"]}')}\n\nRESEARCH REPORT (JSON, your only source of truth)\n---\n#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"cbd35ad7\",\"path\":[\"output\",\"report_json\"]}')}\n---\n\nCRITICAL: Output raw JSON only. Do NOT wrap the response in code fences. Do NOT use ```json or ```. The first character must be { and the last character must be }.\n\n"
+                      },
+                      "max_tokens": "4096",
+                      "temperature": "0.4"
+                    },
+                    "extended_output_schema": [
+                      {
+                        "control_type": "text",
+                        "label": "Anthropic reply",
+                        "name": "response",
+                        "optional": true,
+                        "type": "string"
+                      }
+                    ],
+                    "extended_input_schema": [
+                      {
+                        "label": "Message",
+                        "name": "messages",
+                        "optional": false,
+                        "properties": [
+                          {
+                            "control_type": "text-area",
+                            "label": "Text to send",
+                            "optional": false,
+                            "hint": "Enter a message to start a conversation with Anthropic.",
+                            "type": "string",
+                            "name": "message"
+                          }
+                        ],
+                        "type": "object"
+                      },
+                      {
+                        "control_type": "integer",
+                        "hint": "The maximum number of tokens to generate before stopping. Different models have different maximum values for this parameter. See <a href='https://docs.anthropic.com/en/docs/about-claude/models' target='_blank'>models</a> for details. If left blank, defaults to 4096.",
+                        "label": "Max tokens",
+                        "name": "max_tokens",
+                        "optional": true,
+                        "type": "string",
+                        "render_input": "integer_conversion"
+                      },
+                      {
+                        "hint": "A list of strings that will cause the model to stop generating.",
+                        "label": "Stop sequences",
+                        "name": "stop_sequences",
+                        "of": "string",
+                        "optional": true,
+                        "type": "array"
+                      },
+                      {
+                        "control_type": "number",
+                        "hint": "A number that controls the randomness of the model's output. A higher temperature will result in more random output, while a lower temperature will result in more predictable output. Defaults to 1.0 if left blank.",
+                        "label": "Temperature",
+                        "name": "temperature",
+                        "optional": true,
+                        "type": "string",
+                        "render_input": "float_conversion"
+                      },
+                      {
+                        "control_type": "number",
+                        "hint": "A number that controls the probability of the model generating each token. A higher Top P will result in the model generating more likely tokens, while a lower Top P will result in the model generating more unlikely tokens.",
+                        "label": "Top P",
+                        "name": "top_p",
+                        "optional": true,
+                        "type": "string",
+                        "render_input": "float_conversion"
+                      },
+                      {
+                        "control_type": "integer",
+                        "hint": "A number that controls the number of tokens that the model considers when generating each token. A higher Top K will result in the model considering more tokens, while a lower Top K will result in the model considering fewer tokens.",
+                        "label": "Top K",
+                        "name": "top_k",
+                        "optional": true,
+                        "type": "string",
+                        "render_input": "integer_conversion"
+                      },
+                      {
+                        "label": "Metadata",
+                        "name": "metadata",
+                        "optional": true,
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "User ID",
+                            "hint": "An external identifier for the user who is associated with the request.",
+                            "optional": true,
+                            "type": "string",
+                            "name": "user_id"
+                          }
+                        ],
+                        "type": "object"
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "hint": "Indicate whether to incrementally stream the response using server-sent events.",
+                        "label": "Stream",
+                        "name": "stream",
+                        "optional": true,
+                        "parse_output": "float_conversion",
+                        "toggle_field": {
+                          "name": "stream",
+                          "label": "Stream",
+                          "type": "string",
+                          "control_type": "text",
+                          "optional": true,
+                          "convert_input": "boolean_conversion",
+                          "toggle_hint": "Use custom value",
+                          "hint": "Allowed values: true or false."
+                        },
+                        "toggle_hint": "Select from list",
+                        "type": "number",
+                        "render_input": "boolean_conversion"
+                      },
+                      {
+                        "label": "Tool choice",
+                        "name": "tool_choice",
+                        "optional": true,
+                        "properties": [
+                          {
+                            "control_type": "select",
+                            "label": "Type",
+                            "extends_schema": true,
+                            "sticky": true,
+                            "pick_list": "tool_choice_list",
+                            "hint": "How the model should use the provided tools. The model can use a specific tool, any available tool, or decide by itself.",
+                            "toggle_hint": "Select sale layout",
+                            "toggle_field": {
+                              "name": "type",
+                              "type": "string",
+                              "label": "Type",
+                              "control_type": "text",
+                              "toggle_hint": "Use custom value",
+                              "optional": true,
+                              "extends_schema": true,
+                              "hint": "Accepted values are: any, auto or tool."
+                            },
+                            "optional": true,
+                            "type": "string",
+                            "name": "type"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Name",
+                            "sticky": true,
+                            "ngIf": "input.tool_choice.type == \"tool\"",
+                            "hint": "The name of the tool to use.",
+                            "optional": true,
+                            "type": "string",
+                            "name": "name"
+                          },
+                          {
+                            "control_type": "checkbox",
+                            "label": "Disable parallel tool use",
+                            "parse_output": "float_conversion",
+                            "hint": "Defaults to false. If set to true, the model will output at most one tool use.",
+                            "toggle_hint": "Select from list",
+                            "toggle_field": {
+                              "name": "disable_parallel_tool_use",
+                              "label": "Disable parallel tool use",
+                              "type": "string",
+                              "control_type": "text",
+                              "optional": true,
+                              "convert_input": "boolean_conversion",
+                              "toggle_hint": "Use custom value",
+                              "hint": "Allowed values: true or false."
+                            },
+                            "optional": true,
+                            "render_input": "boolean_conversion",
+                            "type": "number",
+                            "name": "disable_parallel_tool_use"
+                          }
+                        ],
+                        "type": "object"
+                      },
+                      {
+                        "label": "Tools",
+                        "name": "tools",
+                        "of": "object",
+                        "optional": true,
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Name",
+                            "optional": true,
+                            "type": "string",
+                            "name": "name"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Description",
+                            "optional": true,
+                            "type": "string",
+                            "name": "description"
+                          },
+                          {
+                            "properties": [
+                              {
+                                "control_type": "schema-designer",
+                                "label": "Schema",
+                                "extends_schema": true,
+                                "sticky": true,
+                                "empty_schema_title": "Describe all fields for your schema.",
+                                "hint": "Refer to <a href='https://docs.anthropic.com/en/api/messages' target='_blank'>tools definition</a> for examples.",
+                                "optional": true,
+                                "sample_data_type": "json",
+                                "type": "string",
+                                "name": "schema_builder"
+                              }
+                            ],
+                            "label": "Input schema",
+                            "optional": true,
+                            "type": "object",
+                            "name": "input_schema"
+                          }
+                        ],
+                        "type": "array"
+                      },
+                      {
+                        "control_type": "text",
+                        "hint": "A system prompt is a way of providing context and instructions to Claude, such as specifying a particular goal or role.",
+                        "label": "System",
+                        "name": "system",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "hint": "When enabled, responses include thinking content blocks showing Claude's thinking process before the final answer. Requires a minimum budget of 1,024 tokens and counts towards your max tokens limit.<br><b>Thinking is only supported for Claude 3.7 Sonnet</b>.",
+                        "label": "Thinking",
+                        "name": "thinking",
+                        "optional": true,
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Type",
+                            "hint": "This field is required when configuring extended thinking. Allowed value: enabled",
+                            "optional": true,
+                            "type": "string",
+                            "name": "type"
+                          },
+                          {
+                            "control_type": "integer",
+                            "label": "Budget tokens",
+                            "hint": "Determines how many tokens Claude can use for its internal reasoning process. Larger budgets can enable more thorough analysis for complex problems, improving response quality. Must be ≥1024 and less than max tokens. See <a href= \"https://docs.anthropic.com/en/docs/build\"\"-with-claude/extended-thinking\" target=\"_blank\">extended thinking</a> for details.",
+                            "optional": true,
+                            "render_input": "integer_conversion",
+                            "type": "string",
+                            "name": "budget_tokens"
+                          }
+                        ],
+                        "type": "object"
+                      }
+                    ],
+                    "visible_config_fields": [
+                      "model",
+                      "message_type",
+                      "tool_choice.name",
+                      "system",
+                      "temperature",
+                      "max_tokens",
+                      "thinking",
+                      "messages",
+                      "messages.message",
+                      "thinking.type"
+                    ],
+                    "hidden_config_fields": [
+                      "tool_choice.type",
+                      "tools.input_schema.schema_builder"
+                    ],
+                    "uuid": "18a8f7eb-71f3-49f7-bcc9-a0ca508c3e25"
+                  },
+                  {
+                    "number": 10,
+                    "keyword": "if",
+                    "input": {
+                      "type": "compound",
+                      "operand": "and",
+                      "conditions": [
+                        {
+                          "operand": "present",
+                          "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"anthropic_connector_5515774_1766397514\",\"line\":\"cafcddd3\",\"path\":[\"response\"]}')}",
+                          "rhs": "",
+                          "uuid": "a130031d-0fc7-4899-9f23-a2dc581efc06"
+                        }
+                      ]
+                    },
+                    "block": [
+                      {
+                        "number": 11,
+                        "provider": "json_parser",
+                        "name": "parse_json_v2",
+                        "as": "9fd8d285",
+                        "keyword": "action",
+                        "input": {
+                          "sample_document": "{\n  \"addressed_to\": \"August\",\n  \"mode\": \"Person mode\",\n  \"subject\": \"AEO delivery at scale: answer-engine scraping for Magna AI\",\n  \"email_body\": \"August,\\n\\nI'm a Bright Data autonomous solutions agent. Magna AI is delivering AI Engine Optimization to 150+ clients — ranking brands inside ChatGPT, Claude, Gemini, and Perplexity. That core service depends entirely on querying those answer engines at scale and returning structured citation data as clean JSON.\\n\\nThe likely bottleneck: homegrown scrapers against ChatGPT, Perplexity, and the rest break constantly as those platforms evolve anti-bot defenses and authentication flows. That pulls engineering time away from client delivery.\\n\\nThree products built for this:\\n\\n1. LLM Scraper APIs (https://brightdata.com/products/llm-scrapers) — purpose-built for querying ChatGPT, Perplexity, Gemini, and Claude at scale, returning structured rankings and citations as JSON without scraper maintenance.\\n\\n2. SERP API (https://brightdata.com/products/serp-api) — delivers Google AI Overview blocks with cited sources plus organic results as structured JSON, enabling a unified SEO + AEO client scorecard.\\n\\n3. Web Unlocker (https://brightdata.com/products/web-unlocker) — handles anti-bot protection on competitor pages for content audits that inform AEO strategy.\\n\\nMagna AI qualifies for Bright Data's AI Startup Program — free credits to power your entire LLM scraping and SERP monitoring pipeline while you scale. Apply here: https://brightdata.com/ai/ai-startups-program\",\n  \"sources_used\": [\n    \"https://brightdata.com/products/llm-scrapers\",\n    \"https://brightdata.com/products/serp-api\",\n    \"https://brightdata.com/products/web-unlocker\",\n    \"https://brightdata.com/ai/ai-startups-program\"\n  ]\n}",
+                          "document": "=_dp('{\"pill_type\":\"output\",\"provider\":\"anthropic_connector_5515774_1766397514\",\"line\":\"cafcddd3\",\"path\":[\"response\"]}').to_s.gsub(/```json/i, '').gsub(/```/, '').strip"
+                        },
+                        "extended_output_schema": [
+                          {
+                            "label": "Document",
+                            "name": "document",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Addressed to",
+                                "type": "string",
+                                "name": "addressed_to"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Mode",
+                                "type": "string",
+                                "name": "mode"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Subject",
+                                "type": "string",
+                                "name": "subject"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Email body",
+                                "type": "string",
+                                "name": "email_body"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Sources used",
+                                "of": "string",
+                                "type": "array",
+                                "name": "sources_used"
+                              }
+                            ],
+                            "type": "object"
+                          }
+                        ],
+                        "extended_input_schema": [
+                          {
+                            "label": "Edit schema",
+                            "name": "edit_schema",
+                            "optional": true,
+                            "properties": [
+                              {
+                                "control_type": "multiselect",
+                                "label": "Override fields",
+                                "pick_list": [
+                                  [
+                                    "document > addressed_to",
+                                    "document__sep__addressed_to"
+                                  ],
+                                  [
+                                    "document > mode",
+                                    "document__sep__mode"
+                                  ],
+                                  [
+                                    "document > subject",
+                                    "document__sep__subject"
+                                  ],
+                                  [
+                                    "document > email_body",
+                                    "document__sep__email_body"
+                                  ],
+                                  [
+                                    "document > sources_used",
+                                    "document__sep__sources_used"
+                                  ]
+                                ],
+                                "optional": true,
+                                "extends_schema": true,
+                                "type": "string",
+                                "name": "override_fields_picklist"
+                              }
+                            ],
+                            "sticky": false,
+                            "type": "object"
+                          }
+                        ],
+                        "comment": "parse antropic replay json",
+                        "uuid": "428439f8-0af9-44ab-87c1-cb7d4689073b"
+                      },
+                      {
+                        "number": 12,
+                        "provider": "gmail",
+                        "name": "send_mail",
+                        "as": "212f6e0e",
+                        "keyword": "action",
+                        "input": {
+                          "email_type": "text",
+                          "to": "elirans@brightdata.com",
+                          "subject": "[AI Email Review] #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"cbd35ad7\",\"path\":[\"output\",\"company_name\"]}')}— Subject: #{_dp('{\"pill_type\":\"output\",\"provider\":\"json_parser\",\"line\":\"9fd8d285\",\"path\":[\"document\",\"subject\"]}')}",
+                          "body": "\\== AI-Generated Email Review (POC) ===\n\nContact:        #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"0f46b026\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"first_name\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"0f46b026\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"last_name\"]}')}\nEmail:         #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"0f46b026\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"email\"]}')}\nCompany:       #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"0f46b026\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"company_name\"]}')}\nDomain:         #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"0f46b026\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"email_domain\"]}')}\nMode:           #{_dp('{\"pill_type\":\"output\",\"provider\":\"json_parser\",\"line\":\"9fd8d285\",\"path\":[\"document\",\"mode\"]}')}\nAddressed to:   #{_dp('{\"pill_type\":\"output\",\"provider\":\"json_parser\",\"line\":\"9fd8d285\",\"path\":[\"document\",\"addressed_to\"]}')}\n\n────────────────────────────\nGENERATED SUBJECT:\n#{_dp('{\"pill_type\":\"output\",\"provider\":\"json_parser\",\"line\":\"9fd8d285\",\"path\":[\"document\",\"subject\"]}')}\n\n────────────────────────────\nGENERATED EMAIL:\n#{_dp('{\"pill_type\":\"output\",\"provider\":\"json_parser\",\"line\":\"9fd8d285\",\"path\":[\"document\",\"email_body\"]}')}\n\n────────────────────────────\nSOURCES USED:\n#{_dp('{\"pill_type\":\"output\",\"provider\":\"json_parser\",\"line\":\"9fd8d285\",\"path\":[\"document\",\"sources_used\"]}')}\n",
+                          "from": "AI Email Review<bizadmin@brightdata.com>"
+                        },
+                        "visible_config_fields": [
+                          "to",
+                          "subject",
+                          "email_type",
+                          "body",
+                          "from"
+                        ],
+                        "uuid": "f86ba974-7ef8-4203-955a-d6a859f2fe5f"
+                      }
+                    ],
+                    "comment": "anthropic replay exist",
+                    "uuid": "665086fb-0f7d-49b4-9a9d-334af332f4f3"
+                  }
+                ],
+                "comment": "Trim report JSON for Claude exist",
+                "uuid": "9cbbc5e5-16de-4419-b6a1-7139333797ad"
+              },
+              {
+                "number": 13,
+                "keyword": "else",
+                "input": {
+                },
+                "block": [
+                  {
+                    "number": 14,
+                    "as": "4ce700a1",
+                    "keyword": "stop",
+                    "input": {
+                      "stop_with_error": "true",
+                      "stop_reason": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"ffb242a4\",\"path\":[\"response\",\"error\"]}')}"
+                    },
+                    "uuid": "61d6867f-f213-4e6c-848a-606acbe8d22b"
+                  }
+                ],
+                "comment": "status = error:\n400\t - Invalid domain (bad format, IP, internal TLD)\n422\t- Couldn't gather enough public data for this domain\n429\t - Rate limited\n500\t -Server/config error",
+                "uuid": "5b2acf76-7cc3-4ffc-81f5-15f5bfb87626"
+              }
+            ],
+            "comment": "status = 200",
+            "uuid": "dcb1b633-7d45-4cc5-a9e7-910199194acc"
+          },
+          {
+            "number": 15,
+            "as": "ed5c92ee",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "1",
+              "retry_interval": "10"
+            },
+            "block": [
+
+            ],
+            "uuid": "f1d56b72-e9f0-467d-aa70-6555ba80799b"
+          }
+        ],
+        "uuid": "a9fe73b5-8289-48d3-b07e-fed83fd545fc"
+      }
+    ],
+    "comment": "new/update contact\nverified email\nregistration form = true\nemail domain end wit 'ai' or 'io'\nRegistration form - shortened with Google",
+    "job_report_schema": [
+      {
+        "name": "custom_column_0",
+        "label": "Email"
+      },
+      {
+        "name": "custom_column_1",
+        "label": "Full Name"
+      },
+      {
+        "name": "custom_column_2",
+        "label": "Verified Emai"
+      },
+      {
+        "name": "custom_column_3",
+        "label": "Domain"
+      },
+      {
+        "name": "custom_column_4",
+        "label": "Website"
+      },
+      {
+        "name": "custom_column_5",
+        "label": "Recent Conversion"
+      },
+      {
+        "name": "custom_column_6",
+        "label": " Process Status"
+      },
+      {
+        "name": "custom_column_7",
+        "label": "Error Message"
+      },
+      {
+        "name": "custom_column_8",
+        "label": "Duration[Minutes]"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"email\"]}')}",
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"firstname\"]}')} #{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"lastname\"]}')}",
+      "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"verified_email_\"]}')}",
+      "custom_column_3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"hs_email_domain\"]}')}",
+      "custom_column_4": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"website\"]}')}",
+      "custom_column_5": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"properties\",\"recent_conversion_event_name\"]}')}",
+      "custom_column_6": "=_dp('{\"pill_type\":\"output\",\"provider\":\"gmail\",\"line\":\"212f6e0e\",\"path\":[\"id\"]}').present? ? 'Success' : \n_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"ed5c92ee\",\"path\":[\"message\"]}').present? ? 'Error' : 'Success'",
+      "custom_column_7": "=_dp('{\"pill_type\":\"output\",\"provider\":\"gmail\",\"line\":\"212f6e0e\",\"path\":[\"id\"]}').present? ? skip :\n_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"ed5c92ee\",\"path\":[\"message\"]}').presence",
+      "custom_column_8": "=((now-_('data.workato.job_context.job_created_at'))/60).round(3).to_s + ' Minute'"
+    },
+    "uuid": "0ece7eb2-3351-4f74-84fd-f4170836a467"
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_variable",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "hubspot",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Marketing/hubspot.connection.json",
+        "name": "HubSpot",
+        "folder": "#Connections/Marketing"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "rest",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "Imagine AI/AI Personalized Email Review/ai_solution_architect.connection.json",
+        "name": "ai-solution-architect",
+        "folder": "Imagine AI/AI Personalized Email Review"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "anthropic_connector_5515774_1766397514",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/AI/anthropic_api.connection.json",
+        "name": "Anthropic API",
+        "folder": "#Connections/AI",
+        "custom": true
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_custom_code",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "gmail",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Google Apps/gmail.connection.json",
+        "name": "Gmail",
+        "folder": "#Connections/Google Apps"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "json_parser",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ],
+  "tags": [
+    "AI Agent"
+  ]
+}

@@ -1,0 +1,77 @@
+{
+  "name": "dealhub_to_cp_sync",
+  "schema": [
+    {
+      "id": "11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+      "title": "Record ID",
+      "type": "short-text",
+      "read_only": true,
+      "hidden": true
+    },
+    {
+      "id": "a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+      "title": "Created time",
+      "type": "date-time",
+      "read_only": true,
+      "hidden": true
+    },
+    {
+      "id": "dfb389d7-4e76-4a93-806d-03c18b1f445b",
+      "title": "opportunity_id",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": true,
+      "metadata": {
+      }
+    },
+    {
+      "id": "e3a11a24-060d-4a22-86f4-93a56e291c90",
+      "title": "dealhub_quote_id",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "5305b335-cd7b-46aa-bd3d-ec49b5a69f5c",
+      "title": "executed_by",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "c252f52b-6d3c-4caf-b7b3-d7d8f6507265",
+      "title": "slack_message_id",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "221c79c1-a88b-4bb4-bd03-79c34c882dee",
+      "title": "sync_status",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "61aae604-a95e-4519-9091-bb0bf754a67f",
+      "title": "Last modified time",
+      "type": "date-time",
+      "read_only": true,
+      "hidden": true
+    }
+  ],
+  "project_name": "Finance"
+}

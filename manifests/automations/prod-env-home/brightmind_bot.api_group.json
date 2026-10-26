@@ -1,0 +1,9 @@
+{
+  "name": "BrightMind Bot",
+  "version": "1.0",
+  "description": null,
+  "handle": "brightbot",
+  "use_prefix": true,
+  "soap": false,
+  "soap_config": null
+}

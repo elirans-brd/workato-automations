@@ -1,0 +1,1675 @@
+{
+  "name": "API: BrightSearch - Business API",
+  "description": "### Detailed/Technical:\n\nTriggers a Slack Block Kit notification upon a Deep Lookup completion event. The message includes:\n\n**Lookup Summary:** Title, user, matched results count, match rate percentage, total runs, PLG mode, test mode indicator\n\n**Cost &amp; Status:** Lookup cost and completion status\n\n**Customer Context:** Customer ID, customer status, company email, triggered by, account created date, customer start date, customer paid status, customer onboarded status, lead owner, lead status, signup page, request ID, run ID\n\n**Search Details:** Original search prompt, enriched fields, applied constraints\n\n**Performance Metrics:** Max results, total results, matched results, pages read, pages considered, records enriched, cells enriched, fields generated\n\n**Usage &amp; Metadata:** Event type, free run indicator, timestamp, AI token usage (input/output tokens)\n\n**Quick Actions:** Button linking to Deep Lookup details page in CP\n\nDesigned to give Sales/CS instant visibility into Deep Lookup usage, performance, and customer engagement.",
+  "version": 3,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "workato_api_platform",
+    "name": "receive_request",
+    "as": "7ba619cf",
+    "keyword": "trigger",
+    "dynamicPickListSelection": {
+      "response.responses.0.http_status_code": "200 - OK",
+      "response.responses.1.http_status_code": "400 - Bad Request"
+    },
+    "toggleCfg": {
+      "response.responses.0.http_status_code": true,
+      "response.responses.1.http_status_code": true
+    },
+    "input": {
+      "request": {
+        "content_type": "json",
+        "schema": "[{\"control_type\":\"text\",\"label\":\"Session ID\",\"type\":\"string\",\"name\":\"session_id\"},{\"control_type\":\"text\",\"label\":\"View ID\",\"type\":\"string\",\"name\":\"view_id\"},{\"control_type\":\"text\",\"label\":\"Dataset ID\",\"type\":\"string\",\"name\":\"dataset_id\"},{\"control_type\":\"text\",\"label\":\"Dataset domain\",\"type\":\"string\",\"name\":\"dataset_domain\"},{\"control_type\":\"text\",\"label\":\"Dataset name\",\"type\":\"string\",\"name\":\"dataset_name\"},{\"control_type\":\"text\",\"label\":\"Dataset category\",\"type\":\"string\",\"name\":\"dataset_category\"},{\"control_type\":\"text\",\"label\":\"Enriched\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Enriched\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"enriched\"},\"type\":\"boolean\",\"name\":\"enriched\"},{\"control_type\":\"number\",\"label\":\"Fields\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"fields\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Dataset records\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"dataset_records\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Number of filters applied\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"number_of_filters_applied\",\"render_input\":\"float_conversion\"},{\"control_type\":\"text\",\"label\":\"Prompt\",\"type\":\"string\",\"name\":\"prompt\"},{\"control_type\":\"text\",\"label\":\"Filter\",\"type\":\"string\",\"name\":\"filter\"},{\"control_type\":\"text\",\"label\":\"Filtered dataset\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Filtered dataset\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"filtered_dataset\"},\"type\":\"boolean\",\"name\":\"filtered_dataset\"},{\"control_type\":\"number\",\"label\":\"Purchased dataset size\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"purchased_dataset_size\",\"render_input\":\"float_conversion\"},{\"properties\":[{\"properties\":[{\"control_type\":\"number\",\"label\":\"Min set cost\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"min_set_cost\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Max set cost\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"max_set_cost\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Record\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"record\",\"render_input\":\"float_conversion\"},{\"properties\":[],\"label\":\"Ext fields\",\"type\":\"object\",\"name\":\"ext_fields\"}],\"label\":\"Prices\",\"type\":\"object\",\"name\":\"prices\"},{\"properties\":[{\"control_type\":\"number\",\"label\":\"Snaps per month\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"snaps_per_month\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Records per snap\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"records_per_snap\",\"render_input\":\"float_conversion\"},{\"properties\":[],\"label\":\"Ext fields\",\"type\":\"object\",\"name\":\"ext_fields\"}],\"label\":\"Counts\",\"type\":\"object\",\"name\":\"counts\"},{\"control_type\":\"text\",\"label\":\"Discounts\",\"type\":\"array\",\"name\":\"discounts\",\"of\":\"number\"},{\"control_type\":\"number\",\"label\":\"Months\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"months\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Total snap count\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"total_snap_count\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Remained snap count\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"remained_snap_count\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Base cost\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"base_cost\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Total cost\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"total_cost\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Snap 1 cost\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"snap_1_cost\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Snap n cost\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"snap_n_cost\",\"render_input\":\"float_conversion\"},{\"properties\":[{\"control_type\":\"number\",\"label\":\"Base cost\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"base_cost\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Total cost\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"total_cost\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Snap 1 cost\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"snap_1_cost\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Snap n cost\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"snap_n_cost\",\"render_input\":\"float_conversion\"}],\"label\":\"With vat\",\"type\":\"object\",\"name\":\"with_vat\"},{\"control_type\":\"number\",\"label\":\"Enriched columns\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"enriched_columns\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Cpm\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"cpm\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Enriched cpm\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"enriched_cpm\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Contact fields cpm\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"contact_fields_cpm\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Cpm discount\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"cpm_discount\",\"render_input\":\"float_conversion\"}],\"label\":\"Purchase quote\",\"type\":\"object\",\"name\":\"purchase_quote\"},{\"control_type\":\"text\",\"label\":\"Subscription type\",\"type\":\"string\",\"name\":\"subscription_type\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Start\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"start\"},{\"control_type\":\"number\",\"label\":\"Frequency\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"frequency\",\"render_input\":\"float_conversion\"},{\"control_type\":\"text\",\"label\":\"Active days\",\"type\":\"string\",\"name\":\"active_days\"},{\"control_type\":\"text\",\"label\":\"Active dates\",\"type\":\"array\",\"name\":\"active_dates\",\"of\":\"number\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Start\",\"type\":\"string\",\"name\":\"start\"},{\"control_type\":\"text\",\"label\":\"End\",\"type\":\"string\",\"name\":\"end\"}],\"label\":\"Active period\",\"type\":\"object\",\"name\":\"active_period\"},{\"control_type\":\"text\",\"label\":\"End type\",\"type\":\"string\",\"name\":\"end_type\"},{\"control_type\":\"number\",\"label\":\"Runs\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"runs\",\"render_input\":\"float_conversion\"},{\"control_type\":\"text\",\"label\":\"Period\",\"type\":\"string\",\"name\":\"period\"},{\"control_type\":\"text\",\"label\":\"Preset\",\"type\":\"string\",\"name\":\"preset\"},{\"control_type\":\"number\",\"label\":\"End\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"end\",\"render_input\":\"float_conversion\"}],\"label\":\"Schedule\",\"type\":\"object\",\"name\":\"schedule\"},{\"control_type\":\"text\",\"label\":\"Next dataset delivery date\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"next_dataset_delivery_date\"},{\"control_type\":\"text\",\"label\":\"Active contact enriched\",\"type\":\"string\",\"name\":\"active_contact_enriched\"},{\"control_type\":\"text\",\"label\":\"Payment\",\"type\":\"string\",\"name\":\"payment\"},{\"control_type\":\"text\",\"label\":\"Mds purchase flow event\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Mds purchase flow event\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"mds_purchase_flow_event\"},\"type\":\"boolean\",\"name\":\"mds_purchase_flow_event\"},{\"control_type\":\"text\",\"label\":\"Customer ID\",\"type\":\"string\",\"name\":\"customer_id\"},{\"control_type\":\"text\",\"label\":\"User ID\",\"type\":\"string\",\"name\":\"user_id\"},{\"control_type\":\"text\",\"label\":\"Original signup page\",\"type\":\"string\",\"name\":\"original_signup_page\"},{\"control_type\":\"text\",\"label\":\"Is plg\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Is plg\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"is_plg\"},\"type\":\"boolean\",\"name\":\"is_plg\"},{\"control_type\":\"text\",\"label\":\"Account created\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"account_created\"},{\"control_type\":\"text\",\"label\":\"Page\",\"type\":\"string\",\"name\":\"page\"},{\"control_type\":\"text\",\"label\":\"Lead owner\",\"type\":\"string\",\"name\":\"lead_owner\"},{\"control_type\":\"text\",\"label\":\"Lead status\",\"type\":\"string\",\"name\":\"lead_status\"},{\"control_type\":\"text\",\"label\":\"Make token\",\"type\":\"string\",\"name\":\"make_token\"}]"
+      },
+      "response": {
+        "content_type": "json",
+        "responses": [
+          {
+            "name": "200 - OK",
+            "http_status_code": "200"
+          },
+          {
+            "http_status_code": "400",
+            "name": "400 - Bad Request",
+            "body_schema": "[{\"name\":\"message\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Message\"}]"
+          }
+        ]
+      }
+    },
+    "extended_output_schema": [
+      {
+        "label": "Context",
+        "name": "context",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Calling IP address",
+            "optional": true,
+            "type": "string",
+            "name": "calling_ip"
+          },
+          {
+            "properties": [
+              {
+                "control_type": "integer",
+                "label": "Access profile ID",
+                "parse_output": "integer_conversion",
+                "optional": true,
+                "type": "integer",
+                "name": "id"
+              },
+              {
+                "control_type": "text",
+                "label": "Access profile name",
+                "optional": true,
+                "type": "string",
+                "name": "name"
+              },
+              {
+                "control_type": "text",
+                "label": "Access profile authentication type",
+                "optional": true,
+                "type": "string",
+                "name": "type"
+              }
+            ],
+            "label": "Access profile",
+            "type": "object",
+            "name": "access_profile"
+          },
+          {
+            "properties": [
+              {
+                "control_type": "text",
+                "label": "API client ID",
+                "optional": true,
+                "type": "string",
+                "name": "id"
+              },
+              {
+                "control_type": "text",
+                "label": "API client name",
+                "optional": true,
+                "type": "string",
+                "name": "name"
+              }
+            ],
+            "label": "API client",
+            "type": "object",
+            "name": "client"
+          },
+          {
+            "properties": [
+              {
+                "control_type": "integer",
+                "label": "Issued At",
+                "render_input": "date_time_conversion",
+                "parse_output": "date_time_conversion",
+                "optional": true,
+                "type": "date_time",
+                "name": "iat"
+              },
+              {
+                "control_type": "integer",
+                "label": "Not Before",
+                "render_input": "date_time_conversion",
+                "parse_output": "date_time_conversion",
+                "optional": true,
+                "type": "date_time",
+                "name": "nbf"
+              },
+              {
+                "control_type": "integer",
+                "label": "Expiration Time",
+                "render_input": "date_time_conversion",
+                "parse_output": "date_time_conversion",
+                "optional": true,
+                "type": "date_time",
+                "name": "exp"
+              },
+              {
+                "control_type": "text",
+                "label": "Audience",
+                "optional": true,
+                "type": "string",
+                "name": "aud"
+              },
+              {
+                "control_type": "text",
+                "label": "JWT ID",
+                "optional": true,
+                "type": "string",
+                "name": "jti"
+              },
+              {
+                "control_type": "text",
+                "label": "Issuer",
+                "optional": true,
+                "type": "string",
+                "name": "iss"
+              }
+            ],
+            "label": "JWT claims",
+            "type": "object",
+            "name": "jwt_payload"
+          },
+          {
+            "properties": [
+              {
+                "properties": [
+                  {
+                    "control_type": "checkbox",
+                    "label": "Active",
+                    "render_input": "boolean_conversion",
+                    "parse_output": "boolean_conversion",
+                    "optional": true,
+                    "toggle_hint": "Select from option list",
+                    "toggle_field": {
+                      "label": "Active",
+                      "control_type": "text",
+                      "toggle_hint": "Use custom value",
+                      "optional": true,
+                      "type": "boolean",
+                      "name": "active"
+                    },
+                    "type": "boolean",
+                    "name": "active"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Scope",
+                    "optional": true,
+                    "type": "string",
+                    "name": "scope"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Client ID",
+                    "optional": true,
+                    "type": "string",
+                    "name": "client_id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Username",
+                    "optional": true,
+                    "type": "string",
+                    "name": "username"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Token type",
+                    "optional": true,
+                    "type": "string",
+                    "name": "token_type"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Exp",
+                    "optional": true,
+                    "type": "string",
+                    "name": "exp"
+                  }
+                ],
+                "label": "Response Body",
+                "type": "object",
+                "name": "payload"
+              }
+            ],
+            "label": "Token introspection",
+            "type": "object",
+            "name": "introspect"
+          }
+        ],
+        "type": "object"
+      },
+      {
+        "label": "Request parameters",
+        "name": "request",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Session ID",
+            "type": "string",
+            "name": "session_id"
+          },
+          {
+            "control_type": "text",
+            "label": "View ID",
+            "type": "string",
+            "name": "view_id"
+          },
+          {
+            "control_type": "text",
+            "label": "Dataset ID",
+            "type": "string",
+            "name": "dataset_id"
+          },
+          {
+            "control_type": "text",
+            "label": "Dataset domain",
+            "type": "string",
+            "name": "dataset_domain"
+          },
+          {
+            "control_type": "text",
+            "label": "Dataset name",
+            "type": "string",
+            "name": "dataset_name"
+          },
+          {
+            "control_type": "text",
+            "label": "Dataset category",
+            "type": "string",
+            "name": "dataset_category"
+          },
+          {
+            "control_type": "text",
+            "label": "Enriched",
+            "render_input": "boolean_conversion",
+            "parse_output": "boolean_conversion",
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+              "label": "Enriched",
+              "control_type": "text",
+              "toggle_hint": "Use custom value",
+              "type": "boolean",
+              "name": "enriched"
+            },
+            "type": "boolean",
+            "name": "enriched"
+          },
+          {
+            "control_type": "number",
+            "label": "Fields",
+            "parse_output": "float_conversion",
+            "type": "number",
+            "name": "fields",
+            "render_input": "float_conversion"
+          },
+          {
+            "control_type": "number",
+            "label": "Dataset records",
+            "parse_output": "float_conversion",
+            "type": "number",
+            "name": "dataset_records",
+            "render_input": "float_conversion"
+          },
+          {
+            "control_type": "number",
+            "label": "Number of filters applied",
+            "parse_output": "float_conversion",
+            "type": "number",
+            "name": "number_of_filters_applied",
+            "render_input": "float_conversion"
+          },
+          {
+            "control_type": "text",
+            "label": "Prompt",
+            "type": "string",
+            "name": "prompt"
+          },
+          {
+            "control_type": "text",
+            "label": "Filter",
+            "type": "string",
+            "name": "filter"
+          },
+          {
+            "control_type": "text",
+            "label": "Filtered dataset",
+            "render_input": "boolean_conversion",
+            "parse_output": "boolean_conversion",
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+              "label": "Filtered dataset",
+              "control_type": "text",
+              "toggle_hint": "Use custom value",
+              "type": "boolean",
+              "name": "filtered_dataset"
+            },
+            "type": "boolean",
+            "name": "filtered_dataset"
+          },
+          {
+            "control_type": "number",
+            "label": "Purchased dataset size",
+            "parse_output": "float_conversion",
+            "type": "number",
+            "name": "purchased_dataset_size",
+            "render_input": "float_conversion"
+          },
+          {
+            "properties": [
+              {
+                "properties": [
+                  {
+                    "control_type": "number",
+                    "label": "Min set cost",
+                    "parse_output": "float_conversion",
+                    "type": "number",
+                    "name": "min_set_cost",
+                    "render_input": "float_conversion"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Max set cost",
+                    "parse_output": "float_conversion",
+                    "type": "number",
+                    "name": "max_set_cost",
+                    "render_input": "float_conversion"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Record",
+                    "parse_output": "float_conversion",
+                    "type": "number",
+                    "name": "record",
+                    "render_input": "float_conversion"
+                  },
+                  {
+                    "properties": [
+
+                    ],
+                    "label": "Ext fields",
+                    "type": "object",
+                    "name": "ext_fields"
+                  }
+                ],
+                "label": "Prices",
+                "type": "object",
+                "name": "prices"
+              },
+              {
+                "properties": [
+                  {
+                    "control_type": "number",
+                    "label": "Snaps per month",
+                    "parse_output": "float_conversion",
+                    "type": "number",
+                    "name": "snaps_per_month",
+                    "render_input": "float_conversion"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Records per snap",
+                    "parse_output": "float_conversion",
+                    "type": "number",
+                    "name": "records_per_snap",
+                    "render_input": "float_conversion"
+                  },
+                  {
+                    "properties": [
+
+                    ],
+                    "label": "Ext fields",
+                    "type": "object",
+                    "name": "ext_fields"
+                  }
+                ],
+                "label": "Counts",
+                "type": "object",
+                "name": "counts"
+              },
+              {
+                "control_type": "text",
+                "label": "Discounts",
+                "type": "array",
+                "name": "discounts",
+                "of": "number"
+              },
+              {
+                "control_type": "number",
+                "label": "Months",
+                "parse_output": "float_conversion",
+                "type": "number",
+                "name": "months",
+                "render_input": "float_conversion"
+              },
+              {
+                "control_type": "number",
+                "label": "Total snap count",
+                "parse_output": "float_conversion",
+                "type": "number",
+                "name": "total_snap_count",
+                "render_input": "float_conversion"
+              },
+              {
+                "control_type": "number",
+                "label": "Remained snap count",
+                "parse_output": "float_conversion",
+                "type": "number",
+                "name": "remained_snap_count",
+                "render_input": "float_conversion"
+              },
+              {
+                "control_type": "number",
+                "label": "Base cost",
+                "parse_output": "float_conversion",
+                "type": "number",
+                "name": "base_cost",
+                "render_input": "float_conversion"
+              },
+              {
+                "control_type": "number",
+                "label": "Total cost",
+                "parse_output": "float_conversion",
+                "type": "number",
+                "name": "total_cost",
+                "render_input": "float_conversion"
+              },
+              {
+                "control_type": "number",
+                "label": "Snap 1 cost",
+                "parse_output": "float_conversion",
+                "type": "number",
+                "name": "snap_1_cost",
+                "render_input": "float_conversion"
+              },
+              {
+                "control_type": "number",
+                "label": "Snap n cost",
+                "parse_output": "float_conversion",
+                "type": "number",
+                "name": "snap_n_cost",
+                "render_input": "float_conversion"
+              },
+              {
+                "properties": [
+                  {
+                    "control_type": "number",
+                    "label": "Base cost",
+                    "parse_output": "float_conversion",
+                    "type": "number",
+                    "name": "base_cost",
+                    "render_input": "float_conversion"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Total cost",
+                    "parse_output": "float_conversion",
+                    "type": "number",
+                    "name": "total_cost",
+                    "render_input": "float_conversion"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Snap 1 cost",
+                    "parse_output": "float_conversion",
+                    "type": "number",
+                    "name": "snap_1_cost",
+                    "render_input": "float_conversion"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Snap n cost",
+                    "parse_output": "float_conversion",
+                    "type": "number",
+                    "name": "snap_n_cost",
+                    "render_input": "float_conversion"
+                  }
+                ],
+                "label": "With vat",
+                "type": "object",
+                "name": "with_vat"
+              },
+              {
+                "control_type": "number",
+                "label": "Enriched columns",
+                "parse_output": "float_conversion",
+                "type": "number",
+                "name": "enriched_columns",
+                "render_input": "float_conversion"
+              },
+              {
+                "control_type": "number",
+                "label": "Cpm",
+                "parse_output": "float_conversion",
+                "type": "number",
+                "name": "cpm",
+                "render_input": "float_conversion"
+              },
+              {
+                "control_type": "number",
+                "label": "Enriched cpm",
+                "parse_output": "float_conversion",
+                "type": "number",
+                "name": "enriched_cpm",
+                "render_input": "float_conversion"
+              },
+              {
+                "control_type": "number",
+                "label": "Contact fields cpm",
+                "parse_output": "float_conversion",
+                "type": "number",
+                "name": "contact_fields_cpm",
+                "render_input": "float_conversion"
+              },
+              {
+                "control_type": "number",
+                "label": "Cpm discount",
+                "parse_output": "float_conversion",
+                "type": "number",
+                "name": "cpm_discount",
+                "render_input": "float_conversion"
+              }
+            ],
+            "label": "Purchase quote",
+            "type": "object",
+            "name": "purchase_quote"
+          },
+          {
+            "control_type": "text",
+            "label": "Subscription type",
+            "type": "string",
+            "name": "subscription_type"
+          },
+          {
+            "properties": [
+              {
+                "control_type": "text",
+                "label": "Start",
+                "render_input": "date_time_conversion",
+                "parse_output": "date_time_conversion",
+                "type": "date_time",
+                "name": "start"
+              },
+              {
+                "control_type": "number",
+                "label": "Frequency",
+                "parse_output": "float_conversion",
+                "type": "number",
+                "name": "frequency",
+                "render_input": "float_conversion"
+              },
+              {
+                "control_type": "text",
+                "label": "Active days",
+                "type": "string",
+                "name": "active_days"
+              },
+              {
+                "control_type": "text",
+                "label": "Active dates",
+                "type": "array",
+                "name": "active_dates",
+                "of": "number"
+              },
+              {
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Start",
+                    "type": "string",
+                    "name": "start"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "End",
+                    "type": "string",
+                    "name": "end"
+                  }
+                ],
+                "label": "Active period",
+                "type": "object",
+                "name": "active_period"
+              },
+              {
+                "control_type": "text",
+                "label": "End type",
+                "type": "string",
+                "name": "end_type"
+              },
+              {
+                "control_type": "number",
+                "label": "Runs",
+                "parse_output": "float_conversion",
+                "type": "number",
+                "name": "runs",
+                "render_input": "float_conversion"
+              },
+              {
+                "control_type": "text",
+                "label": "Period",
+                "type": "string",
+                "name": "period"
+              },
+              {
+                "control_type": "text",
+                "label": "Preset",
+                "type": "string",
+                "name": "preset"
+              },
+              {
+                "control_type": "number",
+                "label": "End",
+                "parse_output": "float_conversion",
+                "type": "number",
+                "name": "end",
+                "render_input": "float_conversion"
+              }
+            ],
+            "label": "Schedule",
+            "type": "object",
+            "name": "schedule"
+          },
+          {
+            "control_type": "text",
+            "label": "Next dataset delivery date",
+            "render_input": "date_time_conversion",
+            "parse_output": "date_time_conversion",
+            "type": "date_time",
+            "name": "next_dataset_delivery_date"
+          },
+          {
+            "control_type": "text",
+            "label": "Active contact enriched",
+            "type": "string",
+            "name": "active_contact_enriched"
+          },
+          {
+            "control_type": "text",
+            "label": "Payment",
+            "type": "string",
+            "name": "payment"
+          },
+          {
+            "control_type": "text",
+            "label": "Mds purchase flow event",
+            "render_input": "boolean_conversion",
+            "parse_output": "boolean_conversion",
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+              "label": "Mds purchase flow event",
+              "control_type": "text",
+              "toggle_hint": "Use custom value",
+              "type": "boolean",
+              "name": "mds_purchase_flow_event"
+            },
+            "type": "boolean",
+            "name": "mds_purchase_flow_event"
+          },
+          {
+            "control_type": "text",
+            "label": "Customer ID",
+            "type": "string",
+            "name": "customer_id"
+          },
+          {
+            "control_type": "text",
+            "label": "User ID",
+            "type": "string",
+            "name": "user_id"
+          },
+          {
+            "control_type": "text",
+            "label": "Original signup page",
+            "type": "string",
+            "name": "original_signup_page"
+          },
+          {
+            "control_type": "text",
+            "label": "Is plg",
+            "render_input": "boolean_conversion",
+            "parse_output": "boolean_conversion",
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+              "label": "Is plg",
+              "control_type": "text",
+              "toggle_hint": "Use custom value",
+              "type": "boolean",
+              "name": "is_plg"
+            },
+            "type": "boolean",
+            "name": "is_plg"
+          },
+          {
+            "control_type": "text",
+            "label": "Account created",
+            "render_input": "date_time_conversion",
+            "parse_output": "date_time_conversion",
+            "type": "date_time",
+            "name": "account_created"
+          },
+          {
+            "control_type": "text",
+            "label": "Page",
+            "type": "string",
+            "name": "page"
+          },
+          {
+            "control_type": "text",
+            "label": "Lead owner",
+            "type": "string",
+            "name": "lead_owner"
+          },
+          {
+            "control_type": "text",
+            "label": "Lead status",
+            "type": "string",
+            "name": "lead_status"
+          },
+          {
+            "control_type": "text",
+            "label": "Make token",
+            "type": "string",
+            "name": "make_token"
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "slack_bot",
+            "name": "post_bot_message",
+            "as": "bd3dd085",
+            "keyword": "action",
+            "toggleCfg": {
+              "channel": true
+            },
+            "input": {
+              "channel": "#brightsearch-business-quries",
+              "blocks": {
+                "block_type": "section_with_text",
+                "section_text": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\"]}')"
+              }
+            },
+            "uuid": "e593cc68-834d-468c-96fb-be31587574be",
+            "skip": false
+          },
+          {
+            "number": 3,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "is_not_true",
+                  "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"user_id\"]}').downcase.match?(/@brightdata|@hola|@luminati/)",
+                  "rhs": "",
+                  "uuid": "ff0b8da7-ddf4-4441-a113-f60b79847b2d"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 4,
+                "provider": "workato_variable",
+                "name": "declare_list",
+                "as": "cda3b020",
+                "keyword": "action",
+                "input": {
+                  "name": " Dataset Deal",
+                  "list_item_schema_json": "[{\"name\":\"purchase_amount\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Purchase amount\"},{\"name\":\"total_value\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Total value\"}]",
+                  "list_items": {
+                    "purchase_amount": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"purchase_quote\",\"base_cost\"]}')&.round(2)",
+                    "total_value": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"purchase_quote\",\"base_cost\"]}')&.round(2)"
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "hint": "",
+                    "label": " Dataset Deal",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": false,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Purchase amount",
+                        "name": "purchase_amount",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Total value",
+                        "name": "total_value",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                    "label": "Items",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Purchase amount",
+                        "name": "purchase_amount",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Total value",
+                        "name": "total_value",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "uuid": "96bccc85-4e15-4322-b6fa-3121363397bf",
+                "skip": true
+              },
+              {
+                "number": 5,
+                "provider": "open_ai",
+                "name": "chat_completion",
+                "as": "98403398",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "model": "gpt-4o-mini"
+                },
+                "toggleCfg": {
+                  "model": true
+                },
+                "input": {
+                  "message_type": "single_message",
+                  "messages": {
+                    "message": "ROLE & OBJECTIVE  \nYou are a specialized translator that converts JSON filter definitions into clear, plain-English descriptions. Your task is to interpret the filtering logic in the provided JSON input and express it in natural language that anyone can understand.\n\nREQUIREMENTS  \n- Output only the plain-text filter description (no extra text, headers, code, or formatting).  \n- Write one concise, grammatically correct sentence that accurately describes the filter conditions.  \n- Correctly interpret AND, OR, and NOT, including nested/grouped logic and operator precedence.  \n- Do not include any JSON syntax in the output (no braces, brackets, quotes, slashes, keys-as-JSON, or operator tokens).  \n- Begin with “Show only” or “Filter for”.  \n- Present nested/complex logic in a readable order using natural phrasing like “and”, “or”, and “except”.  \n- If a valid description cannot be produced for any reason (missing/empty filter, unsupported structure, unparsable input), output exactly:  \nCouldn't generate filter description\n\nINPUT: #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"filter\"]}')}"
+                  },
+                  "model": "gpt-4o-mini"
+                },
+                "extended_output_schema": [
+                  {
+                    "control_type": "text",
+                    "label": "ID",
+                    "name": "id",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "date",
+                    "label": "Created",
+                    "name": "created",
+                    "parse_output": "epoch_time_conversion",
+                    "type": "date_time",
+                    "render_input": "date_conversion"
+                  },
+                  {
+                    "label": "Choices",
+                    "name": "choices",
+                    "of": "object",
+                    "properties": [
+                      {
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Role",
+                            "type": "string",
+                            "name": "role"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Content",
+                            "type": "string",
+                            "name": "content"
+                          }
+                        ],
+                        "label": "Message",
+                        "type": "object",
+                        "name": "message"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Finish reason",
+                        "type": "string",
+                        "name": "finish_reason"
+                      }
+                    ],
+                    "type": "array"
+                  },
+                  {
+                    "label": "Usage",
+                    "name": "usage",
+                    "properties": [
+                      {
+                        "control_type": "number",
+                        "label": "Prompt tokens",
+                        "parse_output": "integer_conversion",
+                        "type": "integer",
+                        "name": "prompt_tokens"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Completion tokens",
+                        "parse_output": "integer_conversion",
+                        "type": "integer",
+                        "name": "completion_tokens"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Total tokens",
+                        "parse_output": "integer_conversion",
+                        "type": "integer",
+                        "name": "total_tokens"
+                      }
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Best choice",
+                    "name": "best_choice",
+                    "type": "string"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "label": "Message",
+                    "name": "messages",
+                    "optional": false,
+                    "properties": [
+                      {
+                        "control_type": "text-area",
+                        "label": "Text to send",
+                        "optional": false,
+                        "hint": "Enter a message to start a conversation with ChatGPT.",
+                        "type": "string",
+                        "name": "message"
+                      }
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "control_type": "select",
+                    "extends_schema": true,
+                    "hint": "Select the desired model from the picklist. If left blank, defaults to <b>gpt-4o</b>.",
+                    "label": "Model",
+                    "name": "model",
+                    "optional": true,
+                    "pick_list": "chat_models",
+                    "sticky": false,
+                    "toggle_field": {
+                      "name": "model",
+                      "control_type": "text",
+                      "type": "string",
+                      "optional": true,
+                      "extends_schema": true,
+                      "sticky": false,
+                      "label": "Model",
+                      "toggle_hint": "Use custom value",
+                      "hint": "Provide model ID that you want to use in your recipe. You can provide available models from Open AI or your fine tuned models. If left blank, defaults to <b>gpt-4o</b>. <a href='https://platform.openai.com/docs/models' target='_blank'>Learn more</a>"
+                    },
+                    "toggle_hint": "Select from list",
+                    "type": "string"
+                  },
+                  {
+                    "hint": "The function to execute. If you provide a function, the name, description, and parameters are required.",
+                    "label": "Function",
+                    "name": "function",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Function name",
+                        "hint": "The name of the function to execute. Allowed characters: alphanumeric, hyphen, underscore.",
+                        "optional": true,
+                        "type": "string",
+                        "name": "name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Function description",
+                        "hint": "The description of the function.",
+                        "optional": true,
+                        "type": "string",
+                        "name": "description"
+                      },
+                      {
+                        "control_type": "schema-designer",
+                        "label": "Function parameters",
+                        "extends_schema": true,
+                        "sample_data_type": "json_http",
+                        "empty_schema_title": "Provide parameters for your function.",
+                        "exclude_fields": [
+                          "hint",
+                          "label"
+                        ],
+                        "exclude_fields_types": [
+                          "integer",
+                          "date",
+                          "date_time"
+                        ],
+                        "custom_properties": [
+                          {
+                            "name": "description",
+                            "type": "string",
+                            "optional": true,
+                            "label": "Description"
+                          }
+                        ],
+                        "optional": true,
+                        "type": "string",
+                        "name": "parameters"
+                      }
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "control_type": "select",
+                    "hint": "Applied only when <b>Function</b> is provided. When <b>Function</b> is selected, the provided function will be used. This is the default. When <b>Auto</b> is selected, OpenAI will automatically determine whether to use the function or not. When <b>None</b> is selected, the function will not be used.",
+                    "label": "Tool choice",
+                    "name": "tool_choice",
+                    "optional": true,
+                    "pick_list": "tool_choices_picklist",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "number",
+                    "hint": "Enter a value between 0 and 2 for controlling the randomness of chat completions. Higher values will make the output more random, while lower values will make it more focused and deterministic. It is recommended to use this or <b>Top p</b> but not both.",
+                    "label": "Temperature",
+                    "name": "temperature",
+                    "optional": true,
+                    "parse_output": "float_conversion",
+                    "sticky": false,
+                    "type": "number",
+                    "render_input": "float_conversion"
+                  },
+                  {
+                    "control_type": "number",
+                    "hint": "Enter a value between 0 and 1 for controlling the diversity of chat completions. A higher value will result in more varied responses. It is recommended to use this or <b>Temperature</b> but not both.",
+                    "label": "Top p",
+                    "name": "top_p",
+                    "optional": true,
+                    "parse_output": "float_conversion",
+                    "sticky": false,
+                    "type": "number",
+                    "render_input": "float_conversion"
+                  },
+                  {
+                    "control_type": "integer",
+                    "hint": "The number of chat completions to generate for each input message. If left blank, defaults to 1. Multiples are only possible when temperature or top_p is non-zero",
+                    "label": "Number of chat completions",
+                    "name": "n",
+                    "optional": true,
+                    "parse_output": "integer_conversion",
+                    "type": "integer",
+                    "render_input": "integer_conversion"
+                  },
+                  {
+                    "control_type": "text",
+                    "hint": "Specific stop phrase that will end generation. For example, if you set the stop phrase to a period (.) the model will generate text until it reaches a period, and then it will stop.",
+                    "label": "Stop phrase",
+                    "name": "stop",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "integer",
+                    "hint": "The maximum number of tokens to generate in the chat completion. Ensure the sum of this value and tokens in the input message doesn't exceed the model's maximum limit (<b>4096</b> tokens for <b>gpt-3.5-turbo</b>).",
+                    "label": "Maximum tokens",
+                    "name": "max_tokens",
+                    "optional": true,
+                    "parse_output": "integer_conversion",
+                    "type": "integer",
+                    "render_input": "convert_integer"
+                  },
+                  {
+                    "control_type": "number",
+                    "hint": "                Number between -2.0 and 2.0. Positive values penalize new tokens based on whether they appear in the text so far,\n                increasing the model's likelihood to talk about new topics.\n                <a href='https://platform.openai.com/docs/api-reference/parameter-details', target='_blank'>See more information about frequency and presence penalties</a>\n",
+                    "label": "Presence penalty",
+                    "name": "presence_penalty",
+                    "optional": true,
+                    "parse_output": "float_conversion",
+                    "type": "number",
+                    "render_input": "float_conversion"
+                  },
+                  {
+                    "control_type": "text",
+                    "hint": "A unique identifier representing your end-user, which can help OpenAI to monitor and detect abuse. <a href='https://platform.openai.com/docs/guides/safety-best-practices/end-user-ids', target='_blank'>Learn more</a>.",
+                    "label": "User",
+                    "name": "user",
+                    "optional": true,
+                    "type": "string"
+                  }
+                ],
+                "visible_config_fields": [
+                  "message_type",
+                  "messages",
+                  "messages.message",
+                  "model"
+                ],
+                "uuid": "841e8995-1b6f-4afe-b6ac-4c6800ef54a9",
+                "skip": true
+              },
+              {
+                "number": 6,
+                "provider": "slack_bot",
+                "name": "post_bot_message",
+                "as": "9e7f525a",
+                "keyword": "action",
+                "toggleCfg": {
+                  "channel": true,
+                  "blocks.11.actions.0.style": true,
+                  "blocks.11.actions.1.style": true
+                },
+                "input": {
+                  "channel": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"datasets-deal-announcements channel\"}')}",
+                  "blocks": [
+                    {
+                      "button_type": "continue_flow",
+                      "block_type": "section_with_text",
+                      "section_text": "*🎉 New Dataset Deal! 🎉*"
+                    },
+                    {
+                      "button_type": "continue_flow",
+                      "block_type": "section_with_text",
+                      "section_text": "*💰Purchase Amount: $#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"cda3b020\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"purchase_amount\"]}')}*"
+                    },
+                    {
+                      "button_type": "continue_flow",
+                      "block_type": "section_with_text",
+                      "section_text": "*🧪 PLG Deal: #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"is_plg\"]}')}*"
+                    },
+                    {
+                      "button_type": "continue_flow",
+                      "block_type": "section_with_text",
+                      "section_text": "⌚Date: #{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_created_at\"]}')}"
+                    },
+                    {
+                      "button_type": "continue_flow",
+                      "block_type": "section_with_text",
+                      "section_text": "*📦 Dataset:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"dataset_name\"]}')}`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"dataset_id\"]}')}`\n*🌐 Domain:*#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"dataset_domain\"]}')}\n*🏷️ Category:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"dataset_category\"]}')}\n*📄 View ID:* `#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"view_id\"]}')}`\n*🧮 Filters Applied:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"number_of_filters_applied\"]}')}\n"
+                    },
+                    {
+                      "button_type": "continue_flow",
+                      "block_type": "section_with_text",
+                      "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"open_ai\",\"line\":\"98403398\",\"path\":[\"choices\",{\"path_element_type\":\"current_item\"},\"message\",\"content\"]}')}"
+                    },
+                    {
+                      "button_type": "continue_flow",
+                      "block_type": "divider"
+                    },
+                    {
+                      "button_type": "continue_flow",
+                      "block_type": "section_with_text",
+                      "section_text": "*💵 CPM:* $#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"purchase_quote\",\"cpm\"]}')}\n*📊 Records Purchased:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"purchased_dataset_size\"]}')}\n*💰 Total Value:* $#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"cda3b020\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"total_value\"]}')}\n*🔁 Subscription Type:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"subscription_type\"]}')}\n*🧪 PLG Deal:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"is_plg\"]}')}"
+                    },
+                    {
+                      "button_type": "continue_flow",
+                      "block_type": "divider"
+                    },
+                    {
+                      "button_type": "continue_flow",
+                      "block_type": "section_with_text",
+                      "section_text": "*👤 Customer ID:* `#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"customer_id\"]}')}`\n*🙋‍♂️ User ID:* `#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"user_id\"]}')}`\n*👥 Lead Owner:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"lead_owner\"]}')}\n*📌 Lead Status:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"lead_status\"]}')}"
+                    },
+                    {
+                      "button_type": "continue_flow",
+                      "block_type": "section_with_text",
+                      "section_text": "*📅 Account Created:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"account_created\"]}')}\n*📝 Signup Page:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"original_signup_page\"]}')}\n*🔁 Session ID:* `#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"session_id\"]}')}`"
+                    },
+                    {
+                      "button_type": "continue_flow",
+                      "block_type": "actions",
+                      "actions": [
+                        {
+                          "button_type": "url_button",
+                          "type": "button_with_long_action",
+                          "url": "https://brightdata.com/cp/datasets?id=#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"customer_id\"]}')}",
+                          "style": "default",
+                          "button_title": "🔗 View in CP"
+                        },
+                        {
+                          "button_type": "url_button",
+                          "type": "button_with_long_action",
+                          "button_title": "💰 View Cost Explorer",
+                          "style": "default",
+                          "url": "https://brightdata.com/cp/billing/costs?id=#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"customer_id\"]}')}"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                "uuid": "757ea976-2551-44f3-9070-b8e1f927014d",
+                "skip": true
+              }
+            ],
+            "uuid": "04779a1c-ebd9-40ef-84a2-6ba2e85f7d16",
+            "skip": true
+          },
+          {
+            "number": 7,
+            "provider": "workato_api_platform",
+            "name": "return_response",
+            "as": "fd5fe00f",
+            "keyword": "action",
+            "input": {
+              "http_status_code": "200"
+            },
+            "extended_output_schema": [
+              {
+                "change_on_blur": true,
+                "control_type": "select",
+                "extends_schema": true,
+                "label": "Response",
+                "name": "http_status_code",
+                "pick_list": [
+                  [
+                    "200 - OK",
+                    "200"
+                  ],
+                  [
+                    "400 - Bad Request",
+                    "400"
+                  ]
+                ],
+                "type": "string"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "change_on_blur": true,
+                "control_type": "select",
+                "extends_schema": true,
+                "label": "Response",
+                "name": "http_status_code",
+                "pick_list": [
+                  [
+                    "200 - OK",
+                    "200"
+                  ],
+                  [
+                    "400 - Bad Request",
+                    "400"
+                  ]
+                ],
+                "type": "string"
+              }
+            ],
+            "uuid": "240729c4-1700-4831-be0d-5a861cd6c7c6",
+            "skip": true
+          },
+          {
+            "number": 8,
+            "as": "af386c67",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 9,
+                "provider": "workato_recipe_function",
+                "name": "call_recipe_async",
+                "as": "8a0c272f",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "flow_id": "System Error Handling"
+                },
+                "input": {
+                  "flow_id": "69020589",
+                  "parameters": {
+                    "ErrorDetails": {
+                      "parentProcessName": "Partnerstack",
+                      "recipe_id": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_id\"]}')}",
+                      "processName": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+                      "process_path": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_path\"]}')}",
+                      "jobUrl": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_url\"]}')}",
+                      "is_repeat": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"is_repeat\"]}')}",
+                      "error_uuid": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"af386c67\",\"path\":[\"uuid\"]}')}",
+                      "errored_app": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"af386c67\",\"path\":[\"adapter\"]}')}",
+                      "errored_action": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"af386c67\",\"path\":[\"action\"]}')}",
+                      "error_step_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"af386c67\",\"path\":[\"line_number\"]}')}",
+                      "errorType": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"af386c67\",\"path\":[\"type\"]}')}",
+                      "errorMessage": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"af386c67\",\"path\":[\"message\"]}')}",
+                      "Timestamp": "=now.in_time_zone(\"Asia/Jerusalem\")",
+                      "job_uuid": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}"
+                    }
+                  }
+                },
+                "extended_input_schema": [
+                  {
+                    "label": "Parameters",
+                    "name": "parameters",
+                    "properties": [
+                      {
+                        "label": "Error Details",
+                        "name": "ErrorDetails",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Parent process name",
+                            "name": "parentProcessName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Recipe Id",
+                            "name": "recipe_id",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job uuid",
+                            "name": "job_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Name",
+                            "name": "processName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Path",
+                            "name": "process_path",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job URL",
+                            "name": "jobUrl",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Is repeat",
+                            "name": "is_repeat",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error uuid",
+                            "name": "error_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored app",
+                            "name": "errored_app",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored action",
+                            "name": "errored_action",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error step number",
+                            "name": "error_step_number",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error type",
+                            "name": "errorType",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error message",
+                            "name": "errorMessage",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Timestamp",
+                            "name": "Timestamp",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Files",
+                        "name": "files",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "File name",
+                            "name": "fileName",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File content",
+                            "name": "fileContent",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "comment": "system error function",
+                "uuid": "0d2b7798-a13d-40d0-a632-ae28f5e615be",
+                "skip": true
+              },
+              {
+                "number": 10,
+                "provider": "workato_api_platform",
+                "name": "return_response",
+                "as": "a5395aac",
+                "keyword": "action",
+                "input": {
+                  "http_status_code": "400",
+                  "response": {
+                    "message": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"af386c67\",\"path\":[\"message\"]}')}"
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "change_on_blur": true,
+                    "control_type": "select",
+                    "extends_schema": true,
+                    "label": "Response",
+                    "name": "http_status_code",
+                    "pick_list": [
+                      [
+                        "200 - OK",
+                        "200"
+                      ],
+                      [
+                        "400 - Bad Request",
+                        "400"
+                      ]
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "label": "Response body",
+                    "name": "response",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "change_on_blur": true,
+                    "control_type": "select",
+                    "extends_schema": true,
+                    "label": "Response",
+                    "name": "http_status_code",
+                    "pick_list": [
+                      [
+                        "200 - OK",
+                        "200"
+                      ],
+                      [
+                        "400 - Bad Request",
+                        "400"
+                      ]
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "label": "Response body",
+                    "name": "response",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "uuid": "2b3729d3-4315-41f2-af7b-3cbdfc8175e0",
+                "skip": true
+              }
+            ],
+            "uuid": "ec29c2da-74bb-4515-8b54-7c90f4200bbf"
+          }
+        ],
+        "uuid": "9b194405-a076-4ea9-bcdc-e0f897d3d9fe"
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_0",
+        "label": "Customer Id"
+      },
+      {
+        "name": "custom_column_10",
+        "label": "Dataset Id"
+      },
+      {
+        "name": "custom_column_1",
+        "label": "User Id"
+      },
+      {
+        "name": "custom_column_2",
+        "label": "Filter"
+      },
+      {
+        "name": "custom_column_3",
+        "label": "PLG Deal"
+      },
+      {
+        "name": "custom_column_5",
+        "label": "CPM"
+      },
+      {
+        "name": "custom_column_6",
+        "label": " Lead Owner"
+      },
+      {
+        "name": "custom_column_9",
+        "label": "Account Created"
+      },
+      {
+        "name": "custom_column_7",
+        "label": "Process Status"
+      },
+      {
+        "name": "custom_column_8",
+        "label": "Message"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"customer_id\"]}')}",
+      "custom_column_10": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"dataset_id\"]}')}",
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"user_id\"]}')}",
+      "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"open_ai\",\"line\":\"98403398\",\"path\":[\"choices\",{\"path_element_type\":\"current_item\"},\"message\",\"content\"]}')}",
+      "custom_column_3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"is_plg\"]}')}",
+      "custom_column_5": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"purchase_quote\",\"cpm\"]}')}",
+      "custom_column_6": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"lead_owner\"]}')}",
+      "custom_column_9": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"7ba619cf\",\"path\":[\"request\",\"account_created\"]}')}",
+      "custom_column_7": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"af386c67\",\"path\":[\"message\"]}').present? ?  'Error' : 'Success'",
+      "custom_column_8": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"af386c67\",\"path\":[\"message\"]}')}"
+    },
+    "uuid": "c1a89176-6128-42cd-9f79-ab2fc3149dd0"
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "slack_bot",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Slack/biz_admin_workbot.connection.json",
+        "name": "Biz Admin Workbot",
+        "folder": "#Connections/Slack"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "open_ai",
+      "skip_validation": true,
+      "account_id": {
+        "zip_name": "#Connections/AI/openai_api.connection.json",
+        "name": "OpenAI API",
+        "folder": "#Connections/AI"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": true,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_variable",
+      "skip_validation": true,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_api_platform",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ],
+  "tags": [
+    "Endpoint"
+  ]
+}

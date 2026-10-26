@@ -1,0 +1,26 @@
+{
+  "name": "[API | Get Assets by Email",
+  "recipe_id": {
+    "zip_name": "Imagine AI/BrightdMind/Authorization/bm_api_001_get_assets_by_email.recipe.json",
+    "name": "[BM]API-001 | Get Assets by Email",
+    "folder": "Imagine AI/BrightdMind/Authorization"
+  },
+  "api_group_id": {
+    "zip_name": "brightmind_bot.api_group.json",
+    "name": "BrightMind Bot",
+    "folder": ""
+  },
+  "method": "GET",
+  "path": "get-assets-by-email",
+  "legacy": false,
+  "validate_request": false,
+  "validation_formula": "",
+  "use_cache": true,
+  "cache_ttl": 600,
+  "cache_keys": [
+    "email",
+    "firstName",
+    "lastName"
+  ],
+  "cache_size_limit": 10240
+}

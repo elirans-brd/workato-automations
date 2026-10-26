@@ -1,0 +1,24 @@
+{
+  "name": "API | Check Bot Authorization",
+  "recipe_id": {
+    "zip_name": "Imagine AI/BrightdMind/Authorization/bm_api_002_check_bot_authorization.recipe.json",
+    "name": "[BM]API-002 | Check Bot Authorization",
+    "folder": "Imagine AI/BrightdMind/Authorization"
+  },
+  "api_group_id": {
+    "zip_name": "brightmind_bot.api_group.json",
+    "name": "BrightMind Bot",
+    "folder": ""
+  },
+  "method": "GET",
+  "path": "check-bot-authorization",
+  "legacy": false,
+  "validate_request": false,
+  "validation_formula": "",
+  "use_cache": false,
+  "cache_ttl": 600,
+  "cache_keys": [
+
+  ],
+  "cache_size_limit": 10240
+}

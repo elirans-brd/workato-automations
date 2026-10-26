@@ -1,0 +1,1395 @@
+{
+  "name": "[BM] BOT-Home-002 | Home Page",
+  "version": 4,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "slack_bot",
+    "name": "new_event",
+    "as": "09fc91c3",
+    "keyword": "trigger",
+    "dynamicPickListSelection": {
+      "event_name": "App Home Opened (app_home_opened)"
+    },
+    "toggleCfg": {
+      "event_name": true
+    },
+    "input": {
+      "event_name": "app_home_opened"
+    },
+    "extended_output_schema": [
+      {
+        "label": "App home opened",
+        "name": "app_home_opened",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Type",
+            "type": "string",
+            "name": "type"
+          },
+          {
+            "control_type": "text",
+            "label": "User",
+            "type": "string",
+            "name": "user"
+          },
+          {
+            "control_type": "text",
+            "label": "Channel",
+            "type": "string",
+            "name": "channel"
+          },
+          {
+            "control_type": "text",
+            "label": "Tab",
+            "type": "string",
+            "name": "tab"
+          },
+          {
+            "properties": [
+              {
+                "control_type": "text",
+                "label": "ID",
+                "type": "string",
+                "name": "id"
+              },
+              {
+                "control_type": "text",
+                "label": "Team ID",
+                "type": "string",
+                "name": "team_id"
+              },
+              {
+                "control_type": "text",
+                "label": "Type",
+                "type": "string",
+                "name": "type"
+              },
+              {
+                "label": "Blocks",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Type",
+                    "type": "string",
+                    "name": "type"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Block ID",
+                    "type": "string",
+                    "name": "block_id"
+                  },
+                  {
+                    "label": "Elements",
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Type",
+                        "type": "string",
+                        "name": "type"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Action ID",
+                        "type": "string",
+                        "name": "action_id"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Type",
+                            "type": "string",
+                            "name": "type"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Text",
+                            "type": "string",
+                            "name": "text"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Emoji",
+                            "render_input": null,
+                            "parse_output": null,
+                            "toggle_hint": "Select from option list",
+                            "toggle_field": {
+                              "label": "Emoji",
+                              "control_type": "text",
+                              "toggle_hint": "Use custom value",
+                              "type": "boolean",
+                              "name": "emoji",
+                              "render_input": null,
+                              "parse_output": null
+                            },
+                            "type": "boolean",
+                            "name": "emoji"
+                          }
+                        ],
+                        "label": "Text",
+                        "type": "object",
+                        "name": "text"
+                      }
+                    ],
+                    "type": "array",
+                    "name": "elements"
+                  }
+                ],
+                "type": "array",
+                "name": "blocks"
+              },
+              {
+                "control_type": "text",
+                "label": "Private metadata",
+                "type": "string",
+                "name": "private_metadata"
+              },
+              {
+                "control_type": "text",
+                "label": "Callback ID",
+                "type": "string",
+                "name": "callback_id"
+              },
+              {
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Values json",
+                    "type": "string",
+                    "name": "values_json"
+                  }
+                ],
+                "label": "State",
+                "type": "object",
+                "name": "state"
+              },
+              {
+                "control_type": "text",
+                "label": "Hash",
+                "type": "string",
+                "name": "hash"
+              },
+              {
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Type",
+                    "type": "string",
+                    "name": "type"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Text",
+                    "type": "string",
+                    "name": "text"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Emoji",
+                    "render_input": null,
+                    "parse_output": null,
+                    "toggle_hint": "Select from option list",
+                    "toggle_field": {
+                      "label": "Emoji",
+                      "control_type": "text",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean",
+                      "name": "emoji",
+                      "render_input": null,
+                      "parse_output": null
+                    },
+                    "type": "boolean",
+                    "name": "emoji"
+                  }
+                ],
+                "label": "Title",
+                "type": "object",
+                "name": "title"
+              },
+              {
+                "control_type": "text",
+                "label": "Clear on close",
+                "render_input": null,
+                "parse_output": null,
+                "toggle_hint": "Select from option list",
+                "toggle_field": {
+                  "label": "Clear on close",
+                  "control_type": "text",
+                  "toggle_hint": "Use custom value",
+                  "type": "boolean",
+                  "name": "clear_on_close",
+                  "render_input": null,
+                  "parse_output": null
+                },
+                "type": "boolean",
+                "name": "clear_on_close"
+              },
+              {
+                "control_type": "text",
+                "label": "Notify on close",
+                "render_input": null,
+                "parse_output": null,
+                "toggle_hint": "Select from option list",
+                "toggle_field": {
+                  "label": "Notify on close",
+                  "control_type": "text",
+                  "toggle_hint": "Use custom value",
+                  "type": "boolean",
+                  "name": "notify_on_close",
+                  "render_input": null,
+                  "parse_output": null
+                },
+                "type": "boolean",
+                "name": "notify_on_close"
+              },
+              {
+                "control_type": "text",
+                "label": "Close",
+                "type": "string",
+                "name": "close"
+              },
+              {
+                "control_type": "text",
+                "label": "Submit",
+                "type": "string",
+                "name": "submit"
+              },
+              {
+                "control_type": "text",
+                "label": "Previous view ID",
+                "type": "string",
+                "name": "previous_view_id"
+              },
+              {
+                "control_type": "text",
+                "label": "Root view ID",
+                "type": "string",
+                "name": "root_view_id"
+              },
+              {
+                "control_type": "text",
+                "label": "App ID",
+                "type": "string",
+                "name": "app_id"
+              },
+              {
+                "control_type": "text",
+                "label": "External ID",
+                "type": "string",
+                "name": "external_id"
+              },
+              {
+                "control_type": "text",
+                "label": "App installed team ID",
+                "type": "string",
+                "name": "app_installed_team_id"
+              },
+              {
+                "control_type": "text",
+                "label": "Bot ID",
+                "type": "string",
+                "name": "bot_id"
+              }
+            ],
+            "label": "View",
+            "type": "object",
+            "name": "view"
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "slack_bot",
+            "name": "get_user_by_email",
+            "as": "e793c6b5",
+            "keyword": "action",
+            "input": {
+              "id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"09fc91c3\",\"path\":[\"app_home_opened\",\"user\"]}')}"
+            },
+            "uuid": "f8a9b23f-ccc6-4258-a88a-000749af4ca0"
+          },
+          {
+            "number": 3,
+            "provider": "rest",
+            "name": "make_request_v2",
+            "as": "34ac4bfb",
+            "keyword": "action",
+            "toggleCfg": {
+              "response.ignore_http_errors": true,
+              "disable_retries": true
+            },
+            "input": {
+              "request_name": "Get all assets",
+              "request": {
+                "method": "GET",
+                "content_type": "application/json",
+                "url": "get-assets-by-email",
+                "parameters": [
+                  {
+                    "param": "email",
+                    "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"e793c6b5\",\"path\":[\"profile\",\"email\"]}')}"
+                  },
+                  {
+                    "param": "firstName",
+                    "value": "=_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"e793c6b5\",\"path\":[\"profile\",\"display_name_normalized\"]}').split(\" \")[0]"
+                  },
+                  {
+                    "param": "lastName",
+                    "value": "=_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"e793c6b5\",\"path\":[\"profile\",\"display_name_normalized\"]}').split(\" \").drop(1).join(\" \")"
+                  }
+                ]
+              },
+              "response": {
+                "output_type": "json",
+                "expected_encoding": "UTF-8",
+                "ignore_http_errors": "true",
+                "response_schema": "[{\"name\":\"rows\",\"type\":\"array\",\"of\":\"object\",\"label\":\"Rows\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Button title\",\"type\":\"string\",\"name\":\"Button_title\"},{\"control_type\":\"text\",\"label\":\"Section text\",\"type\":\"string\",\"name\":\"Section_text\"},{\"control_type\":\"text\",\"label\":\"Bot command\",\"type\":\"string\",\"name\":\"Bot_command\"},{\"name\":\"category\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Category\"},{\"control_type\":\"text\",\"label\":\"Command input values\",\"type\":\"string\",\"name\":\"Command_input_values\"},{\"control_type\":\"text\",\"label\":\"Permissions\",\"type\":\"string\",\"name\":\"Permissions\"},{\"control_type\":\"text\",\"label\":\"Question text\",\"type\":\"string\",\"name\":\"Question_Text\"},{\"control_type\":\"text\",\"label\":\"Description\",\"type\":\"string\",\"name\":\"Description\"}]},{\"control_type\":\"text\",\"label\":\"Reason\",\"type\":\"string\",\"name\":\"reason\"}]",
+                "headers_schema": "[{\"control_type\":\"text\",\"label\":\"Date\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"date\"},{\"control_type\":\"text\",\"label\":\"Content type\",\"type\":\"string\",\"name\":\"content_type\"},{\"control_type\":\"text\",\"label\":\"Transfer encoding\",\"type\":\"string\",\"name\":\"transfer_encoding\"},{\"control_type\":\"text\",\"label\":\"Connection\",\"type\":\"string\",\"name\":\"connection\"},{\"control_type\":\"text\",\"label\":\"Cache control\",\"type\":\"string\",\"name\":\"cache_control\"},{\"control_type\":\"text\",\"label\":\"Content security policy\",\"type\":\"string\",\"name\":\"content_security_policy\"},{\"control_type\":\"text\",\"label\":\"Last modified\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"last_modified\"},{\"control_type\":\"text\",\"label\":\"Permissions policy\",\"type\":\"string\",\"name\":\"permissions_policy\"},{\"control_type\":\"text\",\"label\":\"Referrer policy\",\"type\":\"string\",\"name\":\"referrer_policy\"},{\"control_type\":\"text\",\"label\":\"Strict transport security\",\"type\":\"string\",\"name\":\"strict_transport_security\"},{\"control_type\":\"text\",\"label\":\"Vary\",\"type\":\"string\",\"name\":\"vary\"},{\"control_type\":\"text\",\"label\":\"X content type options\",\"type\":\"string\",\"name\":\"x_content_type_options\"},{\"control_type\":\"text\",\"label\":\"X download options\",\"type\":\"string\",\"name\":\"x_download_options\"},{\"control_type\":\"text\",\"label\":\"X frame options\",\"type\":\"string\",\"name\":\"x_frame_options\"},{\"control_type\":\"text\",\"label\":\"X gateway version\",\"type\":\"string\",\"name\":\"x_gateway_version\"},{\"control_type\":\"text\",\"label\":\"X permitted cross domain policies\",\"type\":\"string\",\"name\":\"x_permitted_cross_domain_policies\"},{\"control_type\":\"text\",\"label\":\"X request ID\",\"type\":\"string\",\"name\":\"x_request_id\"},{\"control_type\":\"text\",\"label\":\"X runtime\",\"type\":\"string\",\"name\":\"x_runtime\"},{\"control_type\":\"text\",\"label\":\"X workato cached\",\"type\":\"string\",\"name\":\"x_workato_cached\"},{\"control_type\":\"text\",\"label\":\"X workato concurrency limit\",\"type\":\"string\",\"name\":\"x_workato_concurrency_limit\"},{\"control_type\":\"text\",\"label\":\"X workato concurrent sessions\",\"type\":\"string\",\"name\":\"x_workato_concurrent_sessions\"},{\"control_type\":\"text\",\"label\":\"X workato exec type\",\"type\":\"string\",\"name\":\"x_workato_exec_type\"},{\"control_type\":\"text\",\"label\":\"X workato job ID\",\"type\":\"string\",\"name\":\"x_workato_job_id\"},{\"control_type\":\"text\",\"label\":\"X workato recipe ID\",\"type\":\"string\",\"name\":\"x_workato_recipe_id\"},{\"control_type\":\"text\",\"label\":\"X xss protection\",\"type\":\"string\",\"name\":\"x_xss_protection\"},{\"control_type\":\"text\",\"label\":\"X corellation ID\",\"type\":\"string\",\"name\":\"x_corellation_id\"},{\"control_type\":\"text\",\"label\":\"Server\",\"type\":\"string\",\"name\":\"server\"}]"
+              },
+              "wait_for_response": "false",
+              "completion_threshold_seconds": "3600",
+              "disable_retries": "false",
+              "enable_streaming": "false"
+            },
+            "extended_output_schema": [
+              {
+                "label": "Headers",
+                "name": "headers",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Date",
+                    "render_input": "date_time_conversion",
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "name": "date"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Content type",
+                    "type": "string",
+                    "name": "content_type"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Transfer encoding",
+                    "type": "string",
+                    "name": "transfer_encoding"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Connection",
+                    "type": "string",
+                    "name": "connection"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Cache control",
+                    "type": "string",
+                    "name": "cache_control"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Content security policy",
+                    "type": "string",
+                    "name": "content_security_policy"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Last modified",
+                    "render_input": "date_time_conversion",
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "name": "last_modified"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Permissions policy",
+                    "type": "string",
+                    "name": "permissions_policy"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Referrer policy",
+                    "type": "string",
+                    "name": "referrer_policy"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Strict transport security",
+                    "type": "string",
+                    "name": "strict_transport_security"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Vary",
+                    "type": "string",
+                    "name": "vary"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "X content type options",
+                    "type": "string",
+                    "name": "x_content_type_options"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "X download options",
+                    "type": "string",
+                    "name": "x_download_options"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "X frame options",
+                    "type": "string",
+                    "name": "x_frame_options"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "X gateway version",
+                    "type": "string",
+                    "name": "x_gateway_version"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "X permitted cross domain policies",
+                    "type": "string",
+                    "name": "x_permitted_cross_domain_policies"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "X request ID",
+                    "type": "string",
+                    "name": "x_request_id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "X runtime",
+                    "type": "string",
+                    "name": "x_runtime"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "X workato cached",
+                    "type": "string",
+                    "name": "x_workato_cached"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "X workato concurrency limit",
+                    "type": "string",
+                    "name": "x_workato_concurrency_limit"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "X workato concurrent sessions",
+                    "type": "string",
+                    "name": "x_workato_concurrent_sessions"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "X workato exec type",
+                    "type": "string",
+                    "name": "x_workato_exec_type"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "X workato job ID",
+                    "type": "string",
+                    "name": "x_workato_job_id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "X workato recipe ID",
+                    "type": "string",
+                    "name": "x_workato_recipe_id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "X xss protection",
+                    "type": "string",
+                    "name": "x_xss_protection"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "X corellation ID",
+                    "type": "string",
+                    "name": "x_corellation_id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Server",
+                    "type": "string",
+                    "name": "server"
+                  }
+                ],
+                "type": "object"
+              },
+              {
+                "label": "Response",
+                "name": "response",
+                "properties": [
+                  {
+                    "label": "Rows",
+                    "name": "rows",
+                    "type": "array",
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Button title",
+                        "type": "string",
+                        "name": "Button_title"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Section text",
+                        "type": "string",
+                        "name": "Section_text"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Bot command",
+                        "type": "string",
+                        "name": "Bot_command"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Category",
+                        "name": "category",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Command input values",
+                        "type": "string",
+                        "name": "Command_input_values"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Permissions",
+                        "type": "string",
+                        "name": "Permissions"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Question text",
+                        "type": "string",
+                        "name": "Question_Text"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Description",
+                        "type": "string",
+                        "name": "Description"
+                      }
+                    ]
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Reason",
+                    "type": "string",
+                    "name": "reason"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "label": "Response",
+                "name": "response",
+                "override": true,
+                "properties": [
+                  {
+                    "control_type": "select",
+                    "label": "Response content type",
+                    "pick_list": [
+                      [
+                        "Text",
+                        "rawdatatxt"
+                      ],
+                      [
+                        "Binary",
+                        "rawdata"
+                      ],
+                      [
+                        "JSON",
+                        "json"
+                      ],
+                      [
+                        "XML",
+                        "xml2"
+                      ],
+                      [
+                        "Multipart",
+                        "multipart"
+                      ]
+                    ],
+                    "hint": "Select expected format of data response type, e.g. JSON or XML. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+                    "default": "json",
+                    "extends_schema": true,
+                    "type": "string",
+                    "name": "output_type"
+                  },
+                  {
+                    "control_type": "select",
+                    "label": "Encoding",
+                    "pick_list": "supported_encodings_without_binary_global_pick_list",
+                    "pick_list_connection_less": true,
+                    "optional": true,
+                    "default": "UTF-8",
+                    "hint": "Default encoding type is set to UTF-8, and typically doesn't need to be changed. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+                    "type": "string",
+                    "name": "expected_encoding"
+                  },
+                  {
+                    "control_type": "schema-designer",
+                    "label": "Response schema",
+                    "sample_data_type": "json_http",
+                    "extends_schema": true,
+                    "empty_schema_title": "Describe all fields in your response.",
+                    "optional": true,
+                    "sticky": true,
+                    "type": "string",
+                    "name": "response_schema"
+                  },
+                  {
+                    "control_type": "schema-designer",
+                    "label": "HTTP response headers",
+                    "extends_schema": true,
+                    "empty_schema_title": "Describe all the response headers",
+                    "optional": true,
+                    "sticky": true,
+                    "type": "string",
+                    "name": "headers_schema"
+                  },
+                  {
+                    "control_type": "schema-designer",
+                    "label": "Multipart part headers",
+                    "extends_schema": true,
+                    "empty_schema_title": "Describe headers within each multipart part",
+                    "optional": true,
+                    "sticky": true,
+                    "hint": "Define the headers that appear in each part of the multipart response (e.g., Content-Type, Content-ID)",
+                    "ngIf": "input.response.output_type == 'multipart'",
+                    "type": "string",
+                    "name": "part_headers_schema"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Mark non-2xx response codes as success?",
+                    "default": "false",
+                    "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+                    "optional": true,
+                    "toggle_hint": "Select from option list",
+                    "toggle_field": {
+                      "label": "Mark non-2xx response codes as success?",
+                      "control_type": "text",
+                      "toggle_hint": "Use custom value",
+                      "default": false,
+                      "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+                      "optional": true,
+                      "render_input": null,
+                      "parse_output": null,
+                      "type": "boolean",
+                      "name": "ignore_http_errors"
+                    },
+                    "type": "boolean",
+                    "name": "ignore_http_errors"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "uuid": "991efbec-8654-452a-9160-dfbc60e4c96d",
+            "wizardFinished": true,
+            "skip": false
+          },
+          {
+            "number": 4,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "equals_to",
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"34ac4bfb\",\"path\":[\"response\",\"rows\",{\"path_element_type\":\"size\"}]}')}",
+                  "rhs": "0",
+                  "uuid": "1ecb886f-50ef-4480-a0da-ebeb8724d9f8"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 5,
+                "as": "7bd200a7",
+                "keyword": "stop",
+                "input": {
+                  "stop_with_error": "true",
+                  "stop_reason": "No Apps to show"
+                },
+                "uuid": "9421b358-07f6-439d-8f21-97116003a6ab",
+                "skip": false
+              }
+            ],
+            "uuid": "d632992e-9787-4696-93d4-775d72f1c79b",
+            "skip": false
+          },
+          {
+            "number": 6,
+            "provider": "workato_smart_list",
+            "name": "create_list",
+            "as": "086f5775",
+            "keyword": "action",
+            "input": {
+              "list_source": "=_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"34ac4bfb\",\"path\":[\"response\",\"rows\"]}')",
+              "list_name": "Assets"
+            },
+            "extended_output_schema": [
+              {
+                "control_type": "text",
+                "label": "Assets",
+                "name": "list_name",
+                "type": "string"
+              },
+              {
+                "label": "Columns",
+                "name": "columns",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Button title",
+                    "list_data_type": "string",
+                    "type": "string",
+                    "name": "Button_title"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Section text",
+                    "list_data_type": "string",
+                    "type": "string",
+                    "name": "Section_text"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Bot command",
+                    "list_data_type": "string",
+                    "type": "string",
+                    "name": "Bot_command"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Category",
+                    "optional": false,
+                    "list_data_type": "string",
+                    "type": "string",
+                    "name": "category"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Command input values",
+                    "list_data_type": "string",
+                    "type": "string",
+                    "name": "Command_input_values"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Permissions",
+                    "list_data_type": "string",
+                    "type": "string",
+                    "name": "Permissions"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Question text",
+                    "list_data_type": "string",
+                    "type": "string",
+                    "name": "Question_Text"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Description",
+                    "list_data_type": "string",
+                    "type": "string",
+                    "name": "Description"
+                  }
+                ],
+                "type": "object"
+              },
+              {
+                "control_type": "number",
+                "label": "Row count",
+                "name": "row_count",
+                "parse_output": "integer_conversion",
+                "type": "integer"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "control_type": "checkbox",
+                "hint": "Select <b>Yes</b> to overwrite <b>Assets</b> list if it already exists",
+                "label": "Overwrite list?",
+                "name": "force",
+                "optional": true,
+                "toggle_field": {
+                  "label": "Overwrite list?",
+                  "control_type": "text",
+                  "toggle_hint": "Use custom value",
+                  "hint": "Select <b>Yes</b> to overwrite <b>Assets</b> list if it already exists",
+                  "optional": true,
+                  "render_input": null,
+                  "parse_output": null,
+                  "type": "boolean",
+                  "name": "force"
+                },
+                "toggle_hint": "Select from option list",
+                "type": "boolean"
+              },
+              {
+                "control_type": "multiselect",
+                "delimiter": "\n",
+                "hint": "Collections are like databases. Having index improves query performance. Select one or more fields from list source.",
+                "label": "Primary index",
+                "name": "primary_index",
+                "ngIf": "input.create_table_if_not_exist != 'false'",
+                "optional": true,
+                "pick_list": [
+                  [
+                    "Button title",
+                    "Button_title"
+                  ],
+                  [
+                    "Section text",
+                    "Section_text"
+                  ],
+                  [
+                    "Bot command",
+                    "Bot_command"
+                  ],
+                  [
+                    "Category",
+                    "category"
+                  ],
+                  [
+                    "Command input values",
+                    "Command_input_values"
+                  ],
+                  [
+                    "Permissions",
+                    "Permissions"
+                  ],
+                  [
+                    "Question text",
+                    "Question_Text"
+                  ],
+                  [
+                    "Description",
+                    "Description"
+                  ]
+                ],
+                "sticky": true,
+                "type": "string"
+              },
+              {
+                "control_type": "multiselect",
+                "delimiter": "\n",
+                "hint": "Select one or more fields from list source.",
+                "label": "Secondary index",
+                "name": "secondary_index",
+                "ngIf": "input.create_table_if_not_exist != 'false'",
+                "optional": true,
+                "pick_list": [
+                  [
+                    "Button title",
+                    "Button_title"
+                  ],
+                  [
+                    "Section text",
+                    "Section_text"
+                  ],
+                  [
+                    "Bot command",
+                    "Bot_command"
+                  ],
+                  [
+                    "Category",
+                    "category"
+                  ],
+                  [
+                    "Command input values",
+                    "Command_input_values"
+                  ],
+                  [
+                    "Permissions",
+                    "Permissions"
+                  ],
+                  [
+                    "Question text",
+                    "Question_Text"
+                  ],
+                  [
+                    "Description",
+                    "Description"
+                  ]
+                ],
+                "type": "string"
+              }
+            ],
+            "comment": "assets",
+            "uuid": "92773021-7198-42b3-b682-a24adfc20e98",
+            "skip": false
+          },
+          {
+            "number": 7,
+            "provider": "workato_smart_list",
+            "name": "query_list",
+            "as": "de240b76",
+            "keyword": "action",
+            "toggleCfg": {
+              "csv": true
+            },
+            "input": {
+              "output_schema_by": "index",
+              "csv": "false",
+              "headers": "false",
+              "col_sep": "comma",
+              "sql": "select #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"columns\",\"Button_title\"]}')},\n       #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"columns\",\"Section_text\"]}')},\n       #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"columns\",\"Bot_command\"]}')},\n       #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"columns\",\"category\"]}')},\n       #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"columns\",\"Command_input_values\"]}')},\n       #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"columns\",\"Permissions\"]}')},\n       #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"columns\",\"Question_Text\"]}')},\n       #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"columns\",\"Description\"]}')}\n \nfrom #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"list_name\"]}')}\n\nwhere #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"columns\",\"category\"]}')} = '🌐 FOR EVERYONE'",
+              "result_schema_json": "[{\"control_type\":\"text\",\"label\":\"Button title\",\"type\":\"string\",\"name\":\"Button_title\"},{\"control_type\":\"text\",\"label\":\"Section text\",\"type\":\"string\",\"name\":\"Section_text\"},{\"control_type\":\"text\",\"label\":\"Bot command\",\"type\":\"string\",\"name\":\"Bot_command\"},{\"control_type\":\"text\",\"label\":\"Category\",\"name\":\"category\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Command input values\",\"type\":\"string\",\"name\":\"Command_input_values\"},{\"control_type\":\"text\",\"label\":\"Permissions\",\"type\":\"string\",\"name\":\"Permissions\"},{\"control_type\":\"text\",\"label\":\"Question text\",\"type\":\"string\",\"name\":\"Question_Text\"},{\"control_type\":\"text\",\"label\":\"Description\",\"type\":\"string\",\"name\":\"Description\"}]"
+            },
+            "extended_output_schema": [
+              {
+                "label": "Rows",
+                "name": "rows",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Button title",
+                    "type": "string",
+                    "name": "Button_title"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Section text",
+                    "type": "string",
+                    "name": "Section_text"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Bot command",
+                    "type": "string",
+                    "name": "Bot_command"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Category",
+                    "name": "category",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Command input values",
+                    "type": "string",
+                    "name": "Command_input_values"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Permissions",
+                    "type": "string",
+                    "name": "Permissions"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Question text",
+                    "type": "string",
+                    "name": "Question_Text"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Description",
+                    "type": "string",
+                    "name": "Description"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "comment": "🌐 FOR EVERYONE",
+            "uuid": "e6d05aa7-f94c-41d9-925c-773f6a67002b",
+            "skip": false
+          },
+          {
+            "number": 8,
+            "provider": "workato_smart_list",
+            "name": "query_list",
+            "as": "249d6570",
+            "keyword": "action",
+            "toggleCfg": {
+              "csv": true
+            },
+            "input": {
+              "output_schema_by": "index",
+              "csv": "false",
+              "headers": "false",
+              "col_sep": "comma",
+              "sql": "select #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"columns\",\"Button_title\"]}')},\n       #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"columns\",\"Section_text\"]}')},\n       #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"columns\",\"Bot_command\"]}')},\n       #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"columns\",\"category\"]}')},\n       #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"columns\",\"Command_input_values\"]}')},\n       #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"columns\",\"Permissions\"]}')},\n       #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"columns\",\"Question_Text\"]}')},\n       #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"columns\",\"Description\"]}')}\n \nfrom #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"list_name\"]}')}\n\nwhere #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"086f5775\",\"path\":[\"columns\",\"category\"]}')} = '💼 Sales'",
+              "result_schema_json": "[{\"control_type\":\"text\",\"label\":\"Button title\",\"type\":\"string\",\"name\":\"Button_title\"},{\"control_type\":\"text\",\"label\":\"Section text\",\"type\":\"string\",\"name\":\"Section_text\"},{\"control_type\":\"text\",\"label\":\"Bot command\",\"type\":\"string\",\"name\":\"Bot_command\"},{\"control_type\":\"text\",\"label\":\"Category\",\"name\":\"category\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Command input values\",\"type\":\"string\",\"name\":\"Command_input_values\"},{\"control_type\":\"text\",\"label\":\"Permissions\",\"type\":\"string\",\"name\":\"Permissions\"},{\"control_type\":\"text\",\"label\":\"Question text\",\"type\":\"string\",\"name\":\"Question_Text\"},{\"control_type\":\"text\",\"label\":\"Description\",\"type\":\"string\",\"name\":\"Description\"}]"
+            },
+            "extended_output_schema": [
+              {
+                "label": "Rows",
+                "name": "rows",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Button title",
+                    "type": "string",
+                    "name": "Button_title"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Section text",
+                    "type": "string",
+                    "name": "Section_text"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Bot command",
+                    "type": "string",
+                    "name": "Bot_command"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Category",
+                    "name": "category",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Command input values",
+                    "type": "string",
+                    "name": "Command_input_values"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Permissions",
+                    "type": "string",
+                    "name": "Permissions"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Question text",
+                    "type": "string",
+                    "name": "Question_Text"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Description",
+                    "type": "string",
+                    "name": "Description"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "comment": "💼 Sales",
+            "uuid": "504a1344-75b2-47ef-ac3e-8f061aac08e8",
+            "skip": false
+          },
+          {
+            "number": 9,
+            "provider": "slack_bot",
+            "name": "open_bot_app_home",
+            "as": "1daa561e",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+              "blocks.0.bot_command": "reports bot generate",
+              "blocks.1.actions.0.bot_command": "reports bot generate",
+              "blocks.2.actions.1.bot_command": "text_to_sql question new_or_refine",
+              "blocks.2.actions.0.bot_command": "reports bot generate",
+              "blocks.4.bot_command": "text_to_sql question new_or_refine",
+              "blocks.2.bot_command": "reports bot generate"
+            },
+            "toggleCfg": {
+              "blocks.3.objects.blocks.1.bot_command": false
+            },
+            "input": {
+              "user_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"09fc91c3\",\"path\":[\"app_home_opened\",\"user\"]}')}",
+              "blocks": [
+                {
+                  "block_type": "image",
+                  "image_url": "https://d2cbg94ubxgsnp.cloudfront.net/Pictures/2000xAny/9/9/2/512992_shutterstock_715962319converted_749269.png",
+                  "image_title": "BrightMind",
+                  "alt_text": "BrightMind"
+                },
+                {
+                  "block_type": "section_with_text",
+                  "section_text": "*🧠 Welcome to BrightMind*"
+                },
+                {
+                  "block_type": "section_with_text",
+                  "section_text": "Your AI assistant for *internal business requests* at Bright Data. Pick an action below to get started 👇"
+                },
+                {
+                  "block_type": "repeat_block_group",
+                  "objects": {
+                    "blocks": [
+                      {
+                        "block_type": "divider"
+                      },
+                      {
+                        "block_type": "section_with_button",
+                        "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"34ac4bfb\",\"path\":[\"response\",\"rows\",{\"path_element_type\":\"current_item\"},\"Section_text\"]}')}",
+                        "button_title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"34ac4bfb\",\"path\":[\"response\",\"rows\",{\"path_element_type\":\"current_item\"},\"Button_title\"]}')}",
+                        "url": "slack://app?team=T0DNVBKCP&id=#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"slack_app_id\"}')}&tab=messages",
+                        "params": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"34ac4bfb\",\"path\":[\"response\",\"rows\",{\"path_element_type\":\"current_item\"},\"Command_input_values\"]}')}",
+                        "bot_command": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"34ac4bfb\",\"path\":[\"response\",\"rows\",{\"path_element_type\":\"current_item\"},\"Bot_command\"]}')}"
+                      }
+                    ],
+                    "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"34ac4bfb\",\"path\":[\"response\",\"rows\"]}')}"
+                  }
+                },
+                {
+                  "block_type": "divider"
+                },
+                {
+                  "block_type": "context",
+                  "elements": [
+                    {
+                      "type": "text",
+                      "text": "🧠 *BrightMind* • Powered by Bright Data • Need help? Visit the *About* tab"
+                    }
+                  ]
+                }
+              ]
+            },
+            "comment": "Decide how Workbot should respond to the user after the above actions have been performed",
+            "uuid": "af9881db-eee8-48d5-acee-cbe4460a9ec2",
+            "skip": true
+          },
+          {
+            "number": 10,
+            "provider": "slack_bot",
+            "name": "open_bot_app_home",
+            "as": "dabc972d",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+              "blocks.0.bot_command": "reports bot generate",
+              "blocks.1.actions.0.bot_command": "reports bot generate",
+              "blocks.2.actions.1.bot_command": "text_to_sql question new_or_refine",
+              "blocks.2.actions.0.bot_command": "reports bot generate",
+              "blocks.4.bot_command": "text_to_sql question new_or_refine",
+              "blocks.2.bot_command": "reports bot generate"
+            },
+            "toggleCfg": {
+              "blocks.3.objects.blocks.1.bot_command": false,
+              "blocks.3.objects.blocks.1.actions.bot_command": false,
+              "blocks.3.objects.blocks.1.actions.style": true,
+              "blocks.5.objects.blocks.1.actions.style": true,
+              "blocks.5.objects.blocks.1.actions.bot_command": false
+            },
+            "input": {
+              "user_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"09fc91c3\",\"path\":[\"app_home_opened\",\"user\"]}')}",
+              "blocks": [
+                {
+                  "block_type": "image",
+                  "image_url": "https://d2cbg94ubxgsnp.cloudfront.net/Pictures/2000xAny/9/9/2/512992_shutterstock_715962319converted_749269.png",
+                  "image_title": "BrightMind",
+                  "alt_text": "BrightMind"
+                },
+                {
+                  "block_type": "section_with_text",
+                  "section_text": "*🧠 Welcome to BrightMind*"
+                },
+                {
+                  "block_type": "section_with_text",
+                  "section_text": "Your AI assistant for *internal business requests* at Bright Data. Pick an action below to get started 👇"
+                },
+                {
+                  "block_type": "repeat_block_group",
+                  "objects": {
+                    "blocks": [
+                      {
+                        "block_type": "section_with_text",
+                        "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"de240b76\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"category\"]}')}"
+                      },
+                      {
+                        "block_type": "actions",
+                        "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"de240b76\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Section_text\"]}')}",
+                        "button_title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"de240b76\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Button_title\"]}')}",
+                        "url": "slack://app?team=T0DNVBKCP&id=#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"slack_app_id\"}')}&tab=messages",
+                        "params": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"de240b76\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Command_input_values\"]}')}",
+                        "bot_command": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"de240b76\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Bot_command\"]}')}",
+                        "actions": {
+                          "type": "button",
+                          "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"de240b76\",\"path\":[\"rows\"]}')}",
+                          "button_title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"de240b76\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Button_title\"]}')}",
+                          "url": "slack://app?team=T0DNVBKCP&id=#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"slack_app_id\"}')}&tab=messages",
+                          "bot_command": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"de240b76\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Bot_command\"]}')}",
+                          "params": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"de240b76\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Command_input_values\"]}')}",
+                          "style": "default"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "block_type": "divider"
+                },
+                {
+                  "block_type": "repeat_block_group",
+                  "objects": {
+                    "blocks": [
+                      {
+                        "block_type": "section_with_text",
+                        "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"249d6570\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"category\"]}')}"
+                      },
+                      {
+                        "block_type": "actions",
+                        "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"249d6570\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"category\"]}')}",
+                        "button_title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"249d6570\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Button_title\"]}')}",
+                        "params": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"249d6570\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Command_input_values\"]}')}",
+                        "bot_command": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"249d6570\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Bot_command\"]}')}",
+                        "url": "slack://app?team=T0DNVBKCP&id=#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"slack_app_id\"}')}&tab=messages",
+                        "actions": {
+                          "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"249d6570\",\"path\":[\"rows\"]}')}",
+                          "type": "button",
+                          "button_title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"249d6570\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Button_title\"]}')}",
+                          "url": "slack://app?team=T0DNVBKCP&id=#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"slack_app_id\"}')}&tab=messages",
+                          "bot_command": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"249d6570\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Bot_command\"]}')}",
+                          "params": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"249d6570\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Command_input_values\"]}')}",
+                          "style": "default"
+                        }
+                      }
+                    ]
+                  }
+                },
+                {
+                  "block_type": "divider"
+                },
+                {
+                  "block_type": "context",
+                  "elements": [
+                    {
+                      "type": "text",
+                      "text": "🧠 *BrightMind* • Powered by Bright Data • Need help? Visit the *About* tab"
+                    }
+                  ]
+                }
+              ]
+            },
+            "comment": "Decide how Workbot should respond to the user after the above actions have been performed",
+            "uuid": "b877aaf4-c5a9-429f-aca0-1c233f4a782f",
+            "skip": false
+          },
+          {
+            "number": 11,
+            "as": "fb77f689",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 12,
+                "provider": "slack_bot",
+                "name": "open_bot_app_home",
+                "as": "5f706166",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "blocks.0.bot_command": "reports bot generate",
+                  "blocks.1.actions.0.bot_command": "reports bot generate",
+                  "blocks.2.actions.1.bot_command": "text_to_sql question new_or_refine",
+                  "blocks.2.actions.0.bot_command": "reports bot generate",
+                  "blocks.4.bot_command": "text_to_sql question new_or_refine",
+                  "blocks.2.bot_command": "reports bot generate"
+                },
+                "input": {
+                  "user_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"09fc91c3\",\"path\":[\"app_home_opened\",\"user\"]}')}",
+                  "blocks": [
+                    {
+                      "block_type": "section_with_text",
+                      "section_text": "Seems like you don't have any Assets to show :open_mouth:\nPlease reach out to @Eliran Srur for more info."
+                    }
+                  ]
+                },
+                "comment": "Decide how Workbot should respond to the user after the above actions have been performed",
+                "uuid": "dee9693d-eca7-4a5e-8dc6-bad69d03103d",
+                "skip": false
+              }
+            ],
+            "uuid": "69ad5964-98f9-4ee6-b477-b722ff564674"
+          }
+        ],
+        "uuid": "c1486324-ef5a-4283-8b90-be075d0726f1"
+      }
+    ],
+    "comment": "Define how users should command Workbot from Slack",
+    "job_report_schema": [
+      {
+        "name": "custom_column_0",
+        "label": "User"
+      },
+      {
+        "name": "custom_column_1",
+        "label": "Assest"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"e793c6b5\",\"path\":[\"profile\",\"email\"]}')}",
+      "custom_column_1": "=_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"34ac4bfb\",\"path\":[\"response\",\"rows\"]}').pluck('Button_title').to_json"
+    },
+    "uuid": "04171d00-dabe-4f0b-8b4d-a3728d70feea",
+    "unfinished": false
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "slack_bot",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Slack/biz_admin_workbot.connection.json",
+        "name": "Biz Admin Workbot",
+        "folder": "#Connections/Slack"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "rest",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "Imagine AI/BrightdMind/Authorization/brightmind_bot_authorization.connection.json",
+        "name": "BrightMind Bot  Authorization",
+        "folder": "Imagine AI/BrightdMind/Authorization"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_smart_list",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ]
+}

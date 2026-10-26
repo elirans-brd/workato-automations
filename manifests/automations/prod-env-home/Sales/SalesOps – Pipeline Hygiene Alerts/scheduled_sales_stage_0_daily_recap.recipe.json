@@ -1,0 +1,1855 @@
+{
+  "name": "Scheduled: Sales – Stage 0 Daily Recap",
+  "description": "# 🔔 Stage 0 Pipeline Hygiene Monitor\n\n## 📝 Overview\nA daily automated workflow designed to maintain pipeline velocity by auditing **Stage 0 Prospecting** and **Auto Generated Prospecting** opportunities. It aggregates deals, filters them against service-level agreements (SLAs), and dynamically routes tailored alerts to active sales reps or system administrators.\n\n## ⚙️ Core Logic\n* **Inbound Leads SLA:** Flags opportunities older than **48 hours** as `Overdue`.\n* **Outbound Leads SLA:** Flags opportunities older than **72 hours** as `Overdue`.\n* **Exception Handling:** Automatically bypasses `Overdue` alerts if the **Sales/CSM Notes** field contains an extension justification.\n* **Orphan Management:** Identifies deals assigned to inactive or non-Slack users and routes a consolidated cleanup digest to the system administrator.\n\n## 📦 Workflow Architecture\n1.  **Trigger:** Scheduled daily at **09:00 AM Israel Time (Mon–Fri)**.\n2.  **Extraction:** Queries Salesforce for all open Stage 0 opportunities created after `01-Jan-2025`.\n3.  **Data Processing:** Uses a centralized **Ruby execution step** to enrich metrics, format pipelines, evaluate SLA criteria, and group payloads by account owner.\n4.  **Delivery:** * Reps with open action items receive a prioritized **Slack Block Kit Recap** split by urgency.\n    * Reps with clean pipelines receive a positive reinforcement **\"All Clear\"** confirmation.\n    * System admins receive a direct notification regarding **Orphaned Pipeline Risk**.",
+  "version": 2,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "workato_recipe_function",
+    "name": "execute",
+    "as": "e835d64a",
+    "keyword": "trigger",
+    "input": {
+    },
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "workato_variable",
+            "name": "declare_list",
+            "as": "fd8d28a8",
+            "keyword": "action",
+            "input": {
+              "name": "Sales Owners List",
+              "list_item_schema_json": "[{\"name\":\"id\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"ID\"},{\"name\":\"name\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Name\"},{\"name\":\"email\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Email\"}]",
+              "list_items": [
+                {
+                  "name": "Adir Roth",
+                  "id": "0058d000005L4NfAAK",
+                  "email": "adir@brightdata.com"
+                },
+                {
+                  "id": "005Sq0000061id3IAA",
+                  "email": "bennett@brightdata.com",
+                  "name": "Bennett Fink"
+                },
+                {
+                  "name": "Bradley Wiles",
+                  "email": "bradley@brightdata.com",
+                  "id": "0058d000005Ki0LAAS"
+                },
+                {
+                  "id": "fsdfw52345f23452§",
+                  "name": "Eliran Srur",
+                  "email": "elirans@brightdata.com"
+                }
+              ]
+            },
+            "extended_output_schema": [
+              {
+                "hint": "",
+                "label": "Sales Owners List",
+                "name": "list_items",
+                "of": "object",
+                "optional": false,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "ID",
+                    "name": "id",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Name",
+                    "name": "name",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Email",
+                    "name": "email",
+                    "type": "string",
+                    "optional": false
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                "label": "Items",
+                "name": "list_items",
+                "of": "object",
+                "optional": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "ID",
+                    "name": "id",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Name",
+                    "name": "name",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Email",
+                    "name": "email",
+                    "type": "string",
+                    "optional": false
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "uuid": "a9fe67cc-d776-4495-af9e-b76b7de276ed",
+            "skip": false
+          },
+          {
+            "number": 3,
+            "provider": "salesforce",
+            "name": "search_sobjects_soql",
+            "as": "43ebb9f9",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+              "sobject_name": "Opportunity",
+              "table_list": [
+                {
+                  "label": "Owner",
+                  "value": "Owner"
+                },
+                {
+                  "label": "Account",
+                  "value": "Account"
+                }
+              ],
+              "field_list": [
+                {
+                  "label": "Opportunity ID",
+                  "value": "Id"
+                },
+                {
+                  "label": "Name",
+                  "value": "Name"
+                },
+                {
+                  "label": "Account.Account ID",
+                  "value": "Account$Account ID.Id"
+                },
+                {
+                  "label": "Account.Account Name",
+                  "value": "Account$Account ID.Name"
+                },
+                {
+                  "label": "Amount",
+                  "value": "Amount"
+                },
+                {
+                  "label": "Stage",
+                  "value": "StageName"
+                },
+                {
+                  "label": "Lead Type",
+                  "value": "Lead_Type__c"
+                },
+                {
+                  "label": "Created Date",
+                  "value": "CreatedDate"
+                },
+                {
+                  "label": "Owner ID",
+                  "value": "OwnerId"
+                },
+                {
+                  "label": "Owner.Full Name",
+                  "value": "Owner$Owner ID.Name"
+                },
+                {
+                  "label": "Owner.Username",
+                  "value": "Owner$Owner ID.Username"
+                },
+                {
+                  "label": "Owner.Email",
+                  "value": "Owner$Owner ID.Email"
+                },
+                {
+                  "label": "Owner.Title",
+                  "value": "Owner$Owner ID.Title"
+                },
+                {
+                  "label": "Sales/CSM Notes",
+                  "value": "Sales_CSM_Notes__c"
+                }
+              ]
+            },
+            "input": {
+              "limit": "2000",
+              "query": "StageName IN ('Stage 0 Prospecting', 'Auto Generated Prospecting')\n    AND CreatedDate >= 2025-01-01T00:00:00Z\n    AND Owner.IsActive = TRUE\n    AND BANT_Running_User__c != NULL\n    AND Rejected_Reason__c = NULL\n    AND Account.Test_Account__c = FALSE\n    AND Owner.FirstName NOT IN ('akhilesh', 'bhaskar', 'jia', 'alina', 'alp', 'gregory', 'mariami', 'sharrine', 'luisa', 'arad', 'matan', 'shani', 'varna', 'subham', 'siyang', 'klass', 'carlos', 'Callum', 'Xin', 'mikey', 'michelle')",
+              "sobject_name": "Opportunity",
+              "table_list": "Owner\nAccount",
+              "field_list": "Id\nName\nAccount$Account ID.Id\nAccount$Account ID.Name\nAmount\nStageName\nLead_Type__c\nCreatedDate\nOwnerId\nOwner$Owner ID.Name\nOwner$Owner ID.Username\nOwner$Owner ID.Email\nOwner$Owner ID.Title\nSales_CSM_Notes__c"
+            },
+            "extended_output_schema": [
+              {
+                "label": "Opportunities",
+                "name": "Opportunity",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "number",
+                    "label": "Amount",
+                    "parse_output": "float_conversion",
+                    "optional": true,
+                    "custom": false,
+                    "hint": "First Month Revenue (One time fee + the first month of subscription revenue)",
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "type": "number",
+                    "name": "Amount"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Created Date",
+                    "render_input": "render_iso8601_timestamp",
+                    "parse_output": "parse_iso8601_timestamp",
+                    "optional": true,
+                    "custom": false,
+                    "sfdc_createable": true,
+                    "sfdc_updateable": false,
+                    "type": "date_time",
+                    "name": "CreatedDate"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Name",
+                    "event_title": true,
+                    "custom": false,
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "type": "string",
+                    "name": "Name"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Opportunity ID",
+                    "optional": true,
+                    "custom": false,
+                    "sfdc_createable": false,
+                    "sfdc_updateable": false,
+                    "type": "string",
+                    "name": "Id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Owner ID",
+                    "optional": true,
+                    "custom": false,
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "type": "string",
+                    "name": "OwnerId"
+                  },
+                  {
+                    "control_type": "select",
+                    "label": "Stage",
+                    "pick_list": "sobject_field_values_list",
+                    "pick_list_params": {
+                      "sobject_name": "\"Opportunity\"",
+                      "field_name": "\"StageName\""
+                    },
+                    "toggle_hint": "Select from list",
+                    "toggle_field": {
+                      "control_type": "text",
+                      "label": "Stage",
+                      "toggle_hint": "Enter custom value",
+                      "custom": false,
+                      "sfdc_createable": true,
+                      "sfdc_updateable": true,
+                      "type": "string",
+                      "name": "StageName"
+                    },
+                    "custom": false,
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "type": "string",
+                    "name": "StageName"
+                  },
+                  {
+                    "control_type": "select",
+                    "label": "Lead Type",
+                    "pick_list": "sobject_field_values_list",
+                    "pick_list_params": {
+                      "sobject_name": "\"Opportunity\"",
+                      "field_name": "\"Lead_Type__c\""
+                    },
+                    "toggle_hint": "Select from list",
+                    "toggle_field": {
+                      "control_type": "text",
+                      "label": "Lead Type",
+                      "toggle_hint": "Enter custom value",
+                      "optional": true,
+                      "custom": true,
+                      "hint": "The opportunity type, Inbound/Outbound originated from the converted Lead, or set by default to Outbound when the Opportunity is created without a Lead. Can be re-set by the user.",
+                      "sfdc_createable": true,
+                      "sfdc_updateable": true,
+                      "type": "string",
+                      "name": "Lead_Type__c"
+                    },
+                    "optional": true,
+                    "custom": true,
+                    "hint": "The opportunity type, Inbound/Outbound originated from the converted Lead, or set by default to Outbound when the Opportunity is created without a Lead. Can be re-set by the user.",
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "type": "string",
+                    "name": "Lead_Type__c"
+                  },
+                  {
+                    "control_type": "text-area",
+                    "label": "Sales/CSM Notes",
+                    "optional": true,
+                    "custom": true,
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "type": "string",
+                    "name": "Sales_CSM_Notes__c"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Account ID",
+                        "optional": true,
+                        "custom": false,
+                        "sfdc_createable": false,
+                        "sfdc_updateable": false,
+                        "type": "string",
+                        "name": "Id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Account Name",
+                        "event_title": true,
+                        "custom": false,
+                        "sfdc_createable": true,
+                        "sfdc_updateable": true,
+                        "type": "string",
+                        "name": "Name"
+                      }
+                    ],
+                    "label": "Account",
+                    "type": "object",
+                    "name": "Account"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Email",
+                        "custom": false,
+                        "sfdc_createable": true,
+                        "sfdc_updateable": true,
+                        "type": "string",
+                        "name": "Email"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Full Name",
+                        "event_title": true,
+                        "custom": false,
+                        "sfdc_createable": false,
+                        "sfdc_updateable": false,
+                        "type": "string",
+                        "name": "Name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Title",
+                        "optional": true,
+                        "custom": false,
+                        "sfdc_createable": true,
+                        "sfdc_updateable": true,
+                        "type": "string",
+                        "name": "Title"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Username",
+                        "custom": false,
+                        "sfdc_createable": true,
+                        "sfdc_updateable": true,
+                        "type": "string",
+                        "name": "Username"
+                      }
+                    ],
+                    "label": "Owner",
+                    "type": "object",
+                    "name": "Owner"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "number",
+                        "label": "Total size",
+                        "parse_output": "integer_conversion",
+                        "type": "integer",
+                        "name": "totalSize"
+                      },
+                      {
+                        "label": "Files",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "ID",
+                            "type": "string",
+                            "name": "Id"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Content size",
+                            "parse_output": "integer_conversion",
+                            "type": "integer",
+                            "name": "ContentSize"
+                          },
+                          {
+                            "control_type": "url",
+                            "label": "Content URL",
+                            "type": "string",
+                            "name": "ContentUrl"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File extension",
+                            "type": "string",
+                            "name": "FileExtension"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File type",
+                            "type": "string",
+                            "name": "FileType"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Parent ID",
+                            "type": "string",
+                            "name": "ParentId"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Record type",
+                            "type": "string",
+                            "name": "RecordType"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Title",
+                            "type": "string",
+                            "name": "Title"
+                          }
+                        ],
+                        "type": "array",
+                        "name": "records"
+                      }
+                    ],
+                    "label": "Combined attachments",
+                    "sfdc_field_type": "CombinedAttachment",
+                    "type": "object",
+                    "name": "CombinedAttachments"
+                  }
+                ],
+                "type": "array"
+              },
+              {
+                "control_type": "number",
+                "label": "List size",
+                "name": "list_size",
+                "parse_output": "integer_conversion",
+                "type": "integer"
+              },
+              {
+                "control_type": "checkbox",
+                "label": "Processed all records?",
+                "name": "done",
+                "toggle_field": {
+                  "label": "Processed all records?",
+                  "control_type": "text",
+                  "toggle_hint": "Use custom value",
+                  "type": "boolean",
+                  "render_input": null,
+                  "parse_output": null,
+                  "name": "done"
+                },
+                "toggle_hint": "Select from option list",
+                "type": "boolean"
+              },
+              {
+                "control_type": "integer",
+                "label": "Total records",
+                "name": "total_records",
+                "parse_output": "integer_conversion",
+                "type": "integer"
+              },
+              {
+                "control_type": "url",
+                "label": "Next page URL",
+                "name": "next_page_url",
+                "type": "string"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "control_type": "checkbox",
+                "disable_formula": true,
+                "extends_schema": true,
+                "hint": "Select <b>Yes</b> to obtain data from notes, attachments and files associated to the queried records. Default value is <b>Yes</b>.",
+                "label": "Select combined attachments",
+                "name": "include_combined_attachments",
+                "optional": true,
+                "support_pills": false,
+                "type": "boolean"
+              }
+            ],
+            "visible_config_fields": [
+              "sobject_name",
+              "query",
+              "field_list",
+              "limit",
+              "offset",
+              "requester_email",
+              "table_list"
+            ],
+            "comment": "search oppurtunity",
+            "uuid": "df795bd4-b2bb-436d-a70e-7975ab0276e1"
+          },
+          {
+            "number": 4,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "present",
+                  "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\"]}')",
+                  "rhs": "",
+                  "uuid": "5832a89c-84b4-4faf-871d-e507c1a207e0"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 5,
+                "provider": "workato_custom_code",
+                "name": "invoke_custom_ruby_code",
+                "as": "1cf6debd",
+                "keyword": "action",
+                "input": {
+                  "payload_asset_type": "inline",
+                  "code": "sf_opportunity_url = \"#{input['sf_base_url'].to_s.chomp('/')}/lightning/r/Opportunity/\"\n\ndef format_amount(num)\n  num.to_i.to_s.reverse.scan(/\\d{1,3}/).join(',').reverse\nend\n\n# Helper: build opp text line for Slack\ndef opp_to_text(o)\n  \"🏢 *#{o['account_name']}*\\n<#{o['sf_link']}|*#{o['opp_name']}*>\\n💰 *$#{o['amount_formatted']}*  •  #{o['lead_type_emoji']} #{o['lead_type']}  •  ⏱️ _#{o['stage_duration']}_\"\nend\n\n# 1. ENRICH + DEDUPE opps\nenriched = input['opps_list'].map do |opp|\n  {\n    'opportunity_id'   => opp['opportunity_id'],\n    'opp_name'         => opp['name'],\n    'account_name'     => opp['account_account_name'],\n    'amount_raw'       => opp['amount'].to_f,\n    'amount_formatted' => format_amount(opp['amount']),\n    'stage'            => opp['stage'],\n    'lead_type'        => opp['lead_type'],\n    'lead_type_emoji'  => opp['lead_type_emoji'],\n    'hours_in_stage'   => opp['hours_in_stage'].to_i,\n    'stage_duration'   => opp['stage_duration'],\n    'bucket'           => opp['bucket'],\n    'sf_link'          => \"#{sf_opportunity_url}#{opp['opportunity_id']}/view\",\n    'owner_id'         => opp['owner_id'],\n    'owner_full_name'  => opp['owner_full_name'],\n    'owner_email'      => opp['owner_email'],\n    'owner_title'      => opp['owner_title']\n  }\nend.uniq { |o| o['opportunity_id'] }\n\n# 2. GROUP opps by owner_id\ngrouped = enriched.group_by { |opp| opp['owner_id'] }\n\n# 3. BUILD entry for EVERY active rep\nresult = input['all_reps'].map do |rep|\n  opps          = grouped[rep['id']] || []\n  full_name     = rep['name'].to_s\n  overdue_opps  = opps.select { |o| o['bucket'] == 'Over Due' }\n  due_opps      = opps.select { |o| o['bucket'] == 'Due' }\n  overdue_total = overdue_opps.sum { |o| o['amount_raw'] }\n  due_total     = due_opps.sum { |o| o['amount_raw'] }\n\n  clean_opp = ->(o) {\n    o.reject { |k, _| %w[owner_id owner_full_name owner_email owner_title amount_raw bucket].include?(k) }\n  }\n\n  {\n    'owner_id'         => rep['id'],\n    'owner_email'      => rep['email'],\n    'owner_full_name'  => full_name,\n    'owner_first_name' => full_name.split(' ').first,\n    'opps_count'       => opps.size,\n    'overdue_count'    => overdue_opps.size,\n    'due_count'        => due_opps.size,\n    'total_count'      => opps.size,\n    'overdue_total'    => format_amount(overdue_total),\n    'due_total'        => format_amount(due_total),\n    'total_pipeline'   => format_amount(overdue_total + due_total),\n    'has_overdue'      => overdue_opps.any?,\n    'has_due'          => due_opps.any?,\n    'has_any'          => opps.any?,\n    'overdue_opps'     => overdue_opps.map(&clean_opp),\n    'due_opps'         => due_opps.map(&clean_opp),\n    'overdue_text'     => overdue_opps.map { |o| opp_to_text(o) }.join(\"\\n\\n\"),  # ⭐ NEW\n    'due_text'         => due_opps.map { |o| opp_to_text(o) }.join(\"\\n\\n\")       # ⭐ NEW\n  }\nend\n\n{ 'grouped_by_owner' => result }\n",
+                  "name": "Group opportunities by sales owner",
+                  "code_input": {
+                    "schema": "[{\"control_type\":\"text\",\"label\":\"sf_base_url\",\"name\":\"sf_base_url\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"sf_base_url\"},\"parent\":[\"code_input\",\"data\"]},{\"label\":\"Opps list\",\"name\":\"opps_list\",\"type\":\"array\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Opportunity ID\",\"name\":\"opportunity_id\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"opps_list\"]},{\"control_type\":\"text\",\"label\":\"Name\",\"name\":\"name\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"opps_list\"]},{\"control_type\":\"text\",\"label\":\"Account account ID\",\"name\":\"account_account_id\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"opps_list\"]},{\"control_type\":\"text\",\"label\":\"Account account name\",\"name\":\"account_account_name\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"opps_list\"]},{\"control_type\":\"text\",\"label\":\"Amount\",\"name\":\"amount\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"opps_list\"]},{\"control_type\":\"text\",\"label\":\"Stage\",\"name\":\"stage\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"opps_list\"]},{\"control_type\":\"text\",\"label\":\"Hours in stage\",\"name\":\"hours_in_stage\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"opps_list\"]},{\"control_type\":\"text\",\"label\":\"Stage duration\",\"name\":\"stage_duration\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"opps_list\"]},{\"control_type\":\"text\",\"label\":\"Bucket\",\"name\":\"bucket\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"opps_list\"]},{\"control_type\":\"text\",\"label\":\"Lead type\",\"name\":\"lead_type\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"opps_list\"]},{\"control_type\":\"text\",\"label\":\"Lead type emoji\",\"name\":\"lead_type_emoji\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"opps_list\"]},{\"control_type\":\"text\",\"label\":\"Created date\",\"name\":\"created_date\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"opps_list\"]},{\"control_type\":\"text\",\"label\":\"Owner ID\",\"name\":\"owner_id\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"opps_list\"]},{\"control_type\":\"text\",\"label\":\"Owner full name\",\"name\":\"owner_full_name\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"opps_list\"]},{\"control_type\":\"text\",\"label\":\"Owner username\",\"name\":\"owner_username\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"opps_list\"]},{\"control_type\":\"text\",\"label\":\"Owner email\",\"name\":\"owner_email\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"opps_list\"]},{\"control_type\":\"text\",\"label\":\"Owner title\",\"name\":\"owner_title\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"opps_list\"]},{\"control_type\":\"text\",\"label\":\"Sales_CSM_Notes\",\"name\":\"Sales_CSM_Notes\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"opps_list\"]}],\"parent\":[\"code_input\",\"data\"]},{\"label\":\"All reps\",\"name\":\"all_reps\",\"type\":\"array\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"ID\",\"name\":\"id\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"all_reps\"]},{\"control_type\":\"text\",\"label\":\"Name\",\"name\":\"name\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"all_reps\"]},{\"control_type\":\"text\",\"label\":\"Email\",\"name\":\"email\",\"type\":\"string\",\"parent\":[\"code_input\",\"data\",\"all_reps\"]}],\"parent\":[\"code_input\",\"data\"]}]",
+                    "data": {
+                      "opps_list": {
+                        "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\"]}')}",
+                        "opportunity_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"Id\"]}')}",
+                        "name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"Name\"]}')}",
+                        "account_account_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"Account\",\"Id\"]}')}",
+                        "account_account_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"Account\",\"Name\"]}')}",
+                        "amount": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"Amount\"]}')}",
+                        "stage": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"StageName\"]}')}",
+                        "hours_in_stage": "=((now - _dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"CreatedDate\"]}')) / 3600).to_i\n",
+                        "stage_duration": "=(now.to_date - _dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"CreatedDate\"]}').to_date).to_i >= 1 ? \"#{(now.to_date - _dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"CreatedDate\"]}').to_date).to_i}d\" : \"#{((now - _dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"CreatedDate\"]}')) / 3600).to_i}h\"\n",
+                        "bucket": "=((now - _dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"CreatedDate\"]}')) / 3600).to_i > 96 ? 'Over Due' : 'Due'\n\n_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"Sales_CSM_Notes__c\"]}').present? ? 'Due' : \n\n(_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"Lead_Type__c\"]}') == 'Inbound' && ((now - _dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"CreatedDate\"]}')) / 3600).to_i > 48 ) ? 'Over Due' :\n\n(_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"Lead_Type__c\"]}') == 'Outbound' && ((now - _dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"CreatedDate\"]}')) / 3600).to_i > 96 ) ? 'Over Due' :\n\n'Due'",
+                        "lead_type": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"Lead_Type__c\"]}')}",
+                        "lead_type_emoji": "=_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"Lead_Type__c\"]}') == 'Inbound' ? '📥' : '📤'",
+                        "created_date": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"CreatedDate\"]}')}",
+                        "owner_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"OwnerId\"]}')}",
+                        "owner_full_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"Owner\",\"Name\"]}')}",
+                        "owner_username": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"Owner\",\"Name\"]}')}",
+                        "owner_email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"Owner\",\"Email\"]}')}",
+                        "owner_title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"Owner\",\"Title\"]}')}",
+                        "Sales_CSM_Notes": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"current_item\"},\"Sales_CSM_Notes__c\"]}')}"
+                      },
+                      "sf_base_url": "#{_dp('{\"pill_type\":\"account_property\",\"property_name\":\"Salesforce Domain\"}')}",
+                      "all_reps": {
+                        "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"fd8d28a8\",\"path\":[\"list_items\"]}')}",
+                        "name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"fd8d28a8\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"name\"]}')}",
+                        "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"fd8d28a8\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"email\"]}')}",
+                        "id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"fd8d28a8\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"id\"]}')}"
+                      }
+                    }
+                  },
+                  "code_output_schema_json": "[{\"label\":\"Grouped by owner\",\"name\":\"grouped_by_owner\",\"type\":\"array\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Owner ID\",\"name\":\"owner_id\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Owner email\",\"name\":\"owner_email\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Owner full name\",\"name\":\"owner_full_name\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Owner first name\",\"name\":\"owner_first_name\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Owner title\",\"name\":\"owner_title\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Opps count\",\"parse_output\":\"integer_conversion\",\"name\":\"opps_count\",\"type\":\"integer\",\"render_input\":\"integer_conversion\"},{\"control_type\":\"text\",\"label\":\"Overdue count\",\"parse_output\":\"integer_conversion\",\"name\":\"overdue_count\",\"type\":\"integer\",\"render_input\":\"integer_conversion\"},{\"control_type\":\"text\",\"label\":\"Due count\",\"parse_output\":\"integer_conversion\",\"name\":\"due_count\",\"type\":\"integer\",\"render_input\":\"integer_conversion\"},{\"control_type\":\"text\",\"label\":\"Total count\",\"parse_output\":\"integer_conversion\",\"name\":\"total_count\",\"type\":\"integer\",\"render_input\":\"integer_conversion\"},{\"control_type\":\"text\",\"label\":\"Overdue total\",\"name\":\"overdue_total\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Due total\",\"name\":\"due_total\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Total pipeline\",\"name\":\"total_pipeline\",\"type\":\"string\"},{\"control_type\":\"checkbox\",\"label\":\"Has overdue\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"has_overdue\",\"type\":\"boolean\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Has overdue\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"name\":\"has_overdue\",\"type\":\"boolean\"}},{\"control_type\":\"checkbox\",\"label\":\"Has due\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"has_due\",\"type\":\"boolean\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Has due\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"name\":\"has_due\",\"type\":\"boolean\"}},{\"control_type\":\"checkbox\",\"label\":\"Has any\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"has_any\",\"type\":\"boolean\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Has any\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"name\":\"has_any\",\"type\":\"boolean\"}},{\"label\":\"Overdue opps\",\"name\":\"overdue_opps\",\"type\":\"array\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Opportunity ID\",\"name\":\"opportunity_id\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Opp name\",\"name\":\"opp_name\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Account name\",\"name\":\"account_name\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Amount formatted\",\"name\":\"amount_formatted\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Stage\",\"name\":\"stage\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Lead type\",\"name\":\"lead_type\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Lead type emoji\",\"name\":\"lead_type_emoji\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Stage duration\",\"name\":\"stage_duration\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Hours in stage\",\"parse_output\":\"integer_conversion\",\"name\":\"hours_in_stage\",\"type\":\"integer\",\"render_input\":\"integer_conversion\"},{\"control_type\":\"text\",\"label\":\"Sf link\",\"name\":\"sf_link\",\"type\":\"string\"}]},{\"label\":\"Due opps\",\"name\":\"due_opps\",\"type\":\"array\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Opportunity ID\",\"name\":\"opportunity_id\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Opp name\",\"name\":\"opp_name\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Account name\",\"name\":\"account_name\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Amount formatted\",\"name\":\"amount_formatted\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Stage\",\"name\":\"stage\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Lead type\",\"name\":\"lead_type\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Lead type emoji\",\"name\":\"lead_type_emoji\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Stage duration\",\"name\":\"stage_duration\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Hours in stage\",\"parse_output\":\"integer_conversion\",\"name\":\"hours_in_stage\",\"type\":\"integer\",\"render_input\":\"integer_conversion\"},{\"control_type\":\"text\",\"label\":\"Sf link\",\"name\":\"sf_link\",\"type\":\"string\"}]},{\"control_type\":\"text\",\"label\":\"Due text\",\"name\":\"due_text\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Overdue text\",\"name\":\"overdue_text\",\"type\":\"string\",\"optional\":false}]}]"
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Output",
+                    "name": "output",
+                    "properties": [
+                      {
+                        "label": "Grouped by owner",
+                        "name": "grouped_by_owner",
+                        "type": "array",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Owner ID",
+                            "name": "owner_id",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Owner email",
+                            "name": "owner_email",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Owner full name",
+                            "name": "owner_full_name",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Owner first name",
+                            "name": "owner_first_name",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Owner title",
+                            "name": "owner_title",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Opps count",
+                            "parse_output": "integer_conversion",
+                            "name": "opps_count",
+                            "type": "integer",
+                            "render_input": "integer_conversion"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Overdue count",
+                            "parse_output": "integer_conversion",
+                            "name": "overdue_count",
+                            "type": "integer",
+                            "render_input": "integer_conversion"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Due count",
+                            "parse_output": "integer_conversion",
+                            "name": "due_count",
+                            "type": "integer",
+                            "render_input": "integer_conversion"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Total count",
+                            "parse_output": "integer_conversion",
+                            "name": "total_count",
+                            "type": "integer",
+                            "render_input": "integer_conversion"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Overdue total",
+                            "name": "overdue_total",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Due total",
+                            "name": "due_total",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Total pipeline",
+                            "name": "total_pipeline",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "checkbox",
+                            "label": "Has overdue",
+                            "render_input": "boolean_conversion",
+                            "parse_output": "boolean_conversion",
+                            "name": "has_overdue",
+                            "type": "boolean",
+                            "toggle_hint": "Select from option list",
+                            "toggle_field": {
+                              "label": "Has overdue",
+                              "control_type": "text",
+                              "toggle_hint": "Use custom value",
+                              "name": "has_overdue",
+                              "type": "boolean"
+                            }
+                          },
+                          {
+                            "control_type": "checkbox",
+                            "label": "Has due",
+                            "render_input": "boolean_conversion",
+                            "parse_output": "boolean_conversion",
+                            "name": "has_due",
+                            "type": "boolean",
+                            "toggle_hint": "Select from option list",
+                            "toggle_field": {
+                              "label": "Has due",
+                              "control_type": "text",
+                              "toggle_hint": "Use custom value",
+                              "name": "has_due",
+                              "type": "boolean"
+                            }
+                          },
+                          {
+                            "control_type": "checkbox",
+                            "label": "Has any",
+                            "render_input": "boolean_conversion",
+                            "parse_output": "boolean_conversion",
+                            "name": "has_any",
+                            "type": "boolean",
+                            "toggle_hint": "Select from option list",
+                            "toggle_field": {
+                              "label": "Has any",
+                              "control_type": "text",
+                              "toggle_hint": "Use custom value",
+                              "name": "has_any",
+                              "type": "boolean"
+                            }
+                          },
+                          {
+                            "label": "Overdue opps",
+                            "name": "overdue_opps",
+                            "type": "array",
+                            "of": "object",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Opportunity ID",
+                                "name": "opportunity_id",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Opp name",
+                                "name": "opp_name",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Account name",
+                                "name": "account_name",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Amount formatted",
+                                "name": "amount_formatted",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Stage",
+                                "name": "stage",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Lead type",
+                                "name": "lead_type",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Lead type emoji",
+                                "name": "lead_type_emoji",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Stage duration",
+                                "name": "stage_duration",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Hours in stage",
+                                "parse_output": "integer_conversion",
+                                "name": "hours_in_stage",
+                                "type": "integer",
+                                "render_input": "integer_conversion"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Sf link",
+                                "name": "sf_link",
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "label": "Due opps",
+                            "name": "due_opps",
+                            "type": "array",
+                            "of": "object",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Opportunity ID",
+                                "name": "opportunity_id",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Opp name",
+                                "name": "opp_name",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Account name",
+                                "name": "account_name",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Amount formatted",
+                                "name": "amount_formatted",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Stage",
+                                "name": "stage",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Lead type",
+                                "name": "lead_type",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Lead type emoji",
+                                "name": "lead_type_emoji",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Stage duration",
+                                "name": "stage_duration",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Hours in stage",
+                                "parse_output": "integer_conversion",
+                                "name": "hours_in_stage",
+                                "type": "integer",
+                                "render_input": "integer_conversion"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Sf link",
+                                "name": "sf_link",
+                                "type": "string"
+                              }
+                            ]
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Due text",
+                            "name": "due_text",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Overdue text",
+                            "name": "overdue_text",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "control_type": "form-schema-builder",
+                    "label": "Input",
+                    "name": "code_input",
+                    "optional": true,
+                    "override": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Schema",
+                        "extends_schema": true,
+                        "type": "string",
+                        "name": "schema"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "sf_base_url",
+                            "name": "sf_base_url",
+                            "type": "string",
+                            "optional": true,
+                            "details": {
+                              "real_name": "sf_base_url"
+                            },
+                            "parent": [
+                              "code_input",
+                              "data"
+                            ]
+                          },
+                          {
+                            "label": "Opps list",
+                            "name": "opps_list",
+                            "type": "array",
+                            "parent": [
+                              "code_input",
+                              "data"
+                            ],
+                            "of": "object",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Opportunity ID",
+                                "name": "opportunity_id",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "opps_list"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Name",
+                                "name": "name",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "opps_list"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Account account ID",
+                                "name": "account_account_id",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "opps_list"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Account account name",
+                                "name": "account_account_name",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "opps_list"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Amount",
+                                "name": "amount",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "opps_list"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Stage",
+                                "name": "stage",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "opps_list"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Hours in stage",
+                                "name": "hours_in_stage",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "opps_list"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Stage duration",
+                                "name": "stage_duration",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "opps_list"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Bucket",
+                                "name": "bucket",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "opps_list"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Lead type",
+                                "name": "lead_type",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "opps_list"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Lead type emoji",
+                                "name": "lead_type_emoji",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "opps_list"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Created date",
+                                "name": "created_date",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "opps_list"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Owner ID",
+                                "name": "owner_id",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "opps_list"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Owner full name",
+                                "name": "owner_full_name",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "opps_list"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Owner username",
+                                "name": "owner_username",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "opps_list"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Owner email",
+                                "name": "owner_email",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "opps_list"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Owner title",
+                                "name": "owner_title",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "opps_list"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Sales_CSM_Notes",
+                                "name": "Sales_CSM_Notes",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "opps_list"
+                                ]
+                              }
+                            ]
+                          },
+                          {
+                            "label": "All reps",
+                            "name": "all_reps",
+                            "type": "array",
+                            "parent": [
+                              "code_input",
+                              "data"
+                            ],
+                            "of": "object",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "ID",
+                                "name": "id",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "all_reps"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Name",
+                                "name": "name",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "all_reps"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Email",
+                                "name": "email",
+                                "type": "string",
+                                "parent": [
+                                  "code_input",
+                                  "data",
+                                  "all_reps"
+                                ]
+                              }
+                            ]
+                          }
+                        ],
+                        "label": "Data",
+                        "type": "object",
+                        "name": "data"
+                      }
+                    ],
+                    "sticky": true,
+                    "type": "object"
+                  }
+                ],
+                "visible_config_fields": [
+                  "name",
+                  "code_input",
+                  "code_output_schema_json",
+                  "payload_asset_type",
+                  "code",
+                  "code_input.data.opps_list",
+                  "opps_list.opportunity_id",
+                  "opps_list.name",
+                  "opps_list.account_account_id",
+                  "opps_list.account_account_name",
+                  "opps_list.amount",
+                  "opps_list.stage",
+                  "opps_list.hours_in_stage",
+                  "opps_list.stage_duration",
+                  "opps_list.bucket",
+                  "opps_list.lead_type",
+                  "opps_list.lead_type_emoji",
+                  "opps_list.created_date",
+                  "opps_list.owner_id",
+                  "opps_list.owner_full_name",
+                  "opps_list.owner_username",
+                  "opps_list.owner_email",
+                  "opps_list.owner_title",
+                  "code_input.schema",
+                  "code_input.data",
+                  "code_input.data.opps_list.opportunity_id",
+                  "code_input.data.opps_list.name",
+                  "code_input.data.opps_list.account_account_id",
+                  "code_input.data.opps_list.account_account_name",
+                  "code_input.data.opps_list.amount",
+                  "code_input.data.opps_list.stage",
+                  "code_input.data.opps_list.hours_in_stage",
+                  "code_input.data.opps_list.stage_duration",
+                  "code_input.data.opps_list.bucket",
+                  "code_input.data.opps_list.lead_type",
+                  "code_input.data.opps_list.lead_type_emoji",
+                  "code_input.data.opps_list.created_date",
+                  "code_input.data.opps_list.owner_id",
+                  "code_input.data.opps_list.owner_full_name",
+                  "code_input.data.opps_list.owner_username",
+                  "code_input.data.opps_list.owner_email",
+                  "code_input.data.opps_list.owner_title",
+                  "code_input.data.sf_base_url",
+                  "code_input.data.all_reps",
+                  "all_reps.id",
+                  "all_reps.name",
+                  "all_reps.email",
+                  "all_reps.title",
+                  "code_input.data.all_reps.id",
+                  "code_input.data.all_reps.name",
+                  "code_input.data.all_reps.email",
+                  "code_input.data.opps_list.Sales_CSM_Notes",
+                  "opps_list.Sales_CSM_Notes"
+                ],
+                "comment": "Group opportunities by sales owner",
+                "uuid": "7c74ff2f-7555-4071-abab-1a8e94ffbfea"
+              },
+              {
+                "number": 6,
+                "provider": "logger",
+                "name": "log_message",
+                "as": "c318ef01",
+                "keyword": "action",
+                "input": {
+                  "user_logs_enabled": "false",
+                  "message": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"1cf6debd\",\"path\":[\"output\"]}')"
+                },
+                "extended_input_schema": [
+                  {
+                    "control_type": "switch",
+                    "default": false,
+                    "disable_formula": true,
+                    "extends_schema": true,
+                    "hint": "Send a copy of the message to Workato logs.\n<a href=\"https://docs.workato.com/features/logging-service.html\" target=\"_blank\" class=\"ng-scope\">\n  Learn more\n</a>\n",
+                    "label": "Send to Workato log service",
+                    "name": "user_logs_enabled",
+                    "optional": true,
+                    "type": "string"
+                  }
+                ],
+                "comment": "Group opportunities by sales owner",
+                "uuid": "af83c1d4-fe1c-4b1e-95fa-65c0c6cb1f86"
+              },
+              {
+                "number": 7,
+                "as": "d40f54aa",
+                "keyword": "foreach",
+                "repeat_mode": "simple",
+                "clear_scope": "false",
+                "input": {
+                },
+                "block": [
+                  {
+                    "number": 8,
+                    "provider": "slack",
+                    "name": "get_user_by_email",
+                    "as": "aaaadbc4",
+                    "keyword": "action",
+                    "input": {
+                      "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"owner_email\"]}')}"
+                    },
+                    "visible_config_fields": [
+                      "email"
+                    ],
+                    "hidden_config_fields": [
+                      "id"
+                    ],
+                    "comment": "get user details",
+                    "uuid": "70b8c351-a275-463e-9ba6-f8c46b279675",
+                    "skip": false
+                  },
+                  {
+                    "number": 9,
+                    "keyword": "if",
+                    "input": {
+                      "type": "compound",
+                      "operand": "and",
+                      "conditions": [
+                        {
+                          "operand": "present",
+                          "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"slack\",\"line\":\"aaaadbc4\",\"path\":[\"id\"]}')}",
+                          "rhs": "",
+                          "uuid": "376d60de-14a4-4705-bb5b-e4fd63599062"
+                        }
+                      ]
+                    },
+                    "block": [
+                      {
+                        "number": 10,
+                        "keyword": "if",
+                        "input": {
+                          "type": "compound",
+                          "operand": "and",
+                          "conditions": [
+                            {
+                              "operand": "is_true",
+                              "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"has_any\"]}')}",
+                              "rhs": "",
+                              "uuid": "81b22499-ef48-4fbc-829e-b74450b58788"
+                            }
+                          ]
+                        },
+                        "block": [
+                          {
+                            "number": 11,
+                            "provider": "slack_bot",
+                            "name": "post_bot_message",
+                            "as": "347716ad",
+                            "keyword": "action",
+                            "toggleCfg": {
+                              "channel": true
+                            },
+                            "input": {
+                              "blocks": [
+                                {
+                                  "button_type": "continue_flow",
+                                  "block_type": "section_with_text",
+                                  "section_text": "*☀️ Your Stage 0 Recap*"
+                                },
+                                {
+                                  "button_type": "continue_flow",
+                                  "block_type": "context",
+                                  "elements": [
+                                    {
+                                      "type": "text",
+                                      "text": "Good morning, *#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"owner_first_name\"]}')}*! Here's what needs your attention today 👇"
+                                    }
+                                  ]
+                                },
+                                {
+                                  "button_type": "continue_flow",
+                                  "block_type": "divider"
+                                },
+                                {
+                                  "button_type": "continue_flow",
+                                  "block_type": "section_with_text",
+                                  "section_text": ":red_circle:  *OVERDUE*   _>96h in Stage 0_   •   *#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"overdue_count\"]}')}opps*   •   *$#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"overdue_total\"]}')}#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"due_text\"]}')}*"
+                                },
+                                {
+                                  "button_type": "continue_flow",
+                                  "block_type": "section_with_text",
+                                  "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"overdue_text\"]}')}"
+                                },
+                                {
+                                  "button_type": "continue_flow",
+                                  "block_type": "divider"
+                                },
+                                {
+                                  "button_type": "continue_flow",
+                                  "block_type": "section_with_text",
+                                  "section_text": ":large_green_circle:  *DUE*   _≤ 96h in Stage 0_   •   *#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"due_count\"]}')} opps*   •   *$#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"due_total\"]}')}*"
+                                },
+                                {
+                                  "button_type": "continue_flow",
+                                  "block_type": "section_with_text",
+                                  "section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"due_text\"]}')}"
+                                },
+                                {
+                                  "button_type": "continue_flow",
+                                  "block_type": "divider"
+                                },
+                                {
+                                  "button_type": "continue_flow",
+                                  "block_type": "context",
+                                  "elements": [
+                                    {
+                                      "type": "text",
+                                      "text": "📊 *Total:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"total_count\"]}')} opps  •  *$#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"total_pipeline\"]}')}* pipeline   |   🔴 #{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"overdue_count\"]}')}  •   🟢 #{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"due_count\"]}')}"
+                                    },
+                                    {
+                                      "type": "text",
+                                      "text": " _Tip: Move opps out of Stage 0 within 72h to keep pipeline healthy._"
+                                    }
+                                  ]
+                                }
+                              ],
+                              "channel": "@talia"
+                            },
+                            "comment": "send full recap",
+                            "uuid": "59848c22-16e6-46d7-a569-231aea73c5cf"
+                          },
+                          {
+                            "number": 12,
+                            "keyword": "else",
+                            "input": {
+                            },
+                            "block": [
+                              {
+                                "number": 13,
+                                "provider": "slack_bot",
+                                "name": "post_bot_message",
+                                "as": "be74fe4d",
+                                "keyword": "action",
+                                "toggleCfg": {
+                                  "channel": true
+                                },
+                                "input": {
+                                  "channel": "@talia",
+                                  "blocks": [
+                                    {
+                                      "button_type": "continue_flow",
+                                      "block_type": "section_with_text",
+                                      "section_text": "*✅ You're all clear!*"
+                                    },
+                                    {
+                                      "button_type": "continue_flow",
+                                      "block_type": "section_with_text",
+                                      "section_text": "Hi *#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"owner_first_name\"]}')}* 👋\n\nNo Stage 0 opportunities to review today.\nGreat pipeline hygiene! 🎉"
+                                    },
+                                    {
+                                      "button_type": "continue_flow",
+                                      "block_type": "context",
+                                      "elements": [
+                                        {
+                                          "type": "text",
+                                          "text": "_See you tomorrow ☀️_"
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                },
+                                "comment": "send \"all clear\"",
+                                "uuid": "2ffc5836-b75e-42a7-8ea3-9a2818a38fb0"
+                              }
+                            ],
+                            "comment": "all clear",
+                            "uuid": "4d216fce-dab9-4ffc-a290-28885e579ab9"
+                          }
+                        ],
+                        "comment": "has any ops",
+                        "uuid": "685c7e85-abe6-4f75-a65e-486018e189d8"
+                      },
+                      {
+                        "number": 14,
+                        "keyword": "else",
+                        "input": {
+                        },
+                        "block": [
+                          {
+                            "number": 15,
+                            "provider": "slack_bot",
+                            "name": "post_bot_message",
+                            "as": "cde700d0",
+                            "keyword": "action",
+                            "toggleCfg": {
+                              "channel": true
+                            },
+                            "input": {
+                              "blocks": [
+                                {
+                                  "button_type": "continue_flow",
+                                  "block_type": "section_with_text",
+                                  "section_text": "🚨 Orphan Opportunities Alert"
+                                },
+                                {
+                                  "button_type": "continue_flow",
+                                  "block_type": "section_with_text",
+                                  "section_text": "These Stage 0 opps have *owners not in the sales reps list*. They are NOT receiving daily recaps. Please reassign or activate the owner."
+                                },
+                                {
+                                  "button_type": "continue_flow",
+                                  "block_type": "divider"
+                                },
+                                {
+                                  "button_type": "continue_flow",
+                                  "block_type": "section_with_text",
+                                  "section_text": "👥 Inactive Owners to Reassign:\n👤#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"owner_full_name\"]}')}(#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"owner_email\"]}')}) — #{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"opps_count\"]}')} opps ($#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"total_count\"]}')})\n🔴 #{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"d40f54aa\",\"path\":[\"overdue_count\"]}')} of these are already overdue."
+                                },
+                                {
+                                  "button_type": "continue_flow",
+                                  "block_type": "divider"
+                                },
+                                {
+                                  "button_type": "continue_flow",
+                                  "block_type": "section_with_text",
+                                  "section_text": "💡 Sales Managers: Please jump into the CRM, search for these specific names/emails, and reassign their deals to active reps today!"
+                                }
+                              ],
+                              "channel": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"stage_0_Daily_Recap_slack_leader\"}')}"
+                            },
+                            "comment": "user doesn't exist",
+                            "uuid": "deed80dc-8aab-413c-8254-018117db95a3"
+                          }
+                        ],
+                        "comment": "user doesn't exist",
+                        "uuid": "88723474-7a6c-479a-a0b5-2c560a8d9d5f"
+                      }
+                    ],
+                    "comment": "owenr exist",
+                    "uuid": "70f6251a-3d5a-4242-a9a7-6031c208ccfd"
+                  }
+                ],
+                "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"1cf6debd\",\"path\":[\"output\",\"grouped_by_owner\"]}')}",
+                "uuid": "0985e2e7-a194-4c8a-8041-a547b892166c"
+              },
+              {
+                "number": 16,
+                "keyword": "else",
+                "input": {
+                },
+                "block": [
+                  {
+                    "number": 17,
+                    "provider": "slack_bot",
+                    "name": "post_bot_message",
+                    "as": "0b68f56f",
+                    "keyword": "action",
+                    "toggleCfg": {
+                      "channel": true
+                    },
+                    "input": {
+                      "blocks": [
+                        {
+                          "button_type": "continue_flow",
+                          "block_type": "section_with_text",
+                          "section_text": " *⚠️ Send admin alert: \"SF query returned 0 opps — please verify*"
+                        },
+                        {
+                          "button_type": "continue_flow",
+                          "block_type": "section_with_text",
+                          "section_text": "The daily Stage 0 recap recipe ran, but Salesforce returned *0 opportunities*.\n\nThis is suspicious — please verify:\n• SF query is healthy\n• Stage 0 picklist values haven't changed\\n• Workato user has correct permissions\n\n_Recap was NOT sent to sales reps._"
+                        },
+                        {
+                          "button_type": "continue_flow",
+                          "block_type": "context",
+                          "elements": [
+                            {
+                              "type": "text",
+                              "text": "🤖 _Recipe: Stage 0 - daily update (sales rep) recap_  •  Triggered at #{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_created_at\"]}')}"
+                            }
+                          ]
+                        }
+                      ],
+                      "channel": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"stage_0_Daily_Recap_slack_leader\"}')}"
+                    },
+                    "comment": "rep_opps.size == 0",
+                    "uuid": "854be182-2a34-4a3c-a9b3-887bbbaebfe3"
+                  }
+                ],
+                "comment": "rep_opps.size == 0",
+                "uuid": "f44d9a37-01a8-46f2-b612-018a33f29c65"
+              }
+            ],
+            "uuid": "1554ab44-3c73-4dfb-81fc-670e4d2ee303"
+          },
+          {
+            "number": 18,
+            "as": "2b6faf43",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 19,
+                "provider": "workato_recipe_function",
+                "name": "call_recipe",
+                "as": "2f639475",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "flow_id": "[CM] Fun | System Error Handling"
+                },
+                "input": {
+                  "flow_id": {
+                    "zip_name": "Common Functions/Error Handling Process/cm_fun_system_error_handling.recipe.json",
+                    "name": "[CM] Fun | System Error Handling",
+                    "folder": "Common Functions/Error Handling Process"
+                  },
+                  "parameters": {
+                    "ErrorDetails": {
+                      "parentProcessName": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+                      "recipe_id": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_id\"]}')}",
+                      "job_uuid": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}",
+                      "processName": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+                      "process_path": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_path\"]}')}",
+                      "jobUrl": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_url\"]}')}",
+                      "is_repeat": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"is_repeat\"]}')}",
+                      "error_uuid": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"2b6faf43\",\"path\":[\"uuid\"]}')}",
+                      "errored_app": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"2b6faf43\",\"path\":[\"adapter\"]}')}",
+                      "errored_action": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"2b6faf43\",\"path\":[\"action\"]}')}",
+                      "error_step_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"2b6faf43\",\"path\":[\"line_number\"]}')}",
+                      "errorType": "System Error",
+                      "errorMessage": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"2b6faf43\",\"path\":[\"message\"]}')}",
+                      "Timestamp": "=_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_created_at\"]}')"
+                    }
+                  }
+                },
+                "extended_input_schema": [
+                  {
+                    "label": "Parameters",
+                    "name": "parameters",
+                    "properties": [
+                      {
+                        "label": "Error Details",
+                        "name": "ErrorDetails",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Parent process name",
+                            "name": "parentProcessName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Recipe Id",
+                            "name": "recipe_id",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job uuid",
+                            "name": "job_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Name",
+                            "name": "processName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Path",
+                            "name": "process_path",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job URL",
+                            "name": "jobUrl",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Is repeat",
+                            "name": "is_repeat",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error uuid",
+                            "name": "error_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored app",
+                            "name": "errored_app",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored action",
+                            "name": "errored_action",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error step number",
+                            "name": "error_step_number",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error type",
+                            "name": "errorType",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error message",
+                            "name": "errorMessage",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Timestamp",
+                            "name": "Timestamp",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Files",
+                        "name": "files",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "File name",
+                            "name": "fileName",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File content",
+                            "name": "fileContent",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "uuid": "379abdd3-f56a-4483-b261-49b40b1e68ac"
+              }
+            ],
+            "uuid": "2ac319e4-d917-4705-86b2-08ccbe19d600"
+          }
+        ],
+        "uuid": "409868a0-c1d5-4866-b0fd-0ff0d9b24ef8"
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_0",
+        "label": "Opportunity No."
+      },
+      {
+        "name": "custom_column_1",
+        "label": "Sales Owner No."
+      },
+      {
+        "name": "custom_column_2",
+        "label": "Status"
+      },
+      {
+        "name": "custom_column_3",
+        "label": "Message"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"43ebb9f9\",\"path\":[\"Opportunity\",{\"path_element_type\":\"size\"}]}')}",
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"fd8d28a8\",\"path\":[\"list_items\",{\"path_element_type\":\"size\"}]}')}",
+      "custom_column_2": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"2b6faf43\",\"path\":[\"message\"]}').present? ? 'Error' : 'Success'",
+      "custom_column_3": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"2b6faf43\",\"path\":[\"message\"]}').presence"
+    },
+    "uuid": "5513ed5e-3f80-4c3d-b97b-18bfc638a0e6"
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "salesforce",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/BizOps App/salesforce_automation_user.connection.json",
+        "name": "Salesforce - Automation User",
+        "folder": "#Connections/BizOps App"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_variable",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_custom_code",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "logger",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "slack_bot",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Slack/biz_admin_workbot.connection.json",
+        "name": "Biz Admin Workbot",
+        "folder": "#Connections/Slack"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "slack",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Slack/biz_admin_slack.connection.json",
+        "name": "Biz Admin Slack",
+        "folder": "#Connections/Slack"
+      }
+    }
+  ]
+}

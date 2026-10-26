@@ -1,0 +1,981 @@
+{
+  "name": "[AI-EH] Fun-002-1| Hunter | The Serpent Hunter (SERP)",
+  "version": 3,
+  "private": true,
+  "concurrency": 3,
+  "version_comment": "version 5 (31.08.2026)",
+  "code": {
+    "number": 0,
+    "provider": "workato_recipe_function",
+    "name": "execute",
+    "as": "e2c855eb",
+    "keyword": "trigger",
+    "input": {
+      "parameters_schema_json": "[{\"name\":\"main_process\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Main process\"},{\"name\":\"data\",\"type\":\"object\",\"optional\":false,\"properties\":[{\"name\":\"serp_country_code\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Serp country code\"},{\"name\":\"type\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Type\"},{\"name\":\"query\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Query\"},{\"name\":\"location\",\"type\":\"object\",\"optional\":false,\"label\":\"Location\",\"properties\":[{\"name\":\"country\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Country\"},{\"name\":\"city\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"City\"},{\"name\":\"allowed_cities\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Allowed cities\"},{\"name\":\"location\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Location\"}]}],\"label\":\"Data\"}]",
+      "result_schema_json": "[]"
+    },
+    "extended_output_schema": [
+      {
+        "label": "Parameters",
+        "name": "parameters",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Main process",
+            "name": "main_process",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "properties": [
+              {
+                "control_type": "text",
+                "label": "Serp country code",
+                "name": "serp_country_code",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "Type",
+                "name": "type",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "Query",
+                "name": "query",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Country",
+                    "name": "country",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "City",
+                    "name": "city",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Allowed cities",
+                    "name": "allowed_cities",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Location",
+                    "name": "location",
+                    "type": "string",
+                    "optional": false
+                  }
+                ],
+                "label": "Location",
+                "name": "location",
+                "type": "object",
+                "optional": false
+              }
+            ],
+            "label": "Data",
+            "name": "data",
+            "type": "object",
+            "optional": false
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "workato_variable",
+            "name": "declare_variable",
+            "as": "d4771894",
+            "keyword": "action",
+            "input": {
+              "variables": {
+                "schema": "[{\"control_type\":\"text\",\"label\":\"Query Term\",\"name\":\"query_term\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"Query Term\"},\"parent\":[\"variables\",\"data\"],\"hint\":\"Defaults to nil if not supplied.\",\"sticky\":true}]",
+                "data": {
+                  "query_term": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"query\"]}')}"
+                }
+              }
+            },
+            "extended_output_schema": [
+              {
+                "control_type": "text",
+                "hint": "Defaults to nil if not supplied.",
+                "label": "Query Term",
+                "name": "query_term",
+                "optional": true,
+                "sticky": true,
+                "type": "string",
+                "details": {
+                  "real_name": "Query Term"
+                }
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "add_field_label": "Add a variable",
+                "control_type": "form-schema-builder",
+                "empty_schema_title": "Add variables by giving them a name, type and default value",
+                "exclude_fields": [
+                  "hint"
+                ],
+                "item_label": "variable",
+                "label": "Variables",
+                "mark_as_required": true,
+                "name": "variables",
+                "ngIf": "!input.name",
+                "optional": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Schema",
+                    "extends_schema": true,
+                    "broadcast_change_event": true,
+                    "type": "string",
+                    "name": "schema"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Query Term",
+                        "name": "query_term",
+                        "type": "string",
+                        "optional": true,
+                        "details": {
+                          "real_name": "Query Term"
+                        },
+                        "parent": [
+                          "variables",
+                          "data"
+                        ],
+                        "hint": "Defaults to nil if not supplied.",
+                        "sticky": true
+                      }
+                    ],
+                    "label": "Data",
+                    "type": "object",
+                    "name": "data"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "visible_config_fields": [
+              "variables.data.query_term",
+              "variables",
+              "variables.schema",
+              "variables.data",
+              "variables.data.next_page_url"
+            ],
+            "uuid": "64f2b321-6745-4625-a06a-7460cd7bb6de",
+            "skip": false
+          },
+          {
+            "number": 3,
+            "provider": "workato_variable",
+            "name": "declare_list",
+            "as": "d8d4ade4",
+            "keyword": "action",
+            "input": {
+              "name": "Event Pipeline",
+              "list_item_schema_json": "[{\"name\":\"page\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Page\"},{\"control_type\":\"text\",\"label\":\"Link\",\"type\":\"string\",\"name\":\"link\"},{\"control_type\":\"text\",\"label\":\"Source\",\"type\":\"string\",\"name\":\"source\"},{\"control_type\":\"text\",\"label\":\"Display link\",\"type\":\"string\",\"name\":\"display_link\"},{\"control_type\":\"text\",\"label\":\"Title\",\"type\":\"string\",\"name\":\"title\"},{\"control_type\":\"text\",\"label\":\"Description\",\"type\":\"string\",\"name\":\"description\"},{\"control_type\":\"number\",\"label\":\"Rank\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"rank\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Global rank\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"global_rank\",\"render_input\":\"float_conversion\"}]"
+            },
+            "extended_output_schema": [
+              {
+                "hint": "",
+                "label": "Event Pipeline",
+                "name": "list_items",
+                "of": "object",
+                "optional": false,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Page",
+                    "name": "page",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Link",
+                    "type": "string",
+                    "name": "link"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Source",
+                    "type": "string",
+                    "name": "source"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Display link",
+                    "type": "string",
+                    "name": "display_link"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Title",
+                    "type": "string",
+                    "name": "title"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Description",
+                    "type": "string",
+                    "name": "description"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Rank",
+                    "parse_output": "float_conversion",
+                    "type": "number",
+                    "name": "rank",
+                    "render_input": "float_conversion"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Global rank",
+                    "parse_output": "float_conversion",
+                    "type": "number",
+                    "name": "global_rank",
+                    "render_input": "float_conversion"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                "label": "Items",
+                "name": "list_items",
+                "of": "object",
+                "optional": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Page",
+                    "name": "page",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Link",
+                    "type": "string",
+                    "name": "link"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Source",
+                    "type": "string",
+                    "name": "source"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Display link",
+                    "type": "string",
+                    "name": "display_link"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Title",
+                    "type": "string",
+                    "name": "title"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Description",
+                    "type": "string",
+                    "name": "description"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Rank",
+                    "parse_output": "float_conversion",
+                    "type": "number",
+                    "name": "rank",
+                    "render_input": "float_conversion"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Global rank",
+                    "parse_output": "float_conversion",
+                    "type": "number",
+                    "name": "global_rank",
+                    "render_input": "float_conversion"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "uuid": "07c47a64-0b5c-45ba-b498-99cd90d14ee0"
+          },
+          {
+            "number": 4,
+            "as": "018e243c",
+            "keyword": "repeat",
+            "input": {
+            },
+            "block": [
+              {
+                "number": 5,
+                "provider": "brightdata_connector_5515774_1780900514",
+                "name": "serp_api_request",
+                "as": "05993fa9",
+                "title": null,
+                "description": "Scrape <span class=\"provider\">Google</span> for \"#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"d4771894\",\"path\":[\"query_term\"]}')}\" using <span class=\"provider\">Bright Data</span>",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "zone": "serp_api_marketing_make_com"
+                },
+                "toggleCfg": {
+                  "engine": true,
+                  "zone": true,
+                  "country": false
+                },
+                "input": {
+                  "async": "false",
+                  "engine": "google",
+                  "format": "json",
+                  "zone": "serp_api_marketing_make_com",
+                  "query": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"d4771894\",\"path\":[\"query_term\"]}')}",
+                  "country": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"serp_country_code\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"serp_country_code\"]}') : 'us'"
+                },
+                "visible_config_fields": [
+                  "async",
+                  "zone",
+                  "engine",
+                  "query",
+                  "format",
+                  "country"
+                ],
+                "comment": "brd serp",
+                "uuid": "5e31b44b-96e4-489e-b3db-5fc8e9110805"
+              },
+              {
+                "number": 6,
+                "keyword": "if",
+                "input": {
+                  "type": "compound",
+                  "operand": "and",
+                  "conditions": [
+                    {
+                      "operand": "present",
+                      "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"brightdata_connector_5515774_1780900514\",\"line\":\"05993fa9\",\"path\":[\"body\",\"organic\"]}')",
+                      "rhs": "",
+                      "uuid": "2720f4f2-a9a5-4730-b3a7-d6ab49daacc9"
+                    }
+                  ]
+                },
+                "block": [
+                  {
+                    "number": 7,
+                    "provider": "workato_variable",
+                    "name": "insert_to_list_batch",
+                    "as": "64d9a46f",
+                    "keyword": "action",
+                    "dynamicPickListSelection": {
+                      "name": "Event Pipeline (step 5)"
+                    },
+                    "input": {
+                      "location": "end",
+                      "name": "07c47a64-0b5c-45ba-b498-99cd90d14ee0:d8d4ade4",
+                      "list_items": {
+                        "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"brightdata_connector_5515774_1780900514\",\"line\":\"05993fa9\",\"path\":[\"body\",\"organic\"]}')}",
+                        "link": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"brightdata_connector_5515774_1780900514\",\"line\":\"05993fa9\",\"path\":[\"body\",\"organic\",{\"path_element_type\":\"current_item\"},\"link\"]}')}",
+                        "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"brightdata_connector_5515774_1780900514\",\"line\":\"05993fa9\",\"path\":[\"body\",\"organic\",{\"path_element_type\":\"current_item\"},\"source\"]}')}",
+                        "display_link": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"brightdata_connector_5515774_1780900514\",\"line\":\"05993fa9\",\"path\":[\"body\",\"organic\",{\"path_element_type\":\"current_item\"},\"display_link\"]}')}",
+                        "title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"brightdata_connector_5515774_1780900514\",\"line\":\"05993fa9\",\"path\":[\"body\",\"organic\",{\"path_element_type\":\"current_item\"},\"title\"]}')}",
+                        "description": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"brightdata_connector_5515774_1780900514\",\"line\":\"05993fa9\",\"path\":[\"body\",\"organic\",{\"path_element_type\":\"current_item\"},\"description\"]}')}",
+                        "rank": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"brightdata_connector_5515774_1780900514\",\"line\":\"05993fa9\",\"path\":[\"body\",\"organic\",{\"path_element_type\":\"current_item\"},\"rank\"]}')}",
+                        "global_rank": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"brightdata_connector_5515774_1780900514\",\"line\":\"05993fa9\",\"path\":[\"body\",\"organic\",{\"path_element_type\":\"current_item\"},\"global_rank\"]}')}",
+                        "page": "=_dp('{\"pill_type\":\"output\",\"provider\":\"repeat\",\"line\":\"018e243c\",\"path\":[\"index\"]}') + 1"
+                      }
+                    },
+                    "extended_input_schema": [
+                      {
+                        "hint": "",
+                        "label": "List items",
+                        "name": "list_items",
+                        "of": "object",
+                        "optional": false,
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Page",
+                            "name": "page",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Link",
+                            "type": "string",
+                            "name": "link"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Source",
+                            "type": "string",
+                            "name": "source"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Display link",
+                            "type": "string",
+                            "name": "display_link"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Title",
+                            "type": "string",
+                            "name": "title"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Description",
+                            "type": "string",
+                            "name": "description"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Rank",
+                            "parse_output": "float_conversion",
+                            "type": "number",
+                            "name": "rank",
+                            "render_input": "float_conversion"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Global rank",
+                            "parse_output": "float_conversion",
+                            "type": "number",
+                            "name": "global_rank",
+                            "render_input": "float_conversion"
+                          }
+                        ],
+                        "type": "array"
+                      }
+                    ],
+                    "uuid": "29e2eb79-2500-4465-8d77-c2df86ebec84"
+                  },
+                  {
+                    "number": 8,
+                    "provider": "workato_variable",
+                    "name": "update_variables",
+                    "as": "7d369bcf",
+                    "keyword": "action",
+                    "dynamicPickListSelection": {
+                      "name": [
+                        {
+                          "label": "Query Term (step 5)",
+                          "value": "64f2b321-6745-4625-a06a-7460cd7bb6de:d4771894:query_term"
+                        }
+                      ]
+                    },
+                    "input": {
+                      "input_mode": "raw",
+                      "name": "64f2b321-6745-4625-a06a-7460cd7bb6de:d4771894:query_term",
+                      "query_term": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"brightdata_connector_5515774_1780900514\",\"line\":\"05993fa9\",\"path\":[\"body\",\"pagination\",\"next_page_link\"]}')}"
+                    },
+                    "extended_input_schema": [
+                      {
+                        "control_type": "text",
+                        "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+                        "label": "Query Term",
+                        "name": "query_term",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string",
+                        "strip_interpolation": true
+                      }
+                    ],
+                    "uuid": "0e0805ae-d1ba-4664-ba86-8d6e939f2696"
+                  }
+                ],
+                "comment": "organic",
+                "uuid": "770e5b34-60f8-4c60-bfb3-23d5dd66238d"
+              },
+              {
+                "number": 9,
+                "keyword": "while_condition",
+                "input": {
+                  "type": "compound",
+                  "operand": "and",
+                  "conditions": [
+                    {
+                      "operand": "not_equals_to",
+                      "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"repeat\",\"line\":\"018e243c\",\"path\":[\"index\"]}') + 1",
+                      "rhs": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"pagination_page_index\"}')}",
+                      "uuid": "269cc3fa-d63a-4415-9a24-f3bbda57a9e4"
+                    }
+                  ]
+                },
+                "comment": "pagination_index",
+                "uuid": "6dd1392e-33d5-49d8-bebc-4e2fbbf82f35"
+              }
+            ],
+            "comment": "Event Pipeline",
+            "uuid": "763405bd-adc9-453b-8a8a-2055b0ca4906"
+          },
+          {
+            "number": 10,
+            "provider": "logger",
+            "name": "log_message",
+            "as": "4651f086",
+            "keyword": "action",
+            "input": {
+              "user_logs_enabled": "false",
+              "message": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"d8d4ade4\",\"path\":[\"list_items\"]}')"
+            },
+            "extended_input_schema": [
+              {
+                "control_type": "switch",
+                "default": false,
+                "disable_formula": true,
+                "extends_schema": true,
+                "hint": "Send a copy of the message to Workato logs.\n<a href=\"https://docs.workato.com/features/logging-service.html\" target=\"_blank\" class=\"ng-scope\">\n  Learn more\n</a>\n",
+                "label": "Send to Workato log service",
+                "name": "user_logs_enabled",
+                "optional": true,
+                "type": "string"
+              }
+            ],
+            "comment": "Event Pipeline Log",
+            "uuid": "97cff1a9-27d8-4a90-bc74-58e1a7c80384"
+          },
+          {
+            "number": 11,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "present",
+                  "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"d8d4ade4\",\"path\":[\"list_items\"]}')",
+                  "rhs": "",
+                  "uuid": "c182018f-c0c9-4ff0-bb8d-253454fae17e"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 12,
+                "as": "83413e94",
+                "keyword": "foreach",
+                "repeat_mode": "simple",
+                "clear_scope": "false",
+                "input": {
+                },
+                "block": [
+                  {
+                    "number": 13,
+                    "provider": "workato_recipe_function",
+                    "name": "call_recipe_async",
+                    "as": "03fa348d",
+                    "keyword": "action",
+                    "dynamicPickListSelection": {
+                      "flow_id": "[AI-EH] Fun-002-2 | Hunter | The Scraper Mechanizem"
+                    },
+                    "input": {
+                      "flow_id": {
+                        "zip_name": "Imagine AI/AI Events Hunter/The Serpent Hunter (SERP)/ai_eh_fun_002_2_hunter_the_data_harvester.recipe.json",
+                        "name": "[AI-EH] Fun-002-2 | Hunter | The Data Harvester",
+                        "folder": "Imagine AI/AI Events Hunter/The Serpent Hunter (SERP)"
+                      },
+                      "parameters": {
+                        "main_process": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"main_process\"]}')}",
+                        "data": {
+                          "domain": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"83413e94\",\"path\":[\"source\"]}')}",
+                          "url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"83413e94\",\"path\":[\"link\"]}')}",
+                          "country": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"location\",\"country\"]}')}",
+                          "city": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"location\",\"city\"]}')}",
+                          "location": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"location\",\"location\"]}')}",
+                          "type": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"type\"]}')}",
+                          "allowed_cities": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"location\",\"allowed_cities\"]}')",
+                          "serp_country_code": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"serp_country_code\"]}')}"
+                        }
+                      }
+                    },
+                    "extended_input_schema": [
+                      {
+                        "label": "Parameters",
+                        "name": "parameters",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Main process",
+                            "name": "main_process",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Type",
+                                "name": "type",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Serp country code",
+                                "name": "serp_country_code",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Domain",
+                                "name": "domain",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "URL",
+                                "name": "url",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Country",
+                                "name": "country",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Allowed cities",
+                                "name": "allowed_cities",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "City",
+                                "name": "city",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Location",
+                                "name": "location",
+                                "type": "string",
+                                "optional": false
+                              }
+                            ],
+                            "label": "Data",
+                            "name": "data",
+                            "type": "object",
+                            "optional": false
+                          }
+                        ],
+                        "type": "object"
+                      }
+                    ],
+                    "uuid": "ce384064-1502-44d0-a75e-dd2b50285f4b"
+                  }
+                ],
+                "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"d8d4ade4\",\"path\":[\"list_items\"]}')}",
+                "comment": "Events Scraper",
+                "uuid": "6b3584dd-ea9c-43ca-b621-a9de911076ff"
+              }
+            ],
+            "comment": "AI Event Hunter logic",
+            "uuid": "d99ac566-a2b8-4e7d-b914-7b7acbfe1749"
+          },
+          {
+            "number": 14,
+            "as": "05d1157b",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 15,
+                "provider": "workato_recipe_function",
+                "name": "call_recipe",
+                "as": "ff00db15",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "flow_id": "[CM] Fun | System Error Handling"
+                },
+                "input": {
+                  "flow_id": {
+                    "zip_name": "Common Functions/Error Handling Process/cm_fun_system_error_handling.recipe.json",
+                    "name": "[CM] Fun | System Error Handling",
+                    "folder": "Common Functions/Error Handling Process"
+                  },
+                  "parameters": {
+                    "ErrorDetails": {
+                      "parentProcessName": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+                      "recipe_id": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_id\"]}')}",
+                      "job_uuid": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}",
+                      "processName": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+                      "process_path": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_path\"]}')}",
+                      "jobUrl": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_url\"]}')}",
+                      "is_repeat": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"is_repeat\"]}')}",
+                      "error_uuid": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"05d1157b\",\"path\":[\"uuid\"]}')}",
+                      "errored_app": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"05d1157b\",\"path\":[\"adapter\"]}')}",
+                      "errored_action": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"05d1157b\",\"path\":[\"action\"]}')}",
+                      "error_step_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"05d1157b\",\"path\":[\"line_number\"]}')}",
+                      "errorType": "System Error",
+                      "errorMessage": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"05d1157b\",\"path\":[\"message\"]}')}",
+                      "Timestamp": "=_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_created_at\"]}')"
+                    }
+                  }
+                },
+                "extended_input_schema": [
+                  {
+                    "label": "Parameters",
+                    "name": "parameters",
+                    "properties": [
+                      {
+                        "label": "Error Details",
+                        "name": "ErrorDetails",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Parent process name",
+                            "name": "parentProcessName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Recipe Id",
+                            "name": "recipe_id",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job uuid",
+                            "name": "job_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Name",
+                            "name": "processName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Path",
+                            "name": "process_path",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job URL",
+                            "name": "jobUrl",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Is repeat",
+                            "name": "is_repeat",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error uuid",
+                            "name": "error_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored app",
+                            "name": "errored_app",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored action",
+                            "name": "errored_action",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error step number",
+                            "name": "error_step_number",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error type",
+                            "name": "errorType",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error message",
+                            "name": "errorMessage",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Timestamp",
+                            "name": "Timestamp",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Files",
+                        "name": "files",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "File name",
+                            "name": "fileName",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File content",
+                            "name": "fileContent",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "uuid": "a630c14c-dec5-42d3-8a95-6d93b6d696fc"
+              }
+            ],
+            "uuid": "8bc1cd07-0774-4ac9-99f2-184bf76b997b"
+          }
+        ],
+        "uuid": "d3a1a617-8095-4fef-9bcb-e562362a24be"
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_0",
+        "label": "Country"
+      },
+      {
+        "name": "custom_column_7",
+        "label": "City"
+      },
+      {
+        "name": "custom_column_1",
+        "label": "Query"
+      },
+      {
+        "name": "custom_column_2",
+        "label": "Event Pipeline"
+      },
+      {
+        "name": "custom_column_4",
+        "label": "Process Status"
+      },
+      {
+        "name": "custom_column_5",
+        "label": "Message"
+      },
+      {
+        "name": "custom_column_6",
+        "label": "Duration[Minutes]"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"location\",\"country\"]}')}",
+      "custom_column_7": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"location\",\"city\"]}')}",
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"query\"]}')}",
+      "custom_column_2": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"d8d4ade4\",\"path\":[\"list_items\",{\"path_element_type\":\"size\"}]}')",
+      "custom_column_4": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"05d1157b\",\"path\":[\"message\"]}').present? ? 'Error' : 'Success'",
+      "custom_column_5": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"05d1157b\",\"path\":[\"message\"]}').present? ? 'Error' : 'Success'",
+      "custom_column_6": "=((now-_('data.workato.job_context.job_created_at'))/60).round(3).to_s + ' Minute'"
+    },
+    "uuid": "fe7186f5-0797-45ad-877a-14226b1dc402"
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_variable",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "logger",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "brightdata_connector_5515774_1780900514",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Brightdata/brightdata.connection.json",
+        "name": "Brightdata",
+        "folder": "#Connections/Brightdata",
+        "custom": true
+      }
+    }
+  ],
+  "tags": [
+    "Agent: AI Event Hunter",
+    "Recipe Function"
+  ]
+}

@@ -1,0 +1,5 @@
+{
+  "name": "Zendesk",
+  "provider": "zendesk",
+  "root_folder": false
+}

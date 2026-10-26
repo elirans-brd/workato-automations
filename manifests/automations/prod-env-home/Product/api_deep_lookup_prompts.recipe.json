@@ -1,0 +1,1383 @@
+{
+  "name": "API: Deep Lookup Prompts",
+  "description": "### Detailed/Technical:\n\nTriggers a Slack Block Kit notification upon a Deep Lookup completion event. The message includes:\n\n**Lookup Summary:** Title, user, matched results count, match rate percentage, total runs, PLG mode, test mode indicator\n\n**Cost &amp; Status:** Lookup cost and completion status\n\n**Customer Context:** Customer ID, customer status, company email, triggered by, account created date, customer start date, customer paid status, customer onboarded status, lead owner, lead status, signup page, request ID, run ID\n\n**Search Details:** Original search prompt, enriched fields, applied constraints\n\n**Performance Metrics:** Max results, total results, matched results, pages read, pages considered, records enriched, cells enriched, fields generated\n\n**Usage &amp; Metadata:** Event type, free run indicator, timestamp, AI token usage (input/output tokens)\n\n**Quick Actions:** Button linking to Deep Lookup details page in CP\n\nDesigned to give Sales/CS instant visibility into Deep Lookup usage, performance, and customer engagement.",
+  "version": 1,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "workato_api_platform",
+    "name": "receive_request",
+    "as": "19bd45ea",
+    "keyword": "trigger",
+    "dynamicPickListSelection": {
+      "response.responses.0.http_status_code": "200 - OK",
+      "response.responses.1.http_status_code": "400 - Bad Request"
+    },
+    "toggleCfg": {
+      "response.responses.0.http_status_code": true,
+      "response.responses.1.http_status_code": true
+    },
+    "input": {
+      "request": {
+        "content_type": "json",
+        "schema": "[{\"control_type\":\"text\",\"label\":\"Event\",\"type\":\"string\",\"name\":\"event\"},{\"control_type\":\"text\",\"label\":\"Triggered by\",\"type\":\"string\",\"name\":\"triggered_by\"},{\"control_type\":\"text\",\"label\":\"Request ID\",\"type\":\"string\",\"name\":\"request_id\"},{\"control_type\":\"text\",\"label\":\"Customer ID\",\"type\":\"string\",\"name\":\"customer_id\"},{\"control_type\":\"text\",\"label\":\"User ID\",\"type\":\"string\",\"name\":\"user_id\"},{\"control_type\":\"text\",\"label\":\"Run ID\",\"type\":\"string\",\"name\":\"run_id\"},{\"control_type\":\"text\",\"label\":\"Query\",\"name\":\"query\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Name\",\"name\":\"name\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Title\",\"type\":\"string\",\"name\":\"title\"},{\"control_type\":\"text\",\"label\":\"Prompt\",\"type\":\"string\",\"name\":\"prompt\"},{\"control_type\":\"text\",\"label\":\"Is free\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Is free\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"is_free\"},\"type\":\"boolean\",\"name\":\"is_free\"},{\"control_type\":\"text\",\"label\":\"Is fake\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Is fake\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"is_fake\"},\"type\":\"boolean\",\"name\":\"is_fake\"},{\"control_type\":\"text\",\"label\":\"Lead owner\",\"type\":\"string\",\"name\":\"lead_owner\"},{\"control_type\":\"text\",\"label\":\"Lead status\",\"type\":\"string\",\"name\":\"lead_status\"},{\"control_type\":\"text\",\"label\":\"Is plg\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Is plg\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"is_plg\"},\"type\":\"boolean\",\"name\":\"is_plg\"},{\"control_type\":\"text\",\"label\":\"Company email\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Company email\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"company_email\"},\"type\":\"boolean\",\"name\":\"company_email\"},{\"control_type\":\"text\",\"label\":\"Country\",\"type\":\"string\",\"name\":\"country\"},{\"control_type\":\"text\",\"label\":\"Customer start\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"customer_start\"},{\"control_type\":\"date_time\",\"label\":\"Customer paid\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"name\":\"customer_paid\",\"type\":\"date_time\",\"optional\":false},{\"control_type\":\"date_time\",\"label\":\"Customer onboarded\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"name\":\"customer_onboarded\",\"type\":\"date_time\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Customer status\",\"type\":\"string\",\"name\":\"customer_status\"},{\"control_type\":\"text\",\"label\":\"Account created\",\"name\":\"account_created\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"integer\",\"label\":\"Max results\",\"parse_output\":\"integer_conversion\",\"type\":\"integer\",\"name\":\"max_results\",\"optional\":false,\"render_input\":\"integer_conversion\"},{\"control_type\":\"integer\",\"label\":\"Matched results\",\"parse_output\":\"integer_conversion\",\"type\":\"integer\",\"name\":\"matched_results\",\"optional\":false,\"render_input\":\"integer_conversion\"},{\"control_type\":\"integer\",\"label\":\"Fields generated by deep lookup\",\"parse_output\":\"integer_conversion\",\"type\":\"integer\",\"name\":\"fields_generated_by_deep_lookup\",\"optional\":false,\"render_input\":\"integer_conversion\"},{\"control_type\":\"text\",\"label\":\"Enriched fields by deep lookup\",\"type\":\"array\",\"name\":\"enriched_fields_by_deep_lookup\",\"of\":\"string\"},{\"control_type\":\"text\",\"label\":\"Constraint fields by deep lookup\",\"type\":\"array\",\"name\":\"constraint_fields_by_deep_lookup\",\"of\":\"string\"},{\"control_type\":\"text\",\"label\":\"Run status\",\"type\":\"string\",\"name\":\"run_status\"},{\"control_type\":\"number\",\"label\":\"Total runs\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"total_runs\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Results\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"results\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Pages read\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"pages_read\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Pages considered\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"pages_considered\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Billing records enriched\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"billing_records_enriched\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Billing cells enriched\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"billing_cells_enriched\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Duration\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"duration\",\"render_input\":\"float_conversion\"},{\"control_type\":\"text\",\"label\":\"Cost\",\"type\":\"string\",\"name\":\"cost\"},{\"control_type\":\"text\",\"label\":\"Status\",\"type\":\"string\",\"name\":\"status\"},{\"control_type\":\"text\",\"label\":\"Original signup page\",\"name\":\"original_signup_page\",\"type\":\"string\",\"optional\":false},{\"label\":\"Columns\",\"name\":\"columns\",\"type\":\"array\",\"optional\":false,\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Type\",\"name\":\"type\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Name\",\"name\":\"name\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Description\",\"name\":\"description\",\"type\":\"string\",\"optional\":false}]}]"
+      },
+      "response": {
+        "content_type": "json",
+        "responses": [
+          {
+            "name": "200 - OK",
+            "http_status_code": "200"
+          },
+          {
+            "name": "400 - Bad Request",
+            "http_status_code": "400",
+            "body_schema": "[{\"name\":\"message\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Message\"}]"
+          }
+        ]
+      }
+    },
+    "extended_output_schema": [
+      {
+        "label": "Context",
+        "name": "context",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Calling IP address",
+            "optional": true,
+            "type": "string",
+            "name": "calling_ip"
+          },
+          {
+            "properties": [
+              {
+                "control_type": "integer",
+                "label": "Access profile ID",
+                "parse_output": "integer_conversion",
+                "optional": true,
+                "type": "integer",
+                "name": "id"
+              },
+              {
+                "control_type": "text",
+                "label": "Access profile name",
+                "optional": true,
+                "type": "string",
+                "name": "name"
+              },
+              {
+                "control_type": "text",
+                "label": "Access profile authentication type",
+                "optional": true,
+                "type": "string",
+                "name": "type"
+              }
+            ],
+            "label": "Access profile",
+            "type": "object",
+            "name": "access_profile"
+          },
+          {
+            "properties": [
+              {
+                "control_type": "text",
+                "label": "API client ID",
+                "optional": true,
+                "type": "string",
+                "name": "id"
+              },
+              {
+                "control_type": "text",
+                "label": "API client name",
+                "optional": true,
+                "type": "string",
+                "name": "name"
+              }
+            ],
+            "label": "API client",
+            "type": "object",
+            "name": "client"
+          },
+          {
+            "properties": [
+              {
+                "control_type": "integer",
+                "label": "Issued At",
+                "render_input": "date_time_conversion",
+                "parse_output": "date_time_conversion",
+                "optional": true,
+                "type": "date_time",
+                "name": "iat"
+              },
+              {
+                "control_type": "integer",
+                "label": "Not Before",
+                "render_input": "date_time_conversion",
+                "parse_output": "date_time_conversion",
+                "optional": true,
+                "type": "date_time",
+                "name": "nbf"
+              },
+              {
+                "control_type": "integer",
+                "label": "Expiration Time",
+                "render_input": "date_time_conversion",
+                "parse_output": "date_time_conversion",
+                "optional": true,
+                "type": "date_time",
+                "name": "exp"
+              },
+              {
+                "control_type": "text",
+                "label": "Audience",
+                "optional": true,
+                "type": "string",
+                "name": "aud"
+              },
+              {
+                "control_type": "text",
+                "label": "JWT ID",
+                "optional": true,
+                "type": "string",
+                "name": "jti"
+              },
+              {
+                "control_type": "text",
+                "label": "Issuer",
+                "optional": true,
+                "type": "string",
+                "name": "iss"
+              }
+            ],
+            "label": "JWT claims",
+            "type": "object",
+            "name": "jwt_payload"
+          },
+          {
+            "properties": [
+              {
+                "properties": [
+                  {
+                    "control_type": "checkbox",
+                    "label": "Active",
+                    "render_input": "boolean_conversion",
+                    "parse_output": "boolean_conversion",
+                    "optional": true,
+                    "toggle_hint": "Select from option list",
+                    "toggle_field": {
+                      "label": "Active",
+                      "control_type": "text",
+                      "toggle_hint": "Use custom value",
+                      "optional": true,
+                      "type": "boolean",
+                      "name": "active"
+                    },
+                    "type": "boolean",
+                    "name": "active"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Scope",
+                    "optional": true,
+                    "type": "string",
+                    "name": "scope"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Client ID",
+                    "optional": true,
+                    "type": "string",
+                    "name": "client_id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Username",
+                    "optional": true,
+                    "type": "string",
+                    "name": "username"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Token type",
+                    "optional": true,
+                    "type": "string",
+                    "name": "token_type"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Exp",
+                    "optional": true,
+                    "type": "string",
+                    "name": "exp"
+                  }
+                ],
+                "label": "Response Body",
+                "type": "object",
+                "name": "payload"
+              }
+            ],
+            "label": "Token introspection",
+            "type": "object",
+            "name": "introspect"
+          }
+        ],
+        "type": "object"
+      },
+      {
+        "label": "Request parameters",
+        "name": "request",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Event",
+            "type": "string",
+            "name": "event"
+          },
+          {
+            "control_type": "text",
+            "label": "Triggered by",
+            "type": "string",
+            "name": "triggered_by"
+          },
+          {
+            "control_type": "text",
+            "label": "Request ID",
+            "type": "string",
+            "name": "request_id"
+          },
+          {
+            "control_type": "text",
+            "label": "Customer ID",
+            "type": "string",
+            "name": "customer_id"
+          },
+          {
+            "control_type": "text",
+            "label": "User ID",
+            "type": "string",
+            "name": "user_id"
+          },
+          {
+            "control_type": "text",
+            "label": "Run ID",
+            "type": "string",
+            "name": "run_id"
+          },
+          {
+            "control_type": "text",
+            "label": "Query",
+            "name": "query",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "control_type": "text",
+            "label": "Name",
+            "name": "name",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "control_type": "text",
+            "label": "Title",
+            "type": "string",
+            "name": "title"
+          },
+          {
+            "control_type": "text",
+            "label": "Prompt",
+            "type": "string",
+            "name": "prompt"
+          },
+          {
+            "control_type": "text",
+            "label": "Is free",
+            "render_input": "boolean_conversion",
+            "parse_output": "boolean_conversion",
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+              "label": "Is free",
+              "control_type": "text",
+              "toggle_hint": "Use custom value",
+              "type": "boolean",
+              "name": "is_free"
+            },
+            "type": "boolean",
+            "name": "is_free"
+          },
+          {
+            "control_type": "text",
+            "label": "Is fake",
+            "render_input": "boolean_conversion",
+            "parse_output": "boolean_conversion",
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+              "label": "Is fake",
+              "control_type": "text",
+              "toggle_hint": "Use custom value",
+              "type": "boolean",
+              "name": "is_fake"
+            },
+            "type": "boolean",
+            "name": "is_fake"
+          },
+          {
+            "control_type": "text",
+            "label": "Lead owner",
+            "type": "string",
+            "name": "lead_owner"
+          },
+          {
+            "control_type": "text",
+            "label": "Lead status",
+            "type": "string",
+            "name": "lead_status"
+          },
+          {
+            "control_type": "text",
+            "label": "Is plg",
+            "render_input": "boolean_conversion",
+            "parse_output": "boolean_conversion",
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+              "label": "Is plg",
+              "control_type": "text",
+              "toggle_hint": "Use custom value",
+              "type": "boolean",
+              "name": "is_plg"
+            },
+            "type": "boolean",
+            "name": "is_plg"
+          },
+          {
+            "control_type": "text",
+            "label": "Company email",
+            "render_input": "boolean_conversion",
+            "parse_output": "boolean_conversion",
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+              "label": "Company email",
+              "control_type": "text",
+              "toggle_hint": "Use custom value",
+              "type": "boolean",
+              "name": "company_email"
+            },
+            "type": "boolean",
+            "name": "company_email"
+          },
+          {
+            "control_type": "text",
+            "label": "Country",
+            "type": "string",
+            "name": "country"
+          },
+          {
+            "control_type": "text",
+            "label": "Customer start",
+            "render_input": "date_time_conversion",
+            "parse_output": "date_time_conversion",
+            "type": "date_time",
+            "name": "customer_start"
+          },
+          {
+            "control_type": "date_time",
+            "label": "Customer paid",
+            "render_input": "date_time_conversion",
+            "parse_output": "date_time_conversion",
+            "name": "customer_paid",
+            "type": "date_time",
+            "optional": false
+          },
+          {
+            "control_type": "date_time",
+            "label": "Customer onboarded",
+            "render_input": "date_time_conversion",
+            "parse_output": "date_time_conversion",
+            "name": "customer_onboarded",
+            "type": "date_time",
+            "optional": false
+          },
+          {
+            "control_type": "text",
+            "label": "Customer status",
+            "type": "string",
+            "name": "customer_status"
+          },
+          {
+            "control_type": "text",
+            "label": "Account created",
+            "name": "account_created",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "control_type": "integer",
+            "label": "Max results",
+            "parse_output": "integer_conversion",
+            "type": "integer",
+            "name": "max_results",
+            "optional": false,
+            "render_input": "integer_conversion"
+          },
+          {
+            "control_type": "integer",
+            "label": "Matched results",
+            "parse_output": "integer_conversion",
+            "type": "integer",
+            "name": "matched_results",
+            "optional": false,
+            "render_input": "integer_conversion"
+          },
+          {
+            "control_type": "integer",
+            "label": "Fields generated by deep lookup",
+            "parse_output": "integer_conversion",
+            "type": "integer",
+            "name": "fields_generated_by_deep_lookup",
+            "optional": false,
+            "render_input": "integer_conversion"
+          },
+          {
+            "control_type": "text",
+            "label": "Enriched fields by deep lookup",
+            "type": "array",
+            "name": "enriched_fields_by_deep_lookup",
+            "of": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Constraint fields by deep lookup",
+            "type": "array",
+            "name": "constraint_fields_by_deep_lookup",
+            "of": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Run status",
+            "type": "string",
+            "name": "run_status"
+          },
+          {
+            "control_type": "number",
+            "label": "Total runs",
+            "parse_output": "float_conversion",
+            "type": "number",
+            "name": "total_runs",
+            "render_input": "float_conversion"
+          },
+          {
+            "control_type": "number",
+            "label": "Results",
+            "parse_output": "float_conversion",
+            "type": "number",
+            "name": "results",
+            "render_input": "float_conversion"
+          },
+          {
+            "control_type": "number",
+            "label": "Pages read",
+            "parse_output": "float_conversion",
+            "type": "number",
+            "name": "pages_read",
+            "render_input": "float_conversion"
+          },
+          {
+            "control_type": "number",
+            "label": "Pages considered",
+            "parse_output": "float_conversion",
+            "type": "number",
+            "name": "pages_considered",
+            "render_input": "float_conversion"
+          },
+          {
+            "control_type": "number",
+            "label": "Billing records enriched",
+            "parse_output": "float_conversion",
+            "type": "number",
+            "name": "billing_records_enriched",
+            "render_input": "float_conversion"
+          },
+          {
+            "control_type": "number",
+            "label": "Billing cells enriched",
+            "parse_output": "float_conversion",
+            "type": "number",
+            "name": "billing_cells_enriched",
+            "render_input": "float_conversion"
+          },
+          {
+            "control_type": "number",
+            "label": "Duration",
+            "parse_output": "float_conversion",
+            "type": "number",
+            "name": "duration",
+            "render_input": "float_conversion"
+          },
+          {
+            "control_type": "text",
+            "label": "Cost",
+            "type": "string",
+            "name": "cost"
+          },
+          {
+            "control_type": "text",
+            "label": "Status",
+            "type": "string",
+            "name": "status"
+          },
+          {
+            "control_type": "text",
+            "label": "Original signup page",
+            "name": "original_signup_page",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "label": "Columns",
+            "name": "columns",
+            "type": "array",
+            "optional": false,
+            "of": "object",
+            "properties": [
+              {
+                "control_type": "text",
+                "label": "Type",
+                "name": "type",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "Name",
+                "name": "name",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "Description",
+                "name": "description",
+                "type": "string",
+                "optional": false
+              }
+            ]
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "workato_variable",
+            "name": "declare_list",
+            "as": "db868696",
+            "keyword": "action",
+            "input": {
+              "list_item_schema_json": "[{\"name\":\"clean_title\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Clean title\"},{\"name\":\"query_clean\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Query clean\"},{\"name\":\"prompt_clean\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Prompt clean\"},{\"name\":\"clean_name\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Clean name\"},{\"name\":\"enrich_columns\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Enrich columns\"},{\"name\":\"created_formatted\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Created formatted\"},{\"name\":\"description\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Description\"},{\"name\":\"filter_columns\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Filter columns\"},{\"name\":\"match_results\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Match results\"},{\"name\":\"match_rate\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Match rate\"}]",
+              "list_items": {
+                "clean_title": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"title\"]}')&.to_s&.gsub('\\\\', '')&.gsub('\"', '\\\"')",
+                "query_clean": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"query\"]}')&.to_s&.gsub('\"\"\"\"', '')&.gsub(/[\\r\\n]/, '')&.gsub('\"', '')",
+                "prompt_clean": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"prompt\"]}')&.gsub(/[\\n\\\\\\\"\\[\\]]/, '')",
+                "clean_name": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"name\"]}')&.to_s&.gsub('\\\"', '\\\\\"')&.gsub('\"', '\\\"')",
+                "enrich_columns": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"enriched_fields_by_deep_lookup\"]}').present? ? '• ' + _dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"enriched_fields_by_deep_lookup\"]}').split(\",\").smart_join(\"\\n • \") : nil",
+                "created_formatted": "=now&.strftime('%B %-d, %Y %-l:%M %p')",
+                "description": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"columns\",{\"path_element_type\":\"current_item\"},\"description\"]}').present? ? \n'\"' + _dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"columns\",{\"path_element_type\":\"current_item\"},\"description\"]}')&.to_s&.gsub('\\\\', '\\\\\\\\')&.gsub('\"', '\\\"')&.gsub(/[\\r\\n\\t]+/, ' ') + '\"' : nil",
+                "filter_columns": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"constraint_fields_by_deep_lookup\"]}')}",
+                "match_results": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"matched_results\"]}')}/#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"results\"]}')}",
+                "match_rate": "=(_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"matched_results\"]}').to_f/_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"max_results\"]}').to_f)*100.round"
+              },
+              "name": "deep lookup prompts"
+            },
+            "extended_output_schema": [
+              {
+                "hint": "",
+                "label": "deep lookup prompts",
+                "name": "list_items",
+                "of": "object",
+                "optional": false,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Clean title",
+                    "name": "clean_title",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Query clean",
+                    "name": "query_clean",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Prompt clean",
+                    "name": "prompt_clean",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Clean name",
+                    "name": "clean_name",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Enrich columns",
+                    "name": "enrich_columns",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Created formatted",
+                    "name": "created_formatted",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Description",
+                    "name": "description",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Filter columns",
+                    "name": "filter_columns",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Match results",
+                    "name": "match_results",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Match rate",
+                    "name": "match_rate",
+                    "type": "string",
+                    "optional": false
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                "label": "Items",
+                "name": "list_items",
+                "of": "object",
+                "optional": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Clean title",
+                    "name": "clean_title",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Query clean",
+                    "name": "query_clean",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Prompt clean",
+                    "name": "prompt_clean",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Clean name",
+                    "name": "clean_name",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Enrich columns",
+                    "name": "enrich_columns",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Created formatted",
+                    "name": "created_formatted",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Description",
+                    "name": "description",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Filter columns",
+                    "name": "filter_columns",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Match results",
+                    "name": "match_results",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Match rate",
+                    "name": "match_rate",
+                    "type": "string",
+                    "optional": false
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "uuid": "02f3c079-5088-4c37-b2f3-2c0deb93f120"
+          },
+          {
+            "number": 3,
+            "provider": "slack_bot",
+            "name": "post_bot_message",
+            "as": "644eda0d",
+            "keyword": "action",
+            "toggleCfg": {
+              "channel": true,
+              "blocks.15.actions.0.style": true
+            },
+            "input": {
+              "channel": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"deep-lookup-prompts channel\"}')}",
+              "blocks": [
+                {
+                  "button_type": "continue_flow",
+                  "block_type": "section_with_fields",
+                  "section_text": "*🎯 Deep Lookup Completed! 🎯*"
+                },
+                {
+                  "button_type": "continue_flow",
+                  "block_type": "section_with_text",
+                  "section_text": "*Title:* `#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"db868696\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"clean_title\"]}')}`\n*User:* `#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"user_id\"]}')}`\n*Matched Results:* `#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"db868696\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"match_results\"]}')}` found | *Match Rate:* `#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"db868696\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"match_rate\"]}')}%`\n*Total Runs:* `#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"total_runs\"]}')}`\n*PLG Mode:* `#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"is_plg\"]}')}` |  *Test Mode:* `#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"is_fake\"]}')}`"
+                },
+                {
+                  "button_type": "continue_flow",
+                  "block_type": "section_with_text",
+                  "section_text": "*Cost:* `#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"cost\"]}')}` | *Status:* ✅ `#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"status\"]}')}`"
+                },
+                {
+                  "button_type": "continue_flow",
+                  "block_type": "divider"
+                },
+                {
+                  "button_type": "continue_flow",
+                  "block_type": "section_with_fields",
+                  "section_text": " ",
+                  "attachment_fields": [
+                    {
+                      "title": "*🏢 Customer ID:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"customer_id\"]}')}`"
+                    },
+                    {
+                      "title": "*📊 Customer Status:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"customer_status\"]}')}`"
+                    },
+                    {
+                      "title": "*📧 Company Email:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"company_email\"]}')}`"
+                    },
+                    {
+                      "title": "*⚡ Triggered By:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"triggered_by\"]}')}`"
+                    },
+                    {
+                      "title": "*📅 Account Created:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"account_created\"]}')}`"
+                    },
+                    {
+                      "title": "🚀 Customer Start:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"customer_start\"]}')}`"
+                    }
+                  ]
+                },
+                {
+                  "button_type": "continue_flow",
+                  "block_type": "section_with_fields",
+                  "section_text": " ",
+                  "attachment_fields": [
+                    {
+                      "title": "*💳 Customer Paid:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"customer_paid\"]}')}`"
+                    },
+                    {
+                      "title": "*✅ Customer Onboarded:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"customer_onboarded\"]}')}`"
+                    },
+                    {
+                      "title": "*👥 Lead Owner:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"lead_owner\"]}')}`"
+                    },
+                    {
+                      "title": "*📈 Lead Status:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"lead_status\"]}')}`"
+                    },
+                    {
+                      "title": "*🔗 Signup Page:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"original_signup_page\"]}')}`"
+                    },
+                    {
+                      "title": "*📋 Request ID:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"request_id\"]}')}`"
+                    }
+                  ]
+                },
+                {
+                  "button_type": "continue_flow",
+                  "block_type": "context",
+                  "elements": [
+                    {
+                      "type": "text",
+                      "text": "*Run ID:* `#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"run_id\"]}')}`"
+                    }
+                  ]
+                },
+                {
+                  "button_type": "continue_flow",
+                  "block_type": "divider"
+                },
+                {
+                  "button_type": "continue_flow",
+                  "block_type": "section_with_text",
+                  "section_text": "🔍 *Search Prompt:*\n```#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"db868696\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"prompt_clean\"]}')}```"
+                },
+                {
+                  "button_type": "continue_flow",
+                  "block_type": "section_with_text",
+                  "section_text": "🔬 Enriched Fields:\n#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"db868696\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"enrich_columns\"]}')}"
+                },
+                {
+                  "button_type": "continue_flow",
+                  "block_type": "section_with_text",
+                  "section_text": "*✅ Applied Constraints:*\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"constraint_fields_by_deep_lookup\"]}')}`"
+                },
+                {
+                  "button_type": "continue_flow",
+                  "block_type": "section_with_fields",
+                  "section_text": "*📈 Performance Metrics:*",
+                  "attachment_fields": [
+                    {
+                      "title": "*🎯 Max Results:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"max_results\"]}')}`"
+                    },
+                    {
+                      "title": "*📊 Total Results:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"results\"]}')}`"
+                    },
+                    {
+                      "title": "*✅ Matched:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"matched_results\"]}')}`"
+                    },
+                    {
+                      "title": "*📄 Pages Read:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"pages_read\"]}')}`"
+                    },
+                    {
+                      "title": "*🔍 Pages Considered:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"pages_considered\"]}')}`"
+                    },
+                    {
+                      "title": "*💎 Records Enriched:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"billing_records_enriched\"]}')}`"
+                    },
+                    {
+                      "title": "*📋 Cells Enriched:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"billing_cells_enriched\"]}')}`"
+                    },
+                    {
+                      "title": "*🏷️ Fields Generated:*",
+                      "value": "\n`#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"fields_generated_by_deep_lookup\"]}')}`"
+                    }
+                  ]
+                },
+                {
+                  "button_type": "continue_flow",
+                  "block_type": "divider"
+                },
+                {
+                  "button_type": "continue_flow",
+                  "block_type": "context",
+                  "elements": [
+                    {
+                      "type": "text",
+                      "text": "*Event:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"event\"]}')} | *Free Run:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"is_free\"]}')} | *Timestamp:* #{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_created_at\"]}')}"
+                    },
+                    {
+                      "type": "text",
+                      "text": "*AI Token Usage:* Input: 83 | Output: 127"
+                    }
+                  ]
+                },
+                {
+                  "button_type": "continue_flow",
+                  "block_type": "divider"
+                },
+                {
+                  "button_type": "continue_flow",
+                  "block_type": "actions",
+                  "actions": [
+                    {
+                      "button_type": "url_button",
+                      "type": "button_with_long_action",
+                      "button_title": "🔍 View Lookup Details",
+                      "style": "primary",
+                      "url": "https://brightdata.com/cp/deep_lookup?id=#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"customer_id\"]}')}&request_id=#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"request_id\"]}')}"
+                    }
+                  ],
+                  "block_id": "view_lookup_details"
+                }
+              ]
+            },
+            "uuid": "d98a8251-bbf0-4750-bd1f-af6d84fbc590"
+          },
+          {
+            "number": 4,
+            "provider": "workato_api_platform",
+            "name": "return_response",
+            "as": "38e65479",
+            "keyword": "action",
+            "input": {
+              "http_status_code": "200"
+            },
+            "extended_output_schema": [
+              {
+                "change_on_blur": true,
+                "control_type": "select",
+                "extends_schema": true,
+                "label": "Response",
+                "name": "http_status_code",
+                "pick_list": [
+                  [
+                    "200 - OK",
+                    "200"
+                  ],
+                  [
+                    "400 - Bad Request",
+                    "400"
+                  ]
+                ],
+                "type": "string"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "change_on_blur": true,
+                "control_type": "select",
+                "extends_schema": true,
+                "label": "Response",
+                "name": "http_status_code",
+                "pick_list": [
+                  [
+                    "200 - OK",
+                    "200"
+                  ],
+                  [
+                    "400 - Bad Request",
+                    "400"
+                  ]
+                ],
+                "type": "string"
+              }
+            ],
+            "uuid": "cbe5da84-c2d5-493c-80e6-3a68be21ece1"
+          },
+          {
+            "number": 5,
+            "as": "af386c67",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 6,
+                "provider": "workato_recipe_function",
+                "name": "call_recipe_async",
+                "as": "1928266c",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "flow_id": "System Error Handling"
+                },
+                "input": {
+                  "flow_id": {
+                    "zip_name": "Common Functions/Error Handling Process/cm_fun_system_error_handling.recipe.json",
+                    "name": "[CM] Fun | System Error Handling",
+                    "folder": "Common Functions/Error Handling Process"
+                  },
+                  "parameters": {
+                    "ErrorDetails": {
+                      "parentProcessName": "Partnerstack",
+                      "recipe_id": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_id\"]}')}",
+                      "processName": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+                      "process_path": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_path\"]}')}",
+                      "jobUrl": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_url\"]}')}",
+                      "is_repeat": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"is_repeat\"]}')}",
+                      "error_uuid": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"af386c67\",\"path\":[\"uuid\"]}')}",
+                      "errored_app": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"af386c67\",\"path\":[\"adapter\"]}')}",
+                      "errored_action": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"af386c67\",\"path\":[\"action\"]}')}",
+                      "error_step_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"af386c67\",\"path\":[\"line_number\"]}')}",
+                      "errorType": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"af386c67\",\"path\":[\"type\"]}')}",
+                      "errorMessage": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"af386c67\",\"path\":[\"message\"]}')}",
+                      "Timestamp": "=now.in_time_zone(\"Asia/Jerusalem\")",
+                      "job_uuid": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}"
+                    }
+                  }
+                },
+                "extended_input_schema": [
+                  {
+                    "label": "Parameters",
+                    "name": "parameters",
+                    "properties": [
+                      {
+                        "label": "Error Details",
+                        "name": "ErrorDetails",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Parent process name",
+                            "name": "parentProcessName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Recipe Id",
+                            "name": "recipe_id",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job uuid",
+                            "name": "job_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Name",
+                            "name": "processName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Path",
+                            "name": "process_path",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job URL",
+                            "name": "jobUrl",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Is repeat",
+                            "name": "is_repeat",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error uuid",
+                            "name": "error_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored app",
+                            "name": "errored_app",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored action",
+                            "name": "errored_action",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error step number",
+                            "name": "error_step_number",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error type",
+                            "name": "errorType",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error message",
+                            "name": "errorMessage",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Timestamp",
+                            "name": "Timestamp",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Files",
+                        "name": "files",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "File name",
+                            "name": "fileName",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File content",
+                            "name": "fileContent",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "comment": "system error function",
+                "uuid": "dc231b49-f60f-4675-9a1e-296e27187145",
+                "skip": false
+              },
+              {
+                "number": 7,
+                "provider": "workato_api_platform",
+                "name": "return_response",
+                "as": "4a4c8544",
+                "keyword": "action",
+                "input": {
+                  "http_status_code": "400",
+                  "response": {
+                    "message": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"af386c67\",\"path\":[\"message\"]}')}"
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "change_on_blur": true,
+                    "control_type": "select",
+                    "extends_schema": true,
+                    "label": "Response",
+                    "name": "http_status_code",
+                    "pick_list": [
+                      [
+                        "200 - OK",
+                        "200"
+                      ],
+                      [
+                        "400 - Bad Request",
+                        "400"
+                      ]
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "label": "Response body",
+                    "name": "response",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "change_on_blur": true,
+                    "control_type": "select",
+                    "extends_schema": true,
+                    "label": "Response",
+                    "name": "http_status_code",
+                    "pick_list": [
+                      [
+                        "200 - OK",
+                        "200"
+                      ],
+                      [
+                        "400 - Bad Request",
+                        "400"
+                      ]
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "label": "Response body",
+                    "name": "response",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "uuid": "81430326-dc4f-4fd7-8231-3e08e26b3a92"
+              }
+            ],
+            "uuid": "ec29c2da-74bb-4515-8b54-7c90f4200bbf"
+          }
+        ],
+        "uuid": "9b194405-a076-4ea9-bcdc-e0f897d3d9fe"
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_0",
+        "label": "Customer Id"
+      },
+      {
+        "name": "custom_column_10",
+        "label": "Customer Status"
+      },
+      {
+        "name": "custom_column_1",
+        "label": "User Id"
+      },
+      {
+        "name": "custom_column_2",
+        "label": "Title"
+      },
+      {
+        "name": "custom_column_3",
+        "label": "Is Free || Is Fake || Is plg"
+      },
+      {
+        "name": "custom_column_5",
+        "label": "Match Results"
+      },
+      {
+        "name": "custom_column_6",
+        "label": "Match Rate"
+      },
+      {
+        "name": "custom_column_9",
+        "label": "Enriched Fields"
+      },
+      {
+        "name": "custom_column_7",
+        "label": "Process Status"
+      },
+      {
+        "name": "custom_column_8",
+        "label": "Message"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"customer_id\"]}')}",
+      "custom_column_10": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"customer_status\"]}')}",
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"user_id\"]}')}",
+      "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"db868696\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"clean_title\"]}')}",
+      "custom_column_3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"is_free\"]}')} || #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"is_fake\"]}')}  || #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"is_plg\"]}')}",
+      "custom_column_5": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"db868696\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"match_results\"]}')}",
+      "custom_column_6": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"db868696\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"match_rate\"]}')}",
+      "custom_column_9": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"19bd45ea\",\"path\":[\"request\",\"enriched_fields_by_deep_lookup\"]}')}",
+      "custom_column_7": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"af386c67\",\"path\":[\"message\"]}').present? ?  'Error' : 'Success'",
+      "custom_column_8": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"af386c67\",\"path\":[\"message\"]}')}"
+    },
+    "uuid": "c1a89176-6128-42cd-9f79-ab2fc3149dd0"
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_variable",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "slack_bot",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Slack/biz_admin_workbot.connection.json",
+        "name": "Biz Admin Workbot",
+        "folder": "#Connections/Slack"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_api_platform",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ],
+  "tags": [
+    "Endpoint"
+  ]
+}

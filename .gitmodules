@@ -1,0 +1,6 @@
+[submodule "wk"]
+	path = wk
+	url = https://github.com/workato-devs/wk.git
+[submodule "skills/recipe-skills"]
+	path = skills/recipe-skills
+	url = https://github.com/workato-devs/recipe-skills.git

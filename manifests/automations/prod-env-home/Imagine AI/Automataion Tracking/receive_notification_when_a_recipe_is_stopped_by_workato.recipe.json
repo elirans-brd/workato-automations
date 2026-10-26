@@ -1,0 +1,357 @@
+{
+  "name": "Receive notification when a recipe is stopped by Workato",
+  "version": 5,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "workato_app",
+    "name": "stop_error",
+    "as": "5db2148f",
+    "keyword": "trigger",
+    "input": {
+      "mode": "all"
+    },
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "clock",
+            "name": "wait_for_interval",
+            "as": "21077ce2",
+            "keyword": "action",
+            "toggleCfg": {
+              "interval": true
+            },
+            "input": {
+              "interval": "3600"
+            },
+            "uuid": "cf9bf0d1-5c5f-4bf3-a6a7-1bb82d8a2c19",
+            "skip": false
+          },
+          {
+            "number": 3,
+            "provider": "workato_app",
+            "name": "get_recipe",
+            "as": "7bba7d52",
+            "keyword": "action",
+            "toggleCfg": {
+              "recipe_id": false
+            },
+            "input": {
+              "recipe_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_app\",\"line\":\"5db2148f\",\"path\":[\"id\"]}')}"
+            },
+            "uuid": "b3b53b31-5b52-4526-87ed-de897cfe56fd"
+          },
+          {
+            "number": 4,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "equals_to",
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_app\",\"line\":\"7bba7d52\",\"path\":[\"active\"]}')}",
+                  "rhs": "=false",
+                  "uuid": "7234c119-a051-49cf-848b-f84b95e88818"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 5,
+                "provider": "slack",
+                "name": "post_message_to_channel",
+                "as": "6f5fc421",
+                "keyword": "action",
+                "toggleCfg": {
+                  "channel": false
+                },
+                "input": {
+                  "parse": "false",
+                  "text": "Recipe: #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_app\",\"line\":\"7bba7d52\",\"path\":[\"name\"]}')} is down, please handle.",
+                  "channel": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"workato automation tracking slack channel\"}')}"
+                },
+                "uuid": "46d01608-8a75-499d-a333-aaae17cdad10"
+              }
+            ],
+            "uuid": "3c4859fa-eb0d-47f1-86ec-14d96ec92a44"
+          },
+          {
+            "number": 6,
+            "as": "57f021ba",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 7,
+                "provider": "workato_recipe_function",
+                "name": "call_recipe_async",
+                "as": "6818054b",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "flow_id": "System Error Handling"
+                },
+                "input": {
+                  "flow_id": {
+                    "zip_name": "Common Functions/Error Handling Process/cm_fun_system_error_handling.recipe.json",
+                    "name": "[CM] Fun | System Error Handling",
+                    "folder": "Common Functions/Error Handling Process"
+                  },
+                  "parameters": {
+                    "ErrorDetails": {
+                      "parentProcessName": "Partnerstack",
+                      "recipe_id": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_id\"]}')}",
+                      "processName": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+                      "process_path": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_path\"]}')}",
+                      "jobUrl": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_url\"]}')}",
+                      "is_repeat": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"is_repeat\"]}')}",
+                      "error_uuid": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"57f021ba\",\"path\":[\"uuid\"]}')}",
+                      "errored_app": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"57f021ba\",\"path\":[\"adapter\"]}')}",
+                      "errored_action": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"57f021ba\",\"path\":[\"action\"]}')}",
+                      "error_step_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"57f021ba\",\"path\":[\"line_number\"]}')}",
+                      "errorType": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"57f021ba\",\"path\":[\"type\"]}')}",
+                      "errorMessage": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"57f021ba\",\"path\":[\"message\"]}')}",
+                      "Timestamp": "=now.in_time_zone(\"Asia/Jerusalem\")",
+                      "job_uuid": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}"
+                    }
+                  }
+                },
+                "extended_input_schema": [
+                  {
+                    "label": "Parameters",
+                    "name": "parameters",
+                    "properties": [
+                      {
+                        "label": "Error Details",
+                        "name": "ErrorDetails",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Parent process name",
+                            "name": "parentProcessName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Recipe Id",
+                            "name": "recipe_id",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job uuid",
+                            "name": "job_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Name",
+                            "name": "processName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Path",
+                            "name": "process_path",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job URL",
+                            "name": "jobUrl",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Is repeat",
+                            "name": "is_repeat",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error uuid",
+                            "name": "error_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored app",
+                            "name": "errored_app",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored action",
+                            "name": "errored_action",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error step number",
+                            "name": "error_step_number",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error type",
+                            "name": "errorType",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error message",
+                            "name": "errorMessage",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Timestamp",
+                            "name": "Timestamp",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Files",
+                        "name": "files",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "File name",
+                            "name": "fileName",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File content",
+                            "name": "fileContent",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "comment": "system error function",
+                "uuid": "769c9489-fb6b-42ba-8a02-c2f9d006059f",
+                "skip": false
+              }
+            ],
+            "uuid": "75c7fcfa-ca4a-403b-b17a-9c18cc8d92ca"
+          }
+        ],
+        "uuid": "c7fabeca-c52c-4669-baa4-e04242556afa"
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_0",
+        "label": "Recipe Id"
+      },
+      {
+        "name": "custom_column_3",
+        "label": "Error Count"
+      },
+      {
+        "name": "custom_column_1",
+        "label": "Error Connector"
+      },
+      {
+        "name": "custom_column_2",
+        "label": "Is Autorization Error"
+      },
+      {
+        "name": "custom_column_4",
+        "label": "Message"
+      },
+      {
+        "name": "custom_column_5",
+        "label": "Status"
+      },
+      {
+        "name": "custom_column_6",
+        "label": "Error Message"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_app\",\"line\":\"5db2148f\",\"path\":[\"id\"]}')}",
+      "custom_column_3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_app\",\"line\":\"5db2148f\",\"path\":[\"error\",\"error_count\"]}')}",
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_app\",\"line\":\"5db2148f\",\"path\":[\"error\",\"error_connector\"]}')}",
+      "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_app\",\"line\":\"5db2148f\",\"path\":[\"error\",\"is_authorization_error\"]}')}",
+      "custom_column_4": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_app\",\"line\":\"5db2148f\",\"path\":[\"error\",\"message\"]}')}",
+      "custom_column_5": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"57f021ba\",\"path\":[\"message\"]}').present? ? 'Error' : 'Success'",
+      "custom_column_6": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"57f021ba\",\"path\":[\"message\"]}')"
+    },
+    "uuid": "6d55c81d-9f1b-4533-88c1-3f50b84fa343"
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_app",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Workato Features/recipeops.connection.json",
+        "name": "RecipeOps",
+        "folder": "#Connections/Workato Features"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "clock",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "slack",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Slack/biz_admin_slack.connection.json",
+        "name": "Biz Admin Slack",
+        "folder": "#Connections/Slack"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ],
+  "tags": [
+    "AI Agent"
+  ]
+}

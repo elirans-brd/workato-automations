@@ -1,0 +1,2958 @@
+{
+  "name": "[AI-EH] Fun-001 | Scout | RSS Feed Streamer",
+  "version": 1,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "workato_recipe_function",
+    "name": "execute",
+    "as": "e2c855eb",
+    "keyword": "trigger",
+    "input": {
+      "parameters_schema_json": "[{\"name\":\"main_process\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Main process\"},{\"name\":\"data\",\"type\":\"object\",\"optional\":false,\"properties\":[{\"name\":\"domain\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Domain\"},{\"name\":\"rss_tool\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Rss tool\"},{\"name\":\"rss_feed\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Rss feed\"},{\"name\":\"country\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Country\"},{\"name\":\"city\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"City\"},{\"name\":\"allowed_cities\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Allowed cities\"}],\"label\":\"Data\"}]",
+      "result_schema_json": "[{\"name\":\"process_status\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Process status\"},{\"name\":\"message\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Message\"},{\"name\":\"metrics\",\"type\":\"object\",\"optional\":true,\"properties\":[{\"name\":\"relevant_events_count\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Relevant events count\"},{\"name\":\"irelevant_events_count\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Irelevant events count\"}],\"label\":\"Metrics\"}]"
+    },
+    "extended_output_schema": [
+      {
+        "label": "Parameters",
+        "name": "parameters",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Main process",
+            "name": "main_process",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "properties": [
+              {
+                "control_type": "text",
+                "label": "Domain",
+                "name": "domain",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "Rss tool",
+                "name": "rss_tool",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "Rss feed",
+                "name": "rss_feed",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "Country",
+                "name": "country",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "City",
+                "name": "city",
+                "type": "string",
+                "optional": true
+              },
+              {
+                "control_type": "text",
+                "label": "Allowed cities",
+                "name": "allowed_cities",
+                "type": "string",
+                "optional": true
+              }
+            ],
+            "label": "Data",
+            "name": "data",
+            "type": "object",
+            "optional": false
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "rss_feed_reader_2_0_connector_5515774_1786360895",
+            "name": "get_feed",
+            "as": "8dae6ccd",
+            "title": null,
+            "description": null,
+            "keyword": "action",
+            "input": {
+              "feed_url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"rss_feed\"]}')}",
+              "custom_fields": "[{\"properties\":[{\"control_type\":\"text\",\"label\":\"Title\",\"type\":\"string\",\"name\":\"title\",\"details\":{\"real_name\":\"title\"}},{\"control_type\":\"text\",\"label\":\"Description\",\"type\":\"string\",\"name\":\"description\",\"details\":{\"real_name\":\"description\"}},{\"control_type\":\"text\",\"label\":\"Link\",\"type\":\"string\",\"name\":\"link\",\"details\":{\"real_name\":\"link\"}},{\"properties\":[{\"control_type\":\"text\",\"label\":\"URL\",\"type\":\"string\",\"name\":\"url\",\"details\":{\"real_name\":\"url\"}},{\"control_type\":\"text\",\"label\":\"Title\",\"type\":\"string\",\"name\":\"title\",\"details\":{\"real_name\":\"title\"}},{\"control_type\":\"text\",\"label\":\"Link\",\"type\":\"string\",\"name\":\"link\",\"details\":{\"real_name\":\"link\"}}],\"label\":\"Image\",\"type\":\"object\",\"name\":\"image\",\"details\":{\"real_name\":\"image\"}},{\"control_type\":\"text\",\"label\":\"Generator\",\"type\":\"string\",\"name\":\"generator\",\"details\":{\"real_name\":\"generator\"}},{\"control_type\":\"text\",\"label\":\"Last build date\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"lastBuildDate\",\"details\":{\"real_name\":\"lastBuildDate\"}},{\"control_type\":\"text\",\"label\":\"Atom link\",\"type\":\"string\",\"name\":\"atom_link\",\"details\":{\"real_name\":\"atom_link\"}},{\"control_type\":\"text\",\"label\":\"Language\",\"type\":\"string\",\"name\":\"language\",\"details\":{\"real_name\":\"language\"}},{\"label\":\"Item\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Title\",\"type\":\"string\",\"name\":\"title\",\"details\":{\"real_name\":\"title\"}},{\"control_type\":\"text\",\"label\":\"Description\",\"type\":\"string\",\"name\":\"description\",\"details\":{\"real_name\":\"description\"}},{\"control_type\":\"text\",\"label\":\"Link\",\"type\":\"string\",\"name\":\"link\",\"details\":{\"real_name\":\"link\"}},{\"control_type\":\"text\",\"label\":\"Guid\",\"type\":\"string\",\"name\":\"guid\",\"details\":{\"real_name\":\"guid\"}},{\"control_type\":\"text\",\"label\":\"Dc creator\",\"type\":\"string\",\"name\":\"dc_creator\",\"details\":{\"real_name\":\"dc_creator\"}},{\"control_type\":\"text\",\"label\":\"Media content\",\"type\":\"string\",\"name\":\"media_content\",\"details\":{\"real_name\":\"media_content\"}}],\"type\":\"array\",\"name\":\"item\",\"details\":{\"real_name\":\"item\"}}],\"label\":\"Channel\",\"type\":\"object\",\"name\":\"channel\",\"details\":{\"real_name\":\"channel\"}}]"
+            },
+            "extended_output_schema": [
+              {
+                "label": "Channel",
+                "name": "channel",
+                "optional": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Title",
+                    "details": {
+                      "real_name": "title"
+                    },
+                    "optional": true,
+                    "type": "string",
+                    "name": "title"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Description",
+                    "details": {
+                      "real_name": "description"
+                    },
+                    "optional": true,
+                    "type": "string",
+                    "name": "description"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Link",
+                    "details": {
+                      "real_name": "link"
+                    },
+                    "optional": true,
+                    "type": "string",
+                    "name": "link"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "URL",
+                        "details": {
+                          "real_name": "url"
+                        },
+                        "optional": true,
+                        "type": "string",
+                        "name": "url"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Title",
+                        "details": {
+                          "real_name": "title"
+                        },
+                        "optional": true,
+                        "type": "string",
+                        "name": "title"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Link",
+                        "details": {
+                          "real_name": "link"
+                        },
+                        "optional": true,
+                        "type": "string",
+                        "name": "link"
+                      }
+                    ],
+                    "label": "Image",
+                    "details": {
+                      "real_name": "image"
+                    },
+                    "optional": true,
+                    "type": "object",
+                    "name": "image"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Generator",
+                    "details": {
+                      "real_name": "generator"
+                    },
+                    "optional": true,
+                    "type": "string",
+                    "name": "generator"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Last build date",
+                    "render_input": "date_time_conversion",
+                    "parse_output": "date_time_conversion",
+                    "details": {
+                      "real_name": "lastBuildDate"
+                    },
+                    "optional": true,
+                    "type": "date_time",
+                    "name": "lastBuildDate"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Atom link",
+                    "details": {
+                      "real_name": "atom_link"
+                    },
+                    "optional": true,
+                    "type": "string",
+                    "name": "atom_link"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Language",
+                    "details": {
+                      "real_name": "language"
+                    },
+                    "optional": true,
+                    "type": "string",
+                    "name": "language"
+                  },
+                  {
+                    "label": "Item",
+                    "details": {
+                      "real_name": "item"
+                    },
+                    "optional": true,
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Title",
+                        "details": {
+                          "real_name": "title"
+                        },
+                        "optional": true,
+                        "type": "string",
+                        "name": "title"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Description",
+                        "details": {
+                          "real_name": "description"
+                        },
+                        "optional": true,
+                        "type": "string",
+                        "name": "description"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Link",
+                        "details": {
+                          "real_name": "link"
+                        },
+                        "optional": true,
+                        "type": "string",
+                        "name": "link"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Guid",
+                        "details": {
+                          "real_name": "guid"
+                        },
+                        "optional": true,
+                        "type": "string",
+                        "name": "guid"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Dc creator",
+                        "details": {
+                          "real_name": "dc_creator"
+                        },
+                        "optional": true,
+                        "type": "string",
+                        "name": "dc_creator"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Media content",
+                        "details": {
+                          "real_name": "media_content"
+                        },
+                        "optional": true,
+                        "type": "string",
+                        "name": "media_content"
+                      }
+                    ],
+                    "type": "array",
+                    "name": "item"
+                  }
+                ],
+                "type": "object",
+                "details": {
+                  "real_name": "channel"
+                }
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "control_type": "url",
+                "hint": "E.g. <b>https://status.workato.com/history.rss</b>",
+                "label": "Feed URL",
+                "name": "feed_url",
+                "optional": false,
+                "type": "string"
+              },
+              {
+                "control_type": "schema-designer",
+                "extends_schema": true,
+                "hint": "Specify the output fields based on the specified feed.",
+                "label": "Custom feed schema",
+                "name": "custom_fields",
+                "optional": true,
+                "sample_data_type": "json_input",
+                "sticky": "true",
+                "type": "string",
+                "schema_neutral": true
+              },
+              {
+                "control_type": "text",
+                "extends_schema": true,
+                "hint": "Specify the list name to retrieve the items from. e.g. In this <a href=\"https://status.workato.com/history.rss\" target=\"_blank\">feed</a>, the list element containing the feed items is <<b>item</b>>. NOTE: This is required if the array tag from the document is not <<b>item</b>>. If not specified, it will not render as an array in the output.",
+                "label": "Feed list name",
+                "name": "feed_list_name",
+                "optional": true,
+                "sticky": "true",
+                "type": "string"
+              }
+            ],
+            "uuid": "aac88aa1-b434-4c29-9c56-179ff866d445"
+          },
+          {
+            "number": 3,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "present",
+                  "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"rss_feed_reader_2_0_connector_5515774_1786360895\",\"line\":\"8dae6ccd\",\"path\":[\"channel\",\"item\"]}')",
+                  "rhs": "",
+                  "uuid": "e32f29de-6719-4e25-9120-a55f65f3b0f4"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 4,
+                "provider": "workato_variable",
+                "name": "declare_list",
+                "as": "42b00a60",
+                "keyword": "action",
+                "input": {
+                  "list_item_schema_json": "[{\"control_type\":\"text\",\"label\":\"Title\",\"type\":\"string\",\"name\":\"title\"},{\"control_type\":\"text\",\"label\":\"URL\",\"type\":\"string\",\"name\":\"url\"},{\"control_type\":\"text\",\"label\":\"Description\",\"type\":\"string\",\"name\":\"description\"},{\"control_type\":\"text\",\"label\":\"Date\",\"type\":\"string\",\"name\":\"date\"},{\"control_type\":\"text\",\"label\":\"Location\",\"type\":\"string\",\"name\":\"location\"},{\"name\":\"country\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Country\"},{\"name\":\"city\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"City\"},{\"name\":\"geo_bucket\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Geo bucket\"},{\"control_type\":\"text\",\"label\":\"Topic\",\"type\":\"string\",\"name\":\"topic\"},{\"control_type\":\"text\",\"label\":\"Duration\",\"type\":\"string\",\"name\":\"duration\"},{\"control_type\":\"text\",\"label\":\"Speakers\",\"type\":\"string\",\"name\":\"speakers\"},{\"control_type\":\"text\",\"label\":\"Sponsors\",\"type\":\"string\",\"name\":\"sponsors\"},{\"control_type\":\"text\",\"label\":\"Website link\",\"type\":\"string\",\"name\":\"website_link\"},{\"control_type\":\"text\",\"label\":\"Other info\",\"type\":\"string\",\"name\":\"other_info\"},{\"control_type\":\"text\",\"label\":\"Type\",\"type\":\"string\",\"name\":\"type\"},{\"name\":\"source_function\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Source function\"},{\"name\":\"job_url\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Job URL\"},{\"name\":\"is_relevant\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Is relevant\"},{\"name\":\"reason\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Reason\"},{\"name\":\"source\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Source\"},{\"name\":\"discovery_date\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Discovery date\"}]",
+                  "name": "AI Event Hunter"
+                },
+                "extended_output_schema": [
+                  {
+                    "hint": "",
+                    "label": "AI Event Hunter",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": false,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Title",
+                        "type": "string",
+                        "name": "title"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "URL",
+                        "type": "string",
+                        "name": "url"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Description",
+                        "type": "string",
+                        "name": "description"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Date",
+                        "type": "string",
+                        "name": "date"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Location",
+                        "type": "string",
+                        "name": "location"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Country",
+                        "name": "country",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "City",
+                        "name": "city",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Geo bucket",
+                        "name": "geo_bucket",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Topic",
+                        "type": "string",
+                        "name": "topic"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Duration",
+                        "type": "string",
+                        "name": "duration"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Speakers",
+                        "type": "string",
+                        "name": "speakers"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Sponsors",
+                        "type": "string",
+                        "name": "sponsors"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Website link",
+                        "type": "string",
+                        "name": "website_link"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Other info",
+                        "type": "string",
+                        "name": "other_info"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Type",
+                        "type": "string",
+                        "name": "type"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Source function",
+                        "name": "source_function",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Job URL",
+                        "name": "job_url",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Is relevant",
+                        "name": "is_relevant",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Reason",
+                        "name": "reason",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Source",
+                        "name": "source",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Discovery date",
+                        "name": "discovery_date",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                    "label": "Items",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Title",
+                        "type": "string",
+                        "name": "title"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "URL",
+                        "type": "string",
+                        "name": "url"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Description",
+                        "type": "string",
+                        "name": "description"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Date",
+                        "type": "string",
+                        "name": "date"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Location",
+                        "type": "string",
+                        "name": "location"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Country",
+                        "name": "country",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "City",
+                        "name": "city",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Geo bucket",
+                        "name": "geo_bucket",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Topic",
+                        "type": "string",
+                        "name": "topic"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Duration",
+                        "type": "string",
+                        "name": "duration"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Speakers",
+                        "type": "string",
+                        "name": "speakers"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Sponsors",
+                        "type": "string",
+                        "name": "sponsors"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Website link",
+                        "type": "string",
+                        "name": "website_link"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Other info",
+                        "type": "string",
+                        "name": "other_info"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Type",
+                        "type": "string",
+                        "name": "type"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Source function",
+                        "name": "source_function",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Job URL",
+                        "name": "job_url",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Is relevant",
+                        "name": "is_relevant",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Reason",
+                        "name": "reason",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Source",
+                        "name": "source",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Discovery date",
+                        "name": "discovery_date",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "comment": "AI Event Hunter",
+                "uuid": "a0af8f10-2ff1-499c-a763-f5f3155a98aa"
+              },
+              {
+                "number": 5,
+                "as": "9878efe0",
+                "keyword": "foreach",
+                "repeat_mode": "simple",
+                "clear_scope": "false",
+                "input": {
+                },
+                "block": [
+                  {
+                    "number": 6,
+                    "provider": "google_sheets",
+                    "name": "search_spreadsheet_rows_v4_new",
+                    "as": "cf4e96b0",
+                    "keyword": "action",
+                    "dynamicPickListSelection": {
+                      "spreadsheet": "AI Events Hunter - Redesign"
+                    },
+                    "input": {
+                      "team_drives": "my_drive",
+                      "spreadsheet": "1ZvljcQ-nu08KV0F_fzDG4hCYbw8Wqe0c67rFtxqDNK8",
+                      "count": "200",
+                      "sheet": "Used Links",
+                      "data": {
+                        "col_Title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9878efe0\",\"path\":[\"title\"]}')}",
+                        "col_URL": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9878efe0\",\"path\":[\"link\"]}')}"
+                      }
+                    },
+                    "extended_output_schema": [
+                      {
+                        "control_type": "text",
+                        "label": "Spreadsheet ID",
+                        "name": "spreadsheet_id",
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Spreadsheet name",
+                        "name": "spreadsheet_name",
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Sheet name",
+                        "name": "sheet",
+                        "type": "string"
+                      },
+                      {
+                        "label": "Rows",
+                        "name": "rows",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "number",
+                            "label": "Row number",
+                            "parse_output": "integer_conversion",
+                            "type": "integer",
+                            "name": "row_number"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Title",
+                            "old_name": "col_Title",
+                            "custom_attribute": 1,
+                            "type": "string",
+                            "name": "col_Title"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "URL",
+                            "old_name": "col_URL",
+                            "custom_attribute": 2,
+                            "type": "string",
+                            "name": "col_URL"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Date",
+                            "old_name": "col_Date",
+                            "custom_attribute": 3,
+                            "type": "string",
+                            "name": "col_Date"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Source",
+                            "old_name": "col_Source",
+                            "custom_attribute": 4,
+                            "type": "string",
+                            "name": "col_Source"
+                          }
+                        ],
+                        "type": "array"
+                      }
+                    ],
+                    "extended_input_schema": [
+                      {
+                        "control_type": "select",
+                        "extends_schema": true,
+                        "hint": "Select a sheet to search for rows. The sheet must have at least one header row. <a href='https://docs.workato.com/connectors/google-sheets/action-add-row.html#setting-up-the-google-sheet' target='_blank'>Learn more</a>",
+                        "label": "Sheet",
+                        "name": "sheet",
+                        "optional": false,
+                        "pick_list": [
+                          [
+                            "Index",
+                            "Index"
+                          ],
+                          [
+                            "Regions",
+                            "Regions"
+                          ],
+                          [
+                            "Event Hunter",
+                            "Event Hunter"
+                          ],
+                          [
+                            "Used Links",
+                            "Used Links"
+                          ],
+                          [
+                            "Events Bucket",
+                            "Events Bucket"
+                          ],
+                          [
+                            "United States Events",
+                            "United States Events"
+                          ],
+                          [
+                            "United Kingdom Events",
+                            "United Kingdom Events"
+                          ],
+                          [
+                            "India Events",
+                            "India Events"
+                          ],
+                          [
+                            "France Events",
+                            "France Events"
+                          ],
+                          [
+                            "Germany Events",
+                            "Germany Events"
+                          ],
+                          [
+                            "Japan Events",
+                            "Japan Events"
+                          ],
+                          [
+                            "Brazil Events",
+                            "Brazil Events"
+                          ]
+                        ],
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Sheet name",
+                          "toggle_hint": "Use sheet name",
+                          "extends_schema": true,
+                          "change_on_blur": true,
+                          "toggle_to_secondary_hint": "Use sheet name",
+                          "toggle_to_primary_hint": "Select a sheet",
+                          "hint": "Use <b>Sheet name</b> pill from the output of other Google Sheets’ triggers/actions. Or enter sheet name manually. The sheet must have at least 1 header row in input field.",
+                          "type": "string",
+                          "name": "sheet_name"
+                        },
+                        "toggle_hint": "Select a sheet",
+                        "type": "string"
+                      },
+                      {
+                        "hint": "Enter one or more search values. Workato will search for rows matching <b>ALL</b> of the search values below.",
+                        "label": "Columns",
+                        "name": "data",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Title",
+                            "optional": true,
+                            "sticky": true,
+                            "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
+                            "type": "string",
+                            "name": "col_Title"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "URL",
+                            "optional": true,
+                            "sticky": true,
+                            "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
+                            "type": "string",
+                            "name": "col_URL"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Date",
+                            "optional": true,
+                            "sticky": true,
+                            "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
+                            "type": "string",
+                            "name": "col_Date"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Source",
+                            "optional": true,
+                            "sticky": true,
+                            "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
+                            "type": "string",
+                            "name": "col_Source"
+                          }
+                        ],
+                        "sticky": true,
+                        "type": "object"
+                      },
+                      {
+                        "control_type": "number",
+                        "default": 200,
+                        "hint": "Maximum number of matched rows to be returned. Minimum accepted value is <b>1</b> and maximum accepted value is <b>50000</b>.",
+                        "label": "Search result size",
+                        "name": "count",
+                        "optional": true,
+                        "parse_output": "float_conversion",
+                        "type": "number"
+                      }
+                    ],
+                    "visible_config_fields": [
+                      "team_drives",
+                      "spreadsheet",
+                      "sheet",
+                      "data",
+                      "data.col_Title",
+                      "data.col_URL",
+                      "count"
+                    ],
+                    "hidden_config_fields": [
+                      "data.col_Date"
+                    ],
+                    "comment": "Used links",
+                    "uuid": "cb407936-f7bd-40e1-84e9-7ed209ef0af5"
+                  },
+                  {
+                    "number": 7,
+                    "keyword": "if",
+                    "input": {
+                      "type": "compound",
+                      "operand": "and",
+                      "conditions": [
+                        {
+                          "operand": "blank",
+                          "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"google_sheets\",\"line\":\"cf4e96b0\",\"path\":[\"rows\"]}')",
+                          "rhs": "",
+                          "uuid": "57090253-d830-4899-a296-d244a4780c29"
+                        }
+                      ]
+                    },
+                    "block": [
+                      {
+                        "number": 8,
+                        "provider": "workato_recipe_function",
+                        "name": "call_recipe",
+                        "as": "da54a292",
+                        "keyword": "action",
+                        "dynamicPickListSelection": {
+                          "flow_id": "[AI-EH] Fun-001 | Refiner | The Insight Refiner"
+                        },
+                        "input": {
+                          "flow_id": {
+                            "zip_name": "Imagine AI/AI Events Hunter/ai_eh_fun_001_refiner_the_event_scanner.recipe.json",
+                            "name": "[AI-EH] Fun-001 | Refiner | The Event Scanner",
+                            "folder": "Imagine AI/AI Events Hunter"
+                          },
+                          "parameters": {
+                            "main_process": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+                            "data": {
+                              "website": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"domain\"]}')}",
+                              "event_url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9878efe0\",\"path\":[\"link\"]}')}",
+                              "source_type": "RSS",
+                              "location": {
+                                "country": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"country\"]}')}",
+                                "city": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"city\"]}')}",
+                                "allowed_cities": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"allowed_cities\"]}')}",
+                                "location": "=[_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"country\"]}') , _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"city\"]}')].smart_join(\", \")"
+                              }
+                            }
+                          }
+                        },
+                        "extended_output_schema": [
+                          {
+                            "label": "Result",
+                            "name": "result",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Status",
+                                "name": "status",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Is relevant",
+                                "render_input": "boolean_conversion",
+                                "parse_output": "boolean_conversion",
+                                "toggle_hint": "Select from option list",
+                                "toggle_field": {
+                                  "label": "Is relevant",
+                                  "control_type": "text",
+                                  "toggle_hint": "Use custom value",
+                                  "type": "boolean",
+                                  "name": "is_relevant"
+                                },
+                                "type": "boolean",
+                                "name": "is_relevant"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Reason",
+                                "type": "string",
+                                "name": "reason",
+                                "optional": true
+                              },
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "Title",
+                                    "type": "string",
+                                    "name": "Title",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "URL",
+                                    "type": "string",
+                                    "name": "URL",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Description",
+                                    "type": "string",
+                                    "name": "Description",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Date",
+                                    "type": "string",
+                                    "name": "Date",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Event status",
+                                    "type": "string",
+                                    "name": "Event_Status",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Location",
+                                    "type": "string",
+                                    "name": "Location",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Country",
+                                    "name": "Country",
+                                    "type": "string",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "City",
+                                    "name": "City",
+                                    "type": "string",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Geo bucket",
+                                    "name": "geo_bucket",
+                                    "type": "string",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Sponsors",
+                                    "name": "Sponsors",
+                                    "type": "string",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Speakers",
+                                    "name": "Speakers",
+                                    "type": "string",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Topic",
+                                    "type": "string",
+                                    "name": "Topic",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Duration",
+                                    "type": "string",
+                                    "name": "Duration",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Website link",
+                                    "type": "string",
+                                    "name": "Website_Link",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Other info",
+                                    "type": "string",
+                                    "name": "Other_info",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Type",
+                                    "type": "string",
+                                    "name": "Type",
+                                    "optional": true
+                                  }
+                                ],
+                                "label": "Data",
+                                "type": "object",
+                                "name": "data",
+                                "optional": true
+                              }
+                            ],
+                            "type": "object"
+                          }
+                        ],
+                        "extended_input_schema": [
+                          {
+                            "label": "Parameters",
+                            "name": "parameters",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Main process",
+                                "name": "main_process",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "Tiltle",
+                                    "name": "tiltle",
+                                    "type": "string",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Description",
+                                    "name": "description",
+                                    "type": "string",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Website",
+                                    "name": "website",
+                                    "type": "string",
+                                    "optional": false
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Event URL",
+                                    "name": "event_url",
+                                    "type": "string",
+                                    "optional": false
+                                  },
+                                  {
+                                    "properties": [
+                                      {
+                                        "control_type": "text",
+                                        "label": "Country",
+                                        "name": "country",
+                                        "type": "string",
+                                        "optional": false
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "City",
+                                        "name": "city",
+                                        "type": "string",
+                                        "optional": false
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "Allowed cities",
+                                        "name": "allowed_cities",
+                                        "type": "string",
+                                        "optional": false
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "Location",
+                                        "name": "location",
+                                        "type": "string",
+                                        "optional": false
+                                      }
+                                    ],
+                                    "label": "Location",
+                                    "name": "location",
+                                    "type": "object",
+                                    "optional": false
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Source type",
+                                    "name": "source_type",
+                                    "type": "string",
+                                    "optional": true,
+                                    "hint": "Identifies if the link came from \"RSS\" or \"SERP\" for tracking."
+                                  }
+                                ],
+                                "label": "Data",
+                                "name": "data",
+                                "type": "object",
+                                "optional": false
+                              }
+                            ],
+                            "type": "object"
+                          }
+                        ],
+                        "visible_config_fields": [
+                          "flow_id",
+                          "parameters",
+                          "parameters.main_process",
+                          "parameters.data",
+                          "parameters.data.website",
+                          "parameters.data.event_url",
+                          "parameters.data.source_type"
+                        ],
+                        "comment": "Refiner | The Insight Refiner",
+                        "uuid": "4c8b0300-bff9-432e-942e-1727aa95cc9e"
+                      },
+                      {
+                        "number": 9,
+                        "keyword": "if",
+                        "input": {
+                          "type": "compound",
+                          "operand": "and",
+                          "conditions": [
+                            {
+                              "operand": "equals_to",
+                              "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"da54a292\",\"path\":[\"result\",\"status\"]}')}",
+                              "rhs": "Success",
+                              "uuid": "af8a7e30-2adb-4341-a70b-49ff9eda465a"
+                            }
+                          ]
+                        },
+                        "block": [
+                          {
+                            "number": 10,
+                            "provider": "workato_variable",
+                            "name": "insert_to_list",
+                            "as": "f8df4715",
+                            "keyword": "action",
+                            "dynamicPickListSelection": {
+                              "name": "AI Event Hunter (step 5)"
+                            },
+                            "input": {
+                              "location": "end",
+                              "name": "a0af8f10-2ff1-499c-a763-f5f3155a98aa:42b00a60",
+                              "list_item": {
+                                "title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9878efe0\",\"path\":[\"title\"]}')}",
+                                "url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9878efe0\",\"path\":[\"link\"]}')}",
+                                "description": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9878efe0\",\"path\":[\"description\"]}')}",
+                                "date": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"da54a292\",\"path\":[\"result\",\"data\",\"Date\"]}')}",
+                                "location": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"da54a292\",\"path\":[\"result\",\"data\",\"Location\"]}')}",
+                                "topic": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"da54a292\",\"path\":[\"result\",\"data\",\"Topic\"]}')}",
+                                "duration": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"da54a292\",\"path\":[\"result\",\"data\",\"Duration\"]}')}",
+                                "speakers": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"da54a292\",\"path\":[\"result\",\"data\",\"Speakers\"]}')}",
+                                "sponsors": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"da54a292\",\"path\":[\"result\",\"data\",\"Sponsors\"]}')}",
+                                "website_link": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"domain\"]}')}",
+                                "other_info": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"da54a292\",\"path\":[\"result\",\"data\",\"Other_info\"]}')}",
+                                "type": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"da54a292\",\"path\":[\"result\",\"data\",\"Type\"]}')}",
+                                "job_url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"da54a292\",\"path\":[\"job_url\"]}')}",
+                                "source_function": "[AI-EH] Fun-001 | Refiner | The Insight Refiner",
+                                "is_relevant": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"da54a292\",\"path\":[\"result\",\"is_relevant\"]}')}",
+                                "reason": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"da54a292\",\"path\":[\"result\",\"reason\"]}')}",
+                                "country": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"da54a292\",\"path\":[\"result\",\"data\",\"Country\"]}')}",
+                                "source": "rss",
+                                "discovery_date": "=now.in_time_zone(\"Asia/Jerusalem\").strftime(\"%d/%m/%Y\")",
+                                "city": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"da54a292\",\"path\":[\"result\",\"data\",\"City\"]}')}",
+                                "geo_bucket": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"da54a292\",\"path\":[\"result\",\"data\",\"geo_bucket\"]}')}"
+                              }
+                            },
+                            "extended_input_schema": [
+                              {
+                                "hint": "",
+                                "label": "List item",
+                                "name": "list_item",
+                                "optional": false,
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "Title",
+                                    "type": "string",
+                                    "name": "title"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "URL",
+                                    "type": "string",
+                                    "name": "url"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Description",
+                                    "type": "string",
+                                    "name": "description"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Date",
+                                    "type": "string",
+                                    "name": "date"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Location",
+                                    "type": "string",
+                                    "name": "location"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Country",
+                                    "name": "country",
+                                    "type": "string",
+                                    "optional": false
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "City",
+                                    "name": "city",
+                                    "type": "string",
+                                    "optional": false
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Geo bucket",
+                                    "name": "geo_bucket",
+                                    "type": "string",
+                                    "optional": false
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Topic",
+                                    "type": "string",
+                                    "name": "topic"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Duration",
+                                    "type": "string",
+                                    "name": "duration"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Speakers",
+                                    "type": "string",
+                                    "name": "speakers"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Sponsors",
+                                    "type": "string",
+                                    "name": "sponsors"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Website link",
+                                    "type": "string",
+                                    "name": "website_link"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Other info",
+                                    "type": "string",
+                                    "name": "other_info"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Type",
+                                    "type": "string",
+                                    "name": "type"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Source function",
+                                    "name": "source_function",
+                                    "type": "string",
+                                    "optional": false
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Job URL",
+                                    "name": "job_url",
+                                    "type": "string",
+                                    "optional": false
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Is relevant",
+                                    "name": "is_relevant",
+                                    "type": "string",
+                                    "optional": false
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Reason",
+                                    "name": "reason",
+                                    "type": "string",
+                                    "optional": false
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Source",
+                                    "name": "source",
+                                    "type": "string",
+                                    "optional": false
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Discovery date",
+                                    "name": "discovery_date",
+                                    "type": "string",
+                                    "optional": false
+                                  }
+                                ],
+                                "type": "object"
+                              }
+                            ],
+                            "comment": "AI Event Hunter",
+                            "uuid": "229f5904-724d-4ced-b4cb-b4b824089a42"
+                          }
+                        ],
+                        "comment": "Event is relevant",
+                        "uuid": "572aaec6-920b-4e97-86b5-8d7e9721ed4d"
+                      }
+                    ],
+                    "comment": "Check if links processed",
+                    "uuid": "ffa19f55-583f-4106-a29f-8c5807b0a7e7"
+                  }
+                ],
+                "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rss_feed_reader_2_0_connector_5515774_1786360895\",\"line\":\"8dae6ccd\",\"path\":[\"channel\",\"item\"]}')}",
+                "uuid": "82cbbfa4-d19f-41a1-8e10-7d81f87cb9ea"
+              },
+              {
+                "number": 11,
+                "keyword": "if",
+                "input": {
+                  "type": "compound",
+                  "operand": "and",
+                  "conditions": [
+                    {
+                      "operand": "present",
+                      "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"42b00a60\",\"path\":[\"list_items\"]}')",
+                      "rhs": "",
+                      "uuid": "6278baaf-d786-44a6-9e4d-f5f61427c39e"
+                    }
+                  ]
+                },
+                "block": [
+                  {
+                    "number": 12,
+                    "provider": "google_sheets",
+                    "name": "add_row_v4_bulk",
+                    "as": "375041f7",
+                    "keyword": "action",
+                    "dynamicPickListSelection": {
+                      "spreadsheet": "AI Events Hunter - Redesign"
+                    },
+                    "toggleCfg": {
+                      "is_top_left": true
+                    },
+                    "input": {
+                      "team_drives": "my_drive",
+                      "is_top_left": "false",
+                      "spreadsheet": "1ZvljcQ-nu08KV0F_fzDG4hCYbw8Wqe0c67rFtxqDNK8",
+                      "sheet": "Used Links",
+                      "rows": {
+                        "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"42b00a60\",\"path\":[\"list_items\"]}')}",
+                        "col_Title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"42b00a60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"title\"]}')}",
+                        "col_URL": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"42b00a60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"url\"]}')}",
+                        "col_Date": "=_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_created_at\"]}').strftime(\"%d/%m/%Y\")",
+                        "col_Source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"42b00a60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"source\"]}')}"
+                      }
+                    },
+                    "extended_input_schema": [
+                      {
+                        "control_type": "select",
+                        "extends_schema": true,
+                        "hint": "Select a sheet to add row to. The sheet must have at least one header row. <a href='https://docs.workato.com/connectors/google-sheets/action-add-row.html#setting-up-the-google-sheet' target='_blank'>Learn more</a>",
+                        "label": "Sheet",
+                        "name": "sheet",
+                        "optional": false,
+                        "pick_list": [
+                          [
+                            "Index",
+                            "Index"
+                          ],
+                          [
+                            "Regions",
+                            "Regions"
+                          ],
+                          [
+                            "Event Hunter",
+                            "Event Hunter"
+                          ],
+                          [
+                            "Used Links",
+                            "Used Links"
+                          ],
+                          [
+                            "Events Bucket",
+                            "Events Bucket"
+                          ],
+                          [
+                            "United States Events",
+                            "United States Events"
+                          ],
+                          [
+                            "United Kingdom Events",
+                            "United Kingdom Events"
+                          ],
+                          [
+                            "India Events",
+                            "India Events"
+                          ],
+                          [
+                            "France Events",
+                            "France Events"
+                          ],
+                          [
+                            "Germany Events",
+                            "Germany Events"
+                          ],
+                          [
+                            "Japan Events",
+                            "Japan Events"
+                          ],
+                          [
+                            "Brazil Events",
+                            "Brazil Events"
+                          ]
+                        ],
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Sheet name",
+                          "toggle_hint": "Use sheet name",
+                          "extends_schema": true,
+                          "change_on_blur": true,
+                          "toggle_to_secondary_hint": "Use sheet name",
+                          "toggle_to_primary_hint": "Select a sheet",
+                          "hint": "Use <b>Sheet name</b> pill from the output of other Google Sheets’ triggers/actions. Or enter sheet name manually. The sheet must have at least 1 header row in input field.",
+                          "type": "string",
+                          "name": "sheet_name"
+                        },
+                        "toggle_hint": "Select a sheet",
+                        "type": "string"
+                      },
+                      {
+                        "hint": "Input row values into the fields below.",
+                        "label": "Rows",
+                        "name": "rows",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Title",
+                            "old_name": "col_Title",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_Title"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "URL",
+                            "old_name": "col_URL",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_URL"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Date",
+                            "old_name": "col_Date",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_Date"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Source",
+                            "old_name": "col_Source",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_Source"
+                          }
+                        ],
+                        "sticky": true,
+                        "type": "array"
+                      }
+                    ],
+                    "comment": "Used Links",
+                    "uuid": "64bab1b8-f0ae-4d4c-9a49-b55ba24f53f7"
+                  },
+                  {
+                    "number": 13,
+                    "provider": "workato_smart_list",
+                    "name": "create_list",
+                    "as": "8e539238",
+                    "keyword": "action",
+                    "input": {
+                      "list_source": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"42b00a60\",\"path\":[\"list_items\"]}')",
+                      "list_name": "AI Event Hunter",
+                      "primary_index": "job_url"
+                    },
+                    "extended_output_schema": [
+                      {
+                        "control_type": "text",
+                        "label": "AI Event Hunter",
+                        "name": "list_name",
+                        "type": "string"
+                      },
+                      {
+                        "label": "Columns",
+                        "name": "columns",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Title",
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "title"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "URL",
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "url"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Description",
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "description"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Date",
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "date"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Location",
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "location"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Country",
+                            "optional": false,
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "country"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "City",
+                            "optional": false,
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "city"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Geo bucket",
+                            "optional": false,
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "geo_bucket"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Topic",
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "topic"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Duration",
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "duration"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Speakers",
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "speakers"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Sponsors",
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "sponsors"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Website link",
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "website_link"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Other info",
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "other_info"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Type",
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "type"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Source function",
+                            "optional": false,
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "source_function"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job URL",
+                            "optional": false,
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "job_url"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Is relevant",
+                            "optional": false,
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "is_relevant"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Reason",
+                            "optional": false,
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "reason"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Source",
+                            "optional": false,
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "source"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Discovery date",
+                            "optional": false,
+                            "list_data_type": "string",
+                            "type": "string",
+                            "name": "discovery_date"
+                          }
+                        ],
+                        "type": "object"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Row count",
+                        "name": "row_count",
+                        "parse_output": "integer_conversion",
+                        "type": "integer"
+                      }
+                    ],
+                    "extended_input_schema": [
+                      {
+                        "control_type": "checkbox",
+                        "hint": "Select <b>Yes</b> to overwrite <b>AI Event Hunter</b> list if it already exists",
+                        "label": "Overwrite list?",
+                        "name": "force",
+                        "optional": true,
+                        "toggle_field": {
+                          "label": "Overwrite list?",
+                          "control_type": "text",
+                          "toggle_hint": "Use custom value",
+                          "hint": "Select <b>Yes</b> to overwrite <b>AI Event Hunter</b> list if it already exists",
+                          "optional": true,
+                          "render_input": null,
+                          "parse_output": null,
+                          "type": "boolean",
+                          "name": "force"
+                        },
+                        "toggle_hint": "Select from option list",
+                        "type": "boolean"
+                      },
+                      {
+                        "control_type": "multiselect",
+                        "delimiter": "\n",
+                        "hint": "Collections are like databases. Having index improves query performance. Select one or more fields from list source.",
+                        "label": "Primary index",
+                        "name": "primary_index",
+                        "ngIf": "input.create_table_if_not_exist != 'false'",
+                        "optional": true,
+                        "pick_list": [
+                          [
+                            "Title",
+                            "title"
+                          ],
+                          [
+                            "URL",
+                            "url"
+                          ],
+                          [
+                            "Description",
+                            "description"
+                          ],
+                          [
+                            "Date",
+                            "date"
+                          ],
+                          [
+                            "Location",
+                            "location"
+                          ],
+                          [
+                            "Country",
+                            "country"
+                          ],
+                          [
+                            "City",
+                            "city"
+                          ],
+                          [
+                            "Geo bucket",
+                            "geo_bucket"
+                          ],
+                          [
+                            "Topic",
+                            "topic"
+                          ],
+                          [
+                            "Duration",
+                            "duration"
+                          ],
+                          [
+                            "Speakers",
+                            "speakers"
+                          ],
+                          [
+                            "Sponsors",
+                            "sponsors"
+                          ],
+                          [
+                            "Website link",
+                            "website_link"
+                          ],
+                          [
+                            "Other info",
+                            "other_info"
+                          ],
+                          [
+                            "Type",
+                            "type"
+                          ],
+                          [
+                            "Source function",
+                            "source_function"
+                          ],
+                          [
+                            "Job URL",
+                            "job_url"
+                          ],
+                          [
+                            "Is relevant",
+                            "is_relevant"
+                          ],
+                          [
+                            "Reason",
+                            "reason"
+                          ],
+                          [
+                            "Source",
+                            "source"
+                          ],
+                          [
+                            "Discovery date",
+                            "discovery_date"
+                          ]
+                        ],
+                        "sticky": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "multiselect",
+                        "delimiter": "\n",
+                        "hint": "Select one or more fields from list source.",
+                        "label": "Secondary index",
+                        "name": "secondary_index",
+                        "ngIf": "input.create_table_if_not_exist != 'false'",
+                        "optional": true,
+                        "pick_list": [
+                          [
+                            "Title",
+                            "title"
+                          ],
+                          [
+                            "URL",
+                            "url"
+                          ],
+                          [
+                            "Description",
+                            "description"
+                          ],
+                          [
+                            "Date",
+                            "date"
+                          ],
+                          [
+                            "Location",
+                            "location"
+                          ],
+                          [
+                            "Country",
+                            "country"
+                          ],
+                          [
+                            "City",
+                            "city"
+                          ],
+                          [
+                            "Geo bucket",
+                            "geo_bucket"
+                          ],
+                          [
+                            "Topic",
+                            "topic"
+                          ],
+                          [
+                            "Duration",
+                            "duration"
+                          ],
+                          [
+                            "Speakers",
+                            "speakers"
+                          ],
+                          [
+                            "Sponsors",
+                            "sponsors"
+                          ],
+                          [
+                            "Website link",
+                            "website_link"
+                          ],
+                          [
+                            "Other info",
+                            "other_info"
+                          ],
+                          [
+                            "Type",
+                            "type"
+                          ],
+                          [
+                            "Source function",
+                            "source_function"
+                          ],
+                          [
+                            "Job URL",
+                            "job_url"
+                          ],
+                          [
+                            "Is relevant",
+                            "is_relevant"
+                          ],
+                          [
+                            "Reason",
+                            "reason"
+                          ],
+                          [
+                            "Source",
+                            "source"
+                          ],
+                          [
+                            "Discovery date",
+                            "discovery_date"
+                          ]
+                        ],
+                        "type": "string"
+                      }
+                    ],
+                    "comment": "AI Event Hunter",
+                    "uuid": "f00751b6-c1be-41a9-b03c-3a223997d5c8"
+                  },
+                  {
+                    "number": 14,
+                    "provider": "workato_smart_list",
+                    "name": "query_list",
+                    "as": "76eb2e98",
+                    "keyword": "action",
+                    "toggleCfg": {
+                      "csv": true
+                    },
+                    "input": {
+                      "output_schema_by": "index",
+                      "csv": "false",
+                      "headers": "false",
+                      "col_sep": "comma",
+                      "sql": "select * \nfrom #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"8e539238\",\"path\":[\"list_name\"]}')}\nwhere #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"8e539238\",\"path\":[\"columns\",\"is_relevant\"]}')} = 'true'",
+                      "result_schema_json": "[{\"control_type\":\"text\",\"label\":\"Title\",\"type\":\"string\",\"name\":\"title\"},{\"control_type\":\"text\",\"label\":\"URL\",\"type\":\"string\",\"name\":\"url\"},{\"control_type\":\"text\",\"label\":\"Description\",\"type\":\"string\",\"name\":\"description\"},{\"control_type\":\"text\",\"label\":\"Date\",\"type\":\"string\",\"name\":\"date\"},{\"control_type\":\"text\",\"label\":\"Location\",\"type\":\"string\",\"name\":\"location\"},{\"control_type\":\"text\",\"label\":\"Country\",\"name\":\"country\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"City\",\"name\":\"city\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Geo bucket\",\"name\":\"geo_bucket\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Topic\",\"type\":\"string\",\"name\":\"topic\"},{\"control_type\":\"text\",\"label\":\"Duration\",\"type\":\"string\",\"name\":\"duration\"},{\"control_type\":\"text\",\"label\":\"Speakers\",\"type\":\"string\",\"name\":\"speakers\"},{\"control_type\":\"text\",\"label\":\"Sponsors\",\"type\":\"string\",\"name\":\"sponsors\"},{\"control_type\":\"text\",\"label\":\"Website link\",\"type\":\"string\",\"name\":\"website_link\"},{\"control_type\":\"text\",\"label\":\"Other info\",\"type\":\"string\",\"name\":\"other_info\"},{\"control_type\":\"text\",\"label\":\"Type\",\"type\":\"string\",\"name\":\"type\"},{\"control_type\":\"text\",\"label\":\"Source function\",\"name\":\"source_function\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Job URL\",\"name\":\"job_url\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Is relevant\",\"name\":\"is_relevant\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Reason\",\"name\":\"reason\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Source\",\"name\":\"source\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Discovery date\",\"name\":\"discovery_date\",\"type\":\"string\",\"optional\":false}]"
+                    },
+                    "extended_output_schema": [
+                      {
+                        "label": "Rows",
+                        "name": "rows",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Title",
+                            "type": "string",
+                            "name": "title"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "URL",
+                            "type": "string",
+                            "name": "url"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Description",
+                            "type": "string",
+                            "name": "description"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Date",
+                            "type": "string",
+                            "name": "date"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Location",
+                            "type": "string",
+                            "name": "location"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Country",
+                            "name": "country",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "City",
+                            "name": "city",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Geo bucket",
+                            "name": "geo_bucket",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Topic",
+                            "type": "string",
+                            "name": "topic"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Duration",
+                            "type": "string",
+                            "name": "duration"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Speakers",
+                            "type": "string",
+                            "name": "speakers"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Sponsors",
+                            "type": "string",
+                            "name": "sponsors"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Website link",
+                            "type": "string",
+                            "name": "website_link"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Other info",
+                            "type": "string",
+                            "name": "other_info"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Type",
+                            "type": "string",
+                            "name": "type"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Source function",
+                            "name": "source_function",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job URL",
+                            "name": "job_url",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Is relevant",
+                            "name": "is_relevant",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Reason",
+                            "name": "reason",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Source",
+                            "name": "source",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Discovery date",
+                            "name": "discovery_date",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ],
+                        "type": "array"
+                      }
+                    ],
+                    "comment": "Relevant Events",
+                    "uuid": "026253ba-d3b4-48e9-b42c-cac7ff7a76d2"
+                  },
+                  {
+                    "number": 15,
+                    "provider": "workato_smart_list",
+                    "name": "query_list",
+                    "as": "a52db7db",
+                    "keyword": "action",
+                    "toggleCfg": {
+                      "csv": true
+                    },
+                    "input": {
+                      "output_schema_by": "index",
+                      "csv": "false",
+                      "headers": "false",
+                      "col_sep": "comma",
+                      "sql": "select * \nfrom #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"8e539238\",\"path\":[\"list_name\"]}')}\nwhere #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"8e539238\",\"path\":[\"columns\",\"is_relevant\"]}')} = 'false'",
+                      "result_schema_json": "[{\"control_type\":\"text\",\"label\":\"Title\",\"type\":\"string\",\"name\":\"title\"},{\"control_type\":\"text\",\"label\":\"URL\",\"type\":\"string\",\"name\":\"url\"},{\"control_type\":\"text\",\"label\":\"Description\",\"type\":\"string\",\"name\":\"description\"},{\"control_type\":\"text\",\"label\":\"Date\",\"type\":\"string\",\"name\":\"date\"},{\"control_type\":\"text\",\"label\":\"Location\",\"type\":\"string\",\"name\":\"location\"},{\"control_type\":\"text\",\"label\":\"Country\",\"name\":\"country\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"City\",\"name\":\"city\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Geo bucket\",\"name\":\"geo_bucket\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Topic\",\"type\":\"string\",\"name\":\"topic\"},{\"control_type\":\"text\",\"label\":\"Duration\",\"type\":\"string\",\"name\":\"duration\"},{\"control_type\":\"text\",\"label\":\"Speakers\",\"type\":\"string\",\"name\":\"speakers\"},{\"control_type\":\"text\",\"label\":\"Sponsors\",\"type\":\"string\",\"name\":\"sponsors\"},{\"control_type\":\"text\",\"label\":\"Website link\",\"type\":\"string\",\"name\":\"website_link\"},{\"control_type\":\"text\",\"label\":\"Other info\",\"type\":\"string\",\"name\":\"other_info\"},{\"control_type\":\"text\",\"label\":\"Type\",\"type\":\"string\",\"name\":\"type\"},{\"control_type\":\"text\",\"label\":\"Source function\",\"name\":\"source_function\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Job URL\",\"name\":\"job_url\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Is relevant\",\"name\":\"is_relevant\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Reason\",\"name\":\"reason\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Source\",\"name\":\"source\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Discovery date\",\"name\":\"discovery_date\",\"type\":\"string\",\"optional\":false}]"
+                    },
+                    "extended_output_schema": [
+                      {
+                        "label": "Rows",
+                        "name": "rows",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Title",
+                            "type": "string",
+                            "name": "title"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "URL",
+                            "type": "string",
+                            "name": "url"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Description",
+                            "type": "string",
+                            "name": "description"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Date",
+                            "type": "string",
+                            "name": "date"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Location",
+                            "type": "string",
+                            "name": "location"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Country",
+                            "name": "country",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "City",
+                            "name": "city",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Geo bucket",
+                            "name": "geo_bucket",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Topic",
+                            "type": "string",
+                            "name": "topic"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Duration",
+                            "type": "string",
+                            "name": "duration"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Speakers",
+                            "type": "string",
+                            "name": "speakers"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Sponsors",
+                            "type": "string",
+                            "name": "sponsors"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Website link",
+                            "type": "string",
+                            "name": "website_link"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Other info",
+                            "type": "string",
+                            "name": "other_info"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Type",
+                            "type": "string",
+                            "name": "type"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Source function",
+                            "name": "source_function",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job URL",
+                            "name": "job_url",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Is relevant",
+                            "name": "is_relevant",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Reason",
+                            "name": "reason",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Source",
+                            "name": "source",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Discovery date",
+                            "name": "discovery_date",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ],
+                        "type": "array"
+                      }
+                    ],
+                    "comment": "Irelevant Events",
+                    "uuid": "ce9efe07-c905-448b-979c-e514a0ec8987"
+                  },
+                  {
+                    "number": 16,
+                    "keyword": "if",
+                    "input": {
+                      "type": "compound",
+                      "operand": "and",
+                      "conditions": [
+                        {
+                          "operand": "present",
+                          "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"76eb2e98\",\"path\":[\"rows\"]}')",
+                          "rhs": "",
+                          "uuid": "693df19c-5371-4eb5-b14d-a8b68aa2a5dd"
+                        }
+                      ]
+                    },
+                    "block": [
+                      {
+                        "number": 17,
+                        "provider": "google_sheets",
+                        "name": "add_row_v4_bulk",
+                        "as": "3af64044",
+                        "keyword": "action",
+                        "dynamicPickListSelection": {
+                          "spreadsheet": "AI Events Hunter - Redesign"
+                        },
+                        "toggleCfg": {
+                          "is_top_left": true
+                        },
+                        "input": {
+                          "team_drives": "my_drive",
+                          "is_top_left": "false",
+                          "spreadsheet": "1ZvljcQ-nu08KV0F_fzDG4hCYbw8Wqe0c67rFtxqDNK8",
+                          "sheet": "Events Bucket",
+                          "rows": {
+                            "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"76eb2e98\",\"path\":[\"rows\"]}')}",
+                            "col_Title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"76eb2e98\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"title\"]}')}",
+                            "col_URL": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"76eb2e98\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"url\"]}')}",
+                            "col_Description": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"76eb2e98\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"description\"]}').strip_tags",
+                            "col_Date": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"76eb2e98\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"date\"]}')}",
+                            "col_Topic": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"76eb2e98\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"topic\"]}')}",
+                            "col_Duration": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"76eb2e98\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"duration\"]}')}",
+                            "col_Speakers": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"76eb2e98\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"speakers\"]}')}",
+                            "col_Sponsors": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"76eb2e98\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"sponsors\"]}')}",
+                            "col_Website Link": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"76eb2e98\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"website_link\"]}')}",
+                            "col_Other info": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"76eb2e98\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"other_info\"]}')}",
+                            "col_Type": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"76eb2e98\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"type\"]}')}",
+                            "col_Discovery date": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"76eb2e98\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"discovery_date\"]}')}",
+                            "col_Address": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"76eb2e98\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"location\"]}')}",
+                            "col_Source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"76eb2e98\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"source\"]}')}",
+                            "col_Country": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"76eb2e98\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"country\"]}')}",
+                            "col_City/State": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"76eb2e98\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"city\"]}')}",
+                            "col_Data Collector": "Pending",
+                            "col_GEO Bucket": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"country\"]}')}"
+                          }
+                        },
+                        "extended_input_schema": [
+                          {
+                            "control_type": "select",
+                            "extends_schema": true,
+                            "hint": "Select a sheet to add row to. The sheet must have at least one header row. <a href='https://docs.workato.com/connectors/google-sheets/action-add-row.html#setting-up-the-google-sheet' target='_blank'>Learn more</a>",
+                            "label": "Sheet",
+                            "name": "sheet",
+                            "optional": false,
+                            "pick_list": [
+                              [
+                                "Index",
+                                "Index"
+                              ],
+                              [
+                                "Regions",
+                                "Regions"
+                              ],
+                              [
+                                "Event Hunter",
+                                "Event Hunter"
+                              ],
+                              [
+                                "Used Links",
+                                "Used Links"
+                              ],
+                              [
+                                "Events Bucket",
+                                "Events Bucket"
+                              ],
+                              [
+                                "United States Events",
+                                "United States Events"
+                              ],
+                              [
+                                "United Kingdom Events",
+                                "United Kingdom Events"
+                              ],
+                              [
+                                "India Events",
+                                "India Events"
+                              ],
+                              [
+                                "France Events",
+                                "France Events"
+                              ],
+                              [
+                                "Germany Events",
+                                "Germany Events"
+                              ],
+                              [
+                                "Japan Events",
+                                "Japan Events"
+                              ],
+                              [
+                                "Brazil Events",
+                                "Brazil Events"
+                              ]
+                            ],
+                            "toggle_field": {
+                              "control_type": "text",
+                              "label": "Sheet name",
+                              "toggle_hint": "Use sheet name",
+                              "extends_schema": true,
+                              "change_on_blur": true,
+                              "toggle_to_secondary_hint": "Use sheet name",
+                              "toggle_to_primary_hint": "Select a sheet",
+                              "hint": "Use <b>Sheet name</b> pill from the output of other Google Sheets’ triggers/actions. Or enter sheet name manually. The sheet must have at least 1 header row in input field.",
+                              "type": "string",
+                              "name": "sheet_name"
+                            },
+                            "toggle_hint": "Select a sheet",
+                            "type": "string"
+                          },
+                          {
+                            "hint": "Input row values into the fields below.",
+                            "label": "Rows",
+                            "name": "rows",
+                            "of": "object",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Title",
+                                "old_name": "col_Title",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "col_Title"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "URL",
+                                "old_name": "col_URL",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "col_URL"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Description",
+                                "old_name": "col_Description",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "col_Description"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Date",
+                                "old_name": "col_Date",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "col_Date"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Discovery date",
+                                "old_name": "col_Discovery_date",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "col_Discovery date"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Country",
+                                "old_name": "col_Country",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "col_Country"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "City/State",
+                                "old_name": "col_City_State",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "col_City/State"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Address",
+                                "old_name": "col_Address",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "col_Address"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Topic",
+                                "old_name": "col_Topic",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "col_Topic"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Duration",
+                                "old_name": "col_Duration",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "col_Duration"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Speakers",
+                                "old_name": "col_Speakers",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "col_Speakers"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Sponsors",
+                                "old_name": "col_Sponsors",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "col_Sponsors"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Website Link",
+                                "old_name": "col_Website_Link",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "col_Website Link"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Other info",
+                                "old_name": "col_Other_info",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "col_Other info"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Type",
+                                "old_name": "col_Type",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "col_Type"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Source",
+                                "old_name": "col_Source",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "col_Source"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "GEO Bucket",
+                                "old_name": "col_GEO_Bucket",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "col_GEO Bucket"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Data Collector",
+                                "old_name": "col_Data_Collector",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "col_Data Collector"
+                              }
+                            ],
+                            "sticky": true,
+                            "type": "array"
+                          }
+                        ],
+                        "comment": "Events Bucket",
+                        "uuid": "24ee51e3-eb1a-4aec-bb72-78b08d9ef0eb"
+                      }
+                    ],
+                    "comment": "Relevant Events",
+                    "uuid": "da8a27c7-5c20-4819-802f-e4c273328a64"
+                  }
+                ],
+                "uuid": "49da95eb-2ee1-4cd6-af87-9c00e9009997"
+              },
+              {
+                "number": 18,
+                "provider": "workato_recipe_function",
+                "name": "return_result",
+                "as": "d89c880c",
+                "keyword": "action",
+                "input": {
+                  "result": {
+                    "process_status": "Success",
+                    "metrics": {
+                      "relevant_events_count": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"76eb2e98\",\"path\":[\"rows\",{\"path_element_type\":\"size\"}]}')}",
+                      "irelevant_events_count": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"a52db7db\",\"path\":[\"rows\",{\"path_element_type\":\"size\"}]}')}"
+                    },
+                    "message": "Success"
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Process status",
+                        "name": "process_status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Relevant events count",
+                            "name": "relevant_events_count",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Irelevant events count",
+                            "name": "irelevant_events_count",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ],
+                        "label": "Metrics",
+                        "name": "metrics",
+                        "type": "object",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Process status",
+                        "name": "process_status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Relevant events count",
+                            "name": "relevant_events_count",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Irelevant events count",
+                            "name": "irelevant_events_count",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ],
+                        "label": "Metrics",
+                        "name": "metrics",
+                        "type": "object",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "visible_config_fields": [
+                  "result.metrics.irelevant_events_count",
+                  "result.metrics.relevant_events_count",
+                  "result",
+                  "result.process_status",
+                  "result.metrics",
+                  "result.message"
+                ],
+                "comment": "Status = Success",
+                "uuid": "febdac4a-4d83-4bea-8cf3-3f840651caa8"
+              }
+            ],
+            "uuid": "aa541d93-0951-47e9-bbe7-0c8459dc7ad1"
+          },
+          {
+            "number": 19,
+            "as": "05d1157b",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 20,
+                "provider": "workato_recipe_function",
+                "name": "return_result",
+                "as": "20be1f36",
+                "keyword": "action",
+                "input": {
+                  "result": {
+                    "process_status": "Error",
+                    "message": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"05d1157b\",\"path\":[\"message\"]}')}"
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Process status",
+                        "name": "process_status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Relevant events count",
+                            "name": "relevant_events_count",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Irelevant events count",
+                            "name": "irelevant_events_count",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ],
+                        "label": "Metrics",
+                        "name": "metrics",
+                        "type": "object",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Process status",
+                        "name": "process_status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Relevant events count",
+                            "name": "relevant_events_count",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Irelevant events count",
+                            "name": "irelevant_events_count",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ],
+                        "label": "Metrics",
+                        "name": "metrics",
+                        "type": "object",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "visible_config_fields": [
+                  "result",
+                  "result.process_status",
+                  "result.metrics",
+                  "result.error_message",
+                  "result.message"
+                ],
+                "comment": "Status = Error",
+                "uuid": "a07c2542-cf7a-49ee-a8cb-296cb59fb83d"
+              }
+            ],
+            "uuid": "8bc1cd07-0774-4ac9-99f2-184bf76b997b"
+          }
+        ],
+        "uuid": "d3a1a617-8095-4fef-9bcb-e562362a24be"
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_1",
+        "label": "RSS Tool"
+      },
+      {
+        "name": "custom_column_0",
+        "label": "RSS Feed"
+      },
+      {
+        "name": "custom_column_4",
+        "label": "Relevant Events"
+      },
+      {
+        "name": "custom_column_5",
+        "label": "Irelevant Events"
+      },
+      {
+        "name": "custom_column_2",
+        "label": "Process Status"
+      },
+      {
+        "name": "custom_column_3",
+        "label": "Message"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"rss_tool\"]}')}",
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e2c855eb\",\"path\":[\"parameters\",\"data\",\"rss_feed\"]}')}",
+      "custom_column_4": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"d89c880c\",\"path\":[\"result\",\"metrics\",\"relevant_events_count\"]}') || 0",
+      "custom_column_5": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"d89c880c\",\"path\":[\"result\",\"metrics\",\"irelevant_events_count\"]}') || 0",
+      "custom_column_2": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"d89c880c\",\"path\":[\"result\",\"process_status\"]}') || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"20be1f36\",\"path\":[\"result\",\"process_status\"]}')",
+      "custom_column_3": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"d89c880c\",\"path\":[\"result\",\"message\"]}') || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"d89c880c\",\"path\":[\"result\",\"message\"]}')"
+    },
+    "uuid": "fe7186f5-0797-45ad-877a-14226b1dc402"
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "rss_feed_reader_2_0_connector_5515774_1786360895",
+      "skip_validation": false,
+      "provider_title": "RSS Feed Reader 2.0",
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "google_sheets",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Google Apps/google_sheet.connection.json",
+        "name": "Google Sheet",
+        "folder": "#Connections/Google Apps"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_variable",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_smart_list",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ],
+  "tags": [
+    "Agent: AI Event Hunter",
+    "Recipe Function"
+  ]
+}

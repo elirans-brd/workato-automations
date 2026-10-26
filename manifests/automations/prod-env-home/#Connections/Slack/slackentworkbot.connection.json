@@ -1,0 +1,5 @@
+{
+  "name": "SlackEntWorkbot",
+  "provider": "slack_bot",
+  "root_folder": false
+}

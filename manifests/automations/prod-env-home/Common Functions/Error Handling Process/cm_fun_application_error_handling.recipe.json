@@ -1,0 +1,1971 @@
+{
+  "name": "[CM] Fun | Application Error Handling",
+  "description": "When there is a trigger event, do action",
+  "version": 3,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "workato_recipe_function",
+    "name": "execute",
+    "as": "3afc0f1e",
+    "keyword": "trigger",
+    "input": {
+      "parameters_schema_json": "[{\"properties\":[{\"control_type\":\"text\",\"label\":\"Parent process name\",\"name\":\"parent_process_name\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Recipe ID\",\"name\":\"recipe_id\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Process name\",\"name\":\"process_name\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Process path\",\"name\":\"process_path\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Job URL\",\"name\":\"job_url\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Is repeat\",\"name\":\"is_repeat\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Timestamp\",\"name\":\"Timestamp\",\"type\":\"string\",\"optional\":false}],\"label\":\"Recipe details\",\"name\":\"recipe_details\",\"type\":\"object\",\"optional\":true},{\"label\":\"Error detail\",\"name\":\"ErrorDetail\",\"type\":\"array\",\"optional\":false,\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Timestamp\",\"name\":\"Timestamp\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Step\",\"name\":\"Step\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"System\",\"name\":\"System\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Records unique ID\",\"name\":\"RecordsUniqueId\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Error massage\",\"name\":\"ErrorMassage\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Additional information\",\"name\":\"AdditionalInformation\",\"type\":\"string\",\"optional\":true},{\"control_type\":\"text\",\"label\":\"Error Handling Type\",\"name\":\"errorHandlingType\",\"type\":\"string\",\"optional\":false}]},{\"label\":\"More Details\",\"name\":\"MoreDetails\",\"type\":\"array\",\"optional\":true,\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Label\",\"name\":\"label\",\"type\":\"string\",\"optional\":true},{\"control_type\":\"text\",\"label\":\"Value\",\"name\":\"value\",\"type\":\"string\",\"optional\":true}]},{\"label\":\"Files\",\"name\":\"files\",\"type\":\"array\",\"optional\":true,\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"File name\",\"name\":\"fileName\",\"type\":\"string\",\"optional\":true},{\"control_type\":\"text\",\"label\":\"File content\",\"name\":\"fileContent\",\"type\":\"string\",\"optional\":true}]}]"
+    },
+    "extended_output_schema": [
+      {
+        "label": "Parameters",
+        "name": "parameters",
+        "properties": [
+          {
+            "properties": [
+              {
+                "control_type": "text",
+                "label": "Parent process name",
+                "name": "parent_process_name",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "Recipe ID",
+                "name": "recipe_id",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "Process name",
+                "name": "process_name",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "Process path",
+                "name": "process_path",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "Job URL",
+                "name": "job_url",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "Is repeat",
+                "name": "is_repeat",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "Timestamp",
+                "name": "Timestamp",
+                "type": "string",
+                "optional": false
+              }
+            ],
+            "label": "Recipe details",
+            "name": "recipe_details",
+            "type": "object",
+            "optional": true
+          },
+          {
+            "label": "Error detail",
+            "name": "ErrorDetail",
+            "type": "array",
+            "optional": false,
+            "of": "object",
+            "properties": [
+              {
+                "control_type": "text",
+                "label": "Timestamp",
+                "name": "Timestamp",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "Step",
+                "name": "Step",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "System",
+                "name": "System",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "Records unique ID",
+                "name": "RecordsUniqueId",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "Error massage",
+                "name": "ErrorMassage",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "Additional information",
+                "name": "AdditionalInformation",
+                "type": "string",
+                "optional": true
+              },
+              {
+                "control_type": "text",
+                "label": "Error Handling Type",
+                "name": "errorHandlingType",
+                "type": "string",
+                "optional": false
+              }
+            ]
+          },
+          {
+            "label": "More Details",
+            "name": "MoreDetails",
+            "type": "array",
+            "optional": true,
+            "of": "object",
+            "properties": [
+              {
+                "control_type": "text",
+                "label": "Label",
+                "name": "label",
+                "type": "string",
+                "optional": true
+              },
+              {
+                "control_type": "text",
+                "label": "Value",
+                "name": "value",
+                "type": "string",
+                "optional": true
+              }
+            ]
+          },
+          {
+            "label": "Files",
+            "name": "files",
+            "type": "array",
+            "optional": true,
+            "of": "object",
+            "properties": [
+              {
+                "control_type": "text",
+                "label": "File name",
+                "name": "fileName",
+                "type": "string",
+                "optional": true
+              },
+              {
+                "control_type": "text",
+                "label": "File content",
+                "name": "fileContent",
+                "type": "string",
+                "optional": true
+              }
+            ]
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "lookup_table",
+            "name": "search_entries",
+            "as": "0a506a56",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+              "lookup_table_id": "Error Handling Details"
+            },
+            "input": {
+              "lookup_table_id": {
+                "zip_name": "error_handling_details.lookup_table.json",
+                "name": "Error Handling Details",
+                "folder": ""
+              },
+              "parameters": {
+                "col3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"recipe_id\"]}')}"
+              }
+            },
+            "extended_output_schema": [
+              {
+                "label": "Entries",
+                "name": "entries",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "number",
+                    "label": "Entry ID",
+                    "parse_output": "integer_conversion",
+                    "type": "integer",
+                    "name": "id"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Project_Domain",
+                        "name": "col1",
+                        "sticky": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Folder_Name",
+                        "name": "col2",
+                        "sticky": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Recipe_Id",
+                        "name": "col3",
+                        "sticky": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Recipe_Name",
+                        "name": "col4",
+                        "sticky": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Recipients_Mail_Address",
+                        "name": "col5",
+                        "sticky": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Slack_Channel",
+                        "name": "col6",
+                        "sticky": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Business_Project",
+                        "name": "col7",
+                        "sticky": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Owner",
+                        "name": "col8",
+                        "sticky": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "System_Error_Ticket",
+                        "name": "col9",
+                        "sticky": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Application_Error_Ticket",
+                        "name": "col10",
+                        "sticky": true,
+                        "type": "string"
+                      }
+                    ],
+                    "label": "Entry",
+                    "type": "object",
+                    "name": "entry"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "hint": "Provide one or more entry fields to search the entry",
+                "label": "Search by",
+                "name": "parameters",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Project_Domain",
+                    "name": "col1",
+                    "sticky": true,
+                    "type": "string",
+                    "optional": true
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Folder_Name",
+                    "name": "col2",
+                    "sticky": true,
+                    "type": "string",
+                    "optional": true
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Recipe_Id",
+                    "name": "col3",
+                    "sticky": true,
+                    "type": "string",
+                    "optional": true
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Recipe_Name",
+                    "name": "col4",
+                    "sticky": true,
+                    "type": "string",
+                    "optional": true
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Recipients_Mail_Address",
+                    "name": "col5",
+                    "sticky": true,
+                    "type": "string",
+                    "optional": true
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Slack_Channel",
+                    "name": "col6",
+                    "sticky": true,
+                    "type": "string",
+                    "optional": true
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Business_Project",
+                    "name": "col7",
+                    "sticky": true,
+                    "type": "string",
+                    "optional": true
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Owner",
+                    "name": "col8",
+                    "sticky": true,
+                    "type": "string",
+                    "optional": true
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "System_Error_Ticket",
+                    "name": "col9",
+                    "sticky": true,
+                    "type": "string",
+                    "optional": true
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Application_Error_Ticket",
+                    "name": "col10",
+                    "sticky": true,
+                    "type": "string",
+                    "optional": true
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "visible_config_fields": [
+              "lookup_table_id",
+              "parameters.col3",
+              "parameters"
+            ],
+            "hidden_config_fields": [
+              "parameters.col4",
+              "parameters.col2",
+              "parameters.col1",
+              "parameters.col5",
+              "parameters.col6",
+              "parameters.col7",
+              "parameters.col8",
+              "parameters.col9",
+              "parameters.col10"
+            ],
+            "uuid": "bb54b766-f44d-4bd5-bfb7-89b7b279da8b"
+          },
+          {
+            "number": 3,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "blank",
+                  "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"lookup_table\",\"line\":\"0a506a56\",\"path\":[\"entries\"]}')",
+                  "rhs": "",
+                  "uuid": "f2d33a40-4893-42ac-b00c-45b314f1f514"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 4,
+                "provider": "workato_recipe_function",
+                "name": "call_recipe",
+                "as": "5995b4df",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "flow_id": "Function: Add Project Details To Table"
+                },
+                "input": {
+                  "flow_id": {
+                    "zip_name": "Common Functions/Error Handling Process/Process Functions/function_add_project_details_to_table.recipe.json",
+                    "name": "Function: Add Project Details To Table",
+                    "folder": "Common Functions/Error Handling Process/Process Functions"
+                  },
+                  "parameters": {
+                    "lookup_table_entry_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"lookup_table\",\"line\":\"0a506a56\",\"path\":[\"entries\",{\"path_element_type\":\"current_item\"},\"id\"]}')}",
+                    "recipe_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"context\",\"calling_recipe_id\"]}')}",
+                    "recipe_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"process_name\"]}')}",
+                    "recipe_path": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"process_path\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"process_path\"]}') : 'Other'"
+                  }
+                },
+                "extended_input_schema": [
+                  {
+                    "label": "Parameters",
+                    "name": "parameters",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Lookup table entry ID",
+                        "name": "lookup_table_entry_id",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Recipe Id",
+                        "name": "recipe_id",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Recipe name",
+                        "name": "recipe_name",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Recipe path",
+                        "name": "recipe_path",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "uuid": "bc480534-5d0d-4a90-bc17-3b71e08dc10f"
+              }
+            ],
+            "comment": "Add Row to Error Handling Table Function",
+            "uuid": "5a568eff-e72a-41cb-a80b-8dda3d558c40",
+            "skip": false
+          },
+          {
+            "number": 5,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "is_not_true",
+                  "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"is_repeat\"]}')  == 'true' || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"is_repeat\"]}') == 'false'",
+                  "rhs": "",
+                  "uuid": "bbce5065-6eed-4c49-98fb-ea5c799701b6"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 6,
+                "provider": "workato_app",
+                "name": "list_jobs",
+                "as": "0122310a",
+                "keyword": "action",
+                "toggleCfg": {
+                  "recipe_id": false
+                },
+                "input": {
+                  "status": "all",
+                  "recipe_id": "=_dp('{\"pill_type\":\"output\",\"provider\":\"lookup_table\",\"line\":\"0a506a56\",\"path\":[\"entries\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"lookup_table\",\"line\":\"0a506a56\",\"path\":[\"entries\",{\"path_element_type\":\"current_item\"},\"entry\",\"col3\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"context\",\"calling_recipe_id\"]}')",
+                  "started_at_from": "=_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_created_at\"]}') - 10.minutes"
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Jobs",
+                    "name": "jobs",
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Job ID",
+                        "type": "string",
+                        "name": "id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Original Job ID",
+                        "type": "string",
+                        "name": "master_job_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Recipe ID",
+                        "parse_output": "integer_conversion",
+                        "type": "integer",
+                        "name": "recipe_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Calling job ID",
+                        "type": "string",
+                        "name": "calling_job_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Calling recipe ID",
+                        "parse_output": "integer_conversion",
+                        "type": "integer",
+                        "name": "calling_recipe_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Title",
+                        "type": "string",
+                        "name": "title"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "type": "string",
+                        "name": "status"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Is repeat",
+                        "render_input": {
+                        },
+                        "parse_output": {
+                        },
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                          "label": "Is repeat",
+                          "control_type": "text",
+                          "toggle_hint": "Use custom value",
+                          "type": "boolean",
+                          "name": "is_repeat"
+                        },
+                        "type": "boolean",
+                        "name": "is_repeat"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Is test",
+                        "render_input": {
+                        },
+                        "parse_output": {
+                        },
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                          "label": "Is test",
+                          "control_type": "text",
+                          "toggle_hint": "Use custom value",
+                          "type": "boolean",
+                          "name": "is_test"
+                        },
+                        "type": "boolean",
+                        "name": "is_test"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Started at",
+                        "render_input": "date_time_conversion",
+                        "parse_output": "date_time_conversion",
+                        "type": "date_time",
+                        "name": "started_at"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Completed at",
+                        "render_input": "date_time_conversion",
+                        "parse_output": "date_time_conversion",
+                        "type": "date_time",
+                        "name": "completed_at"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Repeat count",
+                        "parse_output": "integer_conversion",
+                        "type": "integer",
+                        "name": "repeat_count"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Error ID",
+                            "type": "string",
+                            "name": "error_id"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error type",
+                            "type": "string",
+                            "name": "error_type"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error at",
+                            "render_input": "date_time_conversion",
+                            "parse_output": "date_time_conversion",
+                            "type": "date_time",
+                            "name": "error_at"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored app",
+                            "type": "string",
+                            "name": "adapter"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored action",
+                            "type": "string",
+                            "name": "action"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored step number",
+                            "parse_output": "integer_conversion",
+                            "type": "integer",
+                            "name": "line_number"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error message",
+                            "type": "string",
+                            "name": "message"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Inner message",
+                            "type": "string",
+                            "name": "inner_message"
+                          }
+                        ],
+                        "label": "Error",
+                        "type": "object",
+                        "name": "error"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Flow ID",
+                        "parse_output": "integer_conversion",
+                        "deprecated": true,
+                        "type": "integer",
+                        "name": "flow_id"
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "visible_config_fields": [
+                  "recipe_id",
+                  "status",
+                  "started_at_from"
+                ],
+                "uuid": "7f6534a4-cab3-4b0f-bf45-415197c483a7"
+              }
+            ],
+            "uuid": "a3e972b8-7a74-404b-9888-a31f4a1ae294"
+          },
+          {
+            "number": 7,
+            "provider": "workato_variable",
+            "name": "declare_variable",
+            "as": "bd96e194",
+            "keyword": "action",
+            "input": {
+              "variables": {
+                "schema": "[{\"control_type\":\"text\",\"label\":\"Recipe Id\",\"name\":\"recipe_id\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"Recipe Id\"}},{\"control_type\":\"text\",\"label\":\"Project Domain\",\"name\":\"Project_Domain\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"Project Domain\"}},{\"control_type\":\"text\",\"label\":\"Business Project\",\"name\":\"business_project\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"Business Project\"}},{\"control_type\":\"text\",\"label\":\"Folder Name\",\"name\":\"folder_name\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"Folder Name\"}},{\"control_type\":\"text\",\"label\":\"Owner\",\"name\":\"Owner\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"Owner\"}},{\"control_type\":\"text\",\"label\":\"Application Error Ticket\",\"name\":\"system_error_ticket\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"System Error Ticket\"}},{\"control_type\":\"text\",\"label\":\"Recipients\",\"name\":\"Recipients\",\"type\":\"string\",\"optional\":true},{\"name\":\"file_name\",\"type\":\"string\",\"optional\":true,\"label\":\"File Name\",\"details\":{\"real_name\":\"File Name\"},\"control_type\":\"text\"},{\"name\":\"is_repeat\",\"type\":\"string\",\"optional\":true,\"label\":\"Is Repeat\",\"details\":{\"real_name\":\"Is Repeat\"},\"control_type\":\"text\"}]",
+                "data": {
+                  "system_error_ticket": "=lookup(\"Error Handling Details\", Recipe_Id: _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"context\",\"calling_recipe_id\"]}').to_s)[\"Application_Error_Ticket\"]",
+                  "Recipients": "=lookup(\"Error Handling Details\", Recipe_Id: _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"context\",\"calling_recipe_id\"]}').to_s)[\"Recipients_Mail_Address\"]",
+                  "folder_name": "=lookup(\"Error Handling Details\", Recipe_Id: _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"context\",\"calling_recipe_id\"]}').to_s)[\"Folder_Name\"]",
+                  "Owner": "=lookup(\"Error Handling Details\", Recipe_Id: _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"context\",\"calling_recipe_id\"]}').to_s)[\"Owner\"]",
+                  "business_project": "=lookup(\"Error Handling Details\", Recipe_Id: _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"context\",\"calling_recipe_id\"]}').to_s)[\"Business_Project\"]",
+                  "recipe_id": "=_dp('{\"pill_type\":\"output\",\"provider\":\"lookup_table\",\"line\":\"0a506a56\",\"path\":[\"entries\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"lookup_table\",\"line\":\"0a506a56\",\"path\":[\"entries\",{\"path_element_type\":\"current_item\"},\"entry\",\"col3\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"context\",\"calling_recipe_id\"]}')",
+                  "Project_Domain": "=lookup(\"Error Handling Details\", Recipe_Id: _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"context\",\"calling_recipe_id\"]}').to_s)[\"Project_Domain\"]",
+                  "file_name": "=[_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"process_name\"]}'), _dp('{\"pill_type\":\"job_context\",\"path\":[\"job_created_at\"]}').in_time_zone(\"Etc/UTC\")].smart_join(\"_\")",
+                  "is_repeat": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"is_repeat\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"is_repeat\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"workato_app\",\"line\":\"0122310a\",\"path\":[\"jobs\",{\"path_element_type\":\"current_item\"},\"is_repeat\"]}')"
+                }
+              }
+            },
+            "extended_output_schema": [
+              {
+                "control_type": "text",
+                "label": "Recipe Id",
+                "name": "recipe_id",
+                "optional": true,
+                "type": "string",
+                "details": {
+                  "real_name": "Recipe Id"
+                }
+              },
+              {
+                "control_type": "text",
+                "label": "Project Domain",
+                "name": "Project_Domain",
+                "optional": true,
+                "type": "string",
+                "details": {
+                  "real_name": "Project Domain"
+                }
+              },
+              {
+                "control_type": "text",
+                "label": "Business Project",
+                "name": "business_project",
+                "optional": true,
+                "type": "string",
+                "details": {
+                  "real_name": "Business Project"
+                }
+              },
+              {
+                "control_type": "text",
+                "label": "Folder Name",
+                "name": "folder_name",
+                "optional": true,
+                "type": "string",
+                "details": {
+                  "real_name": "Folder Name"
+                }
+              },
+              {
+                "control_type": "text",
+                "label": "Owner",
+                "name": "Owner",
+                "optional": true,
+                "type": "string",
+                "details": {
+                  "real_name": "Owner"
+                }
+              },
+              {
+                "control_type": "text",
+                "label": "Application Error Ticket",
+                "name": "system_error_ticket",
+                "optional": true,
+                "type": "string",
+                "details": {
+                  "real_name": "System Error Ticket"
+                }
+              },
+              {
+                "control_type": "text",
+                "label": "Recipients",
+                "name": "Recipients",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "label": "File Name",
+                "name": "file_name",
+                "optional": true,
+                "type": "string",
+                "details": {
+                  "real_name": "File Name"
+                }
+              },
+              {
+                "control_type": "text",
+                "label": "Is Repeat",
+                "name": "is_repeat",
+                "optional": true,
+                "type": "string",
+                "details": {
+                  "real_name": "Is Repeat"
+                }
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "add_field_label": "Add a variable",
+                "control_type": "form-schema-builder",
+                "empty_schema_title": "Add variables by giving them a name, type and default value",
+                "exclude_fields": [
+                  "hint"
+                ],
+                "item_label": "variable",
+                "label": "Variables",
+                "mark_as_required": true,
+                "name": "variables",
+                "ngIf": "!input.name",
+                "optional": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Schema",
+                    "extends_schema": true,
+                    "broadcast_change_event": true,
+                    "type": "string",
+                    "name": "schema"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Recipe Id",
+                        "name": "recipe_id",
+                        "type": "string",
+                        "optional": true,
+                        "details": {
+                          "real_name": "Recipe Id"
+                        },
+                        "hint": "Defaults to nil if not supplied.",
+                        "sticky": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Project Domain",
+                        "name": "Project_Domain",
+                        "type": "string",
+                        "optional": true,
+                        "details": {
+                          "real_name": "Project Domain"
+                        },
+                        "hint": "Defaults to nil if not supplied.",
+                        "sticky": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Business Project",
+                        "name": "business_project",
+                        "type": "string",
+                        "optional": true,
+                        "details": {
+                          "real_name": "Business Project"
+                        },
+                        "hint": "Defaults to nil if not supplied.",
+                        "sticky": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Folder Name",
+                        "name": "folder_name",
+                        "type": "string",
+                        "optional": true,
+                        "details": {
+                          "real_name": "Folder Name"
+                        },
+                        "hint": "Defaults to nil if not supplied.",
+                        "sticky": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Owner",
+                        "name": "Owner",
+                        "type": "string",
+                        "optional": true,
+                        "details": {
+                          "real_name": "Owner"
+                        },
+                        "hint": "Defaults to nil if not supplied.",
+                        "sticky": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Application Error Ticket",
+                        "name": "system_error_ticket",
+                        "type": "string",
+                        "optional": true,
+                        "details": {
+                          "real_name": "System Error Ticket"
+                        },
+                        "hint": "Defaults to nil if not supplied.",
+                        "sticky": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Recipients",
+                        "name": "Recipients",
+                        "type": "string",
+                        "optional": true,
+                        "hint": "Defaults to nil if not supplied.",
+                        "sticky": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "File Name",
+                        "name": "file_name",
+                        "type": "string",
+                        "optional": true,
+                        "details": {
+                          "real_name": "File Name"
+                        },
+                        "hint": "Defaults to nil if not supplied.",
+                        "sticky": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Is Repeat",
+                        "name": "is_repeat",
+                        "type": "string",
+                        "optional": true,
+                        "details": {
+                          "real_name": "Is Repeat"
+                        },
+                        "hint": "Defaults to nil if not supplied.",
+                        "sticky": true
+                      }
+                    ],
+                    "label": "Data",
+                    "type": "object",
+                    "name": "data"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "visible_config_fields": [
+              "variables.data.Recipients",
+              "variables",
+              "variables.schema",
+              "variables.data",
+              "variables.data.Error_Message",
+              "variables.data.business_project",
+              "variables.data.open_ticket",
+              "variables.data.business_project1",
+              "variables.data.folder_name",
+              "variables.data.Owner",
+              "variables.data.recipe_name",
+              "variables.data.system_error_ticket",
+              "variables.data.recipe_id",
+              "variables.data.mis_automation_domain",
+              "variables.data.Project_Domain",
+              "variables.data.file_name",
+              "variables.data.error_type",
+              "variables.data.is_repeat"
+            ],
+            "uuid": "5450f32e-aba7-4af0-b20e-4a24bcb1999b"
+          },
+          {
+            "number": 8,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "is_not_true",
+                  "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"system_error_ticket\"]}')",
+                  "rhs": "",
+                  "uuid": "e8a2c43f-0af3-47bf-8056-7424f9fe72f8"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 9,
+                "as": "7fc713ca",
+                "keyword": "stop",
+                "input": {
+                  "stop_with_error": "false"
+                },
+                "uuid": "6c73bb96-6447-4e3c-b217-8f4e685edee1"
+              },
+              {
+                "number": 10,
+                "keyword": "else",
+                "input": {
+                },
+                "block": [
+                  {
+                    "number": 11,
+                    "provider": "csv_parser",
+                    "name": "create_csv_lines",
+                    "as": "553d3dbb",
+                    "keyword": "action",
+                    "toggleCfg": {
+                      "create_header_line": true,
+                      "force_quotes": true
+                    },
+                    "input": {
+                      "create_header_line": "true",
+                      "column_separator": ",",
+                      "force_quotes": "false",
+                      "column_labels": "Timestamp\nStep\nSystem\nRecords Unique Id\nError Massage\nAdditional Information",
+                      "lines": {
+                        "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"ErrorDetail\"]}')}",
+                        "column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"ErrorDetail\",{\"path_element_type\":\"current_item\"},\"Timestamp\"]}')}",
+                        "column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"ErrorDetail\",{\"path_element_type\":\"current_item\"},\"Step\"]}')}",
+                        "column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"ErrorDetail\",{\"path_element_type\":\"current_item\"},\"System\"]}')}",
+                        "column_3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"ErrorDetail\",{\"path_element_type\":\"current_item\"},\"RecordsUniqueId\"]}')}",
+                        "column_4": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"ErrorDetail\",{\"path_element_type\":\"current_item\"},\"ErrorMassage\"]}')}",
+                        "column_5": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"ErrorDetail\",{\"path_element_type\":\"current_item\"},\"AdditionalInformation\"]}')}"
+                      }
+                    },
+                    "extended_input_schema": [
+                      {
+                        "hint": "Provide field mappings for the CSV data below.",
+                        "label": "CSV data lines",
+                        "name": "lines",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Timestamp",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "column_0"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Step",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "column_1"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "System",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "column_2"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Records Unique Id",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "column_3"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error Massage",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "column_4"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Additional Information",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "column_5"
+                          }
+                        ],
+                        "type": "array"
+                      }
+                    ],
+                    "uuid": "44e4d85b-7c26-4eda-b453-b5c1f6fa4ece"
+                  },
+                  {
+                    "number": 12,
+                    "keyword": "if",
+                    "input": {
+                      "type": "compound",
+                      "operand": "and",
+                      "conditions": [
+                        {
+                          "operand": "equals_to",
+                          "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"system_error_ticket\"]}')&.downcase",
+                          "rhs": "true",
+                          "uuid": "3a12cd5d-7f64-4044-b345-a02913fdcf09"
+                        },
+                        {
+                          "operand": "equals_to",
+                          "lhs": "=_dp('{\"pill_type\":\"project_property\",\"property_name\":\" Monday Task Enablement\"}')",
+                          "rhs": "true",
+                          "uuid": "7be6b064-f0ae-4e98-b770-17d95ccebf53"
+                        },
+                        {
+                          "operand": "is_not_true",
+                          "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"is_repeat\"]}')",
+                          "rhs": "",
+                          "uuid": "fd7c9294-67e6-4b4b-b350-2a19c2c1c36a"
+                        }
+                      ]
+                    },
+                    "block": [
+                      {
+                        "number": 13,
+                        "provider": "workato_recipe_function",
+                        "name": "call_recipe",
+                        "as": "5fec42ad",
+                        "keyword": "action",
+                        "dynamicPickListSelection": {
+                          "flow_id": "Function: Monday Error Handler"
+                        },
+                        "input": {
+                          "flow_id": {
+                            "zip_name": "Common Functions/Error Handling Process/Process Functions/function_monday_error_handler.recipe.json",
+                            "name": "Function: Monday Error Handler",
+                            "folder": "Common Functions/Error Handling Process/Process Functions"
+                          },
+                          "parameters": {
+                            "folder_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"folder_name\"]}')}",
+                            "parent_recipe_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"parent_process_name\"]}')}",
+                            "recipe_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"process_name\"]}')}",
+                            "job_url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"job_url\"]}')}",
+                            "business_project": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"business_project\"]}')}",
+                            "Owner": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"Owner\"]}')}",
+                            "timestamp": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"Timestamp\"]}')}",
+                            "error_message": "Application Error",
+                            "recipe_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"recipe_id\"]}')}",
+                            "project_domain": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"Project_Domain\"]}')}",
+                            "error_type": "Application Error",
+                            "file_content": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"553d3dbb\",\"path\":[\"csv_lines\"]}')}",
+                            "job_uuid": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}"
+                          }
+                        },
+                        "extended_output_schema": [
+                          {
+                            "label": "Result",
+                            "name": "result",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Process Status",
+                                "name": "proccess_status",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Error Message",
+                                "name": "error_message",
+                                "type": "string",
+                                "optional": true
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Ticket URL",
+                                "name": "ticket_url",
+                                "type": "string",
+                                "optional": true
+                              }
+                            ],
+                            "type": "object"
+                          }
+                        ],
+                        "extended_input_schema": [
+                          {
+                            "label": "Parameters",
+                            "name": "parameters",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Job uuid",
+                                "name": "job_uuid",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Error Type",
+                                "name": "error_type",
+                                "type": "string",
+                                "optional": true
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Parent Recipe Name",
+                                "name": "parent_recipe_name",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Recipe ID",
+                                "name": "recipe_id",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Project domain",
+                                "name": "project_domain",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Recipe_Name",
+                                "name": "recipe_name",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Folder Name",
+                                "name": "folder_name",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "Folder Name"
+                                }
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Business Project",
+                                "name": "business_project",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "Business Project"
+                                }
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Owner",
+                                "name": "Owner",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "Owner"
+                                }
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Job URL",
+                                "name": "job_url",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Timestamp",
+                                "name": "timestamp",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Error Message",
+                                "name": "error_message",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "File content",
+                                "name": "file_content",
+                                "type": "string",
+                                "optional": true
+                              }
+                            ],
+                            "type": "object"
+                          }
+                        ],
+                        "visible_config_fields": [
+                          "flow_id",
+                          "parameters.open_ticket",
+                          "parameters.business_project",
+                          "parameters.folder_name",
+                          "parameters.Owner",
+                          "parameters",
+                          "parameters.parent_recipe_name",
+                          "parameters.recipe_id",
+                          "parameters.project_domain",
+                          "parameters.recipe_name",
+                          "parameters.job_url",
+                          "parameters.timestamp",
+                          "parameters.error_message",
+                          "parameters.error_type_id",
+                          "parameters.error_type",
+                          "parameters.file_content"
+                        ],
+                        "comment": "Ticket Error Handler",
+                        "uuid": "7688df18-cc01-46fa-bc14-0f996bc2c0df",
+                        "skip": false
+                      },
+                      {
+                        "number": 14,
+                        "provider": "workato_recipe_function",
+                        "name": "call_recipe",
+                        "as": "f1a70bc0",
+                        "keyword": "action",
+                        "dynamicPickListSelection": {
+                          "flow_id": "Asana Error Handler"
+                        },
+                        "input": {
+                          "flow_id": "67631113",
+                          "parameters": {
+                            "error_type": "Application Error",
+                            "folder_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"folder_name\"]}')}",
+                            "parent_recipe_name": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"parent_process_name\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"parent_process_name\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"ErrorDetail\",{\"path_element_type\":\"current_item\"},\"ParentProcessName\"]}')",
+                            "recipe_name": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"process_name\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"process_name\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"ErrorDetail\",{\"path_element_type\":\"current_item\"},\"processName\"]}')",
+                            "job_url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"ErrorDetail\",{\"path_element_type\":\"current_item\"},\"jobUrl\"]}')}",
+                            "business_project": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"business_project\"]}')}",
+                            "Owner": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"Owner\"]}')}",
+                            "timestamp": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"ErrorDetail\",{\"path_element_type\":\"current_item\"},\"Timestamp\"]}')}",
+                            "error_message": "Some records failed to synchronize",
+                            "recipe_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"recipe_id\"]}')}",
+                            "project_domain": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"Project_Domain\"]}')}",
+                            "error_type_id": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"Asana Application Error Id\"}')}",
+                            "file_content": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"553d3dbb\",\"path\":[\"csv_lines\"]}')}"
+                          }
+                        },
+                        "extended_output_schema": [
+                          {
+                            "label": "Result",
+                            "name": "result",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Process Status",
+                                "name": "proccess_status",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Error Message",
+                                "name": "error_message",
+                                "type": "string",
+                                "optional": true
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Asana Ticket URL",
+                                "name": "asana_ticket_url",
+                                "type": "string",
+                                "optional": true
+                              }
+                            ],
+                            "type": "object"
+                          }
+                        ],
+                        "extended_input_schema": [
+                          {
+                            "label": "Parameters",
+                            "name": "parameters",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Error Type",
+                                "name": "error_type",
+                                "type": "string",
+                                "optional": true
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Error type ID",
+                                "name": "error_type_id",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Parent Recipe Name",
+                                "name": "parent_recipe_name",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Recipe ID",
+                                "name": "recipe_id",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Project domain",
+                                "name": "project_domain",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Recipe_Name",
+                                "name": "recipe_name",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Folder Name",
+                                "name": "folder_name",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "Folder Name"
+                                }
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Business Project",
+                                "name": "business_project",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "Business Project"
+                                }
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Owner",
+                                "name": "Owner",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "Owner"
+                                }
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Job URL",
+                                "name": "job_url",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Timestamp",
+                                "name": "timestamp",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Error Message",
+                                "name": "error_message",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "File content",
+                                "name": "file_content",
+                                "type": "string",
+                                "optional": true
+                              }
+                            ],
+                            "type": "object"
+                          }
+                        ],
+                        "visible_config_fields": [
+                          "flow_id",
+                          "parameters.open_ticket",
+                          "parameters.business_project",
+                          "parameters.folder_name",
+                          "parameters.Owner",
+                          "parameters",
+                          "parameters.error_type",
+                          "parameters.parent_recipe_name",
+                          "parameters.recipe_id",
+                          "parameters.project_domain",
+                          "parameters.recipe_name",
+                          "parameters.job_url",
+                          "parameters.timestamp",
+                          "parameters.error_message",
+                          "parameters.gdrive_URL",
+                          "parameters.error_type_id",
+                          "parameters.file_content"
+                        ],
+                        "comment": "Asana Error Handler",
+                        "uuid": "e7441d04-1cda-4f09-9431-b02a30c31957",
+                        "skip": true
+                      }
+                    ],
+                    "comment": "System Error Ticket = True",
+                    "uuid": "b51ba4f4-8a25-455b-b135-ec1d51fd0e11"
+                  },
+                  {
+                    "number": 15,
+                    "keyword": "if",
+                    "input": {
+                      "type": "compound",
+                      "operand": "and",
+                      "conditions": [
+                        {
+                          "operand": "present",
+                          "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"5fec42ad\",\"path\":[\"result\",\"ticket_url\"]}')}",
+                          "rhs": "",
+                          "uuid": "27a2ee31-9faa-4657-bf2a-cc51663b5689"
+                        }
+                      ]
+                    },
+                    "block": [
+                      {
+                        "number": 16,
+                        "provider": "workato_template",
+                        "name": "create_document",
+                        "as": "7055852d",
+                        "keyword": "action",
+                        "dynamicPickListSelection": {
+                          "template_id": "Application Error Handling"
+                        },
+                        "input": {
+                          "template_id": "126724",
+                          "template_input": {
+                            "jobUrl": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"job_url\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"job_url\"]}') :  _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"ErrorDetail\",{\"path_element_type\":\"current_item\"},\"jobUrl\"]}')",
+                            "processName": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"process_name\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"process_name\"]}') :  _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"ErrorDetail\",{\"path_element_type\":\"current_item\"},\"processName\"]}')",
+                            "ErrorDetails": [
+                              {
+                                "label": "Environment:",
+                                "value": "#{_dp('{\"pill_type\":\"account_property\",\"property_name\":\"Environment\"}')}"
+                              },
+                              {
+                                "label": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"MoreDetails\",{\"path_element_type\":\"current_item\"},\"label\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"MoreDetails\",{\"path_element_type\":\"current_item\"},\"label\"]}') + ':' : _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"MoreDetails\",{\"path_element_type\":\"current_item\"},\"label\"]}')",
+                                "value": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"MoreDetails\",{\"path_element_type\":\"current_item\"},\"value\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"MoreDetails\",{\"path_element_type\":\"current_item\"},\"value\"]}') : ''"
+                              }
+                            ],
+                            "IntegrationManager": "Eliran Srur",
+                            "RecipientName": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"Recipients\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"Recipients\"]}').gsub(\",\", \" and \") : 'Bob Integraion Admin'",
+                            "asana_ticket_link": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"f1a70bc0\",\"path\":[\"result\",\"asana_ticket_url\"]}')}"
+                          }
+                        },
+                        "extended_input_schema": [
+                          {
+                            "label": "Template input",
+                            "name": "template_input",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Process Name",
+                                "name": "processName",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Job URL",
+                                "name": "jobUrl",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Recipient name",
+                                "name": "RecipientName",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Integration manager",
+                                "name": "IntegrationManager",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Asana ticket link",
+                                "name": "asana_ticket_link",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "name": "ErrorDetails",
+                                "type": "array",
+                                "of": "object",
+                                "label": "Error Details",
+                                "optional": true,
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "Label",
+                                    "name": "label",
+                                    "type": "string",
+                                    "optional": true
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Value",
+                                    "name": "value",
+                                    "type": "string",
+                                    "optional": true
+                                  }
+                                ]
+                              }
+                            ],
+                            "type": "object"
+                          }
+                        ],
+                        "visible_config_fields": [
+                          "template_id",
+                          "template_input",
+                          "template_input.processName",
+                          "template_input.jobUrl",
+                          "template_input.ErrorDetails",
+                          "template_input.ErrorDetails.value",
+                          "template_input.ErrorDetails.label"
+                        ],
+                        "comment": "Application Error Handling",
+                        "uuid": "069245cc-8dee-4ad9-91ef-051416d92e55",
+                        "skip": true
+                      },
+                      {
+                        "number": 17,
+                        "keyword": "else",
+                        "input": {
+                        },
+                        "block": [
+                          {
+                            "number": 18,
+                            "provider": "workato_template",
+                            "name": "create_document",
+                            "as": "63406426",
+                            "keyword": "action",
+                            "dynamicPickListSelection": {
+                              "template_id": "Application Error Handling -  Without Asana"
+                            },
+                            "input": {
+                              "template_id": "126725",
+                              "template_input": {
+                                "jobUrl": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"job_url\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"job_url\"]}') :  _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"ErrorDetail\",{\"path_element_type\":\"current_item\"},\"jobUrl\"]}')",
+                                "processName": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"process_name\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"process_name\"]}') :  _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"ErrorDetail\",{\"path_element_type\":\"current_item\"},\"processName\"]}')",
+                                "ErrorDetails": [
+                                  {
+                                    "label": "Environment:",
+                                    "value": "#{_dp('{\"pill_type\":\"account_property\",\"property_name\":\"Environment\"}')}"
+                                  },
+                                  {
+                                    "label": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"MoreDetails\",{\"path_element_type\":\"current_item\"},\"label\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"MoreDetails\",{\"path_element_type\":\"current_item\"},\"label\"]}') + ':' : _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"MoreDetails\",{\"path_element_type\":\"current_item\"},\"label\"]}')",
+                                    "value": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"MoreDetails\",{\"path_element_type\":\"current_item\"},\"value\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"MoreDetails\",{\"path_element_type\":\"current_item\"},\"value\"]}') : ''"
+                                  }
+                                ],
+                                "IntegrationManager": "Eliran Srur",
+                                "RecipientName": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"Recipients\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"Recipients\"]}').gsub(\",\", \" and \") : 'Bob Integraion Admin'"
+                              }
+                            },
+                            "extended_input_schema": [
+                              {
+                                "label": "Template input",
+                                "name": "template_input",
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "Process Name",
+                                    "name": "processName",
+                                    "type": "string",
+                                    "optional": false
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Job URL",
+                                    "name": "jobUrl",
+                                    "type": "string",
+                                    "optional": false
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Recipient name",
+                                    "name": "RecipientName",
+                                    "type": "string",
+                                    "optional": false
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Integration manager",
+                                    "name": "IntegrationManager",
+                                    "type": "string",
+                                    "optional": false
+                                  },
+                                  {
+                                    "name": "ErrorDetails",
+                                    "type": "array",
+                                    "of": "object",
+                                    "label": "Error Details",
+                                    "optional": true,
+                                    "properties": [
+                                      {
+                                        "control_type": "text",
+                                        "label": "Label",
+                                        "name": "label",
+                                        "type": "string",
+                                        "optional": true
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "Value",
+                                        "name": "value",
+                                        "type": "string",
+                                        "optional": true
+                                      }
+                                    ]
+                                  }
+                                ],
+                                "type": "object"
+                              }
+                            ],
+                            "visible_config_fields": [
+                              "template_id",
+                              "template_input",
+                              "template_input.processName",
+                              "template_input.jobUrl",
+                              "template_input.ErrorDetails",
+                              "template_input.ErrorDetails.value",
+                              "template_input.ErrorDetails.label"
+                            ],
+                            "comment": "Application Error Handling - Without Asana",
+                            "uuid": "6ec0a081-5682-44a3-95cd-5dfd6c487bca",
+                            "skip": true
+                          }
+                        ],
+                        "comment": "Template without Asana Ticket",
+                        "uuid": "a255f07d-01d8-4c21-a9fd-97015351d129",
+                        "skip": true
+                      }
+                    ],
+                    "comment": "Template with Asana Ticket",
+                    "uuid": "5af4e600-d8ea-4d09-a357-573362579362",
+                    "skip": true
+                  },
+                  {
+                    "number": 19,
+                    "provider": "gmail",
+                    "name": "send_mail",
+                    "as": "4514efc8",
+                    "keyword": "action",
+                    "input": {
+                      "email_type": "html",
+                      "to": "=(_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"Recipients\"]}').present? && _dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"Owner\"]}').present?) ? [_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"Recipients\"]}'),_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"Owner\"]}')].smart_join(\",\") :\n_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"Recipients\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"Recipients\"]}') : _dp('{\"pill_type\":\"account_property\",\"property_name\":\"Integration Error Email Recipients\"}')",
+                      "subject": "Application Error on #{_dp('{\"pill_type\":\"account_property\",\"property_name\":\"Environment\"}')}: #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"ErrorDetail\",{\"path_element_type\":\"current_item\"},\"processName\"]}')}",
+                      "body": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_template\",\"line\":\"7055852d\",\"path\":[\"document\"]}').present? ? \n_dp('{\"pill_type\":\"output\",\"provider\":\"workato_template\",\"line\":\"7055852d\",\"path\":[\"document\"]}').gsub(\"<li><b>Asana Ticket Link</b> <a href=\\\"\\\">Asana Ticket</a></li>\", \"\").gsub(\"<li><b></b> </li>\", \"\") : \n\n\n_dp('{\"pill_type\":\"output\",\"provider\":\"workato_template\",\"line\":\"63406426\",\"path\":[\"document\"]}').gsub(\"<li><b>Asana Ticket Link</b> <a href=\\\"\\\">Asana Ticket</a></li>\", \"\").gsub(\"<li><b></b> </li>\", \"\") \n",
+                      "from": "bob.mis integration <bob.mis.integration@hibob.io>",
+                      "attachments": {
+                        "file_binary_content": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"csv_parser\",\"line\":\"553d3dbb\",\"path\":[\"csv_lines\"]}')}",
+                        "file_name": " #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"file_name\"]}')}.csv"
+                      }
+                    },
+                    "visible_config_fields": [
+                      "to",
+                      "subject",
+                      "email_type",
+                      "body",
+                      "from",
+                      "attachments.file_name",
+                      "attachments.file_binary_content"
+                    ],
+                    "uuid": "e31a7126-d480-48b2-b147-30c471d59fb1",
+                    "skip": true
+                  }
+                ],
+                "uuid": "5f787053-37f7-48b0-9de2-ee0ba6281768"
+              }
+            ],
+            "uuid": "5cb0a8f7-f505-4737-b833-3c4be0f3258d"
+          },
+          {
+            "number": 20,
+            "as": "a2263baf",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 21,
+                "provider": "slack",
+                "name": "post_message_to_channel",
+                "as": "bd695554",
+                "keyword": "action",
+                "toggleCfg": {
+                  "channel": false
+                },
+                "input": {
+                  "parse": "false",
+                  "username": "Automation Bot",
+                  "text": "Dear #{_dp('{\"pill_type\":\"account_property\",\"property_name\":\"Automation Admin Email\"}')} 👋,\n\nProcess *#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}* has failed ❌.\nThe process is critical 🚨, please handle the error.\n\n• ⚠️ *Fail reason:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"a2263baf\",\"path\":[\"message\"]}')}\n\n👉 Here is a link to the failed Job: <#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_url\"]}')}|link>\n",
+                  "channel": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"slack automation channel id\"}')}"
+                },
+                "visible_config_fields": [
+                  "parse",
+                  "thread_ts",
+                  "username",
+                  "icon_url"
+                ],
+                "hidden_config_fields": [
+                  "title",
+                  "title_link",
+                  "attachment_text",
+                  "color"
+                ],
+                "uuid": "e28880ab-44f4-4731-8e37-f74097bb7f1d"
+              },
+              {
+                "number": 22,
+                "as": "262b834e",
+                "keyword": "stop",
+                "input": {
+                  "stop_with_error": "true",
+                  "stop_reason": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"a2263baf\",\"path\":[\"message\"]}')}"
+                },
+                "uuid": "d82eef5a-67b0-4114-9260-b92abb17115d"
+              }
+            ],
+            "uuid": "a21ef097-f536-450c-9977-11c8afa0359e"
+          }
+        ],
+        "uuid": "d928b1fb-024a-4dd2-b1bf-4d57a8bfa5e4"
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_8",
+        "label": "Recipe Id"
+      },
+      {
+        "name": "custom_column_9",
+        "label": "Project Domain"
+      },
+      {
+        "name": "custom_column_10",
+        "label": "Business Project"
+      },
+      {
+        "name": "custom_column_12",
+        "label": "Folder Name"
+      },
+      {
+        "name": "custom_column_1",
+        "label": "Recipe Name"
+      },
+      {
+        "name": "custom_column_11",
+        "label": "Owner"
+      },
+      {
+        "name": "custom_column_0",
+        "label": "Recipients"
+      },
+      {
+        "name": "custom_column_6",
+        "label": "Owner"
+      },
+      {
+        "name": "custom_column_7",
+        "label": "Job URL"
+      },
+      {
+        "name": "custom_column_3",
+        "label": "Duration"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_8": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"recipe_id\"]}')}",
+      "custom_column_9": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"Project_Domain\"]}')}",
+      "custom_column_10": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"business_project\"]}')}",
+      "custom_column_12": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"folder_name\"]}')}",
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"process_name\"]}')}",
+      "custom_column_11": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"Owner\"]}')}",
+      "custom_column_0": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"Recipients\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"Recipients\"]}') : _dp('{\"pill_type\":\"account_property\",\"property_name\":\"Automation Admin Email\"}')",
+      "custom_column_6": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"bd96e194\",\"path\":[\"Owner\"]}')}",
+      "custom_column_7": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"3afc0f1e\",\"path\":[\"parameters\",\"recipe_details\",\"job_url\"]}')}",
+      "custom_column_3": "=((now-_('data.workato.job_context.job_created_at'))/60).round(3).to_s + ' Minute'"
+    },
+    "uuid": "422f3f32-808b-42e6-b859-dddad6b496a6",
+    "format_version": 2
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_template",
+      "skip_validation": true,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "csv_parser",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_variable",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "gmail",
+      "skip_validation": true,
+      "account_id": {
+        "zip_name": "#Connections/Google Apps/gmail.connection.json",
+        "name": "Gmail",
+        "folder": "#Connections/Google Apps"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "lookup_table",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_app",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Workato Features/recipeops.connection.json",
+        "name": "RecipeOps",
+        "folder": "#Connections/Workato Features"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "slack",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Slack/biz_admin_slack.connection.json",
+        "name": "Biz Admin Slack",
+        "folder": "#Connections/Slack"
+      }
+    }
+  ],
+  "tags": [
+    "Recipe Function"
+  ]
+}

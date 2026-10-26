@@ -1,0 +1,9 @@
+{
+  "name": "Brightdata",
+  "provider": {
+    "zip_name": "brightdata.custom_adapter.json",
+    "name": "Brightdata",
+    "folder": ""
+  },
+  "root_folder": false
+}

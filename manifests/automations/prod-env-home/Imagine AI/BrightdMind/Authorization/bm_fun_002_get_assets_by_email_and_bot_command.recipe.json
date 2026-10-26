@@ -1,0 +1,3312 @@
+{
+  "name": "[BM]Fun-002 | Get Assets by email and Bot Command",
+  "description": "https://app.asana.com/0/1206257710812081/1207559569394969/f",
+  "version": 1,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "workato_recipe_function",
+    "name": "execute",
+    "as": "276b51f1",
+    "keyword": "trigger",
+    "input": {
+      "parameters_schema_json": "[{\"name\":\"email\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Email\"},{\"name\":\"command_name\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Command name\"},{\"name\":\"firstName\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"First name\"},{\"name\":\"lastName\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Last name\"}]",
+      "result_schema_json": "[{\"control_type\":\"text\",\"label\":\"Reason\",\"type\":\"string\",\"name\":\"reason\",\"optional\":true},{\"name\":\"rows\",\"type\":\"array\",\"of\":\"object\",\"label\":\"Rows\",\"optional\":true,\"properties\":[{\"control_type\":\"text\",\"label\":\"Button title\",\"type\":\"string\",\"name\":\"Button title\"},{\"control_type\":\"text\",\"label\":\"Section text\",\"type\":\"string\",\"name\":\"Section text\"},{\"control_type\":\"text\",\"label\":\"Bot command\",\"type\":\"string\",\"name\":\"Bot command\"},{\"name\":\"category\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Category\"},{\"control_type\":\"text\",\"label\":\"Command input values\",\"type\":\"string\",\"name\":\"Command input values\"},{\"control_type\":\"text\",\"label\":\"Permissions\",\"type\":\"string\",\"name\":\"Permissions\"},{\"control_type\":\"text\",\"label\":\"Question  text\",\"type\":\"string\",\"name\":\"Question Text\"},{\"control_type\":\"text\",\"label\":\"Description\",\"type\":\"string\",\"name\":\"Description\"},{\"control_type\":\"text\",\"label\":\"Allowed OKTA Apps\",\"name\":\"allowed_okta_apps\",\"type\":\"string\",\"optional\":false}]}]"
+    },
+    "extended_output_schema": [
+      {
+        "label": "Parameters",
+        "name": "parameters",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Email",
+            "name": "email",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "control_type": "text",
+            "label": "Command name",
+            "name": "command_name",
+            "type": "string",
+            "optional": true
+          },
+          {
+            "control_type": "text",
+            "label": "First name",
+            "name": "firstName",
+            "type": "string",
+            "optional": false
+          },
+          {
+            "control_type": "text",
+            "label": "Last name",
+            "name": "lastName",
+            "type": "string",
+            "optional": false
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "workato_db_table",
+            "name": "get_records",
+            "as": "c80b5d0d",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+              "table_id": "Slack Dynamic Home Buttons",
+              "order_by_field_id": "Record ID"
+            },
+            "input": {
+              "order_direction": "asc",
+              "limit": "100",
+              "table_id": {
+                "zip_name": "Imagine AI/BrightdMind/slack_dynamic_home_buttons.workato_db_table.json",
+                "name": "Slack Dynamic Home Buttons",
+                "folder": "Imagine AI/BrightdMind"
+              },
+              "505e930b-c91d-4bc1-bba8-f53e133329b8": "string",
+              "d44dde98-8ebd-405c-a01f-600468c35291": "string",
+              "d807c2b3-f9d0-4a6e-be34-8c293f123ece": "string",
+              "2b795a78-e8ec-4dd4-949a-c0521f0993a4": "string",
+              "7a4673eb-8bf2-4ff0-9ac8-8b38f80d3583": "string",
+              "0e5d234a-008c-4ed0-bd64-7a9774c22740": "string",
+              "6e8078fc-6997-447a-b8f5-47c0fba0beb2": "string",
+              "6914312c-582f-4906-b883-405d413c58a8": "string",
+              "11fbe9a6-a16d-4d7e-86ea-afe42ec03005": "id",
+              "a5612739-5401-4ae7-bd07-782c1a6fb2d1": "date_time",
+              "61aae604-a95e-4519-9091-bb0bf754a67f": "date_time",
+              "order_by_field_id": "11fbe9a6-a16d-4d7e-86ea-afe42ec03005"
+            },
+            "extended_output_schema": [
+              {
+                "label": "Records",
+                "name": "records",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Record ID",
+                    "type": "string",
+                    "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "button_title",
+                    "type": "string",
+                    "name": "505e930b_c91d_4bc1_bba8_f53e133329b8"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Category",
+                    "type": "string",
+                    "name": "db84c90d_1dc8_4941_abd4_cd80ec4853d6"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "section_text",
+                    "type": "string",
+                    "name": "d44dde98_8ebd_405c_a01f_600468c35291"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "bot_command",
+                    "type": "string",
+                    "name": "d807c2b3_f9d0_4a6e_be34_8c293f123ece"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "command_input_values",
+                    "type": "string",
+                    "name": "2b795a78_e8ec_4dd4_949a_c0521f0993a4"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "permissions",
+                    "type": "string",
+                    "name": "7a4673eb_8bf2_4ff0_9ac8_8b38f80d3583"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "question_text",
+                    "type": "string",
+                    "name": "0e5d234a_008c_4ed0_bd64_7a9774c22740"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "description",
+                    "type": "string",
+                    "name": "6e8078fc_6997_447a_b8f5_47c0fba0beb2"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "allowed_okta_apps",
+                    "type": "string",
+                    "name": "6914312c_582f_4906_b883_405d413c58a8"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Created at",
+                    "render_input": "date_time_conversion",
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Updated at",
+                    "render_input": "date_time_conversion",
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+                  }
+                ],
+                "type": "array"
+              },
+              {
+                "control_type": "text",
+                "label": "Next Page Token",
+                "name": "continuation_token",
+                "type": "string"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_505e930b-c91d-4bc1-bba8-f53e133329b8",
+                "name": "505e930b-c91d-4bc1-bba8-f53e133329b8",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_db84c90d-1dc8-4941-abd4-cd80ec4853d6",
+                "name": "db84c90d-1dc8-4941-abd4-cd80ec4853d6",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_d44dde98-8ebd-405c-a01f-600468c35291",
+                "name": "d44dde98-8ebd-405c-a01f-600468c35291",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_d807c2b3-f9d0-4a6e-be34-8c293f123ece",
+                "name": "d807c2b3-f9d0-4a6e-be34-8c293f123ece",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_2b795a78-e8ec-4dd4-949a-c0521f0993a4",
+                "name": "2b795a78-e8ec-4dd4-949a-c0521f0993a4",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_7a4673eb-8bf2-4ff0-9ac8-8b38f80d3583",
+                "name": "7a4673eb-8bf2-4ff0-9ac8-8b38f80d3583",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_0e5d234a-008c-4ed0-bd64-7a9774c22740",
+                "name": "0e5d234a-008c-4ed0-bd64-7a9774c22740",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_6e8078fc-6997-447a-b8f5-47c0fba0beb2",
+                "name": "6e8078fc-6997-447a-b8f5-47c0fba0beb2",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_6914312c-582f-4906-b883-405d413c58a8",
+                "name": "6914312c-582f-4906-b883-405d413c58a8",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "id",
+                "label": "$internal_value_11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+                "name": "11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "date_time",
+                "label": "$internal_value_a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+                "name": "a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "date_time",
+                "label": "$internal_value_61aae604-a95e-4519-9091-bb0bf754a67f",
+                "name": "61aae604-a95e-4519-9091-bb0bf754a67f",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              }
+            ],
+            "uuid": "72e74f96-732b-4f52-86d3-410ba415c6eb",
+            "skip": false
+          },
+          {
+            "number": 3,
+            "provider": "workato_db_table",
+            "name": "get_records",
+            "as": "b2530be0",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+              "table_id": "BrightMind  WhiteList Users",
+              "filters.0.field_id": "email"
+            },
+            "input": {
+              "order_direction": "asc",
+              "limit": "100",
+              "table_id": {
+                "zip_name": "Imagine AI/BrightdMind/brightmind_whitelist_users.workato_db_table.json",
+                "name": "BrightMind  WhiteList Users",
+                "folder": "Imagine AI/BrightdMind"
+              },
+              "836d3c32-4229-4450-851f-47cc8ac9ca4c": "string",
+              "56f47bf4-6e67-48b8-83f7-9f6fbc5b2505": "string",
+              "384f7b1d-51ce-4921-98e7-150e66e7073c": "string",
+              "b9fcc1f8-3ac4-48d9-8c94-8a018ab63471": "string",
+              "05ee0f58-e3a3-4c9d-8f54-52c46bfdf6c8": "boolean",
+              "e61b76de-480e-4cf2-a82d-d78b06140c19": "string_set",
+              "b624ae0b-3ef7-4834-91a0-8325771a4244": "string",
+              "4d7cfcbb-c614-48eb-ad3e-647dcfd3e090": "string",
+              "66649adc-5018-4d14-abb9-c8cc121d20d9": "date",
+              "11fbe9a6-a16d-4d7e-86ea-afe42ec03005": "id",
+              "a5612739-5401-4ae7-bd07-782c1a6fb2d1": "date_time",
+              "61aae604-a95e-4519-9091-bb0bf754a67f": "date_time",
+              "filters": [
+                {
+                  "field_id": "836d3c32-4229-4450-851f-47cc8ac9ca4c",
+                  "op_default": "eq",
+                  "value_default": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"276b51f1\",\"path\":[\"parameters\",\"email\"]}')}"
+                }
+              ]
+            },
+            "extended_output_schema": [
+              {
+                "label": "Records",
+                "name": "records",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Record ID",
+                    "type": "string",
+                    "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "slack_user_id",
+                    "type": "string",
+                    "name": "d50a4924_5e6c_4d57_9ad9_ace61370926e"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "email",
+                    "type": "string",
+                    "name": "836d3c32_4229_4450_851f_47cc8ac9ca4c"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "zendesk_group_id",
+                    "type": "string",
+                    "name": "56f47bf4_6e67_48b8_83f7_9f6fbc5b2505"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "monday_board_ids",
+                    "type": "string",
+                    "name": "384f7b1d_51ce_4921_98e7_150e66e7073c"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "role",
+                    "type": "string",
+                    "name": "b9fcc1f8_3ac4_48d9_8c94_8a018ab63471"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "active",
+                    "toggle_hint": "Select from option list",
+                    "toggle_field": {
+                      "label": "active",
+                      "control_type": "text",
+                      "toggle_hint": "Use custom value",
+                      "render_input": null,
+                      "parse_output": null,
+                      "type": "boolean",
+                      "name": "05ee0f58_e3a3_4c9d_8f54_52c46bfdf6c8"
+                    },
+                    "type": "boolean",
+                    "name": "05ee0f58_e3a3_4c9d_8f54_52c46bfdf6c8"
+                  },
+                  {
+                    "label": "allowed_sources",
+                    "of": "string",
+                    "type": "array",
+                    "name": "e61b76de_480e_4cf2_a82d_d78b06140c19"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "department",
+                    "type": "string",
+                    "name": "b624ae0b_3ef7_4834_91a0_8325771a4244"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "daily_limit",
+                    "type": "string",
+                    "name": "4d7cfcbb_c614_48eb_ad3e_647dcfd3e090"
+                  },
+                  {
+                    "control_type": "date",
+                    "label": "created_at",
+                    "render_input": "date_conversion",
+                    "parse_output": "date_conversion",
+                    "type": "date",
+                    "name": "66649adc_5018_4d14_abb9_c8cc121d20d9"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Created at",
+                    "render_input": "date_time_conversion",
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Updated at",
+                    "render_input": "date_time_conversion",
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+                  }
+                ],
+                "type": "array"
+              },
+              {
+                "control_type": "text",
+                "label": "Next Page Token",
+                "name": "continuation_token",
+                "type": "string"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_d50a4924-5e6c-4d57-9ad9-ace61370926e",
+                "name": "d50a4924-5e6c-4d57-9ad9-ace61370926e",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_836d3c32-4229-4450-851f-47cc8ac9ca4c",
+                "name": "836d3c32-4229-4450-851f-47cc8ac9ca4c",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_56f47bf4-6e67-48b8-83f7-9f6fbc5b2505",
+                "name": "56f47bf4-6e67-48b8-83f7-9f6fbc5b2505",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_384f7b1d-51ce-4921-98e7-150e66e7073c",
+                "name": "384f7b1d-51ce-4921-98e7-150e66e7073c",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_b9fcc1f8-3ac4-48d9-8c94-8a018ab63471",
+                "name": "b9fcc1f8-3ac4-48d9-8c94-8a018ab63471",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "boolean",
+                "label": "$internal_value_05ee0f58-e3a3-4c9d-8f54-52c46bfdf6c8",
+                "name": "05ee0f58-e3a3-4c9d-8f54-52c46bfdf6c8",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string_set",
+                "label": "$internal_value_e61b76de-480e-4cf2-a82d-d78b06140c19",
+                "name": "e61b76de-480e-4cf2-a82d-d78b06140c19",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_b624ae0b-3ef7-4834-91a0-8325771a4244",
+                "name": "b624ae0b-3ef7-4834-91a0-8325771a4244",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_4d7cfcbb-c614-48eb-ad3e-647dcfd3e090",
+                "name": "4d7cfcbb-c614-48eb-ad3e-647dcfd3e090",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "date",
+                "label": "$internal_value_66649adc-5018-4d14-abb9-c8cc121d20d9",
+                "name": "66649adc-5018-4d14-abb9-c8cc121d20d9",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "id",
+                "label": "$internal_value_11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+                "name": "11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "date_time",
+                "label": "$internal_value_a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+                "name": "a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "date_time",
+                "label": "$internal_value_61aae604-a95e-4519-9091-bb0bf754a67f",
+                "name": "61aae604-a95e-4519-9091-bb0bf754a67f",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              }
+            ],
+            "uuid": "12369aa5-7d87-401b-9716-c080c703daea",
+            "skip": false
+          },
+          {
+            "number": 4,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "present",
+                  "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"b2530be0\",\"path\":[\"records\"]}')",
+                  "uuid": "f4b1eddf-0e13-424a-a9ad-62866d4cedcd"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 5,
+                "provider": "workato_recipe_function",
+                "name": "return_result",
+                "as": "23fd4545",
+                "keyword": "action",
+                "input": {
+                  "result": {
+                    "rows": {
+                      "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c80b5d0d\",\"path\":[\"records\"]}')}",
+                      "Permissions": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c80b5d0d\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"7a4673eb_8bf2_4ff0_9ac8_8b38f80d3583\"]}')}",
+                      "Description": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c80b5d0d\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"6e8078fc_6997_447a_b8f5_47c0fba0beb2\"]}')}",
+                      "Button title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c80b5d0d\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"505e930b_c91d_4bc1_bba8_f53e133329b8\"]}')}",
+                      "Section text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c80b5d0d\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"d44dde98_8ebd_405c_a01f_600468c35291\"]}')}",
+                      "Bot command": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c80b5d0d\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"d807c2b3_f9d0_4a6e_be34_8c293f123ece\"]}')}",
+                      "Command input values": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c80b5d0d\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"2b795a78_e8ec_4dd4_949a_c0521f0993a4\"]}')}",
+                      "Question Text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c80b5d0d\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"0e5d234a_008c_4ed0_bd64_7a9774c22740\"]}')}",
+                      "allowed_okta_apps": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c80b5d0d\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"6914312c_582f_4906_b883_405d413c58a8\"]}')}",
+                      "category": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c80b5d0d\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"db84c90d_1dc8_4941_abd4_cd80ec4853d6\"]}')}"
+                    }
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Reason",
+                        "type": "string",
+                        "name": "reason",
+                        "optional": true
+                      },
+                      {
+                        "label": "Rows",
+                        "name": "rows",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Button title",
+                            "type": "string",
+                            "name": "Button title"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Section text",
+                            "type": "string",
+                            "name": "Section text"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Bot command",
+                            "type": "string",
+                            "name": "Bot command"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Category",
+                            "name": "category",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Command input values",
+                            "type": "string",
+                            "name": "Command input values"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Permissions",
+                            "type": "string",
+                            "name": "Permissions"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Question  text",
+                            "type": "string",
+                            "name": "Question Text"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Description",
+                            "type": "string",
+                            "name": "Description"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Allowed OKTA Apps",
+                            "name": "allowed_okta_apps",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Reason",
+                        "type": "string",
+                        "name": "reason",
+                        "optional": true
+                      },
+                      {
+                        "label": "Rows",
+                        "name": "rows",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Button title",
+                            "type": "string",
+                            "name": "Button title"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Section text",
+                            "type": "string",
+                            "name": "Section text"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Bot command",
+                            "type": "string",
+                            "name": "Bot command"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Category",
+                            "name": "category",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Command input values",
+                            "type": "string",
+                            "name": "Command input values"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Permissions",
+                            "type": "string",
+                            "name": "Permissions"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Question  text",
+                            "type": "string",
+                            "name": "Question Text"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Description",
+                            "type": "string",
+                            "name": "Description"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Allowed OKTA Apps",
+                            "name": "allowed_okta_apps",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "uuid": "1a43763d-44e7-4b3d-8291-acf5291e634e",
+                "skip": false
+              }
+            ],
+            "uuid": "104b72da-47d9-4bb5-85d0-d4d7c91435f1"
+          },
+          {
+            "number": 6,
+            "provider": "workato_variable",
+            "name": "declare_list",
+            "as": "3f7ee9c8",
+            "keyword": "action",
+            "input": {
+              "name": "rows",
+              "list_item_schema_json": "[{\"control_type\":\"text\",\"label\":\"Button title\",\"type\":\"string\",\"name\":\"Button title\"},{\"control_type\":\"text\",\"label\":\"Section text\",\"type\":\"string\",\"name\":\"Section text\"},{\"control_type\":\"text\",\"label\":\"Bot command\",\"type\":\"string\",\"name\":\"Bot command\"},{\"control_type\":\"text\",\"label\":\"Command input values\",\"type\":\"string\",\"name\":\"Command input values\"},{\"control_type\":\"text\",\"label\":\"Permissions\",\"type\":\"string\",\"name\":\"Permissions\"},{\"control_type\":\"text\",\"label\":\"Question  text\",\"type\":\"string\",\"name\":\"Question Text\"},{\"control_type\":\"text\",\"label\":\"Description\",\"type\":\"string\",\"name\":\"Description\"},{\"name\":\"allowed_okta_apps\",\"type\":\"string\",\"optional\":false,\"label\":\"Allowed OKTA Apps\",\"control_type\":\"text\"}]",
+              "list_items": {
+                "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c80b5d0d\",\"path\":[\"records\"]}')}",
+                "Button_title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c80b5d0d\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"505e930b_c91d_4bc1_bba8_f53e133329b8\"]}')}",
+                "Section_text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c80b5d0d\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"d44dde98_8ebd_405c_a01f_600468c35291\"]}')}",
+                "Bot_command": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c80b5d0d\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"d807c2b3_f9d0_4a6e_be34_8c293f123ece\"]}')}",
+                "Command_input_values": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c80b5d0d\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"2b795a78_e8ec_4dd4_949a_c0521f0993a4\"]}')}",
+                "Permissions": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c80b5d0d\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"7a4673eb_8bf2_4ff0_9ac8_8b38f80d3583\"]}')}",
+                "Question_Text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c80b5d0d\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"0e5d234a_008c_4ed0_bd64_7a9774c22740\"]}')}",
+                "Description": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c80b5d0d\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"6e8078fc_6997_447a_b8f5_47c0fba0beb2\"]}')}",
+                "allowed_okta_apps": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"c80b5d0d\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"6914312c_582f_4906_b883_405d413c58a8\"]}')}"
+              }
+            },
+            "extended_output_schema": [
+              {
+                "hint": "",
+                "label": "rows",
+                "name": "list_items",
+                "of": "object",
+                "optional": false,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Button title",
+                    "type": "string",
+                    "name": "Button_title"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Section text",
+                    "type": "string",
+                    "name": "Section_text"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Bot command",
+                    "type": "string",
+                    "name": "Bot_command"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Command input values",
+                    "type": "string",
+                    "name": "Command_input_values"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Permissions",
+                    "type": "string",
+                    "name": "Permissions"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Question  text",
+                    "type": "string",
+                    "name": "Question_Text"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Description",
+                    "type": "string",
+                    "name": "Description"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Allowed OKTA Apps",
+                    "name": "allowed_okta_apps",
+                    "type": "string",
+                    "optional": false
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                "label": "Items",
+                "name": "list_items",
+                "of": "object",
+                "optional": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Button title",
+                    "type": "string",
+                    "name": "Button_title"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Section text",
+                    "type": "string",
+                    "name": "Section_text"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Bot command",
+                    "type": "string",
+                    "name": "Bot_command"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Command input values",
+                    "type": "string",
+                    "name": "Command_input_values"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Permissions",
+                    "type": "string",
+                    "name": "Permissions"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Question  text",
+                    "type": "string",
+                    "name": "Question_Text"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Description",
+                    "type": "string",
+                    "name": "Description"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Allowed OKTA Apps",
+                    "name": "allowed_okta_apps",
+                    "type": "string",
+                    "optional": false
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "uuid": "423d4e89-f133-4f0e-8975-40a85191a553",
+            "skip": false
+          },
+          {
+            "number": 7,
+            "provider": "workato_smart_list",
+            "name": "create_list",
+            "as": "5904cfad",
+            "keyword": "action",
+            "input": {
+              "list_source": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"3f7ee9c8\",\"path\":[\"list_items\"]}')",
+              "list_name": "Slack Actions",
+              "primary_index": "Button_title"
+            },
+            "extended_output_schema": [
+              {
+                "control_type": "text",
+                "label": "Slack Actions",
+                "name": "list_name",
+                "type": "string"
+              },
+              {
+                "label": "Columns",
+                "name": "columns",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Button title",
+                    "list_data_type": "string",
+                    "type": "string",
+                    "name": "Button_title"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Section text",
+                    "list_data_type": "string",
+                    "type": "string",
+                    "name": "Section_text"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Bot command",
+                    "list_data_type": "string",
+                    "type": "string",
+                    "name": "Bot_command"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Command input values",
+                    "list_data_type": "string",
+                    "type": "string",
+                    "name": "Command_input_values"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Permissions",
+                    "list_data_type": "string",
+                    "type": "string",
+                    "name": "Permissions"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Question  text",
+                    "list_data_type": "string",
+                    "type": "string",
+                    "name": "Question_Text"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Description",
+                    "list_data_type": "string",
+                    "type": "string",
+                    "name": "Description"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Allowed OKTA Apps",
+                    "optional": false,
+                    "list_data_type": "string",
+                    "type": "string",
+                    "name": "allowed_okta_apps"
+                  }
+                ],
+                "type": "object"
+              },
+              {
+                "control_type": "number",
+                "label": "Row count",
+                "name": "row_count",
+                "parse_output": "integer_conversion",
+                "type": "integer"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "control_type": "checkbox",
+                "hint": "Select <b>Yes</b> to overwrite <b>Slack Actions</b> list if it already exists",
+                "label": "Overwrite list?",
+                "name": "force",
+                "optional": true,
+                "toggle_field": {
+                  "label": "Overwrite list?",
+                  "control_type": "text",
+                  "toggle_hint": "Use custom value",
+                  "hint": "Select <b>Yes</b> to overwrite <b>Slack Actions</b> list if it already exists",
+                  "optional": true,
+                  "render_input": null,
+                  "parse_output": null,
+                  "type": "boolean",
+                  "name": "force"
+                },
+                "toggle_hint": "Select from option list",
+                "type": "boolean"
+              },
+              {
+                "control_type": "multiselect",
+                "delimiter": "\n",
+                "hint": "Collections are like databases. Having index improves query performance. Select one or more fields from list source.",
+                "label": "Primary index",
+                "name": "primary_index",
+                "ngIf": "input.create_table_if_not_exist != 'false'",
+                "optional": true,
+                "pick_list": [
+                  [
+                    "Button title",
+                    "Button_title"
+                  ],
+                  [
+                    "Section text",
+                    "Section_text"
+                  ],
+                  [
+                    "Bot command",
+                    "Bot_command"
+                  ],
+                  [
+                    "Command input values",
+                    "Command_input_values"
+                  ],
+                  [
+                    "Permissions",
+                    "Permissions"
+                  ],
+                  [
+                    "Question  text",
+                    "Question_Text"
+                  ],
+                  [
+                    "Description",
+                    "Description"
+                  ],
+                  [
+                    "Allowed OKTA Apps",
+                    "allowed_okta_apps"
+                  ]
+                ],
+                "sticky": true,
+                "type": "string"
+              },
+              {
+                "control_type": "multiselect",
+                "delimiter": "\n",
+                "hint": "Select one or more fields from list source.",
+                "label": "Secondary index",
+                "name": "secondary_index",
+                "ngIf": "input.create_table_if_not_exist != 'false'",
+                "optional": true,
+                "pick_list": [
+                  [
+                    "Button title",
+                    "Button_title"
+                  ],
+                  [
+                    "Section text",
+                    "Section_text"
+                  ],
+                  [
+                    "Bot command",
+                    "Bot_command"
+                  ],
+                  [
+                    "Command input values",
+                    "Command_input_values"
+                  ],
+                  [
+                    "Permissions",
+                    "Permissions"
+                  ],
+                  [
+                    "Question  text",
+                    "Question_Text"
+                  ],
+                  [
+                    "Description",
+                    "Description"
+                  ],
+                  [
+                    "Allowed OKTA Apps",
+                    "allowed_okta_apps"
+                  ]
+                ],
+                "type": "string"
+              }
+            ],
+            "uuid": "8b68c365-edad-4f44-a138-edcaaaf0fd87",
+            "skip": false
+          },
+          {
+            "number": 8,
+            "keyword": "try",
+            "input": {
+            },
+            "block": [
+              {
+                "number": 9,
+                "provider": "okta",
+                "name": "get_people_by_id",
+                "as": "a51bc0bf",
+                "keyword": "action",
+                "input": {
+                  "id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"276b51f1\",\"path\":[\"parameters\",\"email\"]}')}"
+                },
+                "extended_output_schema": [
+                  {
+                    "control_type": "text",
+                    "label": "ID",
+                    "name": "id",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Status",
+                    "name": "status",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Created time",
+                    "name": "created",
+                    "optional": true,
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "render_input": "date_time_conversion"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Activated time",
+                    "name": "activated",
+                    "optional": true,
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "render_input": "date_time_conversion"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Status changed time",
+                    "name": "statusChanged",
+                    "optional": true,
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "render_input": "date_time_conversion"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Last login time",
+                    "name": "lastLogin",
+                    "optional": true,
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "render_input": "date_time_conversion"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Last updated time",
+                    "name": "lastUpdated",
+                    "optional": true,
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "render_input": "date_time_conversion"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Password changed time",
+                    "name": "passwordChanged",
+                    "optional": true,
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "render_input": "date_time_conversion"
+                  },
+                  {
+                    "label": "Profile",
+                    "name": "profile",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "First name",
+                        "sticky": true,
+                        "optional": true,
+                        "type": "string",
+                        "name": "firstName"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Last name",
+                        "sticky": true,
+                        "optional": true,
+                        "type": "string",
+                        "name": "lastName"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Primary email ID",
+                        "sticky": true,
+                        "optional": true,
+                        "type": "string",
+                        "name": "email"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Secondary email ID",
+                        "optional": true,
+                        "type": "string",
+                        "name": "secondEmail"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Username",
+                        "hint": "Must be an email",
+                        "sticky": true,
+                        "optional": true,
+                        "type": "string",
+                        "name": "login"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Middle name",
+                        "optional": true,
+                        "type": "string",
+                        "name": "middleName"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Honorific prefix",
+                        "optional": true,
+                        "type": "string",
+                        "name": "honorificPrefix"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Honorific suffix",
+                        "optional": true,
+                        "type": "string",
+                        "name": "honorificSuffix"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Title",
+                        "hint": "User's title, such as 'Vice President'",
+                        "optional": true,
+                        "type": "string",
+                        "name": "title"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Display name",
+                        "optional": true,
+                        "type": "string",
+                        "name": "displayName"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Nick name",
+                        "optional": true,
+                        "type": "string",
+                        "name": "nickName"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Profile URL",
+                        "hint": "URL of user's online profile",
+                        "optional": true,
+                        "type": "string",
+                        "name": "profileUrl"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Primary phone",
+                        "optional": true,
+                        "type": "string",
+                        "name": "primaryPhone"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Mobile phone",
+                        "optional": true,
+                        "type": "string",
+                        "name": "mobilePhone"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Street address",
+                        "optional": true,
+                        "type": "string",
+                        "name": "streetAddress"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "City",
+                        "optional": true,
+                        "type": "string",
+                        "name": "city"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "State",
+                        "optional": true,
+                        "type": "string",
+                        "name": "state"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Zip code",
+                        "optional": true,
+                        "type": "string",
+                        "name": "zipCode"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Country code",
+                        "hint": "ISO 3166 format. Example: 'US' for 'United states'",
+                        "optional": true,
+                        "type": "string",
+                        "name": "countryCode"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Postal address",
+                        "optional": true,
+                        "type": "string",
+                        "name": "postalAddress"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Preferred language",
+                        "optional": true,
+                        "type": "string",
+                        "name": "preferredLanguage"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Locale",
+                        "hint": "A locale value is a concatenation of the ISO 639-1 two letter language code, an underscore, and the ISO 3166-1 2 letter country code. Example: ‘en_US’",
+                        "optional": true,
+                        "type": "string",
+                        "name": "locale"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Timezone",
+                        "optional": true,
+                        "type": "string",
+                        "name": "timezone"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "User type",
+                        "hint": "Example: 'Employee', 'Contractor'",
+                        "optional": true,
+                        "type": "string",
+                        "name": "userType"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Employee number",
+                        "hint": "Organization assigned unique identifier for the user",
+                        "optional": true,
+                        "type": "string",
+                        "name": "employeeNumber"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Cost center",
+                        "hint": "Name of a cost center assigned to user",
+                        "optional": true,
+                        "type": "string",
+                        "name": "costCenter"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Organization",
+                        "hint": "Name of user's organization",
+                        "optional": true,
+                        "type": "string",
+                        "name": "organization"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Division",
+                        "hint": "Name of user's division",
+                        "optional": true,
+                        "type": "string",
+                        "name": "division"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Department",
+                        "hint": "Name of user's department",
+                        "optional": true,
+                        "type": "string",
+                        "name": "department"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Manager ID",
+                        "hint": "ID of user's manager",
+                        "optional": true,
+                        "type": "string",
+                        "name": "managerId"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Manager",
+                        "hint": "Display name of user's manager",
+                        "optional": true,
+                        "type": "string",
+                        "name": "manager"
+                      }
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "label": "Credentials",
+                    "name": "credentials",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Question",
+                            "optional": true,
+                            "type": "string",
+                            "name": "question"
+                          }
+                        ],
+                        "label": "Recovery question",
+                        "optional": true,
+                        "type": "object",
+                        "name": "recovery_question"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Type",
+                            "hint": "Valid values are OKTA, ACTIVE_DIRECTORY,LDAP, FEDERATION, SOCIAL",
+                            "optional": true,
+                            "type": "string",
+                            "name": "type"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Name",
+                            "optional": true,
+                            "type": "string",
+                            "name": "name"
+                          }
+                        ],
+                        "label": "Provider",
+                        "optional": true,
+                        "type": "object",
+                        "name": "provider"
+                      }
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "label": "Links",
+                    "name": "_links",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "properties": [
+                          {
+                            "control_type": "url",
+                            "label": "Href",
+                            "optional": true,
+                            "type": "string",
+                            "name": "href"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Method",
+                            "optional": true,
+                            "type": "string",
+                            "name": "method"
+                          }
+                        ],
+                        "label": "Suspend",
+                        "optional": true,
+                        "type": "object",
+                        "name": "suspend"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "url",
+                            "label": "Href",
+                            "optional": true,
+                            "type": "string",
+                            "name": "href"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Method",
+                            "optional": true,
+                            "type": "string",
+                            "name": "method"
+                          }
+                        ],
+                        "label": "Reset password",
+                        "optional": true,
+                        "type": "object",
+                        "name": "resetPassword"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "url",
+                            "label": "Href",
+                            "optional": true,
+                            "type": "string",
+                            "name": "href"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Method",
+                            "optional": true,
+                            "type": "string",
+                            "name": "method"
+                          }
+                        ],
+                        "label": "Expire password",
+                        "optional": true,
+                        "type": "object",
+                        "name": "expirePassword"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "url",
+                            "label": "Href",
+                            "optional": true,
+                            "type": "string",
+                            "name": "href"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Method",
+                            "optional": true,
+                            "type": "string",
+                            "name": "method"
+                          }
+                        ],
+                        "label": "Forgot password",
+                        "optional": true,
+                        "type": "object",
+                        "name": "forgotPassword"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "url",
+                            "label": "Href",
+                            "optional": true,
+                            "type": "string",
+                            "name": "href"
+                          }
+                        ],
+                        "label": "Self",
+                        "optional": true,
+                        "type": "object",
+                        "name": "self"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "url",
+                            "label": "Href",
+                            "optional": true,
+                            "type": "string",
+                            "name": "href"
+                          }
+                        ],
+                        "label": "Type",
+                        "optional": true,
+                        "type": "object",
+                        "name": "type"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "url",
+                            "label": "Href",
+                            "optional": true,
+                            "type": "string",
+                            "name": "href"
+                          }
+                        ],
+                        "label": "Schema",
+                        "optional": true,
+                        "type": "object",
+                        "name": "schema"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "url",
+                            "label": "Href",
+                            "optional": true,
+                            "type": "string",
+                            "name": "href"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Method",
+                            "optional": true,
+                            "type": "string",
+                            "name": "method"
+                          }
+                        ],
+                        "label": "Change recovery question",
+                        "optional": true,
+                        "type": "object",
+                        "name": "changeRecoveryQuestion"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "url",
+                            "label": "Href",
+                            "optional": true,
+                            "type": "string",
+                            "name": "href"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Method",
+                            "optional": true,
+                            "type": "string",
+                            "name": "method"
+                          }
+                        ],
+                        "label": "Deactivate",
+                        "optional": true,
+                        "type": "object",
+                        "name": "deactivate"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "url",
+                            "label": "Href",
+                            "optional": true,
+                            "type": "string",
+                            "name": "href"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Method",
+                            "optional": true,
+                            "type": "string",
+                            "name": "method"
+                          }
+                        ],
+                        "label": "Activate",
+                        "optional": true,
+                        "type": "object",
+                        "name": "activate"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "url",
+                            "label": "Href",
+                            "optional": true,
+                            "type": "string",
+                            "name": "href"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Method",
+                            "optional": true,
+                            "type": "string",
+                            "name": "method"
+                          }
+                        ],
+                        "label": "Reactivate",
+                        "optional": true,
+                        "type": "object",
+                        "name": "reactivate"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "url",
+                            "label": "Href",
+                            "optional": true,
+                            "type": "string",
+                            "name": "href"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Method",
+                            "optional": true,
+                            "type": "string",
+                            "name": "method"
+                          }
+                        ],
+                        "label": "Change password",
+                        "optional": true,
+                        "type": "object",
+                        "name": "changePassword"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "uuid": "e04b20e1-c732-4ef4-bfd7-703b017a0eaa"
+              },
+              {
+                "number": 10,
+                "as": "698e07a0",
+                "keyword": "catch",
+                "input": {
+                  "max_retry_count": "0",
+                  "retry_interval": "2"
+                },
+                "block": [
+                  {
+                    "number": 11,
+                    "provider": "okta",
+                    "name": "search_users",
+                    "as": "7157c038",
+                    "keyword": "action",
+                    "input": {
+                      "search_query": "profile.firstName Eq \"#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"276b51f1\",\"path\":[\"parameters\",\"firstName\"]}')}\" AND profile.lastName Eq \"#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"276b51f1\",\"path\":[\"parameters\",\"lastName\"]}')}\""
+                    },
+                    "extended_output_schema": [
+                      {
+                        "label": "Users",
+                        "name": "users",
+                        "of": "object",
+                        "optional": true,
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "ID",
+                            "optional": true,
+                            "type": "string",
+                            "name": "id"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Status",
+                            "optional": true,
+                            "type": "string",
+                            "name": "status"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Created time",
+                            "render_input": "date_time_conversion",
+                            "parse_output": "date_time_conversion",
+                            "optional": true,
+                            "type": "date_time",
+                            "name": "created"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Activated time",
+                            "render_input": "date_time_conversion",
+                            "parse_output": "date_time_conversion",
+                            "optional": true,
+                            "type": "date_time",
+                            "name": "activated"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Status changed time",
+                            "render_input": "date_time_conversion",
+                            "parse_output": "date_time_conversion",
+                            "optional": true,
+                            "type": "date_time",
+                            "name": "statusChanged"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Last login time",
+                            "render_input": "date_time_conversion",
+                            "parse_output": "date_time_conversion",
+                            "optional": true,
+                            "type": "date_time",
+                            "name": "lastLogin"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Last updated time",
+                            "render_input": "date_time_conversion",
+                            "parse_output": "date_time_conversion",
+                            "optional": true,
+                            "type": "date_time",
+                            "name": "lastUpdated"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Password changed time",
+                            "render_input": "date_time_conversion",
+                            "parse_output": "date_time_conversion",
+                            "optional": true,
+                            "type": "date_time",
+                            "name": "passwordChanged"
+                          },
+                          {
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "ID",
+                                "optional": true,
+                                "type": "string",
+                                "name": "id"
+                              }
+                            ],
+                            "label": "Type",
+                            "optional": true,
+                            "type": "object",
+                            "name": "type"
+                          },
+                          {
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "First name",
+                                "sticky": true,
+                                "optional": true,
+                                "type": "string",
+                                "name": "firstName"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Last name",
+                                "sticky": true,
+                                "optional": true,
+                                "type": "string",
+                                "name": "lastName"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Primary email ID",
+                                "sticky": true,
+                                "optional": true,
+                                "type": "string",
+                                "name": "email"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Secondary email ID",
+                                "optional": true,
+                                "type": "string",
+                                "name": "secondEmail"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Username",
+                                "hint": "Must be an email",
+                                "sticky": true,
+                                "optional": true,
+                                "type": "string",
+                                "name": "login"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Middle name",
+                                "optional": true,
+                                "type": "string",
+                                "name": "middleName"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Honorific prefix",
+                                "optional": true,
+                                "type": "string",
+                                "name": "honorificPrefix"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Honorific suffix",
+                                "optional": true,
+                                "type": "string",
+                                "name": "honorificSuffix"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Title",
+                                "hint": "User's title, such as 'Vice President'",
+                                "optional": true,
+                                "type": "string",
+                                "name": "title"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Display name",
+                                "optional": true,
+                                "type": "string",
+                                "name": "displayName"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Nick name",
+                                "optional": true,
+                                "type": "string",
+                                "name": "nickName"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Profile URL",
+                                "hint": "URL of user's online profile",
+                                "optional": true,
+                                "type": "string",
+                                "name": "profileUrl"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Primary phone",
+                                "optional": true,
+                                "type": "string",
+                                "name": "primaryPhone"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Mobile phone",
+                                "optional": true,
+                                "type": "string",
+                                "name": "mobilePhone"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Street address",
+                                "optional": true,
+                                "type": "string",
+                                "name": "streetAddress"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "City",
+                                "optional": true,
+                                "type": "string",
+                                "name": "city"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "State",
+                                "optional": true,
+                                "type": "string",
+                                "name": "state"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Zip code",
+                                "optional": true,
+                                "type": "string",
+                                "name": "zipCode"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Country code",
+                                "hint": "ISO 3166 format. Example: 'US' for 'United states'",
+                                "optional": true,
+                                "type": "string",
+                                "name": "countryCode"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Postal address",
+                                "optional": true,
+                                "type": "string",
+                                "name": "postalAddress"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Preferred language",
+                                "optional": true,
+                                "type": "string",
+                                "name": "preferredLanguage"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Locale",
+                                "hint": "A locale value is a concatenation of the ISO 639-1 two letter language code, an underscore, and the ISO 3166-1 2 letter country code. Example: ‘en_US’",
+                                "optional": true,
+                                "type": "string",
+                                "name": "locale"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Timezone",
+                                "optional": true,
+                                "type": "string",
+                                "name": "timezone"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "User type",
+                                "hint": "Example: 'Employee', 'Contractor'",
+                                "optional": true,
+                                "type": "string",
+                                "name": "userType"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Employee number",
+                                "hint": "Organization assigned unique identifier for the user",
+                                "optional": true,
+                                "type": "string",
+                                "name": "employeeNumber"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Cost center",
+                                "hint": "Name of a cost center assigned to user",
+                                "optional": true,
+                                "type": "string",
+                                "name": "costCenter"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Organization",
+                                "hint": "Name of user's organization",
+                                "optional": true,
+                                "type": "string",
+                                "name": "organization"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Division",
+                                "hint": "Name of user's division",
+                                "optional": true,
+                                "type": "string",
+                                "name": "division"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Department",
+                                "hint": "Name of user's department",
+                                "optional": true,
+                                "type": "string",
+                                "name": "department"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Manager ID",
+                                "hint": "ID of user's manager",
+                                "optional": true,
+                                "type": "string",
+                                "name": "managerId"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Manager",
+                                "hint": "Display name of user's manager",
+                                "optional": true,
+                                "type": "string",
+                                "name": "manager"
+                              }
+                            ],
+                            "label": "Profile",
+                            "optional": true,
+                            "type": "object",
+                            "name": "profile"
+                          },
+                          {
+                            "properties": [
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "Value",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "value"
+                                  }
+                                ],
+                                "label": "Password",
+                                "optional": true,
+                                "type": "object",
+                                "name": "password"
+                              },
+                              {
+                                "label": "Emails",
+                                "optional": true,
+                                "of": "object",
+                                "properties": [
+                                  {
+                                    "control_type": "email",
+                                    "label": "Value",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "value"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Status",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "status"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Type",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "type"
+                                  }
+                                ],
+                                "type": "array",
+                                "name": "emails"
+                              },
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "Question",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "question"
+                                  }
+                                ],
+                                "label": "Recovery question",
+                                "optional": true,
+                                "type": "object",
+                                "name": "recovery_question"
+                              },
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "Type",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "type"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Name",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "name"
+                                  }
+                                ],
+                                "label": "Provider",
+                                "optional": true,
+                                "type": "object",
+                                "name": "provider"
+                              }
+                            ],
+                            "label": "Credentials",
+                            "optional": true,
+                            "type": "object",
+                            "name": "credentials"
+                          },
+                          {
+                            "properties": [
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "url",
+                                    "label": "Href",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "href"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Method",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "method"
+                                  }
+                                ],
+                                "label": "Suspend",
+                                "optional": true,
+                                "type": "object",
+                                "name": "suspend"
+                              },
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "url",
+                                    "label": "Href",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "href"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Method",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "method"
+                                  }
+                                ],
+                                "label": "Reset password",
+                                "optional": true,
+                                "type": "object",
+                                "name": "resetPassword"
+                              },
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "url",
+                                    "label": "Href",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "href"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Method",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "method"
+                                  }
+                                ],
+                                "label": "Expire password",
+                                "optional": true,
+                                "type": "object",
+                                "name": "expirePassword"
+                              },
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "url",
+                                    "label": "Href",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "href"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Method",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "method"
+                                  }
+                                ],
+                                "label": "Forgot password",
+                                "optional": true,
+                                "type": "object",
+                                "name": "forgotPassword"
+                              },
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "url",
+                                    "label": "Href",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "href"
+                                  }
+                                ],
+                                "label": "Self",
+                                "optional": true,
+                                "type": "object",
+                                "name": "self"
+                              },
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "url",
+                                    "label": "Href",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "href"
+                                  }
+                                ],
+                                "label": "Type",
+                                "optional": true,
+                                "type": "object",
+                                "name": "type"
+                              },
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "url",
+                                    "label": "Href",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "href"
+                                  }
+                                ],
+                                "label": "Schema",
+                                "optional": true,
+                                "type": "object",
+                                "name": "schema"
+                              },
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "url",
+                                    "label": "Href",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "href"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Method",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "method"
+                                  }
+                                ],
+                                "label": "Change recovery question",
+                                "optional": true,
+                                "type": "object",
+                                "name": "changeRecoveryQuestion"
+                              },
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "url",
+                                    "label": "Href",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "href"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Method",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "method"
+                                  }
+                                ],
+                                "label": "Deactivate",
+                                "optional": true,
+                                "type": "object",
+                                "name": "deactivate"
+                              },
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "url",
+                                    "label": "Href",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "href"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Method",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "method"
+                                  }
+                                ],
+                                "label": "Activate",
+                                "optional": true,
+                                "type": "object",
+                                "name": "activate"
+                              },
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "url",
+                                    "label": "Href",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "href"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Method",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "method"
+                                  }
+                                ],
+                                "label": "Reactivate",
+                                "optional": true,
+                                "type": "object",
+                                "name": "reactivate"
+                              },
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "url",
+                                    "label": "Href",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "href"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Method",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "method"
+                                  }
+                                ],
+                                "label": "Change password",
+                                "optional": true,
+                                "type": "object",
+                                "name": "changePassword"
+                              }
+                            ],
+                            "label": "Links",
+                            "optional": true,
+                            "type": "object",
+                            "name": "_links"
+                          }
+                        ],
+                        "type": "array"
+                      },
+                      {
+                        "control_type": "url",
+                        "label": "Next page URL",
+                        "name": "next_page_url",
+                        "optional": true,
+                        "type": "string"
+                      }
+                    ],
+                    "uuid": "5663fbb4-de21-4ea2-b8d9-3aa2411a4207"
+                  }
+                ],
+                "uuid": "68b25768-2c04-4a3c-b02a-062c24fd5cec"
+              }
+            ],
+            "uuid": "71a06719-e244-482d-8ba7-f7c8ea82e86c"
+          },
+          {
+            "number": 12,
+            "provider": "okta",
+            "name": "get_people_groups",
+            "as": "741da771",
+            "keyword": "action",
+            "input": {
+              "limit": "10000",
+              "user_id": "=_dp('{\"pill_type\":\"output\",\"provider\":\"okta\",\"line\":\"a51bc0bf\",\"path\":[\"id\"]}') || _dp('{\"pill_type\":\"output\",\"provider\":\"okta\",\"line\":\"7157c038\",\"path\":[\"users\",{\"path_element_type\":\"current_item\"},\"id\"]}')"
+            },
+            "uuid": "09b805e4-4a9f-4b2b-94a8-29ae08978704"
+          },
+          {
+            "number": 13,
+            "provider": "okta",
+            "name": "list_applications_assigned_to_people",
+            "as": "8b8c2f03",
+            "keyword": "action",
+            "input": {
+              "id": "=_dp('{\"pill_type\":\"output\",\"provider\":\"okta\",\"line\":\"a51bc0bf\",\"path\":[\"id\"]}') || _dp('{\"pill_type\":\"output\",\"provider\":\"okta\",\"line\":\"7157c038\",\"path\":[\"users\",{\"path_element_type\":\"current_item\"},\"id\"]}')",
+              "limit": "500"
+            },
+            "uuid": "0207af5c-2f7e-493f-84cc-abf3e11a3d35"
+          },
+          {
+            "number": 14,
+            "as": "322af46a",
+            "keyword": "stop",
+            "input": {
+              "stop_with_error": "false"
+            },
+            "uuid": "1bea08ed-b8d2-4535-82a6-22c9efa3e7c7",
+            "skip": true
+          },
+          {
+            "number": 15,
+            "provider": "workato_variable",
+            "name": "declare_variable",
+            "as": "66725ea1",
+            "keyword": "action",
+            "input": {
+              "variables": {
+                "schema": "[{\"name\":\"okta_groups\",\"type\":\"string\",\"optional\":true,\"label\":\"okta_groups\",\"details\":{\"real_name\":\"okta_groups\"},\"control_type\":\"text\"},{\"name\":\"okta_applications\",\"type\":\"string\",\"optional\":true,\"label\":\"okta_applications\",\"details\":{\"real_name\":\"okta_applications\"},\"control_type\":\"text\"}]",
+                "data": {
+                  "okta_groups": "=_dp('{\"pill_type\":\"output\",\"provider\":\"okta\",\"line\":\"741da771\",\"path\":[\"groups\"]}').pluck('profile').format_map('\"%{name}\"').join(\",\")",
+                  "okta_applications": "=_dp('{\"pill_type\":\"output\",\"provider\":\"okta\",\"line\":\"8b8c2f03\",\"path\":[\"userapplications\"]}').format_map('\"%{label}\"').join(\",\")"
+                }
+              }
+            },
+            "extended_output_schema": [
+              {
+                "control_type": "text",
+                "label": "okta_groups",
+                "name": "okta_groups",
+                "optional": true,
+                "type": "string",
+                "details": {
+                  "real_name": "okta_groups"
+                }
+              },
+              {
+                "control_type": "text",
+                "label": "okta_applications",
+                "name": "okta_applications",
+                "optional": true,
+                "type": "string",
+                "details": {
+                  "real_name": "okta_applications"
+                }
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "add_field_label": "Add a variable",
+                "control_type": "form-schema-builder",
+                "empty_schema_title": "Add variables by giving them a name, type and default value",
+                "exclude_fields": [
+                  "hint"
+                ],
+                "item_label": "variable",
+                "label": "Variables",
+                "mark_as_required": true,
+                "name": "variables",
+                "ngIf": "!input.name",
+                "optional": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Schema",
+                    "extends_schema": true,
+                    "broadcast_change_event": true,
+                    "type": "string",
+                    "name": "schema"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "okta_groups",
+                        "name": "okta_groups",
+                        "type": "string",
+                        "optional": true,
+                        "details": {
+                          "real_name": "okta_groups"
+                        },
+                        "hint": "Defaults to nil if not supplied.",
+                        "sticky": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "okta_applications",
+                        "name": "okta_applications",
+                        "type": "string",
+                        "optional": true,
+                        "details": {
+                          "real_name": "okta_applications"
+                        },
+                        "hint": "Defaults to nil if not supplied.",
+                        "sticky": true
+                      }
+                    ],
+                    "label": "Data",
+                    "type": "object",
+                    "name": "data"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "visible_config_fields": [
+              "variables.data.groups_in_statement",
+              "variables",
+              "variables.schema",
+              "variables.data",
+              "variables.data.bot_command",
+              "variables.data.bot_command_and_statment",
+              "variables.data.okta_groups",
+              "variables.data.okta_applications"
+            ],
+            "uuid": "a89c7528-a1de-4a4b-b41f-7618f2e7f6e6"
+          },
+          {
+            "number": 16,
+            "provider": "workato_smart_list",
+            "name": "query_list",
+            "as": "bd2da4f3",
+            "keyword": "action",
+            "toggleCfg": {
+              "csv": true
+            },
+            "input": {
+              "output_schema_by": "name",
+              "csv": "false",
+              "headers": "false",
+              "col_sep": "comma",
+              "sql": "select *\nfrom\n    \"Slack Actions\"\nwhere\n      --     Check that the user has the relevant OKTA Group OR OKTA Application\n      (Permissions IN (#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"66725ea1\",\"path\":[\"okta_groups\"]}')}) OR allowed_okta_apps IN (#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"66725ea1\",\"path\":[\"okta_applications\"]}')}))\n      --     Check that the command is not null and that the user has it\n      AND (\n        (\n\t\t\t'#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"276b51f1\",\"path\":[\"parameters\",\"command_name\"]}')}' IS NULL\n\t\t\tOR '#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"276b51f1\",\"path\":[\"parameters\",\"command_name\"]}')}' = ''\n\t\t)\n\t\tOR Bot_command = '#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"276b51f1\",\"path\":[\"parameters\",\"command_name\"]}')}'\n\t)",
+              "result_schema_json": "[{\"control_type\":\"text\",\"label\":\"Button title\",\"type\":\"string\",\"name\":\"Button_title\"},{\"control_type\":\"text\",\"label\":\"Section text\",\"type\":\"string\",\"name\":\"Section_text\"},{\"control_type\":\"text\",\"label\":\"Bot command\",\"type\":\"string\",\"name\":\"Bot_command\"},{\"name\":\"category\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Category\"},{\"control_type\":\"text\",\"label\":\"Command input values\",\"type\":\"string\",\"name\":\"Command_input_values\"},{\"control_type\":\"text\",\"label\":\"Permissions\",\"type\":\"string\",\"name\":\"Permissions\"},{\"control_type\":\"text\",\"label\":\"Question text\",\"type\":\"string\",\"name\":\"Question_Text\"},{\"control_type\":\"text\",\"label\":\"Description\",\"type\":\"string\",\"name\":\"Description\"},{\"control_type\":\"text\",\"label\":\"Allowed okta apps\",\"type\":\"string\",\"name\":\"allowed_okta_apps\"}]"
+            },
+            "extended_output_schema": [
+              {
+                "label": "Rows",
+                "name": "rows",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Button title",
+                    "type": "string",
+                    "name": "Button_title"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Section text",
+                    "type": "string",
+                    "name": "Section_text"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Bot command",
+                    "type": "string",
+                    "name": "Bot_command"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Category",
+                    "name": "category",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Command input values",
+                    "type": "string",
+                    "name": "Command_input_values"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Permissions",
+                    "type": "string",
+                    "name": "Permissions"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Question text",
+                    "type": "string",
+                    "name": "Question_Text"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Description",
+                    "type": "string",
+                    "name": "Description"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Allowed okta apps",
+                    "type": "string",
+                    "name": "allowed_okta_apps"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "uuid": "990ad15b-3960-4ec8-98b1-558bba72f368",
+            "skip": false
+          },
+          {
+            "number": 17,
+            "provider": "workato_recipe_function",
+            "name": "return_result",
+            "as": "c832691b",
+            "keyword": "action",
+            "input": {
+              "result": {
+                "rows": {
+                  "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"bd2da4f3\",\"path\":[\"rows\"]}')}",
+                  "Permissions": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"bd2da4f3\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Permissions\"]}')}",
+                  "Description": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"bd2da4f3\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Description\"]}')}",
+                  "Button title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"bd2da4f3\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Button_title\"]}')}",
+                  "Section text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"bd2da4f3\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Section_text\"]}')}",
+                  "Bot command": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"bd2da4f3\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Bot_command\"]}')}",
+                  "Command input values": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"bd2da4f3\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Command_input_values\"]}')}",
+                  "Question Text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"bd2da4f3\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"Question_Text\"]}')}",
+                  "allowed_okta_apps": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"bd2da4f3\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"allowed_okta_apps\"]}')}",
+                  "category": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"bd2da4f3\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"category\"]}')}"
+                }
+              }
+            },
+            "extended_output_schema": [
+              {
+                "label": "Result",
+                "name": "result",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Reason",
+                    "type": "string",
+                    "name": "reason",
+                    "optional": true
+                  },
+                  {
+                    "label": "Rows",
+                    "name": "rows",
+                    "type": "array",
+                    "optional": true,
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Button title",
+                        "type": "string",
+                        "name": "Button title"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Section text",
+                        "type": "string",
+                        "name": "Section text"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Bot command",
+                        "type": "string",
+                        "name": "Bot command"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Category",
+                        "name": "category",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Command input values",
+                        "type": "string",
+                        "name": "Command input values"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Permissions",
+                        "type": "string",
+                        "name": "Permissions"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Question  text",
+                        "type": "string",
+                        "name": "Question Text"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Description",
+                        "type": "string",
+                        "name": "Description"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Allowed OKTA Apps",
+                        "name": "allowed_okta_apps",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ]
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "label": "Result",
+                "name": "result",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Reason",
+                    "type": "string",
+                    "name": "reason",
+                    "optional": true
+                  },
+                  {
+                    "label": "Rows",
+                    "name": "rows",
+                    "type": "array",
+                    "optional": true,
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Button title",
+                        "type": "string",
+                        "name": "Button title"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Section text",
+                        "type": "string",
+                        "name": "Section text"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Bot command",
+                        "type": "string",
+                        "name": "Bot command"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Category",
+                        "name": "category",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Command input values",
+                        "type": "string",
+                        "name": "Command input values"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Permissions",
+                        "type": "string",
+                        "name": "Permissions"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Question  text",
+                        "type": "string",
+                        "name": "Question Text"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Description",
+                        "type": "string",
+                        "name": "Description"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Allowed OKTA Apps",
+                        "name": "allowed_okta_apps",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ]
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "uuid": "2c373c0c-0e20-409b-84a6-ab23a6a9b7aa",
+            "skip": false
+          },
+          {
+            "number": 18,
+            "as": "1ba37a14",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 19,
+                "provider": "workato_recipe_function",
+                "name": "call_recipe",
+                "as": "2f098160",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "flow_id": "[CM] Fun | System Error Handling"
+                },
+                "input": {
+                  "flow_id": {
+                    "zip_name": "Common Functions/Error Handling Process/cm_fun_system_error_handling.recipe.json",
+                    "name": "[CM] Fun | System Error Handling",
+                    "folder": "Common Functions/Error Handling Process"
+                  },
+                  "parameters": {
+                    "ErrorDetails": {
+                      "jobUrl": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_url\"]}')}",
+                      "Timestamp": "=_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_created_at\"]}').in_time_zone(\"Etc/UTC\")",
+                      "parentProcessName": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+                      "processName": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+                      "errorType": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1ba37a14\",\"path\":[\"type\"]}')}",
+                      "errorMessage": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1ba37a14\",\"path\":[\"message\"]}')}",
+                      "recipe_id": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_id\"]}')}",
+                      "job_uuid": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}",
+                      "process_path": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_path\"]}')}",
+                      "is_repeat": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"is_repeat\"]}')}",
+                      "error_uuid": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1ba37a14\",\"path\":[\"uuid\"]}')}",
+                      "errored_app": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1ba37a14\",\"path\":[\"adapter\"]}')}",
+                      "errored_action": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1ba37a14\",\"path\":[\"action\"]}')}",
+                      "error_step_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1ba37a14\",\"path\":[\"line_number\"]}')}"
+                    }
+                  }
+                },
+                "extended_input_schema": [
+                  {
+                    "label": "Parameters",
+                    "name": "parameters",
+                    "properties": [
+                      {
+                        "label": "Error Details",
+                        "name": "ErrorDetails",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Parent process name",
+                            "name": "parentProcessName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Recipe Id",
+                            "name": "recipe_id",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job uuid",
+                            "name": "job_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Name",
+                            "name": "processName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Path",
+                            "name": "process_path",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job URL",
+                            "name": "jobUrl",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Is repeat",
+                            "name": "is_repeat",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error uuid",
+                            "name": "error_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored app",
+                            "name": "errored_app",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored action",
+                            "name": "errored_action",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error step number",
+                            "name": "error_step_number",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error type",
+                            "name": "errorType",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error message",
+                            "name": "errorMessage",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Timestamp",
+                            "name": "Timestamp",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Files",
+                        "name": "files",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "File name",
+                            "name": "fileName",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File content",
+                            "name": "fileContent",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "visible_config_fields": [
+                  "flow_id",
+                  "parameters",
+                  "parameters.processName",
+                  "parameters.jobUrl",
+                  "parameters.recipients"
+                ],
+                "uuid": "4b14bfb0-02cd-4f51-b623-5b55cbf2d176",
+                "skip": false
+              },
+              {
+                "number": 20,
+                "provider": "workato_recipe_function",
+                "name": "return_result",
+                "as": "fb6073c3",
+                "keyword": "action",
+                "input": {
+                  "result": {
+                    "reason": "Error: #{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1ba37a14\",\"path\":[\"message\"]}')}"
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Reason",
+                        "type": "string",
+                        "name": "reason",
+                        "optional": true
+                      },
+                      {
+                        "label": "Rows",
+                        "name": "rows",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Button title",
+                            "type": "string",
+                            "name": "Button title"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Section text",
+                            "type": "string",
+                            "name": "Section text"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Bot command",
+                            "type": "string",
+                            "name": "Bot command"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Category",
+                            "name": "category",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Command input values",
+                            "type": "string",
+                            "name": "Command input values"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Permissions",
+                            "type": "string",
+                            "name": "Permissions"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Question  text",
+                            "type": "string",
+                            "name": "Question Text"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Description",
+                            "type": "string",
+                            "name": "Description"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Allowed OKTA Apps",
+                            "name": "allowed_okta_apps",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Reason",
+                        "type": "string",
+                        "name": "reason",
+                        "optional": true
+                      },
+                      {
+                        "label": "Rows",
+                        "name": "rows",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Button title",
+                            "type": "string",
+                            "name": "Button title"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Section text",
+                            "type": "string",
+                            "name": "Section text"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Bot command",
+                            "type": "string",
+                            "name": "Bot command"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Category",
+                            "name": "category",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Command input values",
+                            "type": "string",
+                            "name": "Command input values"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Permissions",
+                            "type": "string",
+                            "name": "Permissions"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Question  text",
+                            "type": "string",
+                            "name": "Question Text"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Description",
+                            "type": "string",
+                            "name": "Description"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Allowed OKTA Apps",
+                            "name": "allowed_okta_apps",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "visible_config_fields": [
+                  "result",
+                  "result.rows",
+                  "result.rows.Button_title",
+                  "result.rows.Section_text",
+                  "result.rows.Bot_command",
+                  "result.rows.Command_Parameters",
+                  "result.rows.Command_input_values",
+                  "result.rows.Permissions",
+                  "result.rows.Question_Text",
+                  "result.rows.Description",
+                  "result.reason"
+                ],
+                "uuid": "f2b10fcc-f78a-4194-acde-24a281b1287b"
+              }
+            ],
+            "uuid": "6c64a19f-6039-489b-9a73-959993393de7"
+          }
+        ],
+        "uuid": "85b8fa80-908a-40df-9a60-1eaf321d61e0"
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_0",
+        "label": "Email"
+      },
+      {
+        "name": "custom_column_1",
+        "label": "Command Name"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"276b51f1\",\"path\":[\"parameters\",\"email\"]}')}",
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"276b51f1\",\"path\":[\"parameters\",\"command_name\"]}')}"
+    },
+    "uuid": "3ad624d7-9319-4418-b34d-a78d57c3737a",
+    "unfinished": false,
+    "format_version": 2
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_variable",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_smart_list",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "okta",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/BizOps App/okta.connection.json",
+        "name": "Okta",
+        "folder": "#Connections/BizOps App"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_db_table",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ]
+}

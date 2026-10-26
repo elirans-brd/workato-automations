@@ -1,0 +1,1017 @@
+{
+  "name": "Fun-003 | Send Events To DoIt",
+  "version": 6,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "workato_recipe_function",
+    "name": "execute",
+    "as": "f54628b3",
+    "keyword": "trigger",
+    "input": {
+      "parameters_schema_json": "[{\"label\":\"Events\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Provider\",\"type\":\"string\",\"name\":\"provider\"},{\"name\":\"time\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Time\"},{\"control_type\":\"text\",\"label\":\"ID\",\"type\":\"string\",\"name\":\"id\"},{\"label\":\"Dimensions\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Key\",\"type\":\"string\",\"name\":\"key\"},{\"control_type\":\"text\",\"label\":\"Value\",\"type\":\"string\",\"name\":\"value\"},{\"control_type\":\"text\",\"label\":\"Type\",\"type\":\"string\",\"name\":\"type\"}],\"type\":\"array\",\"name\":\"dimensions\"},{\"label\":\"Metrics\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Type\",\"type\":\"string\",\"name\":\"type\"},{\"control_type\":\"number\",\"label\":\"Value\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"value\"}],\"type\":\"array\",\"name\":\"metrics\"}],\"type\":\"array\",\"name\":\"events\"}]",
+      "result_schema_json": "[{\"name\":\"total_ingested\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Total ingested\"},{\"name\":\"batches_sent\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Batches sent\"},{\"name\":\"status\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Status\"},{\"name\":\"message\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Message\"}]"
+    },
+    "extended_output_schema": [
+      {
+        "label": "Parameters",
+        "name": "parameters",
+        "properties": [
+          {
+            "label": "Events",
+            "type": "array",
+            "name": "events",
+            "of": "object",
+            "properties": [
+              {
+                "control_type": "text",
+                "label": "Provider",
+                "type": "string",
+                "name": "provider"
+              },
+              {
+                "control_type": "text",
+                "label": "Time",
+                "name": "time",
+                "type": "string",
+                "optional": false
+              },
+              {
+                "control_type": "text",
+                "label": "ID",
+                "type": "string",
+                "name": "id"
+              },
+              {
+                "label": "Dimensions",
+                "type": "array",
+                "name": "dimensions",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Key",
+                    "type": "string",
+                    "name": "key"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Value",
+                    "type": "string",
+                    "name": "value"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Type",
+                    "type": "string",
+                    "name": "type"
+                  }
+                ]
+              },
+              {
+                "label": "Metrics",
+                "type": "array",
+                "name": "metrics",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Type",
+                    "type": "string",
+                    "name": "type"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Value",
+                    "parse_output": "float_conversion",
+                    "type": "number",
+                    "name": "value"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "block": [
+      {
+        "number": 1,
+        "provider": "logger",
+        "name": "log_message",
+        "as": "eb693eb0",
+        "keyword": "action",
+        "input": {
+          "user_logs_enabled": "false",
+          "message": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"f54628b3\",\"path\":[\"parameters\",\"events\"]}')"
+        },
+        "extended_input_schema": [
+          {
+            "control_type": "switch",
+            "default": false,
+            "disable_formula": true,
+            "extends_schema": true,
+            "hint": "Send a copy of the message to Workato logs.\n<a href=\"https://docs.workato.com/features/logging-service.html\" target=\"_blank\" class=\"ng-scope\">\n  Learn more\n</a>\n",
+            "label": "Send to Workato log service",
+            "name": "user_logs_enabled",
+            "optional": true,
+            "type": "string"
+          }
+        ],
+        "uuid": "bbdcff88-ba17-42e1-b65a-abf375d71667"
+      },
+      {
+        "number": 2,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 3,
+            "as": "4530e31c",
+            "keyword": "foreach",
+            "repeat_mode": "batch",
+            "batch_size": "50000",
+            "clear_scope": "false",
+            "input": {
+            },
+            "block": [
+              {
+                "number": 4,
+                "provider": "rest",
+                "name": "make_request_v2",
+                "as": "66383548",
+                "keyword": "action",
+                "toggleCfg": {
+                  "response.ignore_http_errors": true,
+                  "disable_retries": true
+                },
+                "input": {
+                  "request_name": "Ingest JSON",
+                  "request": {
+                    "method": "POST",
+                    "content_type": "json",
+                    "url": "datahub/v1/events",
+                    "request_body_schema": "[{\"label\":\"Events\",\"type\":\"array\",\"name\":\"events\",\"details\":{\"real_name\":\"events\"},\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Provider\",\"type\":\"string\",\"name\":\"provider\",\"details\":{\"real_name\":\"provider\"}},{\"control_type\":\"text\",\"label\":\"Time\",\"name\":\"time\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"ID\",\"type\":\"string\",\"name\":\"id\",\"details\":{\"real_name\":\"id\"}},{\"label\":\"Dimensions\",\"type\":\"array\",\"name\":\"dimensions\",\"details\":{\"real_name\":\"dimensions\"},\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Key\",\"type\":\"string\",\"name\":\"key\",\"details\":{\"real_name\":\"key\"}},{\"control_type\":\"text\",\"label\":\"Value\",\"type\":\"string\",\"name\":\"value\",\"details\":{\"real_name\":\"value\"}},{\"control_type\":\"text\",\"label\":\"Type\",\"type\":\"string\",\"name\":\"type\",\"details\":{\"real_name\":\"type\"}}]},{\"label\":\"Metrics\",\"type\":\"array\",\"name\":\"metrics\",\"details\":{\"real_name\":\"metrics\"},\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Type\",\"type\":\"string\",\"name\":\"type\",\"details\":{\"real_name\":\"type\"}},{\"control_type\":\"number\",\"label\":\"Value\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"value\",\"details\":{\"real_name\":\"value\"},\"render_input\":\"float_conversion\"}]}]}]",
+                    "body": {
+                      "events": {
+                        "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"4530e31c\",\"path\":[\"batch\"]}')}",
+                        "provider": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"4530e31c\",\"path\":[\"batch\",{\"path_element_type\":\"current_item\"},\"provider\"]}')}",
+                        "time": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"4530e31c\",\"path\":[\"batch\",{\"path_element_type\":\"current_item\"},\"time\"]}')}",
+                        "id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"4530e31c\",\"path\":[\"batch\",{\"path_element_type\":\"current_item\"},\"id\"]}')}",
+                        "dimensions": {
+                          "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"4530e31c\",\"path\":[\"batch\",{\"path_element_type\":\"current_item\"},\"dimensions\"]}')}",
+                          "key": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"4530e31c\",\"path\":[\"batch\",{\"path_element_type\":\"current_item\"},\"dimensions\",{\"path_element_type\":\"current_item\"},\"key\"]}')}",
+                          "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"4530e31c\",\"path\":[\"batch\",{\"path_element_type\":\"current_item\"},\"dimensions\",{\"path_element_type\":\"current_item\"},\"value\"]}')}",
+                          "type": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"4530e31c\",\"path\":[\"batch\",{\"path_element_type\":\"current_item\"},\"dimensions\",{\"path_element_type\":\"current_item\"},\"type\"]}')}"
+                        },
+                        "metrics": {
+                          "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"4530e31c\",\"path\":[\"batch\",{\"path_element_type\":\"current_item\"},\"metrics\"]}')}",
+                          "type": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"4530e31c\",\"path\":[\"batch\",{\"path_element_type\":\"current_item\"},\"metrics\",{\"path_element_type\":\"current_item\"},\"type\"]}')}",
+                          "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"4530e31c\",\"path\":[\"batch\",{\"path_element_type\":\"current_item\"},\"metrics\",{\"path_element_type\":\"current_item\"},\"value\"]}')}"
+                        }
+                      }
+                    }
+                  },
+                  "response": {
+                    "output_type": "json",
+                    "expected_encoding": "UTF-8",
+                    "ignore_http_errors": "false",
+                    "response_schema": "[{\"name\":\"message\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Message\"},{\"name\":\"error\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Error\"}]"
+                  },
+                  "wait_for_response": "false",
+                  "completion_threshold_seconds": "3600",
+                  "disable_retries": "false",
+                  "enable_streaming": "false"
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Headers",
+                    "name": "headers",
+                    "properties": [
+
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "label": "Response",
+                    "name": "response",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Error",
+                        "name": "error",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "label": "Request",
+                    "name": "request",
+                    "override": true,
+                    "properties": [
+                      {
+                        "control_type": "select",
+                        "label": "Method",
+                        "pick_list": [
+                          [
+                            "GET",
+                            "GET"
+                          ],
+                          [
+                            "POST",
+                            "POST"
+                          ],
+                          [
+                            "PUT",
+                            "PUT"
+                          ],
+                          [
+                            "DELETE",
+                            "DELETE"
+                          ],
+                          [
+                            "HEAD",
+                            "HEAD"
+                          ],
+                          [
+                            "PATCH",
+                            "PATCH"
+                          ]
+                        ],
+                        "hint": "Select a HTTP method",
+                        "default": "GET",
+                        "type": "string",
+                        "name": "method"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Request URL",
+                        "check_secrets": true,
+                        "hint": "Provide an <b>absolute URL</b> or <b>relative URL</b> (if <b>Base URL</b> is configured in connection).",
+                        "placeholder": "https://api.example.com/v1/leads",
+                        "type": "string",
+                        "name": "url"
+                      },
+                      {
+                        "control_type": "select",
+                        "label": "Request content type",
+                        "extends_schema": true,
+                        "pick_list": [
+                          [
+                            "JSON request body",
+                            "json"
+                          ],
+                          [
+                            "Raw JSON request body",
+                            "application/json"
+                          ],
+                          [
+                            "XML",
+                            "application/xml"
+                          ],
+                          [
+                            "Text",
+                            "text/plain"
+                          ],
+                          [
+                            "URL encoded form",
+                            "application/x-www-form-urlencoded"
+                          ],
+                          [
+                            "Binary",
+                            "application/octet-stream"
+                          ],
+                          [
+                            "Multipart form",
+                            "multipart/form-data"
+                          ],
+                          [
+                            "Multipart alternative",
+                            "multipart/alternative"
+                          ],
+                          [
+                            "Multipart digest",
+                            "multipart/digest"
+                          ],
+                          [
+                            "Multipart mixed",
+                            "multipart/mixed"
+                          ],
+                          [
+                            "Multipart related",
+                            "multipart/related"
+                          ]
+                        ],
+                        "hint": "The API endpoint documentation should define what data it expects",
+                        "ngIf": "input.request.method === 'POST' || input.request.method === 'PUT' || input.request.method === 'DELETE' || input.request.method === 'PATCH'",
+                        "optional": true,
+                        "default": "application/json",
+                        "type": "string",
+                        "name": "content_type"
+                      },
+                      {
+                        "label": "Request body",
+                        "control_type": "key_value",
+                        "optional": true,
+                        "empty_list_title": "Does this HTTP request require form data?",
+                        "empty_list_text": "Refer to the API documentation and add form data to the body of this HTTP request",
+                        "item_label": "Form data",
+                        "ngIf": "input.request.content_type === 'application/x-www-form-urlencoded' && (input.request.method === 'POST' || input.request.method === 'PUT' || input.request.method === 'DELETE' || input.request.method === 'PATCH')",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Key",
+                            "type": "string",
+                            "name": "param"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Value",
+                            "type": "string",
+                            "name": "value"
+                          }
+                        ],
+                        "type": "array",
+                        "name": "form_body"
+                      },
+                      {
+                        "label": "Request parts",
+                        "list_mode": "static",
+                        "optional": true,
+                        "item_label": "Part",
+                        "ngIf": "(input.request.content_type === 'multipart/alternative'|| input.request.content_type === 'multipart/digest'|| input.request.content_type === 'multipart/mixed'|| input.request.content_type === 'multipart/related') && (input.request.method === 'POST' || input.request.method === 'PUT' || input.request.method === 'DELETE' || input.request.method === 'PATCH')",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "label": "Headers",
+                            "list_mode": "static",
+                            "optional": true,
+                            "sticky": true,
+                            "of": "object",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Header name",
+                                "optional": false,
+                                "type": "string",
+                                "name": "name"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Value",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "value"
+                              }
+                            ],
+                            "type": "array",
+                            "name": "headers"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Raw body",
+                            "optional": true,
+                            "sticky": true,
+                            "hint": "Raw content of the part",
+                            "type": "string",
+                            "name": "body"
+                          }
+                        ],
+                        "type": "array",
+                        "name": "parts"
+                      },
+                      {
+                        "label": "Request URL parameters",
+                        "control_type": "key_value",
+                        "check_secrets": true,
+                        "optional": true,
+                        "empty_list_title": "Does this HTTP request contain a query string?",
+                        "empty_list_text": "Add URL parameters to the query string",
+                        "item_label": "URL parameter",
+                        "ngIf": "!(input.request.method === 'POST' || input.request.method === 'PUT' || input.request.method === 'PATCH')",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Parameter name",
+                            "type": "string",
+                            "name": "param"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Value",
+                            "type": "string",
+                            "name": "value"
+                          }
+                        ],
+                        "type": "array",
+                        "name": "parameters"
+                      },
+                      {
+                        "label": "Request headers",
+                        "control_type": "key_value",
+                        "optional": true,
+                        "check_secrets": true,
+                        "empty_list_title": "Does this HTTP request require headers?",
+                        "empty_list_text": "Refer to the API documentation and add required headers to this HTTP request",
+                        "item_label": "Header",
+                        "sticky": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Header name",
+                            "type": "string",
+                            "name": "header"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Value",
+                            "type": "string",
+                            "name": "value"
+                          }
+                        ],
+                        "type": "array",
+                        "name": "headers"
+                      },
+                      {
+                        "control_type": "schema-designer",
+                        "label": "Request body schema",
+                        "sample_data_type": "json_input",
+                        "add_field_label": "Add json field",
+                        "empty_schema_title": "Provide JSON input.",
+                        "extends_schema": true,
+                        "change_on_blur": true,
+                        "optional": true,
+                        "sticky": true,
+                        "ngIf": "(input.request.content_type == 'json' || input.request.content_type == 'multipart/form-data' || input.request.content_type === 'json') && (input.request.method === 'POST' || input.request.method === 'PUT' || input.request.method === 'DELETE' || input.request.method === 'PATCH')",
+                        "hint": "Use this to define the JSON input.",
+                        "schema_field_name_regex": [
+                          "\\S",
+                          "Field name should not be empty"
+                        ],
+                        "type": "string",
+                        "name": "request_body_schema"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "label": "Events",
+                            "type": "array",
+                            "name": "events",
+                            "details": {
+                              "real_name": "events"
+                            },
+                            "of": "object",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Provider",
+                                "type": "string",
+                                "name": "provider",
+                                "details": {
+                                  "real_name": "provider"
+                                },
+                                "sticky": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Time",
+                                "name": "time",
+                                "type": "string",
+                                "optional": false,
+                                "sticky": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "ID",
+                                "type": "string",
+                                "name": "id",
+                                "details": {
+                                  "real_name": "id"
+                                },
+                                "sticky": false
+                              },
+                              {
+                                "label": "Dimensions",
+                                "type": "array",
+                                "name": "dimensions",
+                                "details": {
+                                  "real_name": "dimensions"
+                                },
+                                "of": "object",
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "Key",
+                                    "type": "string",
+                                    "name": "key",
+                                    "details": {
+                                      "real_name": "key"
+                                    },
+                                    "sticky": false
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Value",
+                                    "type": "string",
+                                    "name": "value",
+                                    "details": {
+                                      "real_name": "value"
+                                    },
+                                    "sticky": false
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Type",
+                                    "type": "string",
+                                    "name": "type",
+                                    "details": {
+                                      "real_name": "type"
+                                    },
+                                    "sticky": false
+                                  }
+                                ],
+                                "sticky": false
+                              },
+                              {
+                                "label": "Metrics",
+                                "type": "array",
+                                "name": "metrics",
+                                "details": {
+                                  "real_name": "metrics"
+                                },
+                                "of": "object",
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "Type",
+                                    "type": "string",
+                                    "name": "type",
+                                    "details": {
+                                      "real_name": "type"
+                                    },
+                                    "sticky": false
+                                  },
+                                  {
+                                    "control_type": "number",
+                                    "label": "Value",
+                                    "parse_output": "float_conversion",
+                                    "type": "number",
+                                    "name": "value",
+                                    "details": {
+                                      "real_name": "value"
+                                    },
+                                    "render_input": "float_conversion",
+                                    "sticky": false
+                                  }
+                                ],
+                                "sticky": false
+                              }
+                            ],
+                            "sticky": false
+                          }
+                        ],
+                        "label": "Request body",
+                        "type": "object",
+                        "name": "body",
+                        "sticky": false
+                      }
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "label": "Response",
+                    "name": "response",
+                    "override": true,
+                    "properties": [
+                      {
+                        "control_type": "select",
+                        "label": "Response content type",
+                        "pick_list": [
+                          [
+                            "Text",
+                            "rawdatatxt"
+                          ],
+                          [
+                            "Binary",
+                            "rawdata"
+                          ],
+                          [
+                            "JSON",
+                            "json"
+                          ],
+                          [
+                            "XML",
+                            "xml2"
+                          ],
+                          [
+                            "Multipart",
+                            "multipart"
+                          ]
+                        ],
+                        "hint": "Select expected format of data response type, e.g. JSON or XML. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+                        "default": "json",
+                        "extends_schema": true,
+                        "type": "string",
+                        "name": "output_type"
+                      },
+                      {
+                        "control_type": "select",
+                        "label": "Encoding",
+                        "pick_list": "supported_encodings_without_binary_global_pick_list",
+                        "pick_list_connection_less": true,
+                        "optional": true,
+                        "default": "UTF-8",
+                        "hint": "Default encoding type is set to UTF-8, and typically doesn't need to be changed. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+                        "type": "string",
+                        "name": "expected_encoding"
+                      },
+                      {
+                        "control_type": "schema-designer",
+                        "label": "Response schema",
+                        "sample_data_type": "json_http",
+                        "extends_schema": true,
+                        "empty_schema_title": "Describe all fields in your response.",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "response_schema"
+                      },
+                      {
+                        "control_type": "schema-designer",
+                        "label": "HTTP response headers",
+                        "extends_schema": true,
+                        "empty_schema_title": "Describe all the response headers",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "headers_schema"
+                      },
+                      {
+                        "control_type": "schema-designer",
+                        "label": "Multipart part headers",
+                        "extends_schema": true,
+                        "empty_schema_title": "Describe headers within each multipart part",
+                        "optional": true,
+                        "sticky": true,
+                        "hint": "Define the headers that appear in each part of the multipart response (e.g., Content-Type, Content-ID)",
+                        "ngIf": "input.response.output_type == 'multipart'",
+                        "type": "string",
+                        "name": "part_headers_schema"
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "label": "Mark non-2xx response codes as success?",
+                        "default": "false",
+                        "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+                        "optional": true,
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                          "label": "Mark non-2xx response codes as success?",
+                          "control_type": "text",
+                          "toggle_hint": "Use custom value",
+                          "default": false,
+                          "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+                          "optional": true,
+                          "render_input": null,
+                          "parse_output": null,
+                          "type": "boolean",
+                          "name": "ignore_http_errors"
+                        },
+                        "type": "boolean",
+                        "name": "ignore_http_errors"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "comment": "DoIt Ingest JSON",
+                "uuid": "aa68c1ca-4220-42ec-b8f8-03aa5781edf2",
+                "wizardFinished": true
+              },
+              {
+                "number": 5,
+                "keyword": "if",
+                "input": {
+                  "type": "compound",
+                  "operand": "and",
+                  "conditions": [
+                    {
+                      "operand": "not_equals_to",
+                      "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"66383548\",\"path\":[\"status_code\"]}')}",
+                      "rhs": "201",
+                      "uuid": "6cf9fdcb-259a-4d7f-8fb5-c79f3ad476c7"
+                    }
+                  ]
+                },
+                "block": [
+                  {
+                    "number": 6,
+                    "as": "35058f92",
+                    "keyword": "stop",
+                    "input": {
+                      "stop_with_error": "true",
+                      "stop_reason": "DoiT ingest failed. Status:#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"66383548\",\"path\":[\"status_code\"]}')}. Body:#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"66383548\",\"path\":[\"body\"]}')}\n"
+                    },
+                    "uuid": "f125baf9-92f6-4acb-b6c5-c5e57c5bb6fc"
+                  }
+                ],
+                "uuid": "c7b47503-2350-4aac-8e13-21c1918a602e"
+              }
+            ],
+            "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"f54628b3\",\"path\":[\"parameters\",\"events\"]}')}",
+            "comment": "batch of 50000",
+            "uuid": "155ecea8-74ba-412c-8b29-f71f276419fa"
+          },
+          {
+            "number": 7,
+            "provider": "workato_recipe_function",
+            "name": "return_result",
+            "as": "94f74e6a",
+            "keyword": "action",
+            "input": {
+              "result": {
+                "total_ingested": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"f54628b3\",\"path\":[\"parameters\",\"events\",{\"path_element_type\":\"size\"}]}')}",
+                "batches_sent": "#{_dp('{\"pill_type\":\"foreach_meta\",\"provider\":\"foreach\",\"line\":\"4530e31c\",\"key\":\"size\"}')}",
+                "status": "Success"
+              }
+            },
+            "extended_output_schema": [
+              {
+                "label": "Result",
+                "name": "result",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Total ingested",
+                    "name": "total_ingested",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Batches sent",
+                    "name": "batches_sent",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Status",
+                    "name": "status",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Message",
+                    "name": "message",
+                    "type": "string",
+                    "optional": true
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "label": "Result",
+                "name": "result",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Total ingested",
+                    "name": "total_ingested",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Batches sent",
+                    "name": "batches_sent",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Status",
+                    "name": "status",
+                    "type": "string",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Message",
+                    "name": "message",
+                    "type": "string",
+                    "optional": true
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "comment": "status = success",
+            "uuid": "4750a946-3a9f-4388-a7be-9b0e97022a56"
+          },
+          {
+            "number": 8,
+            "as": "dd9d7003",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 9,
+                "provider": "workato_recipe_function",
+                "name": "return_result",
+                "as": "2d388936",
+                "keyword": "action",
+                "input": {
+                  "result": {
+                    "total_ingested": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"f54628b3\",\"path\":[\"parameters\",\"events\",{\"path_element_type\":\"size\"}]}')}",
+                    "batches_sent": "#{_dp('{\"pill_type\":\"foreach_meta\",\"provider\":\"foreach\",\"line\":\"4530e31c\",\"key\":\"size\"}')}",
+                    "status": "Error",
+                    "message": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"dd9d7003\",\"path\":[\"message\"]}')}"
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Total ingested",
+                        "name": "total_ingested",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Batches sent",
+                        "name": "batches_sent",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Total ingested",
+                        "name": "total_ingested",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Batches sent",
+                        "name": "batches_sent",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "visible_config_fields": [
+                  "result",
+                  "result.total_ingested",
+                  "result.batches_sent",
+                  "result.status",
+                  "result.message"
+                ],
+                "comment": "status = error",
+                "uuid": "28a0b2bb-37a5-41a7-90e2-dc159a3684f4"
+              }
+            ],
+            "uuid": "c67af2d6-12f8-41d5-99ab-ca1f11b04c25"
+          }
+        ],
+        "uuid": "32138a07-516b-4b5e-b039-9c41f4e9f9a2"
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_0",
+        "label": "Provider"
+      },
+      {
+        "name": "custom_column_6",
+        "label": "min_date"
+      },
+      {
+        "name": "custom_column_7",
+        "label": "max_date"
+      },
+      {
+        "name": "custom_column_1",
+        "label": "Total Injested"
+      },
+      {
+        "name": "custom_column_2",
+        "label": "Baches Sent"
+      },
+      {
+        "name": "custom_column_3",
+        "label": "Status"
+      },
+      {
+        "name": "custom_column_4",
+        "label": "Message"
+      },
+      {
+        "name": "custom_column_5",
+        "label": "Duration[Minutes]"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"f54628b3\",\"path\":[\"parameters\",\"events\",{\"path_element_type\":\"current_item\"},\"provider\"]}')}",
+      "custom_column_6": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"f54628b3\",\"path\":[\"parameters\",\"events\"]}')&.pluck('time')&.min.first(10)",
+      "custom_column_7": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"f54628b3\",\"path\":[\"parameters\",\"events\"]}')&.pluck('time')&.max.first(10)",
+      "custom_column_1": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"94f74e6a\",\"path\":[\"result\",\"total_ingested\"]}') || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"2d388936\",\"path\":[\"result\",\"total_ingested\"]}')",
+      "custom_column_2": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"94f74e6a\",\"path\":[\"result\",\"batches_sent\"]}') || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"2d388936\",\"path\":[\"result\",\"batches_sent\"]}')",
+      "custom_column_3": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"94f74e6a\",\"path\":[\"result\",\"status\"]}') || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"2d388936\",\"path\":[\"result\",\"status\"]}')",
+      "custom_column_4": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"94f74e6a\",\"path\":[\"result\",\"message\"]}') || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"2d388936\",\"path\":[\"result\",\"message\"]}')",
+      "custom_column_5": "=((now- _dp('{\"pill_type\":\"job_context\",\"path\":[\"job_created_at\"]}'))/60).round(3).to_s + ' Minutes'"
+    },
+    "uuid": "bff1b3bb-5c9b-41bf-add3-b45470644b79"
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "rest",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/FinOps/doit_api.connection.json",
+        "name": "DoIt API",
+        "folder": "#Connections/FinOps"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "logger",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ]
+}

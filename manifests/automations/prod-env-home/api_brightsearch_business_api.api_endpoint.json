@@ -1,0 +1,19 @@
+{
+  "name": "API: BrightSearch - Business API",
+  "recipe_id": {
+    "zip_name": "Product/api_brightsearch_business_api.recipe.json",
+    "name": "API: BrightSearch - Business API",
+    "folder": "Product"
+  },
+  "api_group_id": {
+    "zip_name": "prodcut.api_group.json",
+    "name": "Prodcut",
+    "folder": ""
+  },
+  "method": "POST",
+  "path": "brightsearch_business_api",
+  "legacy": false,
+  "recipe_timeout": 30,
+  "validate_request": false,
+  "validation_formula": ""
+}

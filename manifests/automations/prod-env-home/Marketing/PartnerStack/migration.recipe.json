@@ -1,0 +1,1924 @@
+{
+  "name": "Migration",
+  "version": 21,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "clock",
+    "name": "scheduled_event",
+    "as": "b3014d6c",
+    "keyword": "trigger",
+    "input": {
+      "time_unit": "minutes",
+      "trigger_every": "5"
+    },
+    "extended_input_schema": [
+      {
+        "control_type": "integer",
+        "default": "5",
+        "enforce_template_mode": true,
+        "extends_schema": true,
+        "hint": "Define repeating schedule. Enter whole numbers only.\n                        This field can be set to a minimum of 5 minutes.",
+        "label": "Trigger every",
+        "name": "trigger_every",
+        "optional": false,
+        "suffix": {
+          "text": "minutes"
+        },
+        "type": "string"
+      },
+      {
+        "control_type": "select",
+        "hint": "Select the timezone to use. Leave it blank to use <b>{{authUser.account_timezone}}</b>",
+        "label": "Timezone",
+        "name": "timezone",
+        "optional": true,
+        "pick_list": "timezone_id_global_pick_list",
+        "pick_list_connection_less": true,
+        "type": "string"
+      },
+      {
+        "control_type": "date_time",
+        "enforce_template_mode": true,
+        "extends_schema": true,
+        "hint": "Set date and time to start or leave blank to start immediately. <b>Once recipe has been run or tested, value cannot be changed.</b>",
+        "label": "Start after",
+        "name": "start_after",
+        "optional": true,
+        "parse_output": "date_time_conversion",
+        "since_field": true,
+        "type": "date_time",
+        "ignore_timezone": true,
+        "render_input": "date_time_conversion"
+      }
+    ],
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "google_sheets",
+            "name": "search_spreadsheet_rows_v4_new",
+            "as": "a349b543",
+            "keyword": "action",
+            "input": {
+              "team_drives": "my_drive",
+              "spreadsheet_id": "1bvd1a0ty8jiPUEf21-XbVsBerthPtmHAQqcjxDPR5EA",
+              "sheet": "Affiliate - PS export",
+              "count": "10",
+              "data": {
+                "col_Sync Status": "Pending"
+              }
+            },
+            "extended_output_schema": [
+              {
+                "control_type": "text",
+                "label": "Spreadsheet ID",
+                "name": "spreadsheet_id",
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "label": "Spreadsheet name",
+                "name": "spreadsheet_name",
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "label": "Sheet name",
+                "name": "sheet",
+                "type": "string"
+              },
+              {
+                "label": "Rows",
+                "name": "rows",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "number",
+                    "label": "Row number",
+                    "parse_output": "integer_conversion",
+                    "type": "integer",
+                    "name": "row_number"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "affiliate_name",
+                    "old_name": "col_affiliate_name",
+                    "custom_attribute": 1,
+                    "type": "string",
+                    "name": "col_affiliate_name"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "group_name",
+                    "old_name": "col_group_name",
+                    "custom_attribute": 2,
+                    "type": "string",
+                    "name": "col_group_name"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "group_key",
+                    "old_name": "col_group_key",
+                    "custom_attribute": 3,
+                    "type": "string",
+                    "name": "col_group_key"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "fraud_flagged",
+                    "old_name": "col_fraud_flagged",
+                    "custom_attribute": 4,
+                    "type": "string",
+                    "name": "col_fraud_flagged"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "tags",
+                    "old_name": "col_tags",
+                    "custom_attribute": 5,
+                    "type": "string",
+                    "name": "col_tags"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "partner_key",
+                    "old_name": "col_partner_key",
+                    "custom_attribute": 6,
+                    "type": "string",
+                    "name": "col_partner_key"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Affiliate manager",
+                    "old_name": "col_Affiliate_manager",
+                    "custom_attribute": 7,
+                    "type": "string",
+                    "name": "col_Affiliate manager"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "program_join_date",
+                    "old_name": "col_program_join_date",
+                    "custom_attribute": 8,
+                    "type": "string",
+                    "name": "col_program_join_date"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "group_join_date",
+                    "old_name": "col_group_join_date",
+                    "custom_attribute": 9,
+                    "type": "string",
+                    "name": "col_group_join_date"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Website URL",
+                    "old_name": "col_Website_URL",
+                    "custom_attribute": 10,
+                    "type": "string",
+                    "name": "col_Website URL"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "country",
+                    "old_name": "col_country",
+                    "custom_attribute": 11,
+                    "type": "string",
+                    "name": "col_country"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Customer geography",
+                    "old_name": "col_Customer_geography",
+                    "custom_attribute": 12,
+                    "type": "string",
+                    "name": "col_Customer geography"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Sync Status",
+                    "old_name": "col_Sync_Status",
+                    "custom_attribute": 13,
+                    "type": "string",
+                    "name": "col_Sync Status"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "control_type": "select",
+                "extends_schema": true,
+                "hint": "Select a sheet to search for rows. The sheet must have at least one header row. <a href='https://docs.workato.com/connectors/google-sheets/action-add-row.html#setting-up-the-google-sheet' target='_blank'>Learn more</a>",
+                "label": "Sheet",
+                "name": "sheet",
+                "optional": false,
+                "pick_list": [
+                  [
+                    "Association check:0315",
+                    "Association check:0315"
+                  ],
+                  [
+                    "Affiliate",
+                    "Affiliate"
+                  ],
+                  [
+                    "Affiliate member",
+                    "Affiliate member"
+                  ],
+                  [
+                    "Deal",
+                    "Deal"
+                  ],
+                  [
+                    "Fields per events",
+                    "Fields per events"
+                  ],
+                  [
+                    "Chinese field naming",
+                    "Chinese field naming"
+                  ],
+                  [
+                    "Active Groups and forms",
+                    "Active Groups and forms"
+                  ],
+                  [
+                    "Testing Scenario",
+                    "Testing Scenario"
+                  ],
+                  [
+                    "Events",
+                    "Events"
+                  ],
+                  [
+                    "affiliate manager mapping",
+                    "affiliate manager mapping"
+                  ],
+                  [
+                    "Affiliate - PS export",
+                    "Affiliate - PS export"
+                  ],
+                  [
+                    "Affiliate member - PS export",
+                    "Affiliate member - PS export"
+                  ],
+                  [
+                    "Backup 0305 Affiliate - PS export",
+                    "Backup 0305 Affiliate - PS export"
+                  ],
+                  [
+                    "Back up Affiliate member - PS export",
+                    "Back up Affiliate member - PS export"
+                  ],
+                  [
+                    "Affiliate - HS import (lum account)",
+                    "Affiliate - HS import (lum account)"
+                  ],
+                  [
+                    "Affiliate member - HS import (lum account)",
+                    "Affiliate member - HS import (lum account)"
+                  ]
+                ],
+                "toggle_field": {
+                  "control_type": "text",
+                  "label": "Sheet name",
+                  "toggle_hint": "Use sheet name",
+                  "extends_schema": true,
+                  "change_on_blur": true,
+                  "toggle_to_secondary_hint": "Use sheet name",
+                  "toggle_to_primary_hint": "Select a sheet",
+                  "hint": "Use <b>Sheet name</b> pill from the output of other Google Sheets’ triggers/actions. Or enter sheet name manually. The sheet must have at least 1 header row in input field.",
+                  "type": "string",
+                  "name": "sheet_name"
+                },
+                "toggle_hint": "Select a sheet",
+                "type": "string"
+              },
+              {
+                "hint": "Enter one or more search values. Workato will search for rows matching <b>ALL</b> of the search values below.",
+                "label": "Columns",
+                "name": "data",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "affiliate_name",
+                    "optional": true,
+                    "sticky": true,
+                    "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
+                    "type": "string",
+                    "name": "col_affiliate_name"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "group_name",
+                    "optional": true,
+                    "sticky": true,
+                    "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
+                    "type": "string",
+                    "name": "col_group_name"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "group_key",
+                    "optional": true,
+                    "sticky": true,
+                    "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
+                    "type": "string",
+                    "name": "col_group_key"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "fraud_flagged",
+                    "optional": true,
+                    "sticky": true,
+                    "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
+                    "type": "string",
+                    "name": "col_fraud_flagged"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "tags",
+                    "optional": true,
+                    "sticky": true,
+                    "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
+                    "type": "string",
+                    "name": "col_tags"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "partner_key",
+                    "optional": true,
+                    "sticky": true,
+                    "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
+                    "type": "string",
+                    "name": "col_partner_key"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Affiliate manager",
+                    "optional": true,
+                    "sticky": true,
+                    "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
+                    "type": "string",
+                    "name": "col_Affiliate manager"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "program_join_date",
+                    "optional": true,
+                    "sticky": true,
+                    "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
+                    "type": "string",
+                    "name": "col_program_join_date"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "group_join_date",
+                    "optional": true,
+                    "sticky": true,
+                    "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
+                    "type": "string",
+                    "name": "col_group_join_date"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Website URL",
+                    "optional": true,
+                    "sticky": true,
+                    "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
+                    "type": "string",
+                    "name": "col_Website URL"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "country",
+                    "optional": true,
+                    "sticky": true,
+                    "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
+                    "type": "string",
+                    "name": "col_country"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Customer geography",
+                    "optional": true,
+                    "sticky": true,
+                    "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
+                    "type": "string",
+                    "name": "col_Customer geography"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Sync Status",
+                    "optional": true,
+                    "sticky": true,
+                    "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
+                    "type": "string",
+                    "name": "col_Sync Status"
+                  }
+                ],
+                "sticky": true,
+                "type": "object"
+              },
+              {
+                "control_type": "number",
+                "default": 200,
+                "hint": "Maximum number of matched rows to be returned. Minimum accepted value is <b>1</b> and maximum accepted value is <b>50000</b>.",
+                "label": "Search result size",
+                "name": "count",
+                "optional": true,
+                "parse_output": "float_conversion",
+                "type": "number"
+              }
+            ],
+            "visible_config_fields": [
+              "team_drives",
+              "spreadsheet",
+              "sheet",
+              "data",
+              "data.col_sync status",
+              "count",
+              "data.col_Sync Status"
+            ],
+            "hidden_config_fields": [
+              "data.col_affiliate_name",
+              "data.col_group_name",
+              "data.col_group_key",
+              "data.col_fraud_flagged",
+              "data.col_tags",
+              "data.col_partner_key",
+              "data.col_Affiliate manager",
+              "data.col_program_join_date",
+              "data.col_group_join_date",
+              "data.col_country",
+              "data.col_Customer geography",
+              "data.col_Website URL"
+            ],
+            "comment": "Affiliate Pending",
+            "uuid": "91a4af05-a62a-4203-8824-b012358c67ee"
+          },
+          {
+            "number": 3,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "present",
+                  "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"google_sheets\",\"line\":\"a349b543\",\"path\":[\"rows\"]}')",
+                  "rhs": "",
+                  "uuid": "a0f18f16-cbd8-4814-a95a-eba62a017887"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 4,
+                "provider": "workato_variable",
+                "name": "declare_list",
+                "as": "9ec8bf93",
+                "keyword": "action",
+                "input": {
+                  "name": "Affiliate",
+                  "list_item_schema_json": "[{\"name\":\"row_number\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Row number\"},{\"name\":\"partner_key\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Partner key\"},{\"name\":\"affiliate_name\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Affiliate name\"},{\"name\":\"affiliate_id\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Affiliate ID\"}]"
+                },
+                "extended_output_schema": [
+                  {
+                    "hint": "",
+                    "label": "Affiliate",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": false,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Row number",
+                        "name": "row_number",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Partner key",
+                        "name": "partner_key",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Affiliate name",
+                        "name": "affiliate_name",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Affiliate ID",
+                        "name": "affiliate_id",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                    "label": "Items",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Row number",
+                        "name": "row_number",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Partner key",
+                        "name": "partner_key",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Affiliate name",
+                        "name": "affiliate_name",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Affiliate ID",
+                        "name": "affiliate_id",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "comment": "Affiliate",
+                "uuid": "bcd56d2b-b047-4f49-bf4f-f98ddc86419e"
+              },
+              {
+                "number": 5,
+                "provider": "workato_variable",
+                "name": "declare_list",
+                "as": "9bfd1cc9",
+                "keyword": "action",
+                "input": {
+                  "name": "Affiliate member",
+                  "list_item_schema_json": "[{\"name\":\"partner_key\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Partner key\"},{\"name\":\"affiliate_member_id\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Affiliate member ID\"},{\"name\":\"affiliate_name\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Affiliate name\"}]"
+                },
+                "extended_output_schema": [
+                  {
+                    "hint": "",
+                    "label": "Affiliate member",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": false,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Partner key",
+                        "name": "partner_key",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Affiliate member ID",
+                        "name": "affiliate_member_id",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Affiliate name",
+                        "name": "affiliate_name",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                    "label": "Items",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Partner key",
+                        "name": "partner_key",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Affiliate member ID",
+                        "name": "affiliate_member_id",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Affiliate name",
+                        "name": "affiliate_name",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "comment": "Affiliate member",
+                "uuid": "8602f812-8692-4581-b93f-73becbb9100b"
+              },
+              {
+                "number": 6,
+                "as": "75076a71",
+                "keyword": "foreach",
+                "repeat_mode": "simple",
+                "batch_size": "100",
+                "clear_scope": "false",
+                "input": {
+                },
+                "block": [
+                  {
+                    "number": 7,
+                    "provider": "hubspot",
+                    "name": "search_record",
+                    "as": "348f1494",
+                    "keyword": "action",
+                    "dynamicPickListSelection": {
+                      "hs_object": "Affiliate",
+                      "filterGroups.0.filters.0.propertyName": "Partner_key",
+                      "filterGroups.0.filters.0.operator": "Equal to",
+                      "fields": [
+                        {
+                          "label": "Record ID",
+                          "value": "hs_object_id"
+                        },
+                        {
+                          "label": "Partner_key",
+                          "value": "partner_key"
+                        },
+                        {
+                          "label": "Affiliate Name",
+                          "value": "affiliate_name"
+                        }
+                      ]
+                    },
+                    "input": {
+                      "limit": "100",
+                      "offset": "0",
+                      "hs_object": "p7697697_affiliates",
+                      "filterGroups": [
+                        {
+                          "filters": [
+                            {
+                              "operator": "EQ",
+                              "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"75076a71\",\"path\":[\"col_partner_key\"]}')}",
+                              "propertyName": "partner_key"
+                            }
+                          ]
+                        }
+                      ],
+                      "fields": "hs_object_id,partner_key,affiliate_name"
+                    },
+                    "extended_output_schema": [
+                      {
+                        "label": "P7697697_affiliates",
+                        "name": "results",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "ID",
+                            "type": "string",
+                            "name": "id"
+                          },
+                          {
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Affiliate Name",
+                                "hint": "",
+                                "optional": true,
+                                "custom": false,
+                                "sticky": false,
+                                "pick_list": [
+
+                                ],
+                                "type": "string",
+                                "name": "affiliate_name"
+                              },
+                              {
+                                "control_type": "number",
+                                "label": "Record ID",
+                                "parse_output": "float_conversion",
+                                "hint": "The unique ID for this record. This value is set automatically by HubSpot.",
+                                "optional": true,
+                                "custom": false,
+                                "sticky": false,
+                                "pick_list": [
+
+                                ],
+                                "type": "number",
+                                "name": "hs_object_id"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Partner_key",
+                                "hint": "",
+                                "optional": true,
+                                "custom": false,
+                                "sticky": false,
+                                "pick_list": [
+
+                                ],
+                                "type": "string",
+                                "name": "partner_key"
+                              }
+                            ],
+                            "label": "P7697697_affiliate properties",
+                            "type": "object",
+                            "name": "properties"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Created at",
+                            "render_input": "render_iso8601_timestamp",
+                            "parse_output": "parse_iso8601_timestamp",
+                            "type": "date_time",
+                            "name": "createdAt"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Updated at",
+                            "render_input": "render_iso8601_timestamp",
+                            "parse_output": "parse_iso8601_timestamp",
+                            "type": "date_time",
+                            "name": "updatedAt"
+                          },
+                          {
+                            "control_type": "checkbox",
+                            "label": "Archived",
+                            "toggle_hint": "Select from option list",
+                            "toggle_field": {
+                              "label": "Archived",
+                              "control_type": "text",
+                              "toggle_hint": "Use custom value",
+                              "render_input": null,
+                              "parse_output": null,
+                              "type": "boolean",
+                              "name": "archived"
+                            },
+                            "type": "boolean",
+                            "name": "archived"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Archived at",
+                            "render_input": "render_iso8601_timestamp",
+                            "parse_output": "parse_iso8601_timestamp",
+                            "type": "date_time",
+                            "name": "archivedAt"
+                          }
+                        ],
+                        "type": "array"
+                      }
+                    ],
+                    "comment": "Affiliate",
+                    "uuid": "998c4265-95fa-4ff5-9469-e7498fa517d8"
+                  },
+                  {
+                    "number": 8,
+                    "keyword": "if",
+                    "input": {
+                      "type": "compound",
+                      "operand": "and",
+                      "conditions": [
+                        {
+                          "operand": "present",
+                          "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"348f1494\",\"path\":[\"results\"]}')",
+                          "rhs": "",
+                          "uuid": "aaadbeeb-0b6a-40fe-9090-448da815227c"
+                        }
+                      ]
+                    },
+                    "block": [
+                      {
+                        "number": 9,
+                        "provider": "workato_variable",
+                        "name": "insert_to_list_batch",
+                        "as": "e180c094",
+                        "keyword": "action",
+                        "dynamicPickListSelection": {
+                          "name": "Affiliate (step 5)"
+                        },
+                        "input": {
+                          "location": "end",
+                          "name": "bcd56d2b-b047-4f49-bf4f-f98ddc86419e:9ec8bf93",
+                          "list_items": {
+                            "partner_key": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"348f1494\",\"path\":[\"results\",{\"path_element_type\":\"current_item\"},\"properties\",\"partner_key\"]}')}",
+                            "affiliate_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"348f1494\",\"path\":[\"results\",{\"path_element_type\":\"current_item\"},\"properties\",\"affiliate_name\"]}')}",
+                            "affiliate_id": "=_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"348f1494\",\"path\":[\"results\",{\"path_element_type\":\"current_item\"},\"properties\",\"hs_object_id\"]}').to_i",
+                            "row_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"75076a71\",\"path\":[\"row_number\"]}')}"
+                          }
+                        },
+                        "extended_input_schema": [
+                          {
+                            "hint": "",
+                            "label": "List items",
+                            "name": "list_items",
+                            "of": "object",
+                            "optional": false,
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Row number",
+                                "name": "row_number",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Partner key",
+                                "name": "partner_key",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Affiliate name",
+                                "name": "affiliate_name",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Affiliate ID",
+                                "name": "affiliate_id",
+                                "type": "string",
+                                "optional": false
+                              }
+                            ],
+                            "type": "array"
+                          }
+                        ],
+                        "visible_config_fields": [
+                          "name",
+                          "location",
+                          "list_items",
+                          "list_items.partner_key",
+                          "list_items.affiliate_name",
+                          "list_items.affiliate_member_id"
+                        ],
+                        "comment": "Affiliate",
+                        "uuid": "8db8f961-0a36-4910-8a8d-a264e9fb1347"
+                      }
+                    ],
+                    "comment": "Affiliate",
+                    "uuid": "aa5a171c-a272-48d8-9944-d4a2e6cac88f"
+                  },
+                  {
+                    "number": 10,
+                    "provider": "hubspot",
+                    "name": "search_record",
+                    "as": "fbeb6a99",
+                    "keyword": "action",
+                    "dynamicPickListSelection": {
+                      "hs_object": "Affiliate Member",
+                      "filterGroups.0.filters.0.propertyName": "Affiliate member partner key",
+                      "filterGroups.0.filters.0.operator": "Equal to",
+                      "fields": [
+                        {
+                          "label": "Affiliate Name",
+                          "value": "affiliate_name"
+                        },
+                        {
+                          "label": "Affiliate member partner key",
+                          "value": "affiliate_member_partner_key"
+                        },
+                        {
+                          "label": "Record ID",
+                          "value": "hs_object_id"
+                        }
+                      ]
+                    },
+                    "input": {
+                      "limit": "100",
+                      "offset": "0",
+                      "hs_object": "p7697697_affiliate_members",
+                      "filterGroups": [
+                        {
+                          "filters": [
+                            {
+                              "operator": "EQ",
+                              "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"75076a71\",\"path\":[\"col_partner_key\"]}')}",
+                              "propertyName": "affiliate_member_partner_key"
+                            }
+                          ]
+                        }
+                      ],
+                      "fields": "affiliate_name,affiliate_member_partner_key,hs_object_id"
+                    },
+                    "extended_output_schema": [
+                      {
+                        "label": "P7697697_affiliate_members",
+                        "name": "results",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "ID",
+                            "type": "string",
+                            "name": "id"
+                          },
+                          {
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Affiliate member partner key",
+                                "hint": "",
+                                "optional": true,
+                                "custom": false,
+                                "sticky": false,
+                                "pick_list": [
+
+                                ],
+                                "type": "string",
+                                "name": "affiliate_member_partner_key"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Affiliate Name",
+                                "hint": "",
+                                "optional": true,
+                                "custom": true,
+                                "sticky": false,
+                                "pick_list": [
+
+                                ],
+                                "type": "string",
+                                "name": "affiliate_name"
+                              },
+                              {
+                                "control_type": "number",
+                                "label": "Record ID",
+                                "parse_output": "float_conversion",
+                                "hint": "The unique ID for this record. This value is set automatically by HubSpot.",
+                                "optional": true,
+                                "custom": false,
+                                "sticky": false,
+                                "pick_list": [
+
+                                ],
+                                "type": "number",
+                                "name": "hs_object_id"
+                              }
+                            ],
+                            "label": "P7697697_affiliate_member properties",
+                            "type": "object",
+                            "name": "properties"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Created at",
+                            "render_input": "render_iso8601_timestamp",
+                            "parse_output": "parse_iso8601_timestamp",
+                            "type": "date_time",
+                            "name": "createdAt"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Updated at",
+                            "render_input": "render_iso8601_timestamp",
+                            "parse_output": "parse_iso8601_timestamp",
+                            "type": "date_time",
+                            "name": "updatedAt"
+                          },
+                          {
+                            "control_type": "checkbox",
+                            "label": "Archived",
+                            "toggle_hint": "Select from option list",
+                            "toggle_field": {
+                              "label": "Archived",
+                              "control_type": "text",
+                              "toggle_hint": "Use custom value",
+                              "render_input": null,
+                              "parse_output": null,
+                              "type": "boolean",
+                              "name": "archived"
+                            },
+                            "type": "boolean",
+                            "name": "archived"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Archived at",
+                            "render_input": "render_iso8601_timestamp",
+                            "parse_output": "parse_iso8601_timestamp",
+                            "type": "date_time",
+                            "name": "archivedAt"
+                          }
+                        ],
+                        "type": "array"
+                      }
+                    ],
+                    "comment": "Affiliate member",
+                    "uuid": "304bbe65-22a3-45c2-8baa-e693b8413754"
+                  },
+                  {
+                    "number": 11,
+                    "keyword": "if",
+                    "input": {
+                      "type": "compound",
+                      "operand": "and",
+                      "conditions": [
+                        {
+                          "operand": "present",
+                          "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"fbeb6a99\",\"path\":[\"results\"]}')",
+                          "rhs": "",
+                          "uuid": "e6470274-86a9-44b2-9fe8-b51f79e72d90"
+                        }
+                      ]
+                    },
+                    "block": [
+                      {
+                        "number": 12,
+                        "provider": "workato_variable",
+                        "name": "insert_to_list_batch",
+                        "as": "65c241a7",
+                        "keyword": "action",
+                        "dynamicPickListSelection": {
+                          "name": "Affiliate member (step 13)"
+                        },
+                        "input": {
+                          "location": "end",
+                          "name": "8602f812-8692-4581-b93f-73becbb9100b:9bfd1cc9",
+                          "list_items": {
+                            "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"fbeb6a99\",\"path\":[\"results\"]}')}",
+                            "partner_key": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"fbeb6a99\",\"path\":[\"results\",{\"path_element_type\":\"current_item\"},\"properties\",\"affiliate_member_partner_key\"]}')}",
+                            "affiliate_name": "=_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"fbeb6a99\",\"path\":[\"results\",{\"path_element_type\":\"current_item\"},\"properties\",\"affiliate_name\"]}') || _dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"75076a71\",\"path\":[\"col_affiliate_name\"]}')",
+                            "affiliate_member_id": "=_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"fbeb6a99\",\"path\":[\"results\",{\"path_element_type\":\"current_item\"},\"properties\",\"hs_object_id\"]}').to_i"
+                          }
+                        },
+                        "extended_input_schema": [
+                          {
+                            "hint": "",
+                            "label": "List items",
+                            "name": "list_items",
+                            "of": "object",
+                            "optional": false,
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Partner key",
+                                "name": "partner_key",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Affiliate member ID",
+                                "name": "affiliate_member_id",
+                                "type": "string",
+                                "optional": false
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Affiliate name",
+                                "name": "affiliate_name",
+                                "type": "string",
+                                "optional": false
+                              }
+                            ],
+                            "type": "array"
+                          }
+                        ],
+                        "comment": "Affiliate member",
+                        "uuid": "c00afec3-228b-4bf5-b0a4-bc3d86f6d414"
+                      }
+                    ],
+                    "comment": "Affiliate member",
+                    "uuid": "7a954308-89bf-426f-9df8-4f74d3cd9fca"
+                  }
+                ],
+                "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"google_sheets\",\"line\":\"a349b543\",\"path\":[\"rows\"]}')}",
+                "uuid": "d50b4d1c-e4bb-467d-aba6-4a175c55ed1d"
+              },
+              {
+                "number": 13,
+                "provider": "google_sheets",
+                "name": "update_row_v4_bulk",
+                "as": "2e34df02",
+                "keyword": "action",
+                "input": {
+                  "team_drives": "my_drive",
+                  "spreadsheet_id": "1bvd1a0ty8jiPUEf21-XbVsBerthPtmHAQqcjxDPR5EA",
+                  "sheet": "Affiliate - PS export",
+                  "rows": {
+                    "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"google_sheets\",\"line\":\"a349b543\",\"path\":[\"rows\"]}')}",
+                    "col_Sync Status": "Success "
+                  },
+                  "row_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"google_sheets\",\"line\":\"a349b543\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"row_number\"]}')}"
+                },
+                "extended_input_schema": [
+                  {
+                    "control_type": "select",
+                    "extends_schema": true,
+                    "hint": "Select a sheet to update row. The sheet must have at least one header row. <a href='https://docs.workato.com/connectors/google-sheets/action-add-row.html#setting-up-the-google-sheet' target='_blank'>Learn more</a>",
+                    "label": "Sheet",
+                    "name": "sheet",
+                    "optional": false,
+                    "pick_list": [
+                      [
+                        "Association check:0315",
+                        "Association check:0315"
+                      ],
+                      [
+                        "Affiliate",
+                        "Affiliate"
+                      ],
+                      [
+                        "Affiliate member",
+                        "Affiliate member"
+                      ],
+                      [
+                        "Deal",
+                        "Deal"
+                      ],
+                      [
+                        "Fields per events",
+                        "Fields per events"
+                      ],
+                      [
+                        "Chinese field naming",
+                        "Chinese field naming"
+                      ],
+                      [
+                        "Active Groups and forms",
+                        "Active Groups and forms"
+                      ],
+                      [
+                        "Testing Scenario",
+                        "Testing Scenario"
+                      ],
+                      [
+                        "Events",
+                        "Events"
+                      ],
+                      [
+                        "affiliate manager mapping",
+                        "affiliate manager mapping"
+                      ],
+                      [
+                        "Affiliate - PS export",
+                        "Affiliate - PS export"
+                      ],
+                      [
+                        "Affiliate member - PS export",
+                        "Affiliate member - PS export"
+                      ],
+                      [
+                        "Backup 0305 Affiliate - PS export",
+                        "Backup 0305 Affiliate - PS export"
+                      ],
+                      [
+                        "Back up Affiliate member - PS export",
+                        "Back up Affiliate member - PS export"
+                      ],
+                      [
+                        "Affiliate - HS import (lum account)",
+                        "Affiliate - HS import (lum account)"
+                      ],
+                      [
+                        "Affiliate member - HS import (lum account)",
+                        "Affiliate member - HS import (lum account)"
+                      ]
+                    ],
+                    "toggle_field": {
+                      "control_type": "text",
+                      "label": "Sheet name",
+                      "toggle_hint": "Use sheet name",
+                      "extends_schema": true,
+                      "change_on_blur": true,
+                      "toggle_to_secondary_hint": "Use sheet name",
+                      "toggle_to_primary_hint": "Select a sheet",
+                      "hint": "Use <b>Sheet name</b> pill from the output of other Google Sheets’ triggers/actions. Or enter sheet name manually. The sheet must have at least 1 header row in input field.",
+                      "type": "string",
+                      "name": "sheet_name"
+                    },
+                    "toggle_hint": "Select a sheet",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "hint": "Enter the row number from which the values must be updated. Or use <b>Row number</b> data pill from the output of other Google Sheets’s triggers & actions.",
+                    "label": "Row number",
+                    "name": "row_number",
+                    "optional": false,
+                    "type": "string"
+                  },
+                  {
+                    "hint": "Input row values into the fields below.",
+                    "label": "Rows",
+                    "name": "rows",
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "affiliate_name",
+                        "old_name": "col_affiliate_name",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "col_affiliate_name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "group_name",
+                        "old_name": "col_group_name",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "col_group_name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "group_key",
+                        "old_name": "col_group_key",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "col_group_key"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "fraud_flagged",
+                        "old_name": "col_fraud_flagged",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "col_fraud_flagged"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "tags",
+                        "old_name": "col_tags",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "col_tags"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "partner_key",
+                        "old_name": "col_partner_key",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "col_partner_key"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Affiliate manager",
+                        "old_name": "col_Affiliate_manager",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "col_Affiliate manager"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "program_join_date",
+                        "old_name": "col_program_join_date",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "col_program_join_date"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "group_join_date",
+                        "old_name": "col_group_join_date",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "col_group_join_date"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Website URL",
+                        "old_name": "col_Website_URL",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "col_Website URL"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "country",
+                        "old_name": "col_country",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "col_country"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Customer geography",
+                        "old_name": "col_Customer_geography",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "col_Customer geography"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Sync Status",
+                        "old_name": "col_Sync_Status",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "col_Sync Status"
+                      }
+                    ],
+                    "sticky": true,
+                    "type": "array"
+                  }
+                ],
+                "visible_config_fields": [
+                  "team_drives",
+                  "spreadsheet",
+                  "sheet",
+                  "rows",
+                  "rows.col_Sync Status"
+                ],
+                "hidden_config_fields": [
+                  "rows.col_affiliate_name",
+                  "rows.col_group_name",
+                  "rows.col_group_key",
+                  "rows.col_fraud_flagged",
+                  "rows.col_tags",
+                  "rows.col_partner_key",
+                  "rows.col_Affiliate manager",
+                  "rows.col_program_join_date",
+                  "rows.col_group_join_date",
+                  "rows.col_Website URL",
+                  "rows.col_country",
+                  "rows.col_Customer geography"
+                ],
+                "uuid": "e0a9362e-391a-4a44-959e-05cf1b45a8b2"
+              },
+              {
+                "number": 14,
+                "provider": "logger",
+                "name": "log_message",
+                "as": "9f028580",
+                "keyword": "action",
+                "input": {
+                  "user_logs_enabled": "false",
+                  "message": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"9ec8bf93\",\"path\":[\"list_items\"]}')"
+                },
+                "extended_input_schema": [
+                  {
+                    "control_type": "switch",
+                    "default": false,
+                    "disable_formula": true,
+                    "extends_schema": true,
+                    "hint": "Send a copy of the message to Workato logs.\n<a href=\"https://docs.workato.com/features/logging-service.html\" target=\"_blank\" class=\"ng-scope\">\n  Learn more\n</a>\n",
+                    "label": "Send to Workato log service",
+                    "name": "user_logs_enabled",
+                    "optional": true,
+                    "type": "string"
+                  }
+                ],
+                "comment": "Affiliate",
+                "uuid": "01a16daa-827f-4784-9124-861e4b1503b7"
+              },
+              {
+                "number": 15,
+                "provider": "logger",
+                "name": "log_message",
+                "as": "bb5f6172",
+                "keyword": "action",
+                "input": {
+                  "user_logs_enabled": "false",
+                  "message": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"9bfd1cc9\",\"path\":[\"list_items\"]}')"
+                },
+                "extended_input_schema": [
+                  {
+                    "control_type": "switch",
+                    "default": false,
+                    "disable_formula": true,
+                    "extends_schema": true,
+                    "hint": "Send a copy of the message to Workato logs.\n<a href=\"https://docs.workato.com/features/logging-service.html\" target=\"_blank\" class=\"ng-scope\">\n  Learn more\n</a>\n",
+                    "label": "Send to Workato log service",
+                    "name": "user_logs_enabled",
+                    "optional": true,
+                    "type": "string"
+                  }
+                ],
+                "comment": "Affiliate member",
+                "uuid": "3049115f-7f11-448a-aa03-d97f407ae405"
+              },
+              {
+                "number": 16,
+                "provider": "workato_smart_list",
+                "name": "create_list",
+                "as": "379db98d",
+                "keyword": "action",
+                "input": {
+                  "list_source": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"9ec8bf93\",\"path\":[\"list_items\"]}')",
+                  "list_name": "Affiliate",
+                  "primary_index": "affiliate_id"
+                },
+                "extended_output_schema": [
+                  {
+                    "control_type": "text",
+                    "label": "Affiliate",
+                    "name": "list_name",
+                    "type": "string"
+                  },
+                  {
+                    "label": "Columns",
+                    "name": "columns",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Row number",
+                        "optional": false,
+                        "list_data_type": "string",
+                        "type": "string",
+                        "name": "row_number"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Partner key",
+                        "optional": false,
+                        "list_data_type": "string",
+                        "type": "string",
+                        "name": "partner_key"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Affiliate name",
+                        "optional": false,
+                        "list_data_type": "string",
+                        "type": "string",
+                        "name": "affiliate_name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Affiliate ID",
+                        "optional": false,
+                        "list_data_type": "string",
+                        "type": "string",
+                        "name": "affiliate_id"
+                      }
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Row count",
+                    "name": "row_count",
+                    "parse_output": "integer_conversion",
+                    "type": "integer"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "control_type": "checkbox",
+                    "hint": "Select <b>Yes</b> to overwrite <b>Affiliate</b> list if it already exists",
+                    "label": "Overwrite list?",
+                    "name": "force",
+                    "optional": true,
+                    "toggle_field": {
+                      "label": "Overwrite list?",
+                      "control_type": "text",
+                      "toggle_hint": "Use custom value",
+                      "hint": "Select <b>Yes</b> to overwrite <b>Affiliate</b> list if it already exists",
+                      "optional": true,
+                      "render_input": null,
+                      "parse_output": null,
+                      "type": "boolean",
+                      "name": "force"
+                    },
+                    "toggle_hint": "Select from option list",
+                    "type": "boolean"
+                  },
+                  {
+                    "control_type": "multiselect",
+                    "delimiter": "\n",
+                    "hint": "Collections are like databases. Having index improves query performance. Select one or more fields from list source.",
+                    "label": "Primary index",
+                    "name": "primary_index",
+                    "ngIf": "input.create_table_if_not_exist != 'false'",
+                    "optional": true,
+                    "pick_list": [
+                      [
+                        "Row number",
+                        "row_number"
+                      ],
+                      [
+                        "Partner key",
+                        "partner_key"
+                      ],
+                      [
+                        "Affiliate name",
+                        "affiliate_name"
+                      ],
+                      [
+                        "Affiliate ID",
+                        "affiliate_id"
+                      ]
+                    ],
+                    "sticky": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "multiselect",
+                    "delimiter": "\n",
+                    "hint": "Select one or more fields from list source.",
+                    "label": "Secondary index",
+                    "name": "secondary_index",
+                    "ngIf": "input.create_table_if_not_exist != 'false'",
+                    "optional": true,
+                    "pick_list": [
+                      [
+                        "Row number",
+                        "row_number"
+                      ],
+                      [
+                        "Partner key",
+                        "partner_key"
+                      ],
+                      [
+                        "Affiliate name",
+                        "affiliate_name"
+                      ],
+                      [
+                        "Affiliate ID",
+                        "affiliate_id"
+                      ]
+                    ],
+                    "type": "string"
+                  }
+                ],
+                "comment": "Affiliate",
+                "uuid": "29313102-6cb6-4d20-94ed-15c26efe2e2d"
+              },
+              {
+                "number": 17,
+                "provider": "workato_smart_list",
+                "name": "create_list",
+                "as": "e17681ad",
+                "keyword": "action",
+                "input": {
+                  "list_source": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"9bfd1cc9\",\"path\":[\"list_items\"]}')",
+                  "list_name": "Affiliate member",
+                  "primary_index": "record_id"
+                },
+                "extended_output_schema": [
+                  {
+                    "control_type": "text",
+                    "label": "Affiliate member",
+                    "name": "list_name",
+                    "type": "string"
+                  },
+                  {
+                    "label": "Columns",
+                    "name": "columns",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Partner key",
+                        "optional": false,
+                        "list_data_type": "string",
+                        "type": "string",
+                        "name": "partner_key"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Affiliate member ID",
+                        "optional": false,
+                        "list_data_type": "string",
+                        "type": "string",
+                        "name": "affiliate_member_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Affiliate name",
+                        "optional": false,
+                        "list_data_type": "string",
+                        "type": "string",
+                        "name": "affiliate_name"
+                      }
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Row count",
+                    "name": "row_count",
+                    "parse_output": "integer_conversion",
+                    "type": "integer"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "control_type": "checkbox",
+                    "hint": "Select <b>Yes</b> to overwrite <b>Affiliate member</b> list if it already exists",
+                    "label": "Overwrite list?",
+                    "name": "force",
+                    "optional": true,
+                    "toggle_field": {
+                      "label": "Overwrite list?",
+                      "control_type": "text",
+                      "toggle_hint": "Use custom value",
+                      "hint": "Select <b>Yes</b> to overwrite <b>Affiliate member</b> list if it already exists",
+                      "optional": true,
+                      "render_input": null,
+                      "parse_output": null,
+                      "type": "boolean",
+                      "name": "force"
+                    },
+                    "toggle_hint": "Select from option list",
+                    "type": "boolean"
+                  },
+                  {
+                    "control_type": "multiselect",
+                    "delimiter": "\n",
+                    "hint": "Collections are like databases. Having index improves query performance. Select one or more fields from list source.",
+                    "label": "Primary index",
+                    "name": "primary_index",
+                    "ngIf": "input.create_table_if_not_exist != 'false'",
+                    "optional": true,
+                    "pick_list": [
+                      [
+                        "Partner key",
+                        "partner_key"
+                      ],
+                      [
+                        "Affiliate member ID",
+                        "affiliate_member_id"
+                      ],
+                      [
+                        "Affiliate name",
+                        "affiliate_name"
+                      ]
+                    ],
+                    "sticky": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "multiselect",
+                    "delimiter": "\n",
+                    "hint": "Select one or more fields from list source.",
+                    "label": "Secondary index",
+                    "name": "secondary_index",
+                    "ngIf": "input.create_table_if_not_exist != 'false'",
+                    "optional": true,
+                    "pick_list": [
+                      [
+                        "Partner key",
+                        "partner_key"
+                      ],
+                      [
+                        "Affiliate member ID",
+                        "affiliate_member_id"
+                      ],
+                      [
+                        "Affiliate name",
+                        "affiliate_name"
+                      ]
+                    ],
+                    "type": "string"
+                  }
+                ],
+                "comment": "Affiliate member",
+                "uuid": "567e189b-460c-49f9-ba60-09162a789ff6"
+              },
+              {
+                "number": 18,
+                "provider": "workato_smart_list",
+                "name": "query_list",
+                "as": "44049657",
+                "keyword": "action",
+                "toggleCfg": {
+                  "csv": true
+                },
+                "input": {
+                  "output_schema_by": "index",
+                  "csv": "false",
+                  "headers": "false",
+                  "col_sep": "comma",
+                  "sql": "SELECT a.#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"379db98d\",\"path\":[\"columns\",\"partner_key\"]}')} as partner_key,\n       a.#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"379db98d\",\"path\":[\"columns\",\"affiliate_id\"]}')} as affiliate_id,\n       pm.#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"e17681ad\",\"path\":[\"columns\",\"affiliate_member_id\"]}')} as affiliate_member_id\nFROM #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"379db98d\",\"path\":[\"list_name\"]}')} a  JOIN #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"e17681ad\",\"path\":[\"list_name\"]}')} pm\nON a.#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"379db98d\",\"path\":[\"columns\",\"partner_key\"]}')} = pm.#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"e17681ad\",\"path\":[\"columns\",\"partner_key\"]}')}\n",
+                  "result_schema_json": "[{\"name\":\"partner_key\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Partner key\"},{\"name\":\"affiliate_id\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Affiliate ID\"},{\"name\":\"affiliate_member_id\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Affiliate member ID\"}]"
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Rows",
+                    "name": "rows",
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Partner key",
+                        "name": "partner_key",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Affiliate ID",
+                        "name": "affiliate_id",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Affiliate member ID",
+                        "name": "affiliate_member_id",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "comment": "merged records",
+                "uuid": "63883f7c-e5d6-4907-bc1e-f3ef20c6bfe7"
+              },
+              {
+                "number": 19,
+                "keyword": "if",
+                "input": {
+                  "type": "compound",
+                  "operand": "and",
+                  "conditions": [
+                    {
+                      "operand": "present",
+                      "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"44049657\",\"path\":[\"rows\"]}')",
+                      "rhs": "",
+                      "uuid": "a3dbf374-092c-4272-9b1b-4f6a9089dc02"
+                    }
+                  ]
+                },
+                "block": [
+                  {
+                    "number": 20,
+                    "provider": "hubspot",
+                    "name": "associate_records_batch",
+                    "as": "1f83a790",
+                    "keyword": "action",
+                    "dynamicPickListSelection": {
+                      "fromObjectType": "Affiliate Member",
+                      "toObjectType": "Affiliate",
+                      "association_types": [
+                        {
+                          "label": "Partner_key",
+                          "value": "USER_DEFINED--75"
+                        }
+                      ]
+                    },
+                    "toggleCfg": {
+                      "fromObjectType": true,
+                      "toObjectType": true,
+                      "association_types": true
+                    },
+                    "input": {
+                      "fromObjectType": "p7697697_affiliate_members",
+                      "toObjectType": "p7697697_affiliates",
+                      "inputs": {
+                        "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"44049657\",\"path\":[\"rows\"]}')}",
+                        "fromObjectId": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"44049657\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"affiliate_member_id\"]}')}",
+                        "toObjectId": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"44049657\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"affiliate_id\"]}')}"
+                      },
+                      "association_types": "USER_DEFINED--75"
+                    },
+                    "comment": "ssociate Affiliate member to Affiliate in HubSpot Batch",
+                    "uuid": "3a2766c4-e4ec-43a8-8eab-65735a5dc0e1"
+                  }
+                ],
+                "comment": "ssociate Affiliate member to Affiliate in HubSpot Batch",
+                "uuid": "1d13734f-7ad5-4fe0-ba98-72d1a6c54e00"
+              }
+            ],
+            "comment": "Affiliate Pending rows",
+            "uuid": "b7a84caa-63f7-40cc-8bee-47f481c63753"
+          },
+          {
+            "number": 21,
+            "as": "1a1c6d62",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+
+            ],
+            "uuid": "840c244f-0e1d-40a6-a4ba-ba7ffa60914e"
+          }
+        ],
+        "uuid": "4f417c43-f990-41fd-bfb3-25919b699193"
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_0",
+        "label": "Associated Records"
+      },
+      {
+        "name": "custom_column_1",
+        "label": "Status Sync(Success || Error) "
+      },
+      {
+        "name": "custom_column_2",
+        "label": "Process Status "
+      },
+      {
+        "name": "custom_column_3",
+        "label": "Message"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_smart_list\",\"line\":\"44049657\",\"path\":[\"rows\",{\"path_element_type\":\"size\"}]}')}",
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"1f83a790\",\"path\":[\"results\",{\"path_element_type\":\"size\"}]}')} || #{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"1f83a790\",\"path\":[\"errors\",{\"path_element_type\":\"size\"}]}')}",
+      "custom_column_2": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1a1c6d62\",\"path\":[\"message\"]}').present? ? 'Error' : 'Success'",
+      "custom_column_3": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1a1c6d62\",\"path\":[\"message\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"1a1c6d62\",\"path\":[\"message\"]}') : skip"
+    },
+    "uuid": "4ba927fa-4afe-4bd1-adf4-56a088835b14"
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "google_sheets",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Google Apps/google_sheet.connection.json",
+        "name": "Google Sheet",
+        "folder": "#Connections/Google Apps"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "hubspot",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Marketing/hubspot.connection.json",
+        "name": "HubSpot",
+        "folder": "#Connections/Marketing"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_variable",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "logger",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_smart_list",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "clock",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ]
+}

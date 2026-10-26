@@ -1,0 +1,5 @@
+{
+  "name": "Biz Admin Workbot",
+  "provider": "slack_bot",
+  "root_folder": false
+}

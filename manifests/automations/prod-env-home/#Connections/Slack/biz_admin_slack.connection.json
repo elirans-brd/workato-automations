@@ -1,0 +1,5 @@
+{
+  "name": "Biz Admin Slack",
+  "provider": "slack",
+  "root_folder": false
+}

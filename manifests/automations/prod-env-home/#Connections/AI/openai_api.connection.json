@@ -1,0 +1,5 @@
+{
+  "name": "OpenAI API",
+  "provider": "open_ai",
+  "root_folder": false
+}

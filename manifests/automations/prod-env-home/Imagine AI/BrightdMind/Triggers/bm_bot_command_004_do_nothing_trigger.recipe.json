@@ -1,0 +1,50 @@
+{
+  "name": "[BM] BOT-Command-004 | Do Nothing Trigger",
+  "version": 1,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "slack_bot",
+    "name": "bot_command_v2",
+    "as": "eb76b528",
+    "keyword": "trigger",
+    "toggleCfg": {
+      "domain": false,
+      "name": false,
+      "scope": false
+    },
+    "input": {
+      "allow_dialog": "true",
+      "domain": "brightmind",
+      "name": "helper",
+      "scope": "do nothing"
+    },
+    "extended_output_schema": [
+      {
+        "label": "Parameters",
+        "name": "parameters",
+        "properties": [
+
+        ],
+        "type": "object"
+      }
+    ],
+    "block": [
+
+    ],
+    "uuid": "95571a0d-5408-4162-bf0a-a9530f02d0f3"
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "slack_bot",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Slack/biz_admin_workbot.connection.json",
+        "name": "Biz Admin Workbot",
+        "folder": "#Connections/Slack"
+      }
+    }
+  ]
+}

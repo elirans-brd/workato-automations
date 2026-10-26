@@ -1,0 +1,26 @@
+{
+  "name": "API:Approve Contract",
+  "recipe_id": {
+    "zip_name": "Sales/DealHub/DealRoom Contract Analysis/Triggers/dh_05_api_001_cro_approve.recipe.json",
+    "name": "DH-05 | API 001 | CRO Approve",
+    "folder": "Sales/DealHub/DealRoom Contract Analysis/Triggers"
+  },
+  "api_group_id": {
+    "zip_name": "brightmind_bot.api_group.json",
+    "name": "BrightMind Bot",
+    "folder": ""
+  },
+  "method": "GET",
+  "path": "approve",
+  "legacy": false,
+  "recipe_timeout": 30,
+  "validate_request": false,
+  "validation_formula": "",
+  "use_cache": false,
+  "cache_ttl": 600,
+  "cache_keys": [
+    "contract_id",
+    "t"
+  ],
+  "cache_size_limit": 10240
+}

@@ -1,0 +1,1427 @@
+{
+  "name": "POC | HubSpot Form Submission → AI Personalized Email Review",
+  "version": 21,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "hubspot",
+    "name": "new_or_updated_object_batch",
+    "as": "5141b73c",
+    "keyword": "trigger",
+    "dynamicPickListSelection": {
+      "hs_object": "Contact",
+      "fields": [
+        {
+          "label": "Record ID",
+          "value": "hs_object_id"
+        },
+        {
+          "label": "First Name",
+          "value": "firstname"
+        },
+        {
+          "label": "Last Name",
+          "value": "lastname"
+        },
+        {
+          "label": "Email",
+          "value": "email"
+        },
+        {
+          "label": "Company Name",
+          "value": "company"
+        },
+        {
+          "label": "Email Domain",
+          "value": "hs_email_domain"
+        },
+        {
+          "label": "Registration form",
+          "value": "registration_form"
+        },
+        {
+          "label": "Recent Conversion",
+          "value": "recent_conversion_event_name"
+        },
+        {
+          "label": "Email Confirmed",
+          "value": "hs_content_membership_email_confirmed"
+        },
+        {
+          "label": "Website URL",
+          "value": "website"
+        },
+        {
+          "label": "verified_email​",
+          "value": "verified_email_"
+        },
+        {
+          "label": "verified_email​ checkbox",
+          "value": "verified_email__checkbox"
+        }
+      ],
+      "filterGroups.0.propertyName": "verified_email​",
+      "filterGroups.0.operator": "Has property value",
+      "filterGroups.1.propertyName": "Registration form",
+      "filterGroups.1.operator": "Equal to"
+    },
+    "toggleCfg": {
+      "___poll_interval": true
+    },
+    "input": {
+      "hs_object": "contact",
+      "since": "2026-06-04T00:00:00.000+03:00",
+      "fields": "hs_object_id,firstname,lastname,email,company,hs_email_domain,registration_form,recent_conversion_event_name,hs_content_membership_email_confirmed,website,verified_email_,verified_email__checkbox",
+      "___poll_interval": "5",
+      "batch_size": "100",
+      "filterGroups": [
+        {
+          "propertyName": "verified_email_",
+          "operator": "HAS_PROPERTY"
+        },
+        {
+          "propertyName": "registration_form",
+          "operator": "EQ",
+          "value": "true"
+        }
+      ]
+    },
+    "extended_output_schema": [
+      {
+        "label": "Contacts",
+        "name": "records",
+        "of": "object",
+        "properties": [
+          {
+            "properties": [
+              {
+                "control_type": "text",
+                "label": "Company Name",
+                "hint": "The name of the contact's company. This is separate from the Name property of the contact's associated company and can be set independently.",
+                "optional": true,
+                "custom": false,
+                "sticky": false,
+                "pick_list": [
+
+                ],
+                "type": "string",
+                "name": "company"
+              },
+              {
+                "control_type": "text",
+                "label": "Email",
+                "hint": "A contact's email address",
+                "optional": true,
+                "custom": false,
+                "sticky": false,
+                "pick_list": [
+
+                ],
+                "type": "string",
+                "name": "email"
+              },
+              {
+                "control_type": "text",
+                "label": "First Name",
+                "hint": "A contact's first name",
+                "optional": true,
+                "custom": false,
+                "sticky": true,
+                "pick_list": [
+
+                ],
+                "type": "string",
+                "name": "firstname"
+              },
+              {
+                "control_type": "checkbox",
+                "label": "Email Confirmed",
+                "hint": "Email Confirmation status of user of Content Membership. Valid values are true, false.",
+                "optional": true,
+                "custom": false,
+                "sticky": false,
+                "pick_list": [
+                  [
+                    "True",
+                    "true"
+                  ],
+                  [
+                    "False",
+                    "false"
+                  ]
+                ],
+                "toggle_hint": "Select from option list",
+                "toggle_field": {
+                  "label": "Email Confirmed",
+                  "control_type": "text",
+                  "toggle_hint": "Use custom value",
+                  "hint": "Email Confirmation status of user of Content Membership. Valid values are true, false.",
+                  "optional": true,
+                  "custom": false,
+                  "sticky": false,
+                  "pick_list": [
+                    [
+                      "True",
+                      "true"
+                    ],
+                    [
+                      "False",
+                      "false"
+                    ]
+                  ],
+                  "render_input": null,
+                  "parse_output": null,
+                  "type": "boolean",
+                  "name": "hs_content_membership_email_confirmed"
+                },
+                "type": "boolean",
+                "name": "hs_content_membership_email_confirmed"
+              },
+              {
+                "control_type": "text",
+                "label": "Email Domain",
+                "hint": "A contact's email address domain",
+                "optional": true,
+                "custom": false,
+                "sticky": false,
+                "pick_list": [
+
+                ],
+                "type": "string",
+                "name": "hs_email_domain"
+              },
+              {
+                "control_type": "number",
+                "label": "Record ID",
+                "parse_output": "float_conversion",
+                "hint": "The unique ID for this record. This value is set automatically by HubSpot.",
+                "optional": true,
+                "custom": false,
+                "sticky": false,
+                "pick_list": [
+
+                ],
+                "type": "number",
+                "name": "hs_object_id"
+              },
+              {
+                "control_type": "date_time",
+                "label": "Last Modified Date",
+                "render_input": "date_field_to_milliseconds",
+                "parse_output": "milliseconds_to_date_trigger",
+                "hint": "The date any property on this contact was modified",
+                "optional": true,
+                "custom": false,
+                "sticky": false,
+                "pick_list": [
+
+                ],
+                "type": "date_time",
+                "name": "lastmodifieddate"
+              },
+              {
+                "control_type": "text",
+                "label": "Last Name",
+                "hint": "A contact's last name",
+                "optional": true,
+                "custom": false,
+                "sticky": true,
+                "pick_list": [
+
+                ],
+                "type": "string",
+                "name": "lastname"
+              },
+              {
+                "control_type": "text",
+                "label": "Recent Conversion",
+                "hint": "The last form this contact submitted",
+                "optional": true,
+                "custom": false,
+                "sticky": false,
+                "pick_list": [
+
+                ],
+                "type": "string",
+                "name": "recent_conversion_event_name"
+              },
+              {
+                "control_type": "checkbox",
+                "label": "Registration form",
+                "hint": "Does the form trigger  a signup flow. Valid values are true, false.",
+                "optional": true,
+                "custom": true,
+                "sticky": false,
+                "pick_list": [
+                  [
+                    "Yes",
+                    "true"
+                  ],
+                  [
+                    "No",
+                    "false"
+                  ]
+                ],
+                "toggle_hint": "Select from option list",
+                "toggle_field": {
+                  "label": "Registration form",
+                  "control_type": "text",
+                  "toggle_hint": "Use custom value",
+                  "hint": "Does the form trigger  a signup flow. Valid values are true, false.",
+                  "optional": true,
+                  "custom": true,
+                  "sticky": false,
+                  "pick_list": [
+                    [
+                      "Yes",
+                      "true"
+                    ],
+                    [
+                      "No",
+                      "false"
+                    ]
+                  ],
+                  "render_input": null,
+                  "parse_output": null,
+                  "type": "boolean",
+                  "name": "registration_form"
+                },
+                "type": "boolean",
+                "name": "registration_form"
+              },
+              {
+                "control_type": "date",
+                "label": "verified_email​",
+                "render_input": "date_field_to_milliseconds",
+                "parse_output": "milliseconds_to_date_trigger",
+                "hint": "SU verified the email",
+                "optional": true,
+                "custom": true,
+                "sticky": false,
+                "pick_list": [
+
+                ],
+                "type": "date_time",
+                "name": "verified_email_"
+              },
+              {
+                "control_type": "checkbox",
+                "label": "verified_email​ checkbox",
+                "hint": "Indication if the contact verified his email. Valid values are true, false.",
+                "optional": true,
+                "custom": true,
+                "sticky": false,
+                "pick_list": [
+                  [
+                    "Yes",
+                    "true"
+                  ],
+                  [
+                    "No",
+                    "false"
+                  ]
+                ],
+                "toggle_hint": "Select from option list",
+                "toggle_field": {
+                  "label": "verified_email​ checkbox",
+                  "control_type": "text",
+                  "toggle_hint": "Use custom value",
+                  "hint": "Indication if the contact verified his email. Valid values are true, false.",
+                  "optional": true,
+                  "custom": true,
+                  "sticky": false,
+                  "pick_list": [
+                    [
+                      "Yes",
+                      "true"
+                    ],
+                    [
+                      "No",
+                      "false"
+                    ]
+                  ],
+                  "render_input": null,
+                  "parse_output": null,
+                  "type": "boolean",
+                  "name": "verified_email__checkbox"
+                },
+                "type": "boolean",
+                "name": "verified_email__checkbox"
+              },
+              {
+                "control_type": "text",
+                "label": "Website URL",
+                "hint": "The contact's company website",
+                "optional": true,
+                "custom": false,
+                "sticky": false,
+                "pick_list": [
+
+                ],
+                "type": "string",
+                "name": "website"
+              }
+            ],
+            "label": "Contact properties",
+            "type": "object",
+            "name": "properties"
+          },
+          {
+            "control_type": "text",
+            "label": "ID",
+            "type": "string",
+            "name": "id"
+          },
+          {
+            "control_type": "date_time",
+            "label": "Date created",
+            "render_input": "render_iso8601_timestamp",
+            "parse_output": "parse_iso8601_timestamp",
+            "type": "date_time",
+            "name": "createdAt"
+          },
+          {
+            "control_type": "date_time",
+            "label": "Date updated",
+            "render_input": "render_iso8601_timestamp",
+            "parse_output": "parse_iso8601_timestamp",
+            "type": "date_time",
+            "name": "updatedAt"
+          },
+          {
+            "control_type": "checkbox",
+            "label": "Archived",
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+              "label": "Archived",
+              "control_type": "text",
+              "toggle_hint": "Use custom value",
+              "render_input": null,
+              "parse_output": null,
+              "type": "boolean",
+              "name": "archived"
+            },
+            "type": "boolean",
+            "name": "archived"
+          }
+        ],
+        "type": "array"
+      }
+    ],
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "present",
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"verified_email_\"]}')}",
+                  "rhs": "",
+                  "uuid": "99bdb7dd-2254-40d0-bdc2-44d12bfaeb4c"
+                },
+                {
+                  "operand": "is_true",
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"registration_form\"]}')}",
+                  "rhs": "",
+                  "uuid": "ce7af53b-5812-47d1-ade5-58ecfb771749"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 3,
+                "provider": "logger",
+                "name": "log_message",
+                "as": "5b41d9ef",
+                "keyword": "action",
+                "input": {
+                  "user_logs_enabled": "false",
+                  "message": "check"
+                },
+                "extended_input_schema": [
+                  {
+                    "control_type": "switch",
+                    "default": false,
+                    "disable_formula": true,
+                    "extends_schema": true,
+                    "hint": "Send a copy of the message to Workato logs.\n<a href=\"https://docs.workato.com/features/logging-service.html\" target=\"_blank\" class=\"ng-scope\">\n  Learn more\n</a>\n",
+                    "label": "Send to Workato log service",
+                    "name": "user_logs_enabled",
+                    "optional": true,
+                    "type": "string"
+                  }
+                ],
+                "uuid": "11eaefba-560e-468b-8cad-94adca7b00ba"
+              }
+            ],
+            "uuid": "2c4dbcd9-a280-40ca-bf8b-776d77f64811"
+          },
+          {
+            "number": 4,
+            "as": "dea16871",
+            "keyword": "stop",
+            "input": {
+              "stop_with_error": "false"
+            },
+            "uuid": "044d03e4-5fd2-4255-a064-063af01108e9"
+          },
+          {
+            "number": 5,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "present",
+                  "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\"]}')",
+                  "rhs": "",
+                  "uuid": "72e708c5-87d6-41e9-8023-39ce1b9edfa3"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 6,
+                "provider": "workato_variable",
+                "name": "declare_list",
+                "as": "0f46b026",
+                "keyword": "action",
+                "input": {
+                  "name": "Contact Details",
+                  "list_item_schema_json": "[{\"control_type\":\"text\",\"label\":\"Record ID\",\"hint\":\"Insert Hubspot Contact record id\",\"type\":\"string\",\"name\":\"record_id\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"First name\",\"hint\":\"Insert contact's first name\",\"type\":\"string\",\"name\":\"first_name\"},{\"control_type\":\"text\",\"label\":\"Last name\",\"hint\":\"Insert contact's last name\",\"type\":\"string\",\"name\":\"last_name\"},{\"control_type\":\"text\",\"label\":\"Email\",\"hint\":\"Insert contact's email address\",\"type\":\"string\",\"name\":\"email\"},{\"control_type\":\"text\",\"label\":\"Email domain\",\"hint\":\"Insert the domain portion of the email (e.g., example.com)\",\"type\":\"string\",\"name\":\"email_domain\"},{\"control_type\":\"text\",\"label\":\"Company name\",\"hint\":\"Insert the company name associated with the contact\",\"type\":\"string\",\"name\":\"company_name\"},{\"control_type\":\"checkbox\",\"label\":\"Registration form\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"hint\":\"Indicate whether the contact submitted a registration form\",\"type\":\"boolean\",\"name\":\"registration_form\",\"optional\":false,\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"hint\":\"Provide a custom boolean value for registration form\",\"label\":\"Registration form\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"registration_form\",\"optional\":false}},{\"control_type\":\"text\",\"label\":\"Recent conversion\",\"hint\":\"Insert the most recent conversion event for the contact\",\"type\":\"string\",\"name\":\"recent_conversion\"},{\"control_type\":\"checkbox\",\"label\":\"Email confirmed\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"hint\":\"Indicate whether the contact's email has been confirmed\",\"type\":\"boolean\",\"name\":\"email_confirmed\",\"optional\":false,\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"hint\":\"Provide a custom boolean value for email confirmed\",\"label\":\"Email confirmed\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"email_confirmed\",\"optional\":false}},{\"control_type\":\"date\",\"label\":\"Verified email\",\"render_input\":\"date_conversion\",\"parse_output\":\"date_conversion\",\"hint\":\"Select the date and time the email was verified\",\"name\":\"verified_email\",\"type\":\"date_time\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Website URL\",\"hint\":\"Insert the contact's website URL\",\"type\":\"string\",\"name\":\"website_url\"},{\"control_type\":\"text\",\"label\":\"Web scrapper\",\"hint\":\"Insert the web scrapper data\",\"name\":\"web_scrapper\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Scrapper status\",\"hint\":\"Insert the current status of the scrapper\",\"name\":\"scrapper_status\",\"type\":\"string\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Scrapper message\",\"hint\":\"Insert any message returned by the scrapper\",\"name\":\"scrapper_message\",\"type\":\"string\",\"optional\":false}]"
+                },
+                "extended_output_schema": [
+                  {
+                    "hint": "",
+                    "label": "Contact Details",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": false,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Record ID",
+                        "hint": "Insert Hubspot Contact record id",
+                        "type": "string",
+                        "name": "record_id",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "First name",
+                        "hint": "Insert contact's first name",
+                        "type": "string",
+                        "name": "first_name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Last name",
+                        "hint": "Insert contact's last name",
+                        "type": "string",
+                        "name": "last_name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Email",
+                        "hint": "Insert contact's email address",
+                        "type": "string",
+                        "name": "email"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Email domain",
+                        "hint": "Insert the domain portion of the email (e.g., example.com)",
+                        "type": "string",
+                        "name": "email_domain"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Company name",
+                        "hint": "Insert the company name associated with the contact",
+                        "type": "string",
+                        "name": "company_name"
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "label": "Registration form",
+                        "render_input": "boolean_conversion",
+                        "parse_output": "boolean_conversion",
+                        "hint": "Indicate whether the contact submitted a registration form",
+                        "type": "boolean",
+                        "name": "registration_form",
+                        "optional": false,
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                          "hint": "Provide a custom boolean value for registration form",
+                          "label": "Registration form",
+                          "control_type": "text",
+                          "toggle_hint": "Use custom value",
+                          "type": "boolean",
+                          "name": "registration_form",
+                          "optional": false
+                        }
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Recent conversion",
+                        "hint": "Insert the most recent conversion event for the contact",
+                        "type": "string",
+                        "name": "recent_conversion"
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "label": "Email confirmed",
+                        "render_input": "boolean_conversion",
+                        "parse_output": "boolean_conversion",
+                        "hint": "Indicate whether the contact's email has been confirmed",
+                        "type": "boolean",
+                        "name": "email_confirmed",
+                        "optional": false,
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                          "hint": "Provide a custom boolean value for email confirmed",
+                          "label": "Email confirmed",
+                          "control_type": "text",
+                          "toggle_hint": "Use custom value",
+                          "type": "boolean",
+                          "name": "email_confirmed",
+                          "optional": false
+                        }
+                      },
+                      {
+                        "control_type": "date",
+                        "label": "Verified email",
+                        "render_input": "date_conversion",
+                        "parse_output": "date_conversion",
+                        "hint": "Select the date and time the email was verified",
+                        "name": "verified_email",
+                        "type": "date_time",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Website URL",
+                        "hint": "Insert the contact's website URL",
+                        "type": "string",
+                        "name": "website_url"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Web scrapper",
+                        "hint": "Insert the web scrapper data",
+                        "name": "web_scrapper",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Scrapper status",
+                        "hint": "Insert the current status of the scrapper",
+                        "name": "scrapper_status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Scrapper message",
+                        "hint": "Insert any message returned by the scrapper",
+                        "name": "scrapper_message",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                    "label": "Items",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Record ID",
+                        "hint": "Insert Hubspot Contact record id",
+                        "type": "string",
+                        "name": "record_id",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "First name",
+                        "hint": "Insert contact's first name",
+                        "type": "string",
+                        "name": "first_name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Last name",
+                        "hint": "Insert contact's last name",
+                        "type": "string",
+                        "name": "last_name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Email",
+                        "hint": "Insert contact's email address",
+                        "type": "string",
+                        "name": "email"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Email domain",
+                        "hint": "Insert the domain portion of the email (e.g., example.com)",
+                        "type": "string",
+                        "name": "email_domain"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Company name",
+                        "hint": "Insert the company name associated with the contact",
+                        "type": "string",
+                        "name": "company_name"
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "label": "Registration form",
+                        "render_input": "boolean_conversion",
+                        "parse_output": "boolean_conversion",
+                        "hint": "Indicate whether the contact submitted a registration form",
+                        "type": "boolean",
+                        "name": "registration_form",
+                        "optional": false,
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                          "hint": "Provide a custom boolean value for registration form",
+                          "label": "Registration form",
+                          "control_type": "text",
+                          "toggle_hint": "Use custom value",
+                          "type": "boolean",
+                          "name": "registration_form",
+                          "optional": false
+                        }
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Recent conversion",
+                        "hint": "Insert the most recent conversion event for the contact",
+                        "type": "string",
+                        "name": "recent_conversion"
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "label": "Email confirmed",
+                        "render_input": "boolean_conversion",
+                        "parse_output": "boolean_conversion",
+                        "hint": "Indicate whether the contact's email has been confirmed",
+                        "type": "boolean",
+                        "name": "email_confirmed",
+                        "optional": false,
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                          "hint": "Provide a custom boolean value for email confirmed",
+                          "label": "Email confirmed",
+                          "control_type": "text",
+                          "toggle_hint": "Use custom value",
+                          "type": "boolean",
+                          "name": "email_confirmed",
+                          "optional": false
+                        }
+                      },
+                      {
+                        "control_type": "date",
+                        "label": "Verified email",
+                        "render_input": "date_conversion",
+                        "parse_output": "date_conversion",
+                        "hint": "Select the date and time the email was verified",
+                        "name": "verified_email",
+                        "type": "date_time",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Website URL",
+                        "hint": "Insert the contact's website URL",
+                        "type": "string",
+                        "name": "website_url"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Web scrapper",
+                        "hint": "Insert the web scrapper data",
+                        "name": "web_scrapper",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Scrapper status",
+                        "hint": "Insert the current status of the scrapper",
+                        "name": "scrapper_status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Scrapper message",
+                        "hint": "Insert any message returned by the scrapper",
+                        "name": "scrapper_message",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "uuid": "2bdd83f3-94cd-483a-b347-ae95a7f85a41"
+              },
+              {
+                "number": 7,
+                "provider": "workato_variable",
+                "name": "declare_list",
+                "as": "b88bed15",
+                "keyword": "action",
+                "input": {
+                  "name": "AI tracking properties",
+                  "list_item_schema_json": "[{\"name\":\"ai_email_status\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Ai email status\"},{\"name\":\"ai_email_generated_at\",\"type\":\"date_time\",\"optional\":false,\"control_type\":\"date_time\",\"label\":\"Ai email generated at\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\"},{\"name\":\"ai_email_subject\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Ai email subject\"},{\"name\":\"ai_email_body\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Ai email body\"},{\"name\":\"ai_email_error\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Ai email error\"}]"
+                },
+                "extended_output_schema": [
+                  {
+                    "hint": "",
+                    "label": "AI tracking properties",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": false,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Ai email status",
+                        "name": "ai_email_status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "date_time",
+                        "label": "Ai email generated at",
+                        "render_input": "date_time_conversion",
+                        "parse_output": "date_time_conversion",
+                        "name": "ai_email_generated_at",
+                        "type": "date_time",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ai email subject",
+                        "name": "ai_email_subject",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ai email body",
+                        "name": "ai_email_body",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ai email error",
+                        "name": "ai_email_error",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                    "label": "Items",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Ai email status",
+                        "name": "ai_email_status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "date_time",
+                        "label": "Ai email generated at",
+                        "render_input": "date_time_conversion",
+                        "parse_output": "date_time_conversion",
+                        "name": "ai_email_generated_at",
+                        "type": "date_time",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ai email subject",
+                        "name": "ai_email_subject",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ai email body",
+                        "name": "ai_email_body",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ai email error",
+                        "name": "ai_email_error",
+                        "type": "string",
+                        "optional": false
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "uuid": "4a59d112-5e8f-46d5-bfa9-7441b265ce3f"
+              },
+              {
+                "number": 8,
+                "as": "20a2c2ff",
+                "keyword": "foreach",
+                "repeat_mode": "simple",
+                "clear_scope": "false",
+                "input": {
+                },
+                "block": [
+                  {
+                    "number": 9,
+                    "keyword": "if",
+                    "input": {
+                      "type": "compound",
+                      "operand": "and",
+                      "conditions": [
+                        {
+                          "operand": "is_true",
+                          "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"20a2c2ff\",\"path\":[\"properties\",\"hs_email_domain\"]}')&.to_s&.downcase&.ends_with?(\".ai\", \".io\")",
+                          "rhs": "",
+                          "uuid": "c4b16a21-4a6d-42f5-ad52-b662089a2815"
+                        },
+                        {
+                          "operand": "present",
+                          "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"20a2c2ff\",\"path\":[\"properties\",\"website\"]}')}",
+                          "rhs": "",
+                          "uuid": "560fe931-7339-4886-9310-1374866eb0b2"
+                        }
+                      ]
+                    },
+                    "block": [
+                      {
+                        "number": 10,
+                        "keyword": "try",
+                        "input": {
+                        },
+                        "block": [
+                          {
+                            "number": 11,
+                            "provider": "brightdata_connector_5515774_1780900514",
+                            "name": "unlocker_api_request",
+                            "as": "8736be28",
+                            "title": null,
+                            "description": "Unlock <span class=\"provider\">#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"20a2c2ff\",\"path\":[\"properties\",\"website\"]}')}</span> using <span class=\"provider\">Bright Data</span>",
+                            "keyword": "action",
+                            "dynamicPickListSelection": {
+                              "zone": "web_unlocker_marketing_make_co",
+                              "country": "US"
+                            },
+                            "toggleCfg": {
+                              "zone": true,
+                              "country": true
+                            },
+                            "input": {
+                              "async": "false",
+                              "format": "raw",
+                              "method": "GET",
+                              "zone": "web_unlocker_marketing_make_co",
+                              "url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"20a2c2ff\",\"path\":[\"properties\",\"website\"]}')}",
+                              "country": "us",
+                              "data_format": "markdown"
+                            },
+                            "visible_config_fields": [
+                              "async",
+                              "zone",
+                              "url",
+                              "format",
+                              "method",
+                              "country",
+                              "data_format"
+                            ],
+                            "comment": "Unlock Website using Bright Data",
+                            "uuid": "b83a4bbd-84b4-4a67-982e-4a46b3b275c8"
+                          },
+                          {
+                            "number": 12,
+                            "provider": "workato_variable",
+                            "name": "insert_to_list",
+                            "as": "920f6e1b",
+                            "keyword": "action",
+                            "dynamicPickListSelection": {
+                              "name": "Contact Details (step 4)"
+                            },
+                            "toggleCfg": {
+                              "list_item.registration_form": false,
+                              "list_item.email_confirmed": false
+                            },
+                            "input": {
+                              "location": "end",
+                              "name": "2bdd83f3-94cd-483a-b347-ae95a7f85a41:0f46b026",
+                              "list_item": {
+                                "record_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"hs_object_id\"]}')}",
+                                "first_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"firstname\"]}')}",
+                                "last_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"lastname\"]}')}",
+                                "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"email\"]}')}",
+                                "email_domain": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"hs_email_domain\"]}')}",
+                                "company_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"company\"]}')}",
+                                "registration_form": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"registration_form\"]}')}",
+                                "recent_conversion": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"recent_conversion_event_name\"]}')}",
+                                "email_confirmed": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"hs_content_membership_email_confirmed\"]}')}",
+                                "website_url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"website\"]}')}",
+                                "verified_email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"verified_email_\"]}')}",
+                                "web_scrapper": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"brightdata_connector_5515774_1780900514\",\"line\":\"8736be28\",\"path\":[\"body\"]}')}",
+                                "scrapper_status": "=_dp('{\"pill_type\":\"output\",\"provider\":\"brightdata_connector_5515774_1780900514\",\"line\":\"8736be28\",\"path\":[\"brd_status_code\"]}')",
+                                "scrapper_message": "=nil"
+                              }
+                            },
+                            "extended_input_schema": [
+                              {
+                                "hint": "",
+                                "label": "List item",
+                                "name": "list_item",
+                                "optional": false,
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "Record ID",
+                                    "hint": "Insert Hubspot Contact record id",
+                                    "type": "string",
+                                    "name": "record_id",
+                                    "optional": false
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "First name",
+                                    "hint": "Insert contact's first name",
+                                    "type": "string",
+                                    "name": "first_name"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Last name",
+                                    "hint": "Insert contact's last name",
+                                    "type": "string",
+                                    "name": "last_name"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Email",
+                                    "hint": "Insert contact's email address",
+                                    "type": "string",
+                                    "name": "email"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Email domain",
+                                    "hint": "Insert the domain portion of the email (e.g., example.com)",
+                                    "type": "string",
+                                    "name": "email_domain"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Company name",
+                                    "hint": "Insert the company name associated with the contact",
+                                    "type": "string",
+                                    "name": "company_name"
+                                  },
+                                  {
+                                    "control_type": "checkbox",
+                                    "label": "Registration form",
+                                    "render_input": "boolean_conversion",
+                                    "parse_output": "boolean_conversion",
+                                    "hint": "Indicate whether the contact submitted a registration form",
+                                    "type": "boolean",
+                                    "name": "registration_form",
+                                    "optional": false,
+                                    "toggle_hint": "Select from option list",
+                                    "toggle_field": {
+                                      "hint": "Provide a custom boolean value for registration form",
+                                      "label": "Registration form",
+                                      "control_type": "text",
+                                      "toggle_hint": "Use custom value",
+                                      "type": "boolean",
+                                      "name": "registration_form",
+                                      "optional": false
+                                    }
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Recent conversion",
+                                    "hint": "Insert the most recent conversion event for the contact",
+                                    "type": "string",
+                                    "name": "recent_conversion"
+                                  },
+                                  {
+                                    "control_type": "checkbox",
+                                    "label": "Email confirmed",
+                                    "render_input": "boolean_conversion",
+                                    "parse_output": "boolean_conversion",
+                                    "hint": "Indicate whether the contact's email has been confirmed",
+                                    "type": "boolean",
+                                    "name": "email_confirmed",
+                                    "optional": false,
+                                    "toggle_hint": "Select from option list",
+                                    "toggle_field": {
+                                      "hint": "Provide a custom boolean value for email confirmed",
+                                      "label": "Email confirmed",
+                                      "control_type": "text",
+                                      "toggle_hint": "Use custom value",
+                                      "type": "boolean",
+                                      "name": "email_confirmed",
+                                      "optional": false
+                                    }
+                                  },
+                                  {
+                                    "control_type": "date",
+                                    "label": "Verified email",
+                                    "render_input": "date_conversion",
+                                    "parse_output": "date_conversion",
+                                    "hint": "Select the date and time the email was verified",
+                                    "name": "verified_email",
+                                    "type": "date_time",
+                                    "optional": false
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Website URL",
+                                    "hint": "Insert the contact's website URL",
+                                    "type": "string",
+                                    "name": "website_url"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Web scrapper",
+                                    "hint": "Insert the web scrapper data",
+                                    "name": "web_scrapper",
+                                    "type": "string",
+                                    "optional": false
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Scrapper status",
+                                    "hint": "Insert the current status of the scrapper",
+                                    "name": "scrapper_status",
+                                    "type": "string",
+                                    "optional": false
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Scrapper message",
+                                    "hint": "Insert any message returned by the scrapper",
+                                    "name": "scrapper_message",
+                                    "type": "string",
+                                    "optional": false
+                                  }
+                                ],
+                                "type": "object"
+                              }
+                            ],
+                            "comment": "add contact details",
+                            "uuid": "67cfd0bf-eefa-47f2-bf84-255f56dab41e"
+                          },
+                          {
+                            "number": 13,
+                            "as": "7de52f76",
+                            "keyword": "catch",
+                            "input": {
+                              "max_retry_count": "0",
+                              "retry_interval": "2"
+                            },
+                            "block": [
+                              {
+                                "number": 14,
+                                "provider": "workato_variable",
+                                "name": "insert_to_list",
+                                "as": "88bddf4b",
+                                "keyword": "action",
+                                "dynamicPickListSelection": {
+                                  "name": "Contact Details (step 4)"
+                                },
+                                "toggleCfg": {
+                                  "list_item.registration_form": false,
+                                  "list_item.email_confirmed": false
+                                },
+                                "input": {
+                                  "location": "end",
+                                  "name": "2bdd83f3-94cd-483a-b347-ae95a7f85a41:0f46b026",
+                                  "list_item": {
+                                    "record_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"hs_object_id\"]}')}",
+                                    "first_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"firstname\"]}')}",
+                                    "last_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"lastname\"]}')}",
+                                    "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"email\"]}')}",
+                                    "email_domain": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"hs_email_domain\"]}')}",
+                                    "company_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"company\"]}')}",
+                                    "registration_form": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"registration_form\"]}')}",
+                                    "recent_conversion": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"recent_conversion_event_name\"]}')}",
+                                    "email_confirmed": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"hs_content_membership_email_confirmed\"]}')}",
+                                    "website_url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"website\"]}')}",
+                                    "verified_email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"properties\",\"verified_email_\"]}')}",
+                                    "web_scrapper": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"brightdata_connector_5515774_1780900514\",\"line\":\"8736be28\",\"path\":[\"body\"]}')}",
+                                    "scrapper_status": "=_dp('{\"pill_type\":\"output\",\"provider\":\"brightdata_connector_5515774_1780900514\",\"line\":\"8736be28\",\"path\":[\"brd_status_code\"]}')",
+                                    "scrapper_message": "Error In Brightdata Scrapper"
+                                  }
+                                },
+                                "extended_input_schema": [
+                                  {
+                                    "hint": "",
+                                    "label": "List item",
+                                    "name": "list_item",
+                                    "optional": false,
+                                    "properties": [
+                                      {
+                                        "control_type": "text",
+                                        "label": "Record ID",
+                                        "hint": "Insert Hubspot Contact record id",
+                                        "type": "string",
+                                        "name": "record_id",
+                                        "optional": false
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "First name",
+                                        "hint": "Insert contact's first name",
+                                        "type": "string",
+                                        "name": "first_name"
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "Last name",
+                                        "hint": "Insert contact's last name",
+                                        "type": "string",
+                                        "name": "last_name"
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "Email",
+                                        "hint": "Insert contact's email address",
+                                        "type": "string",
+                                        "name": "email"
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "Email domain",
+                                        "hint": "Insert the domain portion of the email (e.g., example.com)",
+                                        "type": "string",
+                                        "name": "email_domain"
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "Company name",
+                                        "hint": "Insert the company name associated with the contact",
+                                        "type": "string",
+                                        "name": "company_name"
+                                      },
+                                      {
+                                        "control_type": "checkbox",
+                                        "label": "Registration form",
+                                        "render_input": "boolean_conversion",
+                                        "parse_output": "boolean_conversion",
+                                        "hint": "Indicate whether the contact submitted a registration form",
+                                        "type": "boolean",
+                                        "name": "registration_form",
+                                        "optional": false,
+                                        "toggle_hint": "Select from option list",
+                                        "toggle_field": {
+                                          "hint": "Provide a custom boolean value for registration form",
+                                          "label": "Registration form",
+                                          "control_type": "text",
+                                          "toggle_hint": "Use custom value",
+                                          "type": "boolean",
+                                          "name": "registration_form",
+                                          "optional": false
+                                        }
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "Recent conversion",
+                                        "hint": "Insert the most recent conversion event for the contact",
+                                        "type": "string",
+                                        "name": "recent_conversion"
+                                      },
+                                      {
+                                        "control_type": "checkbox",
+                                        "label": "Email confirmed",
+                                        "render_input": "boolean_conversion",
+                                        "parse_output": "boolean_conversion",
+                                        "hint": "Indicate whether the contact's email has been confirmed",
+                                        "type": "boolean",
+                                        "name": "email_confirmed",
+                                        "optional": false,
+                                        "toggle_hint": "Select from option list",
+                                        "toggle_field": {
+                                          "hint": "Provide a custom boolean value for email confirmed",
+                                          "label": "Email confirmed",
+                                          "control_type": "text",
+                                          "toggle_hint": "Use custom value",
+                                          "type": "boolean",
+                                          "name": "email_confirmed",
+                                          "optional": false
+                                        }
+                                      },
+                                      {
+                                        "control_type": "date",
+                                        "label": "Verified email",
+                                        "render_input": "date_conversion",
+                                        "parse_output": "date_conversion",
+                                        "hint": "Select the date and time the email was verified",
+                                        "name": "verified_email",
+                                        "type": "date_time",
+                                        "optional": false
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "Website URL",
+                                        "hint": "Insert the contact's website URL",
+                                        "type": "string",
+                                        "name": "website_url"
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "Web scrapper",
+                                        "hint": "Insert the web scrapper data",
+                                        "name": "web_scrapper",
+                                        "type": "string",
+                                        "optional": false
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "Scrapper status",
+                                        "hint": "Insert the current status of the scrapper",
+                                        "name": "scrapper_status",
+                                        "type": "string",
+                                        "optional": false
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "Scrapper message",
+                                        "hint": "Insert any message returned by the scrapper",
+                                        "name": "scrapper_message",
+                                        "type": "string",
+                                        "optional": false
+                                      }
+                                    ],
+                                    "type": "object"
+                                  }
+                                ],
+                                "comment": "error in scrapper",
+                                "uuid": "19d81625-f11d-4816-ab37-3a8aca09fc57"
+                              }
+                            ],
+                            "comment": "error in scrapper",
+                            "uuid": "e3b49dcb-d5c0-4275-b6cb-99eeb33193b0"
+                          }
+                        ],
+                        "uuid": "aff441fb-856d-466d-ac2f-cbe63909fcfa"
+                      }
+                    ],
+                    "comment": "email domain ends with ai or io\nand \nemail domain present",
+                    "uuid": "eabfe553-fbe0-4522-91dd-96b86646baa0"
+                  }
+                ],
+                "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"hubspot\",\"line\":\"5141b73c\",\"path\":[\"records\"]}')}",
+                "uuid": "1ebd02e0-2a7d-40ed-a2aa-6597454885d5"
+              }
+            ],
+            "comment": "contact exist",
+            "uuid": "257247cc-b318-42dc-b7ed-1e5a686fe2fd"
+          },
+          {
+            "number": 15,
+            "as": "ed5c92ee",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+
+            ],
+            "uuid": "f1d56b72-e9f0-467d-aa70-6555ba80799b"
+          }
+        ],
+        "uuid": "a9fe73b5-8289-48d3-b07e-fed83fd545fc"
+      }
+    ],
+    "comment": "new/update contact",
+    "job_report_schema": [
+      {
+        "name": "custom_column_0",
+        "label": "check"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"logger\",\"line\":\"5b41d9ef\",\"path\":[\"message\"]}')}"
+    },
+    "uuid": "0ece7eb2-3351-4f74-84fd-f4170836a467"
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_variable",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "hubspot",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Marketing/hubspot.connection.json",
+        "name": "HubSpot",
+        "folder": "#Connections/Marketing"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "brightdata_connector_5515774_1780900514",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Brightdata/brightdata.connection.json",
+        "name": "Brightdata",
+        "folder": "#Connections/Brightdata",
+        "custom": true
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "logger",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ],
+  "tags": [
+    "AI Agent"
+  ]
+}

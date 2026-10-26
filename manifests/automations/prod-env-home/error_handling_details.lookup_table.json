@@ -1,0 +1,76 @@
+{
+  "name": "Error Handling Details",
+  "schema": [
+    {
+      "control_type": "text",
+      "label": "Project_Domain",
+      "name": "col1",
+      "sticky": true,
+      "type": "string"
+    },
+    {
+      "control_type": "text",
+      "label": "Folder_Name",
+      "name": "col2",
+      "sticky": true,
+      "type": "string"
+    },
+    {
+      "control_type": "text",
+      "label": "Recipe_Id",
+      "name": "col3",
+      "sticky": true,
+      "type": "string"
+    },
+    {
+      "control_type": "text",
+      "label": "Recipe_Name",
+      "name": "col4",
+      "sticky": true,
+      "type": "string"
+    },
+    {
+      "control_type": "text",
+      "label": "Recipients_Mail_Address",
+      "name": "col5",
+      "sticky": true,
+      "type": "string"
+    },
+    {
+      "control_type": "text",
+      "label": "Slack_Channel",
+      "name": "col6",
+      "sticky": true,
+      "type": "string"
+    },
+    {
+      "control_type": "text",
+      "label": "Business_Project",
+      "name": "col7",
+      "sticky": true,
+      "type": "string"
+    },
+    {
+      "control_type": "text",
+      "label": "Owner",
+      "name": "col8",
+      "sticky": true,
+      "type": "string"
+    },
+    {
+      "control_type": "text",
+      "label": "System_Error_Ticket",
+      "name": "col9",
+      "sticky": true,
+      "type": "string"
+    },
+    {
+      "control_type": "text",
+      "label": "Application_Error_Ticket",
+      "name": "col10",
+      "sticky": true,
+      "type": "string"
+    }
+  ],
+  "max_allowed_entries_count": null
+}

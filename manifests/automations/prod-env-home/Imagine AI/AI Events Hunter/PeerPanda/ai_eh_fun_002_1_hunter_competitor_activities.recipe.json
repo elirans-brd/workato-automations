@@ -1,0 +1,2074 @@
+{
+  "name": "[AI-EH] Fun-002-1| Hunter | Competitor Activities",
+  "version": 7,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "workato_recipe_function",
+    "name": "execute",
+    "as": "8c0b3d6b",
+    "keyword": "trigger",
+    "input": {
+      "parameters_schema_json": "[{\"name\":\"when\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"When\",\"hint\":\"\\\"past\\\" or \\\"upcoming\\\"\"}]",
+      "result_schema_json": "[{\"name\":\"events_count\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Events count\"},{\"name\":\"status\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Status\"},{\"name\":\"message\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Message\"}]"
+    },
+    "extended_output_schema": [
+      {
+        "label": "Parameters",
+        "name": "parameters",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "When",
+            "name": "when",
+            "type": "string",
+            "optional": false,
+            "hint": "\"past\" or \"upcoming\""
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "rest",
+            "name": "make_request_v2",
+            "as": "808e5e68",
+            "keyword": "action",
+            "toggleCfg": {
+              "response.ignore_http_errors": true,
+              "disable_retries": true
+            },
+            "input": {
+              "request_name": "Get Competitor Events",
+              "request": {
+                "method": "GET",
+                "content_type": "application/json",
+                "url": "v1/competitor-events/?when=#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"8c0b3d6b\",\"path\":[\"parameters\",\"when\"]}')}"
+              },
+              "response": {
+                "output_type": "json",
+                "expected_encoding": "UTF-8",
+                "ignore_http_errors": "false",
+                "response_schema": "[{\"label\":\"Results\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"ID\",\"type\":\"string\",\"name\":\"id\"},{\"control_type\":\"text\",\"label\":\"Created at\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"created_at\"},{\"control_type\":\"text\",\"label\":\"Updated at\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"updated_at\"},{\"control_type\":\"text\",\"label\":\"Name\",\"type\":\"string\",\"name\":\"name\"},{\"control_type\":\"text\",\"label\":\"Short summary\",\"type\":\"string\",\"name\":\"short_summary\"},{\"control_type\":\"text\",\"label\":\"Description\",\"type\":\"string\",\"name\":\"description\"},{\"control_type\":\"text\",\"label\":\"Event type\",\"type\":\"string\",\"name\":\"event_type\"},{\"control_type\":\"text\",\"label\":\"Format\",\"type\":\"string\",\"name\":\"format\"},{\"control_type\":\"text\",\"label\":\"Tags\",\"type\":\"string\",\"name\":\"tags\"},{\"control_type\":\"text\",\"label\":\"Is all day\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Is all day\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"is_all_day\"},\"type\":\"boolean\",\"name\":\"is_all_day\"},{\"control_type\":\"text\",\"label\":\"Start date\",\"type\":\"string\",\"name\":\"start_date\"},{\"control_type\":\"text\",\"label\":\"End date\",\"type\":\"string\",\"name\":\"end_date\"},{\"control_type\":\"text\",\"label\":\"Start datetime\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"start_datetime\"},{\"control_type\":\"text\",\"label\":\"End datetime\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"end_datetime\"},{\"control_type\":\"text\",\"label\":\"Event page URL\",\"type\":\"string\",\"name\":\"event_page_url\"},{\"control_type\":\"text\",\"label\":\"Image URL\",\"type\":\"string\",\"name\":\"image_url\"},{\"control_type\":\"text\",\"label\":\"Pricing\",\"type\":\"string\",\"name\":\"pricing\"},{\"control_type\":\"text\",\"label\":\"Pricing text\",\"type\":\"string\",\"name\":\"pricing_text\"},{\"control_type\":\"text\",\"label\":\"Location display\",\"type\":\"string\",\"name\":\"location_display\"},{\"control_type\":\"text\",\"label\":\"Organizer name\",\"type\":\"string\",\"name\":\"organizer_name\"},{\"control_type\":\"text\",\"label\":\"Attending competitors\",\"of\":\"string\",\"type\":\"array\",\"name\":\"attending_competitors\"},{\"control_type\":\"number\",\"label\":\"Ci relevance score\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"ci_relevance_score\"},{\"control_type\":\"text\",\"label\":\"Ci relevance rationale\",\"type\":\"string\",\"name\":\"ci_relevance_rationale\"},{\"control_type\":\"text\",\"label\":\"Relevance score icons\",\"type\":\"string\",\"name\":\"relevance_score_icons\"}],\"type\":\"array\",\"name\":\"results\"}]"
+              },
+              "wait_for_response": "false",
+              "completion_threshold_seconds": "3600",
+              "disable_retries": "false",
+              "enable_streaming": "false"
+            },
+            "extended_output_schema": [
+              {
+                "label": "Headers",
+                "name": "headers",
+                "properties": [
+
+                ],
+                "type": "object"
+              },
+              {
+                "label": "Response",
+                "name": "response",
+                "properties": [
+                  {
+                    "label": "Results",
+                    "type": "array",
+                    "name": "results",
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "ID",
+                        "type": "string",
+                        "name": "id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Created at",
+                        "render_input": "date_time_conversion",
+                        "parse_output": "date_time_conversion",
+                        "type": "date_time",
+                        "name": "created_at"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Updated at",
+                        "render_input": "date_time_conversion",
+                        "parse_output": "date_time_conversion",
+                        "type": "date_time",
+                        "name": "updated_at"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Name",
+                        "type": "string",
+                        "name": "name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Short summary",
+                        "type": "string",
+                        "name": "short_summary"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Description",
+                        "type": "string",
+                        "name": "description"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Event type",
+                        "type": "string",
+                        "name": "event_type"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Format",
+                        "type": "string",
+                        "name": "format"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Tags",
+                        "type": "string",
+                        "name": "tags"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Is all day",
+                        "render_input": "boolean_conversion",
+                        "parse_output": "boolean_conversion",
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                          "label": "Is all day",
+                          "control_type": "text",
+                          "toggle_hint": "Use custom value",
+                          "type": "boolean",
+                          "name": "is_all_day"
+                        },
+                        "type": "boolean",
+                        "name": "is_all_day"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Start date",
+                        "type": "string",
+                        "name": "start_date"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "End date",
+                        "type": "string",
+                        "name": "end_date"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Start datetime",
+                        "render_input": "date_time_conversion",
+                        "parse_output": "date_time_conversion",
+                        "type": "date_time",
+                        "name": "start_datetime"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "End datetime",
+                        "render_input": "date_time_conversion",
+                        "parse_output": "date_time_conversion",
+                        "type": "date_time",
+                        "name": "end_datetime"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Event page URL",
+                        "type": "string",
+                        "name": "event_page_url"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Image URL",
+                        "type": "string",
+                        "name": "image_url"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Pricing",
+                        "type": "string",
+                        "name": "pricing"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Pricing text",
+                        "type": "string",
+                        "name": "pricing_text"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Location display",
+                        "type": "string",
+                        "name": "location_display"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Organizer name",
+                        "type": "string",
+                        "name": "organizer_name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Attending competitors",
+                        "type": "array",
+                        "name": "attending_competitors",
+                        "of": "string"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Ci relevance score",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "ci_relevance_score"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ci relevance rationale",
+                        "type": "string",
+                        "name": "ci_relevance_rationale"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Relevance score icons",
+                        "type": "string",
+                        "name": "relevance_score_icons"
+                      }
+                    ]
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "label": "Response",
+                "name": "response",
+                "override": true,
+                "properties": [
+                  {
+                    "control_type": "select",
+                    "label": "Response content type",
+                    "pick_list": [
+                      [
+                        "Text",
+                        "rawdatatxt"
+                      ],
+                      [
+                        "Binary",
+                        "rawdata"
+                      ],
+                      [
+                        "JSON",
+                        "json"
+                      ],
+                      [
+                        "XML",
+                        "xml2"
+                      ],
+                      [
+                        "Multipart",
+                        "multipart"
+                      ]
+                    ],
+                    "hint": "Select expected format of data response type, e.g. JSON or XML. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+                    "default": "json",
+                    "extends_schema": true,
+                    "type": "string",
+                    "name": "output_type"
+                  },
+                  {
+                    "control_type": "select",
+                    "label": "Encoding",
+                    "pick_list": "supported_encodings_without_binary_global_pick_list",
+                    "pick_list_connection_less": true,
+                    "optional": true,
+                    "default": "UTF-8",
+                    "hint": "Default encoding type is set to UTF-8, and typically doesn't need to be changed. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+                    "type": "string",
+                    "name": "expected_encoding"
+                  },
+                  {
+                    "control_type": "schema-designer",
+                    "label": "Response schema",
+                    "sample_data_type": "json_http",
+                    "extends_schema": true,
+                    "empty_schema_title": "Describe all fields in your response.",
+                    "optional": true,
+                    "sticky": true,
+                    "type": "string",
+                    "name": "response_schema"
+                  },
+                  {
+                    "control_type": "schema-designer",
+                    "label": "HTTP response headers",
+                    "extends_schema": true,
+                    "empty_schema_title": "Describe all the response headers",
+                    "optional": true,
+                    "sticky": true,
+                    "type": "string",
+                    "name": "headers_schema"
+                  },
+                  {
+                    "control_type": "schema-designer",
+                    "label": "Multipart part headers",
+                    "extends_schema": true,
+                    "empty_schema_title": "Describe headers within each multipart part",
+                    "optional": true,
+                    "sticky": true,
+                    "hint": "Define the headers that appear in each part of the multipart response (e.g., Content-Type, Content-ID)",
+                    "ngIf": "input.response.output_type == 'multipart'",
+                    "type": "string",
+                    "name": "part_headers_schema"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Mark non-2xx response codes as success?",
+                    "default": "false",
+                    "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+                    "optional": true,
+                    "toggle_hint": "Select from option list",
+                    "toggle_field": {
+                      "label": "Mark non-2xx response codes as success?",
+                      "control_type": "text",
+                      "toggle_hint": "Use custom value",
+                      "default": false,
+                      "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+                      "optional": true,
+                      "render_input": null,
+                      "parse_output": null,
+                      "type": "boolean",
+                      "name": "ignore_http_errors"
+                    },
+                    "type": "boolean",
+                    "name": "ignore_http_errors"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "comment": "Get Competitor Events",
+            "uuid": "6c2c97d1-797e-4ba0-adea-bce429458dad",
+            "wizardFinished": true
+          },
+          {
+            "number": 3,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "present",
+                  "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"808e5e68\",\"path\":[\"response\",\"results\"]}')",
+                  "rhs": "",
+                  "uuid": "6c561da1-cc5d-4bab-b2f4-10e8628fc8a8"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 4,
+                "provider": "workato_variable",
+                "name": "declare_list",
+                "as": "ca0b1c60",
+                "keyword": "action",
+                "input": {
+                  "name": "Competitors global events",
+                  "list_item_schema_json": "[{\"control_type\":\"text\",\"label\":\"Event ID\",\"type\":\"string\",\"name\":\"event_id\"},{\"control_type\":\"text\",\"label\":\"Title\",\"type\":\"string\",\"name\":\"title\"},{\"control_type\":\"text\",\"label\":\"Type\",\"type\":\"string\",\"name\":\"type\"},{\"control_type\":\"text\",\"label\":\"Format\",\"type\":\"string\",\"name\":\"format\"},{\"control_type\":\"text\",\"label\":\"Summary\",\"type\":\"string\",\"name\":\"summary\"},{\"control_type\":\"text\",\"label\":\"Start date\",\"type\":\"string\",\"name\":\"start_date\"},{\"control_type\":\"text\",\"label\":\"End date\",\"type\":\"string\",\"name\":\"end_date\"},{\"control_type\":\"text\",\"label\":\"Location\",\"type\":\"string\",\"name\":\"location\"},{\"control_type\":\"text\",\"label\":\"City\",\"type\":\"string\",\"name\":\"city\"},{\"control_type\":\"text\",\"label\":\"Country\",\"type\":\"string\",\"name\":\"country\"},{\"control_type\":\"text\",\"label\":\"Organizer\",\"type\":\"string\",\"name\":\"organizer\"},{\"control_type\":\"text\",\"label\":\"Competitors\",\"type\":\"string\",\"name\":\"competitors\"},{\"control_type\":\"text\",\"label\":\"Topic tags\",\"type\":\"string\",\"name\":\"topic_tags\"},{\"control_type\":\"number\",\"label\":\"Ci score\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"ci_score\"},{\"control_type\":\"text\",\"label\":\"Ci rationale\",\"type\":\"string\",\"name\":\"ci_rationale\"},{\"control_type\":\"text\",\"label\":\"URL\",\"type\":\"string\",\"name\":\"url\"},{\"control_type\":\"text\",\"label\":\"Discovery date\",\"type\":\"string\",\"name\":\"discovery_date\"},{\"control_type\":\"text\",\"label\":\"Source\",\"type\":\"string\",\"name\":\"source\"},{\"control_type\":\"text\",\"label\":\"When\",\"type\":\"string\",\"name\":\"when\"}]"
+                },
+                "extended_output_schema": [
+                  {
+                    "hint": "",
+                    "label": "Competitors global events",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": false,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Event ID",
+                        "type": "string",
+                        "name": "event_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Title",
+                        "type": "string",
+                        "name": "title"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Type",
+                        "type": "string",
+                        "name": "type"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Format",
+                        "type": "string",
+                        "name": "format"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Summary",
+                        "type": "string",
+                        "name": "summary"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Start date",
+                        "type": "string",
+                        "name": "start_date"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "End date",
+                        "type": "string",
+                        "name": "end_date"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Location",
+                        "type": "string",
+                        "name": "location"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "City",
+                        "type": "string",
+                        "name": "city"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Country",
+                        "type": "string",
+                        "name": "country"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Organizer",
+                        "type": "string",
+                        "name": "organizer"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Competitors",
+                        "type": "string",
+                        "name": "competitors"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Topic tags",
+                        "type": "string",
+                        "name": "topic_tags"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Ci score",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "ci_score"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ci rationale",
+                        "type": "string",
+                        "name": "ci_rationale"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "URL",
+                        "type": "string",
+                        "name": "url"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Discovery date",
+                        "type": "string",
+                        "name": "discovery_date"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Source",
+                        "type": "string",
+                        "name": "source"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "When",
+                        "type": "string",
+                        "name": "when"
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                    "label": "Items",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Event ID",
+                        "type": "string",
+                        "name": "event_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Title",
+                        "type": "string",
+                        "name": "title"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Type",
+                        "type": "string",
+                        "name": "type"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Format",
+                        "type": "string",
+                        "name": "format"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Summary",
+                        "type": "string",
+                        "name": "summary"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Start date",
+                        "type": "string",
+                        "name": "start_date"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "End date",
+                        "type": "string",
+                        "name": "end_date"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Location",
+                        "type": "string",
+                        "name": "location"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "City",
+                        "type": "string",
+                        "name": "city"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Country",
+                        "type": "string",
+                        "name": "country"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Organizer",
+                        "type": "string",
+                        "name": "organizer"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Competitors",
+                        "type": "string",
+                        "name": "competitors"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Topic tags",
+                        "type": "string",
+                        "name": "topic_tags"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Ci score",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "ci_score"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ci rationale",
+                        "type": "string",
+                        "name": "ci_rationale"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "URL",
+                        "type": "string",
+                        "name": "url"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Discovery date",
+                        "type": "string",
+                        "name": "discovery_date"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Source",
+                        "type": "string",
+                        "name": "source"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "When",
+                        "type": "string",
+                        "name": "when"
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "uuid": "6cc7d191-0942-4c55-8a68-424c46a27da2"
+              },
+              {
+                "number": 5,
+                "as": "9a7537a9",
+                "keyword": "foreach",
+                "repeat_mode": "simple",
+                "clear_scope": "false",
+                "input": {
+                },
+                "block": [
+                  {
+                    "number": 6,
+                    "provider": "workato_db_table",
+                    "name": "get_records",
+                    "as": "6f275e68",
+                    "keyword": "action",
+                    "dynamicPickListSelection": {
+                      "table_id": "Competitors global events",
+                      "filters.0.field_id": "Event ID",
+                      "order_by_field_id": "Event ID"
+                    },
+                    "input": {
+                      "order_direction": "asc",
+                      "limit": "1000",
+                      "table_id": {
+                        "zip_name": "Imagine AI/AI Events Hunter/PeerPanda/competitors_global_events.workato_db_table.json",
+                        "name": "Competitors global events",
+                        "folder": "Imagine AI/AI Events Hunter/PeerPanda"
+                      },
+                      "1b6b1b93-6dfa-4977-9bd9-c997f9a0d605": "string",
+                      "211a05f5-b087-4dbe-a80a-a026cbbdb406": "string",
+                      "f3fc52f3-b736-44d1-8cb8-ff21303acf13": "string",
+                      "ed0eca01-eec1-47ca-9855-8b695497cb2e": "string",
+                      "60a80867-058e-425f-a9a6-e705659269c8": "string",
+                      "85b5d9ec-def1-481f-afef-61638cd90c41": "date",
+                      "5d7c3ab0-0c9c-448e-999c-1fe45af08410": "date",
+                      "5d4e81c8-fad2-42e3-acb8-e65bdb320925": "string",
+                      "5bef6cda-106a-4a2b-9ff8-0d4d17db5e15": "string",
+                      "c6ead30d-47e9-4133-92d2-4e02cf11afd4": "string",
+                      "21465e28-4215-4a44-bbdd-473636dc4673": "string",
+                      "de1f97e8-c1f3-4bf6-9fed-77cb99d6daa5": "string",
+                      "d5c3665c-07f3-49dd-8da2-b12aa2a458c9": "string",
+                      "cc3399ee-fb04-4ebe-8462-4afcf449a26c": "number",
+                      "e141bd58-891d-413f-a2ac-40a4f1f69552": "string",
+                      "e3ae6d99-2f03-48b7-ac32-d7e3918883ab": "string",
+                      "e2286ea2-8537-4819-8285-82daa3a82093": "date",
+                      "41de121d-7b39-4944-8ac5-ccd6d0e1cabc": "string",
+                      "e7c7f195-0d89-48f7-b2c5-74916650b615": "string",
+                      "11fbe9a6-a16d-4d7e-86ea-afe42ec03005": "id",
+                      "a5612739-5401-4ae7-bd07-782c1a6fb2d1": "date_time",
+                      "61aae604-a95e-4519-9091-bb0bf754a67f": "date_time",
+                      "filters": [
+                        {
+                          "field_id": "1b6b1b93-6dfa-4977-9bd9-c997f9a0d605",
+                          "op_default": "eq",
+                          "value_default": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"id\"]}')}"
+                        }
+                      ],
+                      "order_by_field_id": "1b6b1b93-6dfa-4977-9bd9-c997f9a0d605"
+                    },
+                    "extended_output_schema": [
+                      {
+                        "label": "Records",
+                        "name": "records",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Record ID",
+                            "type": "string",
+                            "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Event ID",
+                            "type": "string",
+                            "name": "1b6b1b93_6dfa_4977_9bd9_c997f9a0d605"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Title",
+                            "type": "string",
+                            "name": "211a05f5_b087_4dbe_a80a_a026cbbdb406"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Type",
+                            "type": "string",
+                            "name": "f3fc52f3_b736_44d1_8cb8_ff21303acf13"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Format",
+                            "type": "string",
+                            "name": "ed0eca01_eec1_47ca_9855_8b695497cb2e"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Summary",
+                            "type": "string",
+                            "name": "60a80867_058e_425f_a9a6_e705659269c8"
+                          },
+                          {
+                            "control_type": "date",
+                            "label": "Start Date",
+                            "render_input": "date_conversion",
+                            "parse_output": "date_conversion",
+                            "type": "date",
+                            "name": "85b5d9ec_def1_481f_afef_61638cd90c41"
+                          },
+                          {
+                            "control_type": "date",
+                            "label": "End Date",
+                            "render_input": "date_conversion",
+                            "parse_output": "date_conversion",
+                            "type": "date",
+                            "name": "5d7c3ab0_0c9c_448e_999c_1fe45af08410"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Location",
+                            "type": "string",
+                            "name": "5d4e81c8_fad2_42e3_acb8_e65bdb320925"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "City",
+                            "type": "string",
+                            "name": "5bef6cda_106a_4a2b_9ff8_0d4d17db5e15"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Country",
+                            "type": "string",
+                            "name": "c6ead30d_47e9_4133_92d2_4e02cf11afd4"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Organizer",
+                            "type": "string",
+                            "name": "21465e28_4215_4a44_bbdd_473636dc4673"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Competitors",
+                            "type": "string",
+                            "name": "de1f97e8_c1f3_4bf6_9fed_77cb99d6daa5"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Topic/Tags",
+                            "type": "string",
+                            "name": "d5c3665c_07f3_49dd_8da2_b12aa2a458c9"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "CI Score",
+                            "parse_output": "float_conversion",
+                            "type": "number",
+                            "name": "cc3399ee_fb04_4ebe_8462_4afcf449a26c"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "CI Rationale",
+                            "type": "string",
+                            "name": "e141bd58_891d_413f_a2ac_40a4f1f69552"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "URL",
+                            "type": "string",
+                            "name": "e3ae6d99_2f03_48b7_ac32_d7e3918883ab"
+                          },
+                          {
+                            "control_type": "date",
+                            "label": "Discovery Date",
+                            "render_input": "date_conversion",
+                            "parse_output": "date_conversion",
+                            "type": "date",
+                            "name": "e2286ea2_8537_4819_8285_82daa3a82093"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Source",
+                            "type": "string",
+                            "name": "41de121d_7b39_4944_8ac5_ccd6d0e1cabc"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "When",
+                            "type": "string",
+                            "name": "e7c7f195_0d89_48f7_b2c5_74916650b615"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Created at",
+                            "render_input": "date_time_conversion",
+                            "parse_output": "date_time_conversion",
+                            "type": "date_time",
+                            "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+                          },
+                          {
+                            "control_type": "date_time",
+                            "label": "Updated at",
+                            "render_input": "date_time_conversion",
+                            "parse_output": "date_time_conversion",
+                            "type": "date_time",
+                            "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+                          }
+                        ],
+                        "type": "array"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Next Page Token",
+                        "name": "continuation_token",
+                        "type": "string"
+                      }
+                    ],
+                    "extended_input_schema": [
+                      {
+                        "control_type": "text",
+                        "default": "string",
+                        "label": "$internal_value_1b6b1b93-6dfa-4977-9bd9-c997f9a0d605",
+                        "name": "1b6b1b93-6dfa-4977-9bd9-c997f9a0d605",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "string",
+                        "label": "$internal_value_211a05f5-b087-4dbe-a80a-a026cbbdb406",
+                        "name": "211a05f5-b087-4dbe-a80a-a026cbbdb406",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "string",
+                        "label": "$internal_value_f3fc52f3-b736-44d1-8cb8-ff21303acf13",
+                        "name": "f3fc52f3-b736-44d1-8cb8-ff21303acf13",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "string",
+                        "label": "$internal_value_ed0eca01-eec1-47ca-9855-8b695497cb2e",
+                        "name": "ed0eca01-eec1-47ca-9855-8b695497cb2e",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "string",
+                        "label": "$internal_value_60a80867-058e-425f-a9a6-e705659269c8",
+                        "name": "60a80867-058e-425f-a9a6-e705659269c8",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "date",
+                        "label": "$internal_value_85b5d9ec-def1-481f-afef-61638cd90c41",
+                        "name": "85b5d9ec-def1-481f-afef-61638cd90c41",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "date",
+                        "label": "$internal_value_5d7c3ab0-0c9c-448e-999c-1fe45af08410",
+                        "name": "5d7c3ab0-0c9c-448e-999c-1fe45af08410",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "string",
+                        "label": "$internal_value_5d4e81c8-fad2-42e3-acb8-e65bdb320925",
+                        "name": "5d4e81c8-fad2-42e3-acb8-e65bdb320925",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "string",
+                        "label": "$internal_value_5bef6cda-106a-4a2b-9ff8-0d4d17db5e15",
+                        "name": "5bef6cda-106a-4a2b-9ff8-0d4d17db5e15",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "string",
+                        "label": "$internal_value_c6ead30d-47e9-4133-92d2-4e02cf11afd4",
+                        "name": "c6ead30d-47e9-4133-92d2-4e02cf11afd4",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "string",
+                        "label": "$internal_value_21465e28-4215-4a44-bbdd-473636dc4673",
+                        "name": "21465e28-4215-4a44-bbdd-473636dc4673",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "string",
+                        "label": "$internal_value_de1f97e8-c1f3-4bf6-9fed-77cb99d6daa5",
+                        "name": "de1f97e8-c1f3-4bf6-9fed-77cb99d6daa5",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "string",
+                        "label": "$internal_value_d5c3665c-07f3-49dd-8da2-b12aa2a458c9",
+                        "name": "d5c3665c-07f3-49dd-8da2-b12aa2a458c9",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "number",
+                        "label": "$internal_value_cc3399ee-fb04-4ebe-8462-4afcf449a26c",
+                        "name": "cc3399ee-fb04-4ebe-8462-4afcf449a26c",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "string",
+                        "label": "$internal_value_e141bd58-891d-413f-a2ac-40a4f1f69552",
+                        "name": "e141bd58-891d-413f-a2ac-40a4f1f69552",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "string",
+                        "label": "$internal_value_e3ae6d99-2f03-48b7-ac32-d7e3918883ab",
+                        "name": "e3ae6d99-2f03-48b7-ac32-d7e3918883ab",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "date",
+                        "label": "$internal_value_e2286ea2-8537-4819-8285-82daa3a82093",
+                        "name": "e2286ea2-8537-4819-8285-82daa3a82093",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "string",
+                        "label": "$internal_value_41de121d-7b39-4944-8ac5-ccd6d0e1cabc",
+                        "name": "41de121d-7b39-4944-8ac5-ccd6d0e1cabc",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "string",
+                        "label": "$internal_value_e7c7f195-0d89-48f7-b2c5-74916650b615",
+                        "name": "e7c7f195-0d89-48f7-b2c5-74916650b615",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "id",
+                        "label": "$internal_value_11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+                        "name": "11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "date_time",
+                        "label": "$internal_value_a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+                        "name": "a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "default": "date_time",
+                        "label": "$internal_value_61aae604-a95e-4519-9091-bb0bf754a67f",
+                        "name": "61aae604-a95e-4519-9091-bb0bf754a67f",
+                        "ngIf": "false",
+                        "optional": true,
+                        "type": "string"
+                      }
+                    ],
+                    "comment": "search event in Competitors global events",
+                    "uuid": "63601e72-5750-4134-8a8e-9efbb115d881"
+                  },
+                  {
+                    "number": 7,
+                    "keyword": "if",
+                    "input": {
+                      "type": "compound",
+                      "operand": "and",
+                      "conditions": [
+                        {
+                          "operand": "blank",
+                          "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"6f275e68\",\"path\":[\"records\"]}')",
+                          "rhs": "",
+                          "uuid": "405014e6-a50b-4991-99a7-26daa6edd433"
+                        }
+                      ]
+                    },
+                    "block": [
+                      {
+                        "number": 8,
+                        "provider": "workato_variable",
+                        "name": "insert_to_list",
+                        "as": "9127fcd3",
+                        "keyword": "action",
+                        "dynamicPickListSelection": {
+                          "name": "Competitors global events (step 5)"
+                        },
+                        "input": {
+                          "location": "end",
+                          "name": "6cc7d191-0942-4c55-8a68-424c46a27da2:ca0b1c60",
+                          "list_item": {
+                            "event_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"id\"]}')}",
+                            "title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"name\"]}')}",
+                            "type": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"event_type\"]}')}",
+                            "format": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"format\"]}')}",
+                            "summary": "=_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"description\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"description\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"short_summary\"]}')",
+                            "start_date": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"start_date\"]}')}",
+                            "end_date": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"end_date\"]}')}",
+                            "city": "=_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"location_display\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"location_display\"]}').split(\",\").first.strip : nil\n",
+                            "country": "=(_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"location_display\"]}').present? && _dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"location_display\"]}').include?(\",\")) ? _dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"location_display\"]}').split(\",\").last.strip : nil\n",
+                            "location": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"location_display\"]}')}",
+                            "organizer": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"organizer_name\"]}')}",
+                            "competitors": "=_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"attending_competitors\"]}').smart_join(\", \")",
+                            "when": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"8c0b3d6b\",\"path\":[\"parameters\",\"when\"]}').titleize",
+                            "discovery_date": "=_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"created_at\"]}').to_date",
+                            "topic_tags": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"tags\"]}')}",
+                            "ci_score": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"ci_relevance_score\"]}')}",
+                            "ci_rationale": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"ci_relevance_rationale\"]}')}",
+                            "url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"event_page_url\"]}')}",
+                            "source": "PeerPanda"
+                          }
+                        },
+                        "extended_input_schema": [
+                          {
+                            "hint": "",
+                            "label": "List item",
+                            "name": "list_item",
+                            "optional": false,
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Event ID",
+                                "type": "string",
+                                "name": "event_id"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Title",
+                                "type": "string",
+                                "name": "title"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Type",
+                                "type": "string",
+                                "name": "type"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Format",
+                                "type": "string",
+                                "name": "format"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Summary",
+                                "type": "string",
+                                "name": "summary"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Start date",
+                                "type": "string",
+                                "name": "start_date"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "End date",
+                                "type": "string",
+                                "name": "end_date"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Location",
+                                "type": "string",
+                                "name": "location"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "City",
+                                "type": "string",
+                                "name": "city"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Country",
+                                "type": "string",
+                                "name": "country"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Organizer",
+                                "type": "string",
+                                "name": "organizer"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Competitors",
+                                "type": "string",
+                                "name": "competitors"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Topic tags",
+                                "type": "string",
+                                "name": "topic_tags"
+                              },
+                              {
+                                "control_type": "number",
+                                "label": "Ci score",
+                                "parse_output": "float_conversion",
+                                "type": "number",
+                                "name": "ci_score"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Ci rationale",
+                                "type": "string",
+                                "name": "ci_rationale"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "URL",
+                                "type": "string",
+                                "name": "url"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Discovery date",
+                                "type": "string",
+                                "name": "discovery_date"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Source",
+                                "type": "string",
+                                "name": "source"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "When",
+                                "type": "string",
+                                "name": "when"
+                              }
+                            ],
+                            "type": "object"
+                          }
+                        ],
+                        "comment": "Competitors global events",
+                        "uuid": "0c868378-2ea0-45f9-bd82-e4ba8c5d3ea0"
+                      },
+                      {
+                        "number": 9,
+                        "provider": "workato_db_table",
+                        "name": "upsert_record",
+                        "as": "290bcdaf",
+                        "keyword": "action",
+                        "dynamicPickListSelection": {
+                          "table_id": "Competitors global events",
+                          "primary_field_id": "Event ID"
+                        },
+                        "input": {
+                          "table_id": {
+                            "zip_name": "Imagine AI/AI Events Hunter/PeerPanda/competitors_global_events.workato_db_table.json",
+                            "name": "Competitors global events",
+                            "folder": "Imagine AI/AI Events Hunter/PeerPanda"
+                          },
+                          "primary_field_id": "1b6b1b93-6dfa-4977-9bd9-c997f9a0d605",
+                          "parameters": {
+                            "ed0eca01_eec1_47ca_9855_8b695497cb2e": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"format\"]}')}",
+                            "85b5d9ec_def1_481f_afef_61638cd90c41": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"start_date\"]}')}",
+                            "5d7c3ab0_0c9c_448e_999c_1fe45af08410": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"end_date\"]}')}",
+                            "1b6b1b93_6dfa_4977_9bd9_c997f9a0d605": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"id\"]}')}",
+                            "211a05f5_b087_4dbe_a80a_a026cbbdb406": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"name\"]}')}",
+                            "f3fc52f3_b736_44d1_8cb8_ff21303acf13": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"event_type\"]}')}",
+                            "60a80867_058e_425f_a9a6_e705659269c8": "=_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"description\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"description\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"short_summary\"]}')",
+                            "5bef6cda_106a_4a2b_9ff8_0d4d17db5e15": "=_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"location_display\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"location_display\"]}').split(\",\").first.strip : nil\n",
+                            "5d4e81c8_fad2_42e3_acb8_e65bdb320925": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"location_display\"]}')}",
+                            "c6ead30d_47e9_4133_92d2_4e02cf11afd4": "=(_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"location_display\"]}').present? && _dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"location_display\"]}').include?(\",\")) ? _dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"location_display\"]}').split(\",\").last.strip : nil\n",
+                            "21465e28_4215_4a44_bbdd_473636dc4673": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"organizer_name\"]}')}",
+                            "de1f97e8_c1f3_4bf6_9fed_77cb99d6daa5": "=_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"attending_competitors\"]}').smart_join(\", \")",
+                            "d5c3665c_07f3_49dd_8da2_b12aa2a458c9": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"tags\"]}')}",
+                            "cc3399ee_fb04_4ebe_8462_4afcf449a26c": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"ci_relevance_score\"]}')}",
+                            "e141bd58_891d_413f_a2ac_40a4f1f69552": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"ci_relevance_rationale\"]}')}",
+                            "e3ae6d99_2f03_48b7_ac32_d7e3918883ab": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"event_page_url\"]}')}",
+                            "e2286ea2_8537_4819_8285_82daa3a82093": "=_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"created_at\"]}').to_date",
+                            "41de121d_7b39_4944_8ac5_ccd6d0e1cabc": "PeerPanda",
+                            "e7c7f195_0d89_48f7_b2c5_74916650b615": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"8c0b3d6b\",\"path\":[\"parameters\",\"when\"]}').titleize"
+                          }
+                        },
+                        "extended_input_schema": [
+                          {
+                            "hint": "Fill the fields for the new or updated record. Fields that are not specified will not be updated.",
+                            "label": "Record fields",
+                            "name": "parameters",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Event ID",
+                                "optional": false,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "1b6b1b93_6dfa_4977_9bd9_c997f9a0d605"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Title",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "211a05f5_b087_4dbe_a80a_a026cbbdb406"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Type",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "f3fc52f3_b736_44d1_8cb8_ff21303acf13"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Format",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "ed0eca01_eec1_47ca_9855_8b695497cb2e"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Summary",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "60a80867_058e_425f_a9a6_e705659269c8"
+                              },
+                              {
+                                "control_type": "date",
+                                "label": "Start Date",
+                                "render_input": "date_conversion",
+                                "parse_output": "date_conversion",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "date",
+                                "name": "85b5d9ec_def1_481f_afef_61638cd90c41"
+                              },
+                              {
+                                "control_type": "date",
+                                "label": "End Date",
+                                "render_input": "date_conversion",
+                                "parse_output": "date_conversion",
+                                "optional": true,
+                                "sticky": false,
+                                "type": "date",
+                                "name": "5d7c3ab0_0c9c_448e_999c_1fe45af08410"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Location",
+                                "optional": true,
+                                "sticky": false,
+                                "type": "string",
+                                "name": "5d4e81c8_fad2_42e3_acb8_e65bdb320925"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "City",
+                                "optional": true,
+                                "sticky": false,
+                                "type": "string",
+                                "name": "5bef6cda_106a_4a2b_9ff8_0d4d17db5e15"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Country",
+                                "optional": true,
+                                "sticky": false,
+                                "type": "string",
+                                "name": "c6ead30d_47e9_4133_92d2_4e02cf11afd4"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Organizer",
+                                "optional": true,
+                                "sticky": false,
+                                "type": "string",
+                                "name": "21465e28_4215_4a44_bbdd_473636dc4673"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Competitors",
+                                "optional": true,
+                                "sticky": false,
+                                "type": "string",
+                                "name": "de1f97e8_c1f3_4bf6_9fed_77cb99d6daa5"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Topic/Tags",
+                                "optional": true,
+                                "sticky": false,
+                                "type": "string",
+                                "name": "d5c3665c_07f3_49dd_8da2_b12aa2a458c9"
+                              },
+                              {
+                                "control_type": "number",
+                                "label": "CI Score",
+                                "parse_output": "float_conversion",
+                                "optional": true,
+                                "sticky": false,
+                                "render_input": "float_conversion",
+                                "type": "number",
+                                "name": "cc3399ee_fb04_4ebe_8462_4afcf449a26c"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "CI Rationale",
+                                "optional": true,
+                                "sticky": false,
+                                "type": "string",
+                                "name": "e141bd58_891d_413f_a2ac_40a4f1f69552"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "URL",
+                                "optional": true,
+                                "sticky": false,
+                                "type": "string",
+                                "name": "e3ae6d99_2f03_48b7_ac32_d7e3918883ab"
+                              },
+                              {
+                                "control_type": "date",
+                                "label": "Discovery Date",
+                                "render_input": "date_conversion",
+                                "parse_output": "date_conversion",
+                                "optional": true,
+                                "sticky": false,
+                                "type": "date",
+                                "name": "e2286ea2_8537_4819_8285_82daa3a82093"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Source",
+                                "optional": true,
+                                "sticky": false,
+                                "type": "string",
+                                "name": "41de121d_7b39_4944_8ac5_ccd6d0e1cabc"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "When",
+                                "optional": true,
+                                "sticky": false,
+                                "type": "string",
+                                "name": "e7c7f195_0d89_48f7_b2c5_74916650b615"
+                              }
+                            ],
+                            "type": "object"
+                          }
+                        ],
+                        "comment": "upsert Competitors global events",
+                        "uuid": "5e301a2c-8858-459f-bd0d-4e894d3725cd"
+                      }
+                    ],
+                    "comment": "event isn't exist",
+                    "uuid": "c77f8b97-e225-4a82-8c35-0a18faaa3acb"
+                  }
+                ],
+                "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"808e5e68\",\"path\":[\"response\",\"results\"]}')}",
+                "uuid": "900bf545-3e9d-4747-b280-5768151b239d"
+              },
+              {
+                "number": 10,
+                "keyword": "if",
+                "input": {
+                  "type": "compound",
+                  "operand": "and",
+                  "conditions": [
+                    {
+                      "operand": "present",
+                      "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\"]}')",
+                      "rhs": "",
+                      "uuid": "7aa6b253-b8cd-4eb9-8302-e8fc1681a3f7"
+                    }
+                  ]
+                },
+                "block": [
+                  {
+                    "number": 11,
+                    "provider": "google_sheets",
+                    "name": "add_row_v4_bulk",
+                    "as": "428d29ed",
+                    "keyword": "action",
+                    "dynamicPickListSelection": {
+                      "spreadsheet": "AI Events Hunter Agent"
+                    },
+                    "toggleCfg": {
+                      "is_top_left": true
+                    },
+                    "input": {
+                      "team_drives": "my_drive",
+                      "is_top_left": "false",
+                      "spreadsheet": "1ZvljcQ-nu08KV0F_fzDG4hCYbw8Wqe0c67rFtxqDNK8",
+                      "sheet": "Competitors global events",
+                      "rows": {
+                        "col_Format": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"format\"]}')}",
+                        "col_Start Date": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"start_date\"]}')}",
+                        "col_End Date": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"end_date\"]}')}",
+                        "col_Event ID": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"event_id\"]}')}",
+                        "col_Title": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"title\"]}')}",
+                        "col_Type": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"type\"]}')}",
+                        "col_Summary": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"summary\"]}')",
+                        "col_Location": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"location\"]}')}",
+                        "col_City": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"city\"]}')",
+                        "col_Country": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"country\"]}')",
+                        "col_Organizer": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"organizer\"]}')}",
+                        "col_Competitors": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"competitors\"]}')",
+                        "col_Topic/Tags": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"9a7537a9\",\"path\":[\"tags\"]}')}",
+                        "col_CI Score": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"ci_score\"]}')}",
+                        "col_CI Rationale": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"ci_rationale\"]}')}",
+                        "col_URL": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"url\"]}')}",
+                        "col_Discovery Date": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"discovery_date\"]}')",
+                        "col_Source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"source\"]}')}",
+                        "col_When": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"when\"]}')",
+                        "col_Data Collector": "Pending",
+                        "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\"]}')}"
+                      }
+                    },
+                    "extended_input_schema": [
+                      {
+                        "control_type": "select",
+                        "extends_schema": true,
+                        "hint": "Select a sheet to add row to. The sheet must have at least one header row. <a href='https://docs.workato.com/connectors/google-sheets/action-add-row.html#setting-up-the-google-sheet' target='_blank'>Learn more</a>",
+                        "label": "Sheet",
+                        "name": "sheet",
+                        "optional": false,
+                        "pick_list": [
+                          [
+                            "Index",
+                            "Index"
+                          ],
+                          [
+                            "Regions",
+                            "Regions"
+                          ],
+                          [
+                            "Event Hunter",
+                            "Event Hunter"
+                          ],
+                          [
+                            "Used Links",
+                            "Used Links"
+                          ],
+                          [
+                            "Events Bucket",
+                            "Events Bucket"
+                          ],
+                          [
+                            "Competitors global events",
+                            "Competitors global events"
+                          ],
+                          [
+                            "United Kingdom Events",
+                            "United Kingdom Events"
+                          ],
+                          [
+                            "France Events",
+                            "France Events"
+                          ],
+                          [
+                            "Germany Events",
+                            "Germany Events"
+                          ],
+                          [
+                            "Israel Events",
+                            "Israel Events"
+                          ],
+                          [
+                            "Spain Events",
+                            "Spain Events"
+                          ],
+                          [
+                            "Poland Events",
+                            "Poland Events"
+                          ],
+                          [
+                            "United States Events",
+                            "United States Events"
+                          ],
+                          [
+                            "San Francisco Events",
+                            "San Francisco Events"
+                          ],
+                          [
+                            "Brazil Events",
+                            "Brazil Events"
+                          ],
+                          [
+                            "India Events",
+                            "India Events"
+                          ],
+                          [
+                            "Japan Events",
+                            "Japan Events"
+                          ],
+                          [
+                            "South Korea Events",
+                            "South Korea Events"
+                          ],
+                          [
+                            "Singapore Events",
+                            "Singapore Events"
+                          ],
+                          [
+                            "China Events",
+                            "China Events"
+                          ]
+                        ],
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Sheet name",
+                          "toggle_hint": "Use sheet name",
+                          "extends_schema": true,
+                          "change_on_blur": true,
+                          "toggle_to_secondary_hint": "Use sheet name",
+                          "toggle_to_primary_hint": "Select a sheet",
+                          "hint": "Use <b>Sheet name</b> pill from the output of other Google Sheets’ triggers/actions. Or enter sheet name manually. The sheet must have at least 1 header row in input field.",
+                          "type": "string",
+                          "name": "sheet_name"
+                        },
+                        "toggle_hint": "Select a sheet",
+                        "type": "string"
+                      },
+                      {
+                        "hint": "Input row values into the fields below.",
+                        "label": "Rows",
+                        "name": "rows",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Event ID",
+                            "old_name": "col_Event_ID",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_Event ID"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Title",
+                            "old_name": "col_Title",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_Title"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Type",
+                            "old_name": "col_Type",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_Type"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Format",
+                            "old_name": "col_Format",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_Format"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Summary",
+                            "old_name": "col_Summary",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_Summary"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Start Date",
+                            "old_name": "col_Start_Date",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_Start Date"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "End Date",
+                            "old_name": "col_End_Date",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_End Date"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Location",
+                            "old_name": "col_Location",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_Location"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "City",
+                            "old_name": "col_City",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_City"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Country",
+                            "old_name": "col_Country",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_Country"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Organizer",
+                            "old_name": "col_Organizer",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_Organizer"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Competitors",
+                            "old_name": "col_Competitors",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_Competitors"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Topic/Tags",
+                            "old_name": "col_Topic_Tags",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_Topic/Tags"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "CI Score",
+                            "old_name": "col_CI_Score",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_CI Score"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "CI Rationale",
+                            "old_name": "col_CI_Rationale",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_CI Rationale"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "URL",
+                            "old_name": "col_URL",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_URL"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Discovery Date",
+                            "old_name": "col_Discovery_Date",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_Discovery Date"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Source",
+                            "old_name": "col_Source",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_Source"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "When",
+                            "old_name": "col_When",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_When"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Data Collector",
+                            "old_name": "col_Data_Collector",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "col_Data Collector"
+                          }
+                        ],
+                        "sticky": true,
+                        "type": "array"
+                      }
+                    ],
+                    "comment": "Competitors global events",
+                    "uuid": "629b0bb8-b5b8-48ac-bd77-93284e0f5f0a"
+                  }
+                ],
+                "uuid": "9392e43a-87ba-4096-90d0-2ec96a06fd55"
+              },
+              {
+                "number": 12,
+                "provider": "workato_recipe_function",
+                "name": "return_result",
+                "as": "4334a563",
+                "keyword": "action",
+                "input": {
+                  "result": {
+                    "events_count": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"808e5e68\",\"path\":[\"response\",\"results\",{\"path_element_type\":\"size\"}]}')}",
+                    "status": "Success"
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Events count",
+                        "name": "events_count",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Events count",
+                        "name": "events_count",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "comment": "status=success",
+                "uuid": "7499fb9d-bd3d-4a0b-8e9f-f4807c683134"
+              }
+            ],
+            "uuid": "d603ddf4-71da-4117-9a39-e4b83ba0c2c4"
+          },
+          {
+            "number": 13,
+            "as": "f841bce4",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 14,
+                "provider": "workato_recipe_function",
+                "name": "return_result",
+                "as": "2cae6c52",
+                "keyword": "action",
+                "input": {
+                  "result": {
+                    "events_count": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"808e5e68\",\"path\":[\"response\",\"results\",{\"path_element_type\":\"size\"}]}')}",
+                    "status": "Error",
+                    "message": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"f841bce4\",\"path\":[\"message\"]}')}"
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Events count",
+                        "name": "events_count",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Events count",
+                        "name": "events_count",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "visible_config_fields": [
+                  "result",
+                  "result.events_count",
+                  "result.status",
+                  "result.message"
+                ],
+                "comment": "status=error",
+                "uuid": "8334c15f-2caf-487a-9eab-b22ac1cd1f58"
+              }
+            ],
+            "uuid": "7f523828-d43c-4293-933b-0a5ae55a84d0"
+          }
+        ],
+        "uuid": "c08d7628-a2fc-45ff-89f6-d25ba32f5e34"
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_0",
+        "label": "Events"
+      },
+      {
+        "name": "custom_column_3",
+        "label": "Competitors Global Events"
+      },
+      {
+        "name": "custom_column_1",
+        "label": "Status"
+      },
+      {
+        "name": "custom_column_2",
+        "label": "Message"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"808e5e68\",\"path\":[\"response\",\"results\",{\"path_element_type\":\"size\"}]}')}",
+      "custom_column_3": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"ca0b1c60\",\"path\":[\"list_items\",{\"path_element_type\":\"size\"}]}') || 0",
+      "custom_column_1": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"4334a563\",\"path\":[\"result\",\"status\"]}') || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"2cae6c52\",\"path\":[\"result\",\"status\"]}')",
+      "custom_column_2": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"4334a563\",\"path\":[\"result\",\"message\"]}') ||_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"2cae6c52\",\"path\":[\"result\",\"message\"]}')"
+    },
+    "uuid": "09ba4c40-9477-47d4-8d7a-79238b1b871d"
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "rest",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Marketing/peerpanda_api.connection.json",
+        "name": "PeerPanda API",
+        "folder": "#Connections/Marketing"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "google_sheets",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Google Apps/google_sheet.connection.json",
+        "name": "Google Sheet",
+        "folder": "#Connections/Google Apps"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_db_table",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_variable",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ],
+  "tags": [
+    "Recipe Function"
+  ]
+}

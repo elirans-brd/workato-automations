@@ -1,0 +1,85 @@
+{
+  "name": "System Error - Slack Version",
+  "schema": [
+    {
+      "label": "Error Details",
+      "name": "ErrorDetails",
+      "type": "array",
+      "optional": true,
+      "of": "object",
+      "properties": [
+        {
+          "control_type": "text",
+          "label": "Timestamp",
+          "name": "timestamp",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "control_type": "text",
+          "label": "Parent process name",
+          "name": "parent_process_name",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "control_type": "text",
+          "label": "Process Name",
+          "name": "process_name",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "control_type": "text",
+          "label": "Error type",
+          "name": "error_type",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "control_type": "text",
+          "label": "Error message",
+          "name": "error_message",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "control_type": "text",
+          "label": "Environment",
+          "name": "environment",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "control_type": "text",
+          "label": "Automation manager",
+          "name": "automation_manager",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "control_type": "text",
+          "label": "Recipient name",
+          "name": "Recipient_name",
+          "type": "string",
+          "optional": false
+        },
+        {
+          "name": "ticket_url",
+          "type": "string",
+          "optional": false,
+          "control_type": "text",
+          "label": "Ticket URL"
+        },
+        {
+          "name": "job_url",
+          "type": "string",
+          "optional": false,
+          "control_type": "text",
+          "label": "Job URL"
+        }
+      ]
+    }
+  ],
+  "content": "{{#ErrorDetails}}\n[\n\t\t{\n\t\t\t\"type\": \"divider\"\n\t\t},\n\t\t{\n\t\t\t\"type\": \"header\",\n\t\t\t\"text\": {\n\t\t\t\t\"type\": \"plain_text\",\n\t\t\t\t\"text\": \"🚨 Bright Data - Automation System Alert\",\n\t\t\t\t\"emoji\": true\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\t\"type\": \"section\",\n\t\t\t\"text\": {\n\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\"text\": \"⚠️ *An error has been detected in the automation system*\"\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\t\"type\": \"divider\"\n\t\t},\n\t\t{\n\t\t\t\"type\": \"section\",\n\t\t\t\"text\": {\n\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\"text\": \"*Recipe:* `{{process_name}}`\\n*Status:* 🔴 *Failed*\"\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\t\"type\": \"divider\"\n\t\t},\n\t\t{\n\t\t\t\"type\": \"section\",\n\t\t\t\"text\": {\n\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\"text\": \"📊 *Error Details*\"\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\t\"type\": \"section\",\n\t\t\t\"fields\": [\n\t\t\t\t{\n\t\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\t\"text\": \"*🕐 Timestamp*\\n`{{timestamp}}`\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\t\"text\": \"*🌍 Environment*\\n`{{environment}}`\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\t\"text\": \"*📦 Parent Process*\\n`{{parent_process_name}}`\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\t\"text\": \"*⚙️ Process*\\n`{{process_name}}`\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\t\"text\": \"*❌ Error Type*\\n`{{error_type}}`\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\t\"text\": \"*👤 Manager*\\n`{{automation_manager}}`\"\n\t\t\t\t}\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\t\"type\": \"section\",\n\t\t\t\"text\": {\n\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\"text\": \"*💬 Error Message*\"\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\t\"type\": \"section\",\n\t\t\t\"text\": {\n\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\"text\": \"```{{error_message}}```\"\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\t\"type\": \"divider\"\n\t\t},\n\t\t{\n\t\t\t\"type\": \"section\",\n\t\t\t\"text\": {\n\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\"text\": \"🔗 *Quick Actions*\"\n\t\t\t}\n\t\t},\n\t\t{\n\t\t\t\"type\": \"actions\",\n\t\t\t\"elements\": [\n\t\t\t\t{\n\t\t\t\t\t\"type\": \"button\",\n\t\t\t\t\t\"text\": {\n\t\t\t\t\t\t\"type\": \"plain_text\",\n\t\t\t\t\t\t\"text\": \"🎯 View Monday Ticket\",\n\t\t\t\t\t\t\"emoji\": true\n\t\t\t\t\t},\n\t\t\t\t\t\"style\": \"primary\",\n\t\t\t\t\t\"url\": \"{{ticket_url}}\"\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"type\": \"button\",\n\t\t\t\t\t\"text\": {\n\t\t\t\t\t\t\"type\": \"plain_text\",\n\t\t\t\t\t\t\"text\": \"📋 View Logs\",\n\t\t\t\t\t\t\"emoji\": true\n\t\t\t\t\t},\n\t\t\t\t\t\"style\": \"danger\",\n\t\t\t\t\t\"url\": \"{{job_url}}\"\n\t\t\t\t}\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\t\"type\": \"divider\"\n\t\t},\n\t\t{\n\t\t\t\"type\": \"context\",\n\t\t\t\"elements\": [\n\t\t\t\t{\n\t\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\t\"text\": \"💡 *Need Help?* Contact `{{automation_manager}}` or email automation@brightdata.com\"\n\t\t\t\t}\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\t\"type\": \"context\",\n\t\t\t\"elements\": [\n\t\t\t\t{\n\t\t\t\t\t\"type\": \"mrkdwn\",\n\t\t\t\t\t\"text\": \"⚡ _Automated alert from Bright Data Integration System_ • <https://brightdata.com|brightdata.com>\"\n\t\t\t\t}\n\t\t\t]\n\t\t},\n                      {\n\t\t\t\"type\": \"context_actions\",\n\t\t\t\"elements\": [\n\t\t\t\t{\n\t\t\t\t\t\"type\": \"feedback_buttons\",\n\t\t\t\t\t\"action_id\": \"feedback\",\n\t\t\t\t\t\"positive_button\": {\n\t\t\t\t\t\t\"text\": {\n\t\t\t\t\t\t\t\"type\": \"plain_text\",\n\t\t\t\t\t\t\t\"text\": \"Good Response\"\n\t\t\t\t\t\t},\n\t\t\t\t\t\t\"value\": \"positive\"\n\t\t\t\t\t},\n\t\t\t\t\t\"negative_button\": {\n\t\t\t\t\t\t\"text\": {\n\t\t\t\t\t\t\t\"type\": \"plain_text\",\n\t\t\t\t\t\t\t\"text\": \"Bad Response\"\n\t\t\t\t\t\t},\n\t\t\t\t\t\t\"value\": \"negative\"\n\t\t\t\t\t}\n\t\t\t\t},\n\t\t\t\t{\n\t\t\t\t\t\"type\": \"icon_button\",\n\t\t\t\t\t\"action_id\": \"remove\",\n\t\t\t\t\t\"icon\": \"trash\",\n\t\t\t\t\t\"text\": {\n\t\t\t\t\t\t\"type\": \"plain_text\",\n\t\t\t\t\t\t\"text\": \"Remove\"\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t]\n\t\t},\n\t\t{\n\t\t\t\"type\": \"divider\"\n\t\t}\n\t]\n{{/ErrorDetails}}"
+}

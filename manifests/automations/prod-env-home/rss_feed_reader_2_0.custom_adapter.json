@@ -1,0 +1,8 @@
+{
+  "title": "RSS Feed Reader 2.0",
+  "description": "Listen on new items in RSS Feeds using this connector.\r\n\r\n## What can you do with this connector\r\n1. Send email notifications when you received a status feed from RSS Feed Reader.\r\n2. Get status feeds from your business communication platform like Slack and MS Teams using this connector and Workato's workbot.\r\n\r\n## Support\r\n\r\nThis connector was built and is supported by Workato. Send all your bug reports through our support channels, found [here](https://docs.workato.com/contact-us.html#for-reporting-bugs). Let our support team know the name of this connector and that it was installed from the community so they can route your support tickets properly. To request enhancements, use the following [link](https://docs.workato.com/contact-us.html#for-requesting-enhancements) and select your region’s data center. ",
+  "logo_file_name": "rssfeedreader.png",
+  "logo_content_type": "image/png",
+  "version_no": 1,
+  "note": "Installed from community"
+}

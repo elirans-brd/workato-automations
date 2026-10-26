@@ -1,0 +1,371 @@
+{
+  "name": "Scheduled: DoIt Handler  Daily Cost Ingestion",
+  "version": 2,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "clock",
+    "name": "scheduled_event",
+    "as": "fbcc4a25",
+    "keyword": "trigger",
+    "dynamicPickListSelection": {
+      "time_unit": "Days"
+    },
+    "input": {
+      "time_unit": "days",
+      "trigger_every": "1",
+      "trigger_at": "07:00:00.000"
+    },
+    "extended_input_schema": [
+      {
+        "control_type": "integer",
+        "default": "5",
+        "enforce_template_mode": true,
+        "extends_schema": true,
+        "hint": "Define repeating schedule. Enter whole numbers only.This field can be set to a minimum of 5 minutes.",
+        "label": "Trigger every",
+        "name": "trigger_every",
+        "optional": false,
+        "suffix": {
+          "text": "days"
+        },
+        "type": "string"
+      },
+      {
+        "change_on_blur": true,
+        "control_type": "time",
+        "enforce_template_mode": true,
+        "extends_schema": true,
+        "hint": "Set a time to schedule the job using supported formats only. <a href=\"https://docs.workato.com/features/scheduler.html#supported-datetime-formats\" target=\"_blank\">Learn more</a>",
+        "label": "Trigger at",
+        "name": "trigger_at",
+        "optional": false,
+        "type": "string"
+      },
+      {
+        "control_type": "select",
+        "hint": "Select the timezone to use. Leave it blank to use <b>{{authUser.account_timezone}}</b>",
+        "label": "Timezone",
+        "name": "timezone",
+        "optional": true,
+        "pick_list": "timezone_id_global_pick_list",
+        "pick_list_connection_less": true,
+        "type": "string"
+      },
+      {
+        "control_type": "date_time",
+        "enforce_template_mode": true,
+        "extends_schema": true,
+        "hint": "Set date and time to start or leave blank to start immediately. <b>Once recipe has been run or tested, value cannot be changed.</b>",
+        "label": "Start after",
+        "name": "start_after",
+        "optional": true,
+        "parse_output": "date_time_conversion",
+        "since_field": true,
+        "type": "date_time",
+        "ignore_timezone": true,
+        "render_input": "date_time_conversion"
+      }
+    ],
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "workato_recipe_function",
+            "name": "call_recipe_async",
+            "as": "b86b2ab4",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+              "flow_id": "Copy of Connect DOit and Vulter Data in to Doit platform"
+            },
+            "input": {
+              "flow_id": {
+                "zip_name": "FinOps/[DoiT] Cloud Cost Ingestion/fun_001_doit_process_digital_ocean.recipe.json",
+                "name": "Fun-001 | DoIt Process Digital Ocean",
+                "folder": "FinOps/[DoiT] Cloud Cost Ingestion"
+              }
+            },
+            "uuid": "046a2869-9bf0-4a89-97d7-76ed7d8f66d5"
+          },
+          {
+            "number": 3,
+            "provider": "workato_recipe_function",
+            "name": "wait_for_async_jobs",
+            "as": "48674e8f",
+            "keyword": "action",
+            "input": {
+              "timeout": "120",
+              "async_calls": [
+                {
+                  "job_ref": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"b86b2ab4\",\"path\":[\"job_ref\"]}')}"
+                }
+              ]
+            },
+            "comment": "Fun-001 | DoIt Process Digital Ocean",
+            "uuid": "ac955ed4-ee27-47a9-9b59-355b417a8405"
+          },
+          {
+            "number": 4,
+            "provider": "workato_recipe_function",
+            "name": "call_recipe_async",
+            "as": "081db5e4",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+              "flow_id": "Copy of Copy of Connect DOit and Vulter Data in to Doit platform"
+            },
+            "input": {
+              "flow_id": {
+                "zip_name": "FinOps/[DoiT] Cloud Cost Ingestion/fun_002_doit_process_vultr_pending_charges.recipe.json",
+                "name": "Fun-002 | DoIt Process Vultr Pending Charges",
+                "folder": "FinOps/[DoiT] Cloud Cost Ingestion"
+              }
+            },
+            "uuid": "1ccdbc3b-422a-4a80-8c91-589865872cfb"
+          },
+          {
+            "number": 5,
+            "provider": "workato_recipe_function",
+            "name": "wait_for_async_jobs",
+            "as": "14dcbd29",
+            "keyword": "action",
+            "input": {
+              "timeout": "120",
+              "async_calls": [
+                {
+                  "job_ref": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"081db5e4\",\"path\":[\"job_ref\"]}')}"
+                }
+              ]
+            },
+            "comment": "Fun-002 | DoIt Process Vultr Pending Charges",
+            "uuid": "40082ea1-c196-4529-87d4-c00996f5e24a"
+          },
+          {
+            "number": 6,
+            "as": "dd9d7003",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 7,
+                "provider": "workato_recipe_function",
+                "name": "call_recipe_async",
+                "as": "ab20bccc",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "flow_id": "System Error Handling"
+                },
+                "input": {
+                  "flow_id": {
+                    "zip_name": "Common Functions/Error Handling Process/cm_fun_system_error_handling.recipe.json",
+                    "name": "[CM] Fun | System Error Handling",
+                    "folder": "Common Functions/Error Handling Process"
+                  },
+                  "parameters": {
+                    "ErrorDetails": {
+                      "parentProcessName": "None",
+                      "recipe_id": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_id\"]}')}",
+                      "processName": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+                      "process_path": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_path\"]}')}",
+                      "jobUrl": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_url\"]}')}",
+                      "is_repeat": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"is_repeat\"]}')}",
+                      "error_uuid": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"dd9d7003\",\"path\":[\"uuid\"]}')}",
+                      "errored_app": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"dd9d7003\",\"path\":[\"adapter\"]}')}",
+                      "errored_action": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"dd9d7003\",\"path\":[\"action\"]}')}",
+                      "error_step_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"dd9d7003\",\"path\":[\"line_number\"]}')}",
+                      "errorType": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"dd9d7003\",\"path\":[\"type\"]}')}",
+                      "errorMessage": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"dd9d7003\",\"path\":[\"message\"]}')}",
+                      "Timestamp": "=now.in_time_zone(\"Asia/Jerusalem\")",
+                      "job_uuid": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}"
+                    }
+                  }
+                },
+                "extended_input_schema": [
+                  {
+                    "label": "Parameters",
+                    "name": "parameters",
+                    "properties": [
+                      {
+                        "label": "Error Details",
+                        "name": "ErrorDetails",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Parent process name",
+                            "name": "parentProcessName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Recipe Id",
+                            "name": "recipe_id",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job uuid",
+                            "name": "job_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Name",
+                            "name": "processName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Path",
+                            "name": "process_path",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job URL",
+                            "name": "jobUrl",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Is repeat",
+                            "name": "is_repeat",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error uuid",
+                            "name": "error_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored app",
+                            "name": "errored_app",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored action",
+                            "name": "errored_action",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error step number",
+                            "name": "error_step_number",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error type",
+                            "name": "errorType",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error message",
+                            "name": "errorMessage",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Timestamp",
+                            "name": "Timestamp",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Files",
+                        "name": "files",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "File name",
+                            "name": "fileName",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File content",
+                            "name": "fileContent",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "comment": "system error",
+                "uuid": "b6a3af55-a602-4b34-8ec0-5930326ce792",
+                "skip": false
+              }
+            ],
+            "uuid": "c67af2d6-12f8-41d5-99ab-ca1f11b04c25"
+          }
+        ],
+        "uuid": "32138a07-516b-4b5e-b039-9c41f4e9f9a2"
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_0",
+        "label": "Status"
+      },
+      {
+        "name": "custom_column_1",
+        "label": "Message"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_0": "=(_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"48674e8f\",\"path\":[\"results\",{\"path_element_type\":\"current_item\"},\"job_completed\"]}') == true || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"14dcbd29\",\"path\":[\"results\",{\"path_element_type\":\"current_item\"},\"job_completed\"]}') == true) ? 'Success' : 'Error'",
+      "custom_column_1": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"dd9d7003\",\"path\":[\"message\"]}')"
+    },
+    "uuid": "bff1b3bb-5c9b-41bf-add3-b45470644b79"
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "clock",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ]
+}

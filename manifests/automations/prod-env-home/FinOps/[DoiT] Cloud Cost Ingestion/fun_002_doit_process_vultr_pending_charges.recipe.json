@@ -1,0 +1,1232 @@
+{
+  "name": "Fun-002 | DoIt Process Vultr Pending Charges",
+  "version": 8,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "workato_recipe_function",
+    "name": "execute",
+    "as": "f54628b3",
+    "keyword": "trigger",
+    "input": {
+    },
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "workato_db_table",
+            "name": "get_records",
+            "as": "f5ba2aa8",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+              "table_id": "sync_watermarks",
+              "filters.0.field_id": "process_name"
+            },
+            "input": {
+              "order_direction": "asc",
+              "limit": "100",
+              "table_id": {
+                "zip_name": "FinOps/[DoiT] Cloud Cost Ingestion/sync_watermarks.workato_db_table.json",
+                "name": "sync_watermarks",
+                "folder": "FinOps/[DoiT] Cloud Cost Ingestion"
+              },
+              "1b5e060a-e92f-4bd7-9f81-20f8b65ac612": "string",
+              "4329deb9-8451-49bc-b42a-df66c4771775": "string",
+              "9ae1f376-81da-4b86-b2a9-b57eaa398ac1": "string",
+              "11fbe9a6-a16d-4d7e-86ea-afe42ec03005": "id",
+              "a5612739-5401-4ae7-bd07-782c1a6fb2d1": "date_time",
+              "61aae604-a95e-4519-9091-bb0bf754a67f": "date_time",
+              "filters": [
+                {
+                  "field_id": "1b5e060a-e92f-4bd7-9f81-20f8b65ac612",
+                  "value_default": "vultr_pending_charges_doit",
+                  "op_default": "eq"
+                }
+              ]
+            },
+            "extended_output_schema": [
+              {
+                "label": "Records",
+                "name": "records",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Record ID",
+                    "type": "string",
+                    "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "process_name",
+                    "type": "string",
+                    "name": "1b5e060a_e92f_4bd7_9f81_20f8b65ac612"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "source_table",
+                    "type": "string",
+                    "name": "4329deb9_8451_49bc_b42a_df66c4771775"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "last_processed_date",
+                    "type": "string",
+                    "name": "9ae1f376_81da_4b86_b2a9_b57eaa398ac1"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Created at",
+                    "render_input": "date_time_conversion",
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Updated at",
+                    "render_input": "date_time_conversion",
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+                  }
+                ],
+                "type": "array"
+              },
+              {
+                "control_type": "text",
+                "label": "Next Page Token",
+                "name": "continuation_token",
+                "type": "string"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_1b5e060a-e92f-4bd7-9f81-20f8b65ac612",
+                "name": "1b5e060a-e92f-4bd7-9f81-20f8b65ac612",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_4329deb9-8451-49bc-b42a-df66c4771775",
+                "name": "4329deb9-8451-49bc-b42a-df66c4771775",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_9ae1f376-81da-4b86-b2a9-b57eaa398ac1",
+                "name": "9ae1f376-81da-4b86-b2a9-b57eaa398ac1",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "id",
+                "label": "$internal_value_11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+                "name": "11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "date_time",
+                "label": "$internal_value_a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+                "name": "a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "date_time",
+                "label": "$internal_value_61aae604-a95e-4519-9091-bb0bf754a67f",
+                "name": "61aae604-a95e-4519-9091-bb0bf754a67f",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              }
+            ],
+            "comment": "last_processed_date",
+            "uuid": "846641fd-7ed9-4c39-a6de-542d74b96cb7"
+          },
+          {
+            "number": 3,
+            "provider": "snowflake",
+            "name": "run_custom_sql",
+            "as": "0a61e14b",
+            "keyword": "action",
+            "toggleCfg": {
+              "update_only": true
+            },
+            "input": {
+              "update_only": "false",
+              "sql": "SELECT\n  \"usage_date\"                AS event_time,\n  \"fixed.service_description\" AS service_description,\n  \"label.description\"         AS description,\n  \"metric.cost\"               AS cost,\n  \"metric.usage\"              AS usage\nFROM BI_EXTERNAL.DOIT.VULTR_PENDING_CHARGES_DAILY__DOIT_FORMAT\nWHERE DATE(TRY_TO_TIMESTAMP(\"usage_date\")) > TO_DATE('#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"f5ba2aa8\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"9ae1f376_81da_4b86_b2a9_b57eaa398ac1\"]}')}')\nORDER BY TRY_TO_TIMESTAMP(\"usage_date\") DESC;\n",
+              "output_schema": "[{\"control_type\":\"text\",\"label\":\"Event time\",\"type\":\"string\",\"name\":\"event_time\",\"optional\":false},{\"control_type\":\"text\",\"label\":\"Service description\",\"type\":\"string\",\"name\":\"service_description\"},{\"control_type\":\"text\",\"label\":\"Description\",\"type\":\"string\",\"name\":\"description\"},{\"control_type\":\"number\",\"label\":\"Cost\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"cost\"},{\"control_type\":\"number\",\"label\":\"Usage\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"usage\"}]"
+            },
+            "extended_output_schema": [
+              {
+                "label": "Rows",
+                "name": "rows",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "event_time",
+                    "type": "string",
+                    "name": "event_time",
+                    "optional": false
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "service_description",
+                    "type": "string",
+                    "name": "service_description"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "description",
+                    "type": "string",
+                    "name": "description"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "cost",
+                    "parse_output": "float_conversion",
+                    "type": "number",
+                    "name": "cost"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "usage",
+                    "parse_output": "float_conversion",
+                    "type": "number",
+                    "name": "usage"
+                  }
+                ],
+                "type": "array"
+              },
+              {
+                "control_type": "number",
+                "label": "Rows affected",
+                "name": "rows_affected",
+                "parse_output": "integer_conversion",
+                "type": "integer"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "control_type": "form-schema-builder",
+                "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. <b>id</b>\n                    Second, provide the actual parameter value. Parameter values can be static or datapills.\n                    Select the <b>closest corresponding data type</b> that your database is expecting for the bind variable\n                    ",
+                "label": "Parameters",
+                "name": "parameters",
+                "optional": true,
+                "override": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Schema",
+                    "extends_schema": true,
+                    "type": "string",
+                    "name": "schema"
+                  },
+                  {
+                    "properties": [
+
+                    ],
+                    "label": "Data",
+                    "optional": true,
+                    "type": "object",
+                    "name": "data"
+                  }
+                ],
+                "sticky": true,
+                "type": "object"
+              }
+            ],
+            "comment": "VULTR_PENDING_CHARGES_DAILY__DOIT_FORMAT",
+            "uuid": "10ec3f07-d8c0-4426-84d7-0c4c9631630a"
+          },
+          {
+            "number": 4,
+            "provider": "workato_variable",
+            "name": "declare_variable",
+            "as": "6b887fb4",
+            "keyword": "action",
+            "input": {
+              "variables": {
+                "schema": "[{\"control_type\":\"text\",\"label\":\"max_date\",\"name\":\"max_date\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"max_date\"},\"hint\":\"Defaults to nil if not supplied.\",\"sticky\":true,\"parent\":[\"variables\",\"data\"]},{\"control_type\":\"text\",\"label\":\"days behind\",\"name\":\"days_behind\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"data behind\"},\"hint\":\"Defaults to nil if not supplied.\",\"sticky\":true,\"parent\":[\"variables\",\"data\"]}]",
+                "data": {
+                  "max_date": "=_dp('{\"pill_type\":\"output\",\"provider\":\"snowflake\",\"line\":\"0a61e14b\",\"path\":[\"rows\"]}').pluck('event_time').min",
+                  "days_behind": "=(today - _dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"f5ba2aa8\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"9ae1f376_81da_4b86_b2a9_b57eaa398ac1\"]}').to_date).to_i"
+                }
+              }
+            },
+            "extended_output_schema": [
+              {
+                "control_type": "text",
+                "hint": "Defaults to nil if not supplied.",
+                "label": "max_date",
+                "name": "max_date",
+                "optional": true,
+                "sticky": true,
+                "type": "string",
+                "details": {
+                  "real_name": "max_date"
+                }
+              },
+              {
+                "control_type": "text",
+                "hint": "Defaults to nil if not supplied.",
+                "label": "days behind",
+                "name": "days_behind",
+                "optional": true,
+                "sticky": true,
+                "type": "string",
+                "details": {
+                  "real_name": "data behind"
+                }
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "add_field_label": "Add a variable",
+                "control_type": "form-schema-builder",
+                "empty_schema_title": "Add variables by giving them a name, type and default value",
+                "exclude_fields": [
+                  "hint"
+                ],
+                "item_label": "variable",
+                "label": "Variables",
+                "mark_as_required": true,
+                "name": "variables",
+                "ngIf": "!input.name",
+                "optional": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Schema",
+                    "extends_schema": true,
+                    "broadcast_change_event": true,
+                    "type": "string",
+                    "name": "schema"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "max_date",
+                        "name": "max_date",
+                        "type": "string",
+                        "optional": true,
+                        "details": {
+                          "real_name": "max_date"
+                        },
+                        "hint": "Defaults to nil if not supplied.",
+                        "sticky": true,
+                        "parent": [
+                          "variables",
+                          "data"
+                        ]
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "days behind",
+                        "name": "days_behind",
+                        "type": "string",
+                        "optional": true,
+                        "details": {
+                          "real_name": "data behind"
+                        },
+                        "hint": "Defaults to nil if not supplied.",
+                        "sticky": true,
+                        "parent": [
+                          "variables",
+                          "data"
+                        ]
+                      }
+                    ],
+                    "label": "Data",
+                    "type": "object",
+                    "name": "data"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "visible_config_fields": [
+              "variables.data.max_date",
+              "variables",
+              "variables.schema",
+              "variables.data",
+              "variables.data.data_behind",
+              "variables.data.days_behind"
+            ],
+            "comment": "max_date",
+            "uuid": "6b2e1e73-de2d-4af2-b243-267047f00dd2"
+          },
+          {
+            "number": 5,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "present",
+                  "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"snowflake\",\"line\":\"0a61e14b\",\"path\":[\"rows\"]}')",
+                  "rhs": "",
+                  "uuid": "0a6a6e3a-7d19-4381-957d-70b120ee8b98"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 6,
+                "provider": "workato_variable",
+                "name": "declare_list",
+                "as": "720daa91",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "name": "DIGITAL_OCEAN_BILLING_INSIGHTS (step 4)"
+                },
+                "input": {
+                  "list_item_schema_json": "[{\"control_type\":\"text\",\"label\":\"Provider\",\"type\":\"string\",\"name\":\"provider\"},{\"control_type\":\"text\",\"label\":\"ID\",\"type\":\"string\",\"name\":\"id\"},{\"control_type\":\"text\",\"label\":\"Time\",\"type\":\"string\",\"name\":\"time\",\"optional\":false},{\"name\":\"timezone\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Timezone\"},{\"label\":\"Dimensions\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Key\",\"type\":\"string\",\"name\":\"key\"},{\"control_type\":\"text\",\"label\":\"Value\",\"type\":\"string\",\"name\":\"value\"},{\"control_type\":\"text\",\"label\":\"Type\",\"type\":\"string\",\"name\":\"type\"}],\"type\":\"array\",\"name\":\"dimensions\"},{\"label\":\"Metrics\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Type\",\"type\":\"string\",\"name\":\"type\"},{\"control_type\":\"number\",\"label\":\"Value\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"value\"}],\"type\":\"array\",\"name\":\"metrics\"}]",
+                  "name": "DIGITAL_OCEAN_BILLING_INSIGHTS",
+                  "list_items": {
+                    "provider": "VULTR_PENDING_CHARGES",
+                    "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"snowflake\",\"line\":\"0a61e14b\",\"path\":[\"rows\"]}')}",
+                    "id": "=('VULTR_PENDING_CHARGES|' + _dp('{\"pill_type\":\"output\",\"provider\":\"snowflake\",\"line\":\"0a61e14b\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"event_time\"]}').to_s + '|' + _dp('{\"pill_type\":\"output\",\"provider\":\"snowflake\",\"line\":\"0a61e14b\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"service_description\"]}').to_s + '|' + _dp('{\"pill_type\":\"output\",\"provider\":\"snowflake\",\"line\":\"0a61e14b\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"description\"]}').to_s).encode_sha256.encode_hex\n",
+                    "time": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"snowflake\",\"line\":\"0a61e14b\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"event_time\"]}')}",
+                    "dimensions": [
+                      {
+                        "key": "service_description",
+                        "type": "fixed",
+                        "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"snowflake\",\"line\":\"0a61e14b\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"service_description\"]}')}"
+                      },
+                      {
+                        "key": "description",
+                        "type": "label",
+                        "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"snowflake\",\"line\":\"0a61e14b\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"description\"]}')}"
+                      }
+                    ],
+                    "metrics": [
+                      {
+                        "type": "cost",
+                        "value": "=_dp('{\"pill_type\":\"output\",\"provider\":\"snowflake\",\"line\":\"0a61e14b\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"cost\"]}').to_f"
+                      },
+                      {
+                        "type": "usage",
+                        "value": "=_dp('{\"pill_type\":\"output\",\"provider\":\"snowflake\",\"line\":\"0a61e14b\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"usage\"]}').to_f"
+                      }
+                    ],
+                    "timezone": "=_dp('{\"pill_type\":\"output\",\"provider\":\"snowflake\",\"line\":\"0a61e14b\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"event_time\"]}').to_s"
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "hint": "",
+                    "label": "DIGITAL_OCEAN_BILLING_INSIGHTS",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": false,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Provider",
+                        "type": "string",
+                        "name": "provider"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "ID",
+                        "type": "string",
+                        "name": "id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Time",
+                        "type": "string",
+                        "name": "time",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Timezone",
+                        "name": "timezone",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "label": "Dimensions",
+                        "type": "array",
+                        "name": "dimensions",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Key",
+                            "type": "string",
+                            "name": "key"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Value",
+                            "type": "string",
+                            "name": "value"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Type",
+                            "type": "string",
+                            "name": "type"
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Metrics",
+                        "type": "array",
+                        "name": "metrics",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Type",
+                            "type": "string",
+                            "name": "type"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Value",
+                            "parse_output": "float_conversion",
+                            "type": "number",
+                            "name": "value"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                    "label": "Items",
+                    "name": "list_items",
+                    "of": "object",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Provider",
+                        "type": "string",
+                        "name": "provider"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "ID",
+                        "type": "string",
+                        "name": "id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Time",
+                        "type": "string",
+                        "name": "time",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Timezone",
+                        "name": "timezone",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "label": "Dimensions",
+                        "type": "array",
+                        "name": "dimensions",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Key",
+                            "type": "string",
+                            "name": "key"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Value",
+                            "type": "string",
+                            "name": "value"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Type",
+                            "type": "string",
+                            "name": "type"
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Metrics",
+                        "type": "array",
+                        "name": "metrics",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Type",
+                            "type": "string",
+                            "name": "type"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Value",
+                            "parse_output": "float_conversion",
+                            "type": "number",
+                            "name": "value"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "comment": "VULTR_PENDING_CHARGES_DAILY__DOIT_FORMAT",
+                "uuid": "160723ff-a327-4fbe-b98b-b9c84b38bfb8"
+              },
+              {
+                "number": 7,
+                "provider": "workato_recipe_function",
+                "name": "call_recipe",
+                "as": "08bfd859",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "flow_id": "Fun-003 | Send Events To DoIt"
+                },
+                "input": {
+                  "flow_id": {
+                    "zip_name": "FinOps/[DoiT] Cloud Cost Ingestion/fun_003_send_events_to_doit.recipe.json",
+                    "name": "Fun-003 | Send Events To DoIt",
+                    "folder": "FinOps/[DoiT] Cloud Cost Ingestion"
+                  },
+                  "parameters": {
+                    "events": {
+                      "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"720daa91\",\"path\":[\"list_items\"]}')}",
+                      "provider": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"720daa91\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"provider\"]}')}",
+                      "id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"720daa91\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"id\"]}')}",
+                      "time": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"720daa91\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"time\"]}')}",
+                      "dimensions": {
+                        "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"720daa91\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"dimensions\"]}')}",
+                        "key": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"720daa91\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"dimensions\",{\"path_element_type\":\"current_item\"},\"key\"]}')}",
+                        "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"720daa91\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"dimensions\",{\"path_element_type\":\"current_item\"},\"value\"]}')}",
+                        "type": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"720daa91\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"dimensions\",{\"path_element_type\":\"current_item\"},\"type\"]}')}"
+                      },
+                      "metrics": {
+                        "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"720daa91\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"metrics\"]}')}",
+                        "type": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"720daa91\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"metrics\",{\"path_element_type\":\"current_item\"},\"type\"]}')}",
+                        "value": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"720daa91\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"metrics\",{\"path_element_type\":\"current_item\"},\"value\"]}')}"
+                      }
+                    }
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Total ingested",
+                        "name": "total_ingested",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Batches sent",
+                        "name": "batches_sent",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "label": "Parameters",
+                    "name": "parameters",
+                    "properties": [
+                      {
+                        "label": "Events",
+                        "type": "array",
+                        "name": "events",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Provider",
+                            "type": "string",
+                            "name": "provider"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Time",
+                            "name": "time",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "ID",
+                            "type": "string",
+                            "name": "id"
+                          },
+                          {
+                            "label": "Dimensions",
+                            "type": "array",
+                            "name": "dimensions",
+                            "of": "object",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Key",
+                                "type": "string",
+                                "name": "key"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Value",
+                                "type": "string",
+                                "name": "value"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Type",
+                                "type": "string",
+                                "name": "type"
+                              }
+                            ]
+                          },
+                          {
+                            "label": "Metrics",
+                            "type": "array",
+                            "name": "metrics",
+                            "of": "object",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Type",
+                                "type": "string",
+                                "name": "type"
+                              },
+                              {
+                                "control_type": "number",
+                                "label": "Value",
+                                "parse_output": "float_conversion",
+                                "type": "number",
+                                "name": "value"
+                              }
+                            ]
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "comment": "Fun-003 | Send Events To DoIt",
+                "uuid": "be87eac3-4ee5-4591-82c0-9a7038629b67"
+              },
+              {
+                "number": 8,
+                "keyword": "if",
+                "input": {
+                  "type": "compound",
+                  "operand": "and",
+                  "conditions": [
+                    {
+                      "operand": "equals_to",
+                      "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"08bfd859\",\"path\":[\"result\",\"status\"]}')}",
+                      "rhs": "Error",
+                      "uuid": "3da0f015-b9b5-4669-af68-aa61c25281a2"
+                    }
+                  ]
+                },
+                "block": [
+                  {
+                    "number": 9,
+                    "as": "cf89e696",
+                    "keyword": "stop",
+                    "input": {
+                      "stop_with_error": "true",
+                      "stop_reason": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"08bfd859\",\"path\":[\"result\",\"message\"]}')}"
+                    },
+                    "uuid": "38a514eb-aa68-4553-a78e-5f01e1228d6f",
+                    "skip": false
+                  },
+                  {
+                    "number": 10,
+                    "keyword": "else",
+                    "input": {
+                    },
+                    "block": [
+                      {
+                        "number": 11,
+                        "provider": "workato_db_table",
+                        "name": "update_record",
+                        "as": "1dd1f9fe",
+                        "keyword": "action",
+                        "dynamicPickListSelection": {
+                          "table_id": "sync_watermarks"
+                        },
+                        "input": {
+                          "record_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"f5ba2aa8\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"11fbe9a6_a16d_4d7e_86ea_afe42ec03005\"]}')}",
+                          "table_id": {
+                            "zip_name": "FinOps/[DoiT] Cloud Cost Ingestion/sync_watermarks.workato_db_table.json",
+                            "name": "sync_watermarks",
+                            "folder": "FinOps/[DoiT] Cloud Cost Ingestion"
+                          },
+                          "parameters": {
+                            "9ae1f376_81da_4b86_b2a9_b57eaa398ac1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"6b887fb4\",\"path\":[\"max_date\"]}')}"
+                          }
+                        },
+                        "extended_output_schema": [
+                          {
+                            "label": "Record",
+                            "name": "record",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Record ID",
+                                "type": "string",
+                                "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "process_name",
+                                "type": "string",
+                                "name": "1b5e060a_e92f_4bd7_9f81_20f8b65ac612"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "source_table",
+                                "type": "string",
+                                "name": "4329deb9_8451_49bc_b42a_df66c4771775"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "last_processed_date",
+                                "type": "string",
+                                "name": "9ae1f376_81da_4b86_b2a9_b57eaa398ac1"
+                              },
+                              {
+                                "control_type": "date_time",
+                                "label": "Created at",
+                                "render_input": "date_time_conversion",
+                                "parse_output": "date_time_conversion",
+                                "type": "date_time",
+                                "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+                              },
+                              {
+                                "control_type": "date_time",
+                                "label": "Updated at",
+                                "render_input": "date_time_conversion",
+                                "parse_output": "date_time_conversion",
+                                "type": "date_time",
+                                "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+                              }
+                            ],
+                            "type": "object"
+                          }
+                        ],
+                        "extended_input_schema": [
+                          {
+                            "hint": "Fill out the fields that need to be updated. Fields that are left blank will not be updated.",
+                            "label": "Update record fields with new inputs",
+                            "name": "parameters",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "process_name",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "1b5e060a_e92f_4bd7_9f81_20f8b65ac612"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "source_table",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "4329deb9_8451_49bc_b42a_df66c4771775"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "last_processed_date",
+                                "optional": true,
+                                "sticky": true,
+                                "type": "string",
+                                "name": "9ae1f376_81da_4b86_b2a9_b57eaa398ac1"
+                              }
+                            ],
+                            "type": "object"
+                          }
+                        ],
+                        "visible_config_fields": [
+                          "table_id",
+                          "record_id",
+                          "parameters.9ae1f376_81da_4b86_b2a9_b57eaa398ac1"
+                        ],
+                        "hidden_config_fields": [
+                          "parameters.1b5e060a_e92f_4bd7_9f81_20f8b65ac612",
+                          "parameters.4329deb9_8451_49bc_b42a_df66c4771775"
+                        ],
+                        "uuid": "d52902ab-894e-4bc3-8e9e-0085c10d96eb"
+                      }
+                    ],
+                    "uuid": "aaf3c473-93ca-457a-a5ef-04d27a6202f9"
+                  }
+                ],
+                "uuid": "8f285bab-d4cc-4dea-9d7b-bf9ef44791b4",
+                "skip": false
+              },
+              {
+                "number": 12,
+                "keyword": "else",
+                "input": {
+                },
+                "block": [
+                  {
+                    "number": 13,
+                    "keyword": "if",
+                    "input": {
+                      "type": "compound",
+                      "operand": "and",
+                      "conditions": [
+                        {
+                          "operand": "is_true",
+                          "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"f5ba2aa8\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"9ae1f376_81da_4b86_b2a9_b57eaa398ac1\"]}').to_date < (today - 3)",
+                          "rhs": "",
+                          "uuid": "20c62cbd-afc0-45a4-8f54-8057867c014d"
+                        }
+                      ]
+                    },
+                    "block": [
+                      {
+                        "number": 14,
+                        "as": "33d3c0ed",
+                        "keyword": "stop",
+                        "input": {
+                          "stop_with_error": "true",
+                          "stop_reason": "🚨 Vultr billing sync appears STUCK\n\n• Process: vultr_pending\n• Source table: BI_EXTERNAL.DOIT.VULTR_PENDING_CHARGES_DAILY__DOIT_FORMAT\n• Last processed date: #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"f5ba2aa8\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"9ae1f376_81da_4b86_b2a9_b57eaa398ac1\"]}')}\n• Today:#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_created_at\"]}')}\n• Days behind: #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"6b887fb4\",\"path\":[\"days_behind\"]}')}\n\nNo new rows for 3+ days — check the warehouse sync for this table.\n"
+                        },
+                        "uuid": "f77a1577-edce-453a-999c-2ff68aab2f80"
+                      }
+                    ],
+                    "comment": "last_processed_date < 3 days",
+                    "uuid": "299964b8-a685-467e-b368-e0eb15a34515"
+                  }
+                ],
+                "comment": "records doesn't exist",
+                "uuid": "fa76055f-80f0-465b-9a6c-17254679945a"
+              }
+            ],
+            "comment": "records exist",
+            "uuid": "82745760-fd39-46bd-9256-37d837876e3e"
+          },
+          {
+            "number": 15,
+            "as": "de689f14",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 16,
+                "provider": "workato_recipe_function",
+                "name": "call_recipe_async",
+                "as": "2d8d5363",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "flow_id": "System Error Handling"
+                },
+                "input": {
+                  "flow_id": {
+                    "zip_name": "Common Functions/Error Handling Process/cm_fun_system_error_handling.recipe.json",
+                    "name": "[CM] Fun | System Error Handling",
+                    "folder": "Common Functions/Error Handling Process"
+                  },
+                  "parameters": {
+                    "ErrorDetails": {
+                      "parentProcessName": "None",
+                      "recipe_id": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_id\"]}')}",
+                      "processName": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+                      "process_path": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_path\"]}')}",
+                      "jobUrl": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_url\"]}')}",
+                      "is_repeat": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"is_repeat\"]}')}",
+                      "error_uuid": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"de689f14\",\"path\":[\"uuid\"]}')}",
+                      "errored_app": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"de689f14\",\"path\":[\"adapter\"]}')}",
+                      "errored_action": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"de689f14\",\"path\":[\"action\"]}')}",
+                      "error_step_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"de689f14\",\"path\":[\"line_number\"]}')}",
+                      "errorType": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"de689f14\",\"path\":[\"type\"]}')}",
+                      "errorMessage": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"de689f14\",\"path\":[\"message\"]}')}",
+                      "Timestamp": "=now.in_time_zone(\"Asia/Jerusalem\")",
+                      "job_uuid": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}"
+                    }
+                  }
+                },
+                "extended_input_schema": [
+                  {
+                    "label": "Parameters",
+                    "name": "parameters",
+                    "properties": [
+                      {
+                        "label": "Error Details",
+                        "name": "ErrorDetails",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Parent process name",
+                            "name": "parentProcessName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Recipe Id",
+                            "name": "recipe_id",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job uuid",
+                            "name": "job_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Name",
+                            "name": "processName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Path",
+                            "name": "process_path",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job URL",
+                            "name": "jobUrl",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Is repeat",
+                            "name": "is_repeat",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error uuid",
+                            "name": "error_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored app",
+                            "name": "errored_app",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored action",
+                            "name": "errored_action",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error step number",
+                            "name": "error_step_number",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error type",
+                            "name": "errorType",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error message",
+                            "name": "errorMessage",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Timestamp",
+                            "name": "Timestamp",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Files",
+                        "name": "files",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "File name",
+                            "name": "fileName",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File content",
+                            "name": "fileContent",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "comment": "system error",
+                "uuid": "04eed9d0-db88-4fce-b9cc-926fb23ef498",
+                "skip": false
+              }
+            ],
+            "uuid": "a085257f-9843-40de-913a-59167ba0ea26"
+          }
+        ],
+        "uuid": "aae6c1fa-be72-4825-92a2-d32ebf9885f8"
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_0",
+        "label": "Provider"
+      },
+      {
+        "name": "custom_column_1",
+        "label": "Total Ingested"
+      },
+      {
+        "name": "custom_column_2",
+        "label": "Baches Sent"
+      },
+      {
+        "name": "custom_column_3",
+        "label": "Status"
+      },
+      {
+        "name": "custom_column_4",
+        "label": "Message"
+      },
+      {
+        "name": "custom_column_5",
+        "label": "Duration[Minutes]"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"720daa91\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"provider\"]}')}",
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"08bfd859\",\"path\":[\"result\",\"total_ingested\"]}')}",
+      "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"08bfd859\",\"path\":[\"result\",\"batches_sent\"]}')}",
+      "custom_column_3": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"08bfd859\",\"path\":[\"result\",\"status\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"08bfd859\",\"path\":[\"result\",\"status\"]}') :\n_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"de689f14\",\"path\":[\"message\"]}').present? ? 'Error' : 'Success'",
+      "custom_column_4": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"08bfd859\",\"path\":[\"result\",\"message\"]}') || _dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"de689f14\",\"path\":[\"message\"]}')",
+      "custom_column_5": "=((now- _dp('{\"pill_type\":\"job_context\",\"path\":[\"job_created_at\"]}'))/60).round(3).to_s + ' Minuted'"
+    },
+    "uuid": "bff1b3bb-5c9b-41bf-add3-b45470644b79"
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "snowflake",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/BizOps App/snowflake_etl_salesforce.connection.json",
+        "name": "Snowflake: ETL_SALESFORCE",
+        "folder": "#Connections/BizOps App"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_variable",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_db_table",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ],
+  "tags": [
+    "Recipe Function"
+  ]
+}

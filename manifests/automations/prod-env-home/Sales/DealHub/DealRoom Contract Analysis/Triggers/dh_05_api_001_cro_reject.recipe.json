@@ -1,0 +1,1153 @@
+{
+  "name": "DH-05 | API 001 | CRO Reject",
+  "description": "",
+  "version": 21,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "workato_api_platform",
+    "name": "receive_request",
+    "as": "9426abf6",
+    "keyword": "trigger",
+    "dynamicPickListSelection": {
+      "response.content_type": "Text/XML",
+      "request.content_type": "JSON",
+      "response.responses.0.http_status_code": "200 - OK",
+      "response.responses.1.http_status_code": "200 - OK"
+    },
+    "toggleCfg": {
+      "response.responses.0.http_status_code": true,
+      "response.responses.1.http_status_code": true
+    },
+    "input": {
+      "request": {
+        "content_type": "json",
+        "path_params": "[]",
+        "schema": "[{\"name\":\"contract_id\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Contract ID\"},{\"name\":\"t\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"T\"}]"
+      },
+      "response": {
+        "content_type": "raw",
+        "responses": [
+          {
+            "name": "success",
+            "http_status_code": "200"
+          },
+          {
+            "name": "body",
+            "http_status_code": "200"
+          }
+        ],
+        "headers": "[{\"name\":\"Content-Type\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Content- type\"}]"
+      }
+    },
+    "extended_output_schema": [
+      {
+        "label": "Context",
+        "name": "context",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Calling IP address",
+            "optional": true,
+            "type": "string",
+            "name": "calling_ip"
+          },
+          {
+            "properties": [
+              {
+                "control_type": "integer",
+                "label": "Access profile ID",
+                "parse_output": "integer_conversion",
+                "optional": true,
+                "type": "integer",
+                "name": "id"
+              },
+              {
+                "control_type": "text",
+                "label": "Access profile name",
+                "optional": true,
+                "type": "string",
+                "name": "name"
+              },
+              {
+                "control_type": "text",
+                "label": "Access profile authentication type",
+                "optional": true,
+                "type": "string",
+                "name": "type"
+              }
+            ],
+            "label": "Access profile",
+            "type": "object",
+            "name": "access_profile"
+          },
+          {
+            "properties": [
+              {
+                "control_type": "text",
+                "label": "API client ID",
+                "optional": true,
+                "type": "string",
+                "name": "id"
+              },
+              {
+                "control_type": "text",
+                "label": "API client name",
+                "optional": true,
+                "type": "string",
+                "name": "name"
+              }
+            ],
+            "label": "API client",
+            "type": "object",
+            "name": "client"
+          },
+          {
+            "properties": [
+              {
+                "control_type": "integer",
+                "label": "Issued At",
+                "render_input": "date_time_conversion",
+                "parse_output": "date_time_conversion",
+                "optional": true,
+                "type": "date_time",
+                "name": "iat"
+              },
+              {
+                "control_type": "integer",
+                "label": "Not Before",
+                "render_input": "date_time_conversion",
+                "parse_output": "date_time_conversion",
+                "optional": true,
+                "type": "date_time",
+                "name": "nbf"
+              },
+              {
+                "control_type": "integer",
+                "label": "Expiration Time",
+                "render_input": "date_time_conversion",
+                "parse_output": "date_time_conversion",
+                "optional": true,
+                "type": "date_time",
+                "name": "exp"
+              },
+              {
+                "control_type": "text",
+                "label": "Audience",
+                "optional": true,
+                "type": "string",
+                "name": "aud"
+              },
+              {
+                "control_type": "text",
+                "label": "JWT ID",
+                "optional": true,
+                "type": "string",
+                "name": "jti"
+              },
+              {
+                "control_type": "text",
+                "label": "Issuer",
+                "optional": true,
+                "type": "string",
+                "name": "iss"
+              }
+            ],
+            "label": "JWT claims",
+            "type": "object",
+            "name": "jwt_payload"
+          },
+          {
+            "properties": [
+              {
+                "properties": [
+                  {
+                    "control_type": "checkbox",
+                    "label": "Active",
+                    "render_input": "boolean_conversion",
+                    "parse_output": "boolean_conversion",
+                    "optional": true,
+                    "toggle_hint": "Select from option list",
+                    "toggle_field": {
+                      "label": "Active",
+                      "control_type": "text",
+                      "toggle_hint": "Use custom value",
+                      "optional": true,
+                      "type": "boolean",
+                      "name": "active"
+                    },
+                    "type": "boolean",
+                    "name": "active"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Scope",
+                    "optional": true,
+                    "type": "string",
+                    "name": "scope"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Client ID",
+                    "optional": true,
+                    "type": "string",
+                    "name": "client_id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Username",
+                    "optional": true,
+                    "type": "string",
+                    "name": "username"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Token type",
+                    "optional": true,
+                    "type": "string",
+                    "name": "token_type"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Exp",
+                    "optional": true,
+                    "type": "string",
+                    "name": "exp"
+                  }
+                ],
+                "label": "Response Body",
+                "type": "object",
+                "name": "payload"
+              }
+            ],
+            "label": "Token introspection",
+            "type": "object",
+            "name": "introspect"
+          }
+        ],
+        "type": "object"
+      },
+      {
+        "label": "Request parameters",
+        "name": "request",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Contract ID",
+            "name": "contract_id",
+            "type": "string",
+            "optional": true
+          },
+          {
+            "control_type": "text",
+            "label": "T",
+            "name": "t",
+            "type": "string",
+            "optional": true
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "postgresql",
+            "name": "search_rows",
+            "as": "7a64d633",
+            "keyword": "action",
+            "dynamicPickListSelection": {
+              "table": "dealhub.contract_registry",
+              "output_columns": [
+                {
+                  "label": "id",
+                  "value": "id"
+                },
+                {
+                  "label": "contract_id",
+                  "value": "contract_id"
+                },
+                {
+                  "label": "original_filename",
+                  "value": "original_filename"
+                },
+                {
+                  "label": "new_filename",
+                  "value": "new_filename"
+                },
+                {
+                  "label": "drive_file_id",
+                  "value": "drive_file_id"
+                },
+                {
+                  "label": "file_type",
+                  "value": "file_type"
+                },
+                {
+                  "label": "status",
+                  "value": "status"
+                },
+                {
+                  "label": "is_standard",
+                  "value": "is_standard"
+                },
+                {
+                  "label": "dealroom_link",
+                  "value": "dealroom_link"
+                },
+                {
+                  "label": "created_at",
+                  "value": "created_at"
+                },
+                {
+                  "label": "updated_at",
+                  "value": "updated_at"
+                },
+                {
+                  "label": "document_origin",
+                  "value": "document_origin"
+                },
+                {
+                  "label": "customer_name",
+                  "value": "customer_name"
+                },
+                {
+                  "label": "uploaded_by",
+                  "value": "uploaded_by"
+                },
+                {
+                  "label": "cro_approved_by",
+                  "value": "cro_approved_by"
+                },
+                {
+                  "label": "cro_approved_at",
+                  "value": "cro_approved_at"
+                },
+                {
+                  "label": "reject_reason",
+                  "value": "reject_reason"
+                },
+                {
+                  "label": "dealhub_quote_number",
+                  "value": "dealhub_quote_number"
+                },
+                {
+                  "label": "quote_url",
+                  "value": "quote_url"
+                },
+                {
+                  "label": "submitted_by",
+                  "value": "submitted_by"
+                },
+                {
+                  "label": "sfdc_quote_id",
+                  "value": "sfdc_quote_id"
+                },
+                {
+                  "label": "sfdc_opportunity_id",
+                  "value": "sfdc_opportunity_id"
+                },
+                {
+                  "label": "account_id",
+                  "value": "account_id"
+                },
+                {
+                  "label": "cro_slack_message_json",
+                  "value": "cro_slack_message_json"
+                },
+                {
+                  "label": "cro_token",
+                  "value": "cro_token"
+                }
+              ]
+            },
+            "toggleCfg": {
+              "table": true
+            },
+            "input": {
+              "limit": "1",
+              "offset": "0",
+              "where": "contract_id = :contract_id\n",
+              "table": "dealhub.contract_registry",
+              "parameters": {
+                "schema": "[{\"name\":\"contract_id\",\"type\":\"string\",\"optional\":true,\"label\":\"contract_id\",\"details\":{\"real_name\":\"contract_id\"},\"control_type\":\"text\"}]",
+                "data": {
+                  "contract_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"9426abf6\",\"path\":[\"request\",\"contract_id\"]}')}"
+                }
+              },
+              "output_columns": "id\ncontract_id\noriginal_filename\nnew_filename\ndrive_file_id\nfile_type\nstatus\nis_standard\ndealroom_link\ncreated_at\nupdated_at\ndocument_origin\ncustomer_name\nuploaded_by\ncro_approved_by\ncro_approved_at\nreject_reason\ndealhub_quote_number\nquote_url\nsubmitted_by\nsfdc_quote_id\nsfdc_opportunity_id\naccount_id\ncro_slack_message_json\ncro_token"
+            },
+            "extended_output_schema": [
+              {
+                "label": "Rows",
+                "name": "rows",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "account_id",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "account_id"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "account_id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "contract_id",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "contract_id"
+                    },
+                    "hint": "text",
+                    "optional": true,
+                    "type": "string",
+                    "name": "contract_id"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "created_at",
+                    "render_input": "convert_date_time",
+                    "parse_output": "convert_date_time",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "timestamp with time zone",
+                      "column_name": "created_at"
+                    },
+                    "optional": true,
+                    "hint": "timestamp with time zone",
+                    "type": "date_time",
+                    "name": "created_at"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "cro_approved_at",
+                    "render_input": "convert_date_time",
+                    "parse_output": "convert_date_time",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "timestamp with time zone",
+                      "column_name": "cro_approved_at"
+                    },
+                    "optional": true,
+                    "hint": "timestamp with time zone",
+                    "type": "date_time",
+                    "name": "cro_approved_at"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "cro_approved_by",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "cro_approved_by"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "cro_approved_by"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "cro_slack_message_json",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "cro_slack_message_json"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "cro_slack_message_json"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "cro_token",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "cro_token"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "cro_token"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "customer_name",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "customer_name"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "customer_name"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "dealhub_quote_number",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "dealhub_quote_number"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "dealhub_quote_number"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "dealroom_link",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "dealroom_link"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "dealroom_link"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "document_origin",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "document_origin"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "document_origin"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "drive_file_id",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "drive_file_id"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "drive_file_id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "file_type",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "file_type"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "file_type"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "id",
+                    "parse_output": "parse_integer_output",
+                    "details": {
+                      "primary_key": true,
+                      "data_type": "bigint",
+                      "column_name": "id"
+                    },
+                    "optional": true,
+                    "event_title": true,
+                    "hint": "bigint, primary key",
+                    "type": "integer",
+                    "name": "id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "is_standard",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "boolean",
+                      "column_name": "is_standard"
+                    },
+                    "parse_output": "parse_boolean_output",
+                    "optional": true,
+                    "hint": "boolean",
+                    "type": "string",
+                    "name": "is_standard"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "new_filename",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "new_filename"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "new_filename"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "original_filename",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "original_filename"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "original_filename"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "quote_url",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "quote_url"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "quote_url"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "reject_reason",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "reject_reason"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "reject_reason"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "sfdc_opportunity_id",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "sfdc_opportunity_id"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "sfdc_opportunity_id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "sfdc_quote_id",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "sfdc_quote_id"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "sfdc_quote_id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "status",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "status"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "status"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "submitted_by",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "submitted_by"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "submitted_by"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "updated_at",
+                    "render_input": "convert_date_time",
+                    "parse_output": "convert_date_time",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "timestamp with time zone",
+                      "column_name": "updated_at"
+                    },
+                    "optional": true,
+                    "hint": "timestamp with time zone",
+                    "type": "date_time",
+                    "name": "updated_at"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "uploaded_by",
+                    "details": {
+                      "primary_key": false,
+                      "data_type": "text",
+                      "column_name": "uploaded_by"
+                    },
+                    "optional": true,
+                    "hint": "text",
+                    "type": "string",
+                    "name": "uploaded_by"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "control_type": "form-schema-builder",
+                "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. <b>id</b>\n                    Second, provide the actual parameter value. Parameter values can be static or datapills.\n                    Select the <b>closest corresponding data type</b> that your database is expecting for the bind variable\n                    ",
+                "label": "Parameters",
+                "name": "parameters",
+                "optional": true,
+                "override": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Schema",
+                    "extends_schema": true,
+                    "type": "string",
+                    "name": "schema"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "contract_id",
+                        "name": "contract_id",
+                        "type": "string",
+                        "optional": true,
+                        "details": {
+                          "real_name": "contract_id"
+                        }
+                      }
+                    ],
+                    "label": "Data",
+                    "optional": true,
+                    "type": "object",
+                    "name": "data"
+                  }
+                ],
+                "sticky": true,
+                "type": "object"
+              }
+            ],
+            "visible_config_fields": [
+              "table",
+              "where",
+              "parameters",
+              "orderby",
+              "limit",
+              "offset",
+              "parameters.data.contract_id",
+              "parameters.schema",
+              "output_columns"
+            ],
+            "comment": "dealhub.contract_registry table",
+            "uuid": "5b10d605-1dfa-49cc-b1a8-162f70dfcaa2"
+          },
+          {
+            "number": 3,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "present",
+                  "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"contract_id\"]}')",
+                  "rhs": "",
+                  "uuid": "a91693d0-739c-4edc-bffb-c3825f5754ec"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 4,
+                "provider": "workato_custom_code",
+                "name": "invoke_custom_ruby_code",
+                "as": "3a8b85b1",
+                "keyword": "action",
+                "input": {
+                  "payload_asset_type": "inline",
+                  "code": "contract_id = input['contract_id'].to_s\ncontract_id = 'UNKNOWN' if contract_id.empty?\ntoken       = input['token'].to_s\nt           = input['t'].to_s\nstored_token = input['cro_token'].to_s\nstatus       = input['status'].to_s.upcase\n\nesc = lambda { |s| s.to_s.gsub('&','&amp;').gsub('<','&lt;').gsub('>','&gt;') }\n\ntoken_ok = !t.empty? && !stored_token.empty? && t == stored_token\ndecided  = %w[APPROVED REJECTED].include?(status)\n\n# ---- shared brand header/footer ----\nbrand_head = %(<div style=\"background:#0B0F3B;padding:22px 28px;text-align:center;\">\n  <span style=\"color:#ffffff;font-size:18px;font-weight:800;letter-spacing:.3px;\">bright<span style=\"color:#4F7BFF;\">data</span></span>\n  <div style=\"color:#9aa0c7;font-size:12px;margin-top:2px;\">BrightMind · Deal Sign-off</div>\n</div>)\nbrand_foot = %(<div style=\"background:#f5f6fa;padding:16px 28px;border-top:1px solid #e6e8f0;text-align:center;\">\n  <div style=\"font-size:12px;color:#8a8fb0;\">&#129302; BrightMind · Bright Data · #{esc.call(contract_id)}</div>\n</div>)\n\nif !token_ok\n  page = %(<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>\n  <body style=\"font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f5f6fa;margin:0;padding:48px 16px;\">\n    <div style=\"max-width:520px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 24px rgba(11,15,59,0.10);\">\n      #{brand_head}\n      <div style=\"padding:40px 32px;text-align:center;\">\n        <div style=\"font-size:48px;\">&#9888;&#65039;</div>\n        <h1 style=\"color:#0B0F3B;font-size:22px;margin:16px 0 8px;\">Invalid or Expired Link</h1>\n        <p style=\"color:#5b6079;font-size:15px;line-height:1.5;\">This approval link is no longer valid. It may have already been used or doesn't match this contract.</p>\n        <p style=\"color:#8a8fb0;font-size:13px;margin-top:24px;\">Please contact Deal Desk if you need to take action.</p>\n      </div>\n      #{brand_foot}\n    </div>\n  </body></html>)\nelsif decided\n  page = %(<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>\n  <body style=\"font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f5f6fa;margin:0;padding:48px 16px;\">\n    <div style=\"max-width:520px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 24px rgba(11,15,59,0.10);\">\n      #{brand_head}\n      <div style=\"padding:40px 32px;text-align:center;\">\n        <div style=\"font-size:48px;\">&#8505;&#65039;</div>\n        <h1 style=\"color:#0B0F3B;font-size:22px;margin:16px 0 8px;\">Already Processed</h1>\n        <p style=\"color:#5b6079;font-size:15px;\">This deal was already <b>#{esc.call(status)}</b>. No further action is needed.</p>\n      </div>\n      #{brand_foot}\n    </div>\n  </body></html>)\nelse\n  submit_base = \"https://apim.workato.com/brightdata/brightbot/reject-submit?contract_id=#{contract_id}&t=#{t}\"\n  page = %(<!DOCTYPE html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"></head>\n  <body style=\"font-family:-apple-system,Segoe UI,Roboto,Arial,sans-serif;background:#f5f6fa;margin:0;padding:48px 16px;\">\n    <div style=\"max-width:560px;margin:0 auto;background:#fff;border-radius:14px;overflow:hidden;box-shadow:0 4px 24px rgba(11,15,59,0.10);\">\n      #{brand_head}\n      <div style=\"padding:36px 32px;\">\n        <div style=\"font-size:40px;text-align:center;\">&#10060;</div>\n        <h1 style=\"color:#0B0F3B;font-size:22px;text-align:center;margin:12px 0 4px;\">Reject Deal</h1>\n        <p style=\"color:#5b6079;font-size:14px;text-align:center;margin:0;\">Contract <b style=\"color:#0B0F3B;\">#{esc.call(contract_id)}</b></p>\n\n        <label style=\"display:block;font-size:14px;color:#0B0F3B;margin:28px 0 8px;font-weight:600;\">Reason for rejection *</label>\n        <textarea id=\"reason\" rows=\"4\"\n          style=\"width:100%;padding:13px;border:1px solid #d7dae8;border-radius:10px;font-size:14px;box-sizing:border-box;font-family:inherit;color:#0B0F3B;outline:none;\"\n          placeholder=\"Explain why this deal is rejected...\"></textarea>\n\n        <button id=\"submitBtn\" onclick=\"submitReject()\"\n          style=\"width:100%;margin-top:22px;background:#E23744;color:#fff;font-size:15px;font-weight:700;padding:15px;border:none;border-radius:10px;cursor:pointer;\">\n          Confirm Rejection\n        </button>\n\n        <p style=\"color:#8a8fb0;font-size:12px;text-align:center;margin-top:18px;\">You can also action this from Slack — both stay in sync.</p>\n      </div>\n      #{brand_foot}\n    </div>\n    <script>\n      function submitReject() {\n        var r = document.getElementById('reason').value.trim();\n        if (!r) { alert('Please enter a reason for rejection.'); return; }\n        var b = document.getElementById('submitBtn');\n        b.disabled = true; b.innerText = 'Submitting...'; b.style.background = '#b0b3bc';\n        window.location.href = '#{submit_base}&reject_reason=' + encodeURIComponent(r) + '&api_token=#{token}';\n      }\n    </script>\n  </body></html>)\nend\n\n{ 'html_page' => page, 'token_ok' => token_ok, 'decided' => decided }\n",
+                  "name": "build the HTML",
+                  "code_input": {
+                    "schema": "[{\"control_type\":\"text\",\"label\":\"contract_id\",\"name\":\"contract_id\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"token\",\"name\":\"token\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"t\",\"name\":\"t\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"cro_token\",\"name\":\"cro_token\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"status\",\"name\":\"status\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]}]",
+                    "data": {
+                      "contract_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"9426abf6\",\"path\":[\"request\",\"contract_id\"]}')}",
+                      "cro_token": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"cro_token\"]}')}",
+                      "token": "REDACTED_USE_WORKATO_PROPERTY",
+                      "t": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_api_platform\",\"line\":\"9426abf6\",\"path\":[\"request\",\"t\"]}')}",
+                      "status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"7a64d633\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"status\"]}')}"
+                    }
+                  },
+                  "code_output_schema_json": "[{\"control_type\":\"text\",\"label\":\"Html page\",\"optional\":true,\"type\":\"string\",\"name\":\"html_page\"},{\"control_type\":\"checkbox\",\"label\":\"Token ok\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"optional\":true,\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Token ok\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"optional\":true,\"type\":\"boolean\",\"name\":\"token_ok\"},\"type\":\"boolean\",\"name\":\"token_ok\"},{\"control_type\":\"checkbox\",\"label\":\"Decided\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"optional\":true,\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Decided\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"optional\":true,\"type\":\"boolean\",\"name\":\"decided\"},\"type\":\"boolean\",\"name\":\"decided\"}]"
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Output",
+                    "name": "output",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Html page",
+                        "optional": true,
+                        "type": "string",
+                        "name": "html_page"
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "label": "Token ok",
+                        "render_input": "boolean_conversion",
+                        "parse_output": "boolean_conversion",
+                        "optional": true,
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                          "label": "Token ok",
+                          "control_type": "text",
+                          "toggle_hint": "Use custom value",
+                          "optional": true,
+                          "type": "boolean",
+                          "name": "token_ok"
+                        },
+                        "type": "boolean",
+                        "name": "token_ok"
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "label": "Decided",
+                        "render_input": "boolean_conversion",
+                        "parse_output": "boolean_conversion",
+                        "optional": true,
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                          "label": "Decided",
+                          "control_type": "text",
+                          "toggle_hint": "Use custom value",
+                          "optional": true,
+                          "type": "boolean",
+                          "name": "decided"
+                        },
+                        "type": "boolean",
+                        "name": "decided"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "control_type": "form-schema-builder",
+                    "label": "Input",
+                    "name": "code_input",
+                    "optional": true,
+                    "override": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Schema",
+                        "extends_schema": true,
+                        "type": "string",
+                        "name": "schema"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "contract_id",
+                            "name": "contract_id",
+                            "type": "string",
+                            "optional": true,
+                            "parent": [
+                              "code_input",
+                              "data"
+                            ]
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "token",
+                            "name": "token",
+                            "type": "string",
+                            "optional": true,
+                            "parent": [
+                              "code_input",
+                              "data"
+                            ]
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "t",
+                            "name": "t",
+                            "type": "string",
+                            "optional": true,
+                            "parent": [
+                              "code_input",
+                              "data"
+                            ]
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "cro_token",
+                            "name": "cro_token",
+                            "type": "string",
+                            "optional": true,
+                            "parent": [
+                              "code_input",
+                              "data"
+                            ]
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "status",
+                            "name": "status",
+                            "type": "string",
+                            "optional": true,
+                            "parent": [
+                              "code_input",
+                              "data"
+                            ]
+                          }
+                        ],
+                        "label": "Data",
+                        "type": "object",
+                        "name": "data"
+                      }
+                    ],
+                    "sticky": true,
+                    "type": "object"
+                  }
+                ],
+                "visible_config_fields": [
+                  "name",
+                  "code_input",
+                  "code_output_schema_json",
+                  "payload_asset_type",
+                  "code",
+                  "code_input.data.contract_id",
+                  "code_input.schema",
+                  "code_input.data",
+                  "code_input.data.cro_token_expires_at",
+                  "code_input.data.cro_token",
+                  "code_input.data.key",
+                  "code_input.data.token",
+                  "code_input.data.api_token",
+                  "code_input.data.t",
+                  "code_input.data.status"
+                ],
+                "comment": "build the HTML",
+                "uuid": "6688eeaf-014a-4acb-bfe6-a6d097d44b14"
+              },
+              {
+                "number": 5,
+                "provider": "workato_api_platform",
+                "name": "return_response",
+                "as": "f38a64b7",
+                "keyword": "action",
+                "input": {
+                  "http_status_code": "200",
+                  "response_headers": {
+                    "Content-Type": "text/html; charset=utf-8"
+                  },
+                  "response": {
+                    "body": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"3a8b85b1\",\"path\":[\"output\",\"html_page\"]}')}"
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "change_on_blur": true,
+                    "control_type": "select",
+                    "extends_schema": true,
+                    "help": {
+                      "title": "Responses with duplicate status codes",
+                      "text": "Responses should have unique HTTP statuses (duplicate responses defined for these HTTP status codes: 200)"
+                    },
+                    "label": "Response",
+                    "name": "http_status_code",
+                    "pick_list": [
+                      [
+                        "success",
+                        "200"
+                      ]
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "label": "Response body",
+                    "name": "response",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text-area",
+                        "label": "Body",
+                        "optional": true,
+                        "sticky": true,
+                        "supports_byte_streaming": true,
+                        "type": "string",
+                        "name": "body"
+                      }
+                    ],
+                    "sticky": true,
+                    "type": "object"
+                  },
+                  {
+                    "label": "Response headers",
+                    "name": "response_headers",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Content- type",
+                        "name": "Content-Type",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "change_on_blur": true,
+                    "control_type": "select",
+                    "extends_schema": true,
+                    "help": {
+                      "title": "Responses with duplicate status codes",
+                      "text": "Responses should have unique HTTP statuses (duplicate responses defined for these HTTP status codes: 200)"
+                    },
+                    "label": "Response",
+                    "name": "http_status_code",
+                    "pick_list": [
+                      [
+                        "success",
+                        "200"
+                      ]
+                    ],
+                    "type": "string"
+                  },
+                  {
+                    "label": "Response headers",
+                    "name": "response_headers",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Content- type",
+                        "name": "Content-Type",
+                        "type": "string",
+                        "optional": true
+                      }
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "label": "Response body",
+                    "name": "response",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text-area",
+                        "label": "Body",
+                        "optional": true,
+                        "sticky": true,
+                        "supports_byte_streaming": true,
+                        "type": "string",
+                        "name": "body"
+                      }
+                    ],
+                    "sticky": true,
+                    "type": "object"
+                  }
+                ],
+                "visible_config_fields": [
+                  "http_status_code",
+                  "response",
+                  "response.body",
+                  "response_headers.Content-Type"
+                ],
+                "comment": "status =success",
+                "uuid": "1affb350-c8b4-491c-a2f4-7edf5977353b"
+              }
+            ],
+            "uuid": "fc59728b-9aed-466e-8f34-c7453800a6be"
+          },
+          {
+            "number": 6,
+            "as": "1ba93c57",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+
+            ],
+            "uuid": "d58af71f-93c0-4450-bcde-c9217188e158"
+          }
+        ],
+        "uuid": "b30a8d69-8a24-45bb-80af-3deca516bcc9"
+      }
+    ],
+    "uuid": "05ae9e2c-5839-49df-bcbe-cc5296116622"
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_api_platform",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_custom_code",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "postgresql",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/BizOps App/postgresql_account.connection.json",
+        "name": "PostgreSQL account",
+        "folder": "#Connections/BizOps App"
+      }
+    }
+  ],
+  "tags": [
+    "API Endpoint"
+  ]
+}

@@ -1,0 +1,217 @@
+{
+  "name": "Competitors global events",
+  "schema": [
+    {
+      "id": "11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+      "title": "Record ID",
+      "type": "short-text",
+      "read_only": true,
+      "hidden": true
+    },
+    {
+      "id": "a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+      "title": "Created time",
+      "type": "date-time",
+      "read_only": true,
+      "hidden": true
+    },
+    {
+      "id": "61aae604-a95e-4519-9091-bb0bf754a67f",
+      "title": "Last modified time",
+      "type": "date-time",
+      "read_only": true,
+      "hidden": true
+    },
+    {
+      "id": "1b6b1b93-6dfa-4977-9bd9-c997f9a0d605",
+      "title": "Event ID",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "211a05f5-b087-4dbe-a80a-a026cbbdb406",
+      "title": "Title",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "f3fc52f3-b736-44d1-8cb8-ff21303acf13",
+      "title": "Type",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "ed0eca01-eec1-47ca-9855-8b695497cb2e",
+      "title": "Format",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "60a80867-058e-425f-a9a6-e705659269c8",
+      "title": "Summary",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "85b5d9ec-def1-481f-afef-61638cd90c41",
+      "title": "Start Date",
+      "type": "date",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "5d7c3ab0-0c9c-448e-999c-1fe45af08410",
+      "title": "End Date",
+      "type": "date",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "5d4e81c8-fad2-42e3-acb8-e65bdb320925",
+      "title": "Location",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "5bef6cda-106a-4a2b-9ff8-0d4d17db5e15",
+      "title": "City",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "c6ead30d-47e9-4133-92d2-4e02cf11afd4",
+      "title": "Country",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "21465e28-4215-4a44-bbdd-473636dc4673",
+      "title": "Organizer",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "de1f97e8-c1f3-4bf6-9fed-77cb99d6daa5",
+      "title": "Competitors",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "d5c3665c-07f3-49dd-8da2-b12aa2a458c9",
+      "title": "Topic/Tags",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "cc3399ee-fb04-4ebe-8462-4afcf449a26c",
+      "title": "CI Score",
+      "type": "number",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "e141bd58-891d-413f-a2ac-40a4f1f69552",
+      "title": "CI Rationale",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "e3ae6d99-2f03-48b7-ac32-d7e3918883ab",
+      "title": "URL",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "e2286ea2-8537-4819-8285-82daa3a82093",
+      "title": "Discovery Date",
+      "type": "date",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "41de121d-7b39-4944-8ac5-ccd6d0e1cabc",
+      "title": "Source",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "e7c7f195-0d89-48f7-b2c5-74916650b615",
+      "title": "When",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    }
+  ],
+  "project_name": "Imagine AI"
+}

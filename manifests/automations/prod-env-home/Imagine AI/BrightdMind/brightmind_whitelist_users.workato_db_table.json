@@ -1,0 +1,137 @@
+{
+  "name": "BrightMind  WhiteList Users",
+  "schema": [
+    {
+      "id": "11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+      "title": "Record ID",
+      "type": "short-text",
+      "read_only": true,
+      "hidden": true
+    },
+    {
+      "id": "a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+      "title": "Created time",
+      "type": "date-time",
+      "read_only": true,
+      "hidden": true
+    },
+    {
+      "id": "61aae604-a95e-4519-9091-bb0bf754a67f",
+      "title": "Last modified time",
+      "type": "date-time",
+      "read_only": true,
+      "hidden": true
+    },
+    {
+      "id": "d50a4924-5e6c-4d57-9ad9-ace61370926e",
+      "title": "slack_user_id",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": true,
+      "metadata": {
+      }
+    },
+    {
+      "id": "836d3c32-4229-4450-851f-47cc8ac9ca4c",
+      "title": "email",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": true,
+      "hint": "Identity / mapping",
+      "metadata": {
+      }
+    },
+    {
+      "id": "56f47bf4-6e67-48b8-83f7-9f6fbc5b2505",
+      "title": "zendesk_group_id",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "384f7b1d-51ce-4921-98e7-150e66e7073c",
+      "title": "monday_board_ids",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "b9fcc1f8-3ac4-48d9-8c94-8a018ab63471",
+      "title": "role",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "hint": "Matches Permissions in buttons table (agent / lead / admin)",
+      "metadata": {
+      }
+    },
+    {
+      "id": "05ee0f58-e3a3-4c9d-8f54-52c46bfdf6c8",
+      "title": "active",
+      "type": "boolean",
+      "default_value": false,
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "hint": "Quick on/off kill switch",
+      "metadata": {
+      }
+    },
+    {
+      "id": "e61b76de-480e-4cf2-a82d-d78b06140c19",
+      "title": "allowed_sources",
+      "type": "short-text-set",
+      "default_value": [
+
+      ],
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "hint": "zendesk,monday — which systems they may query",
+      "metadata": {
+      }
+    },
+    {
+      "id": "b624ae0b-3ef7-4834-91a0-8325771a4244",
+      "title": "department",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "metadata": {
+      }
+    },
+    {
+      "id": "4d7cfcbb-c614-48eb-ad3e-647dcfd3e090",
+      "title": "daily_limit",
+      "type": "short-text",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "hint": "Rate limit (LLM cost control)",
+      "metadata": {
+      }
+    },
+    {
+      "id": "66649adc-5018-4d14-abb9-c8cc121d20d9",
+      "title": "created_at",
+      "type": "date",
+      "read_only": false,
+      "hidden": false,
+      "required": false,
+      "hint": "Audit",
+      "metadata": {
+      }
+    }
+  ],
+  "project_name": "Imagine AI"
+}

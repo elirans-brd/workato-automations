@@ -1,0 +1,17 @@
+{
+  "name": "API: Dataset Deal Announcement",
+  "recipe_id": {
+    "zip_name": "Product/api_dataset_deal_announcement.recipe.json",
+    "name": "API: Dataset Deal Announcement",
+    "folder": "Product"
+  },
+  "api_group_id": {
+    "zip_name": "prodcut.api_group.json",
+    "name": "Prodcut",
+    "folder": ""
+  },
+  "method": "POST",
+  "path": "api-dataset-deal-announcement",
+  "legacy": false,
+  "validate_request": false
+}

@@ -1,0 +1,2602 @@
+{
+  "name": "Webhook: Quote Sync From Dealhub To CP",
+  "description": "This recipe automates the process of handling a \"quote won\" event from Dealhub via an HTTP webhook.\n\n- The process begins when a webhook event is received, containing details about the Dealhub opportunity and quote.\n- If the environment is set to \"Dev\", it searches for related opportunities in Salesforce using a SOQL query.\n- The recipe then retrieves the quote details from Dealhub using an HTTP GET request.\n- If the quote retrieval is successful, it updates the quote in another system via an HTTP PUT request.\n- Upon successful update, a message is posted to a Slack channel with details about the new Dealhub won opportunity, including the external opportunity ID, Dealhub quote ID, the executor, and the status.\n- If any step fails, an error message is raised and posted to the Slack channel for visibility.\n\nOverall, this recipe ensures that when a quote is won in Dealhub, the relevant information is updated and communicated effectively to the team via Slack.\n\n[Monday Item Link](https://brightdata-group.monday.com/boards/8667788707/pulses/18147031001)",
+  "version": 17,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "workato_webhooks",
+    "name": "new_event",
+    "as": "0c977ab4",
+    "keyword": "trigger",
+    "input": {
+      "request": {
+        "webhook_type": "json",
+        "payload_schema": "[{\"control_type\":\"text\",\"label\":\"Dealhub opportunity ID\",\"type\":\"string\",\"name\":\"dealhub_opportunity_id\"},{\"control_type\":\"text\",\"label\":\"Dealhub quote ID\",\"type\":\"string\",\"name\":\"dealhub_quote_id\"},{\"control_type\":\"text\",\"label\":\"Event\",\"type\":\"string\",\"name\":\"event\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Api version\",\"type\":\"string\",\"name\":\"api_version\"},{\"control_type\":\"text\",\"label\":\"Event ID\",\"type\":\"string\",\"name\":\"event_id\"},{\"control_type\":\"text\",\"label\":\"Webhook ID\",\"type\":\"string\",\"name\":\"webhook_id\"}],\"label\":\"Event info\",\"type\":\"object\",\"name\":\"event_info\"},{\"control_type\":\"text\",\"label\":\"Executed by\",\"type\":\"string\",\"name\":\"executed_by\"},{\"control_type\":\"text\",\"label\":\"Execution date\",\"type\":\"string\",\"name\":\"execution_date\"},{\"control_type\":\"text\",\"label\":\"External customer ID\",\"type\":\"string\",\"name\":\"external_customer_id\"},{\"control_type\":\"text\",\"label\":\"External opportunity ID\",\"type\":\"string\",\"name\":\"external_opportunity_id\"},{\"control_type\":\"text\",\"label\":\"External quote ID\",\"type\":\"string\",\"name\":\"external_quote_id\"},{\"control_type\":\"text\",\"label\":\"Primary quote\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Primary quote\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"primary_quote\"},\"type\":\"boolean\",\"name\":\"primary_quote\"},{\"control_type\":\"text\",\"label\":\"Status\",\"type\":\"string\",\"name\":\"status\"}]"
+      },
+      "webhook_suffix": "Dealhub_Quote_Won"
+    },
+    "extended_output_schema": [
+      {
+        "label": "Headers",
+        "name": "headers",
+        "properties": [
+
+        ],
+        "type": "object"
+      },
+      {
+        "label": "Payload",
+        "name": "payload",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "Dealhub opportunity ID",
+            "type": "string",
+            "name": "dealhub_opportunity_id"
+          },
+          {
+            "control_type": "text",
+            "label": "Dealhub quote ID",
+            "type": "string",
+            "name": "dealhub_quote_id"
+          },
+          {
+            "control_type": "text",
+            "label": "Event",
+            "type": "string",
+            "name": "event"
+          },
+          {
+            "properties": [
+              {
+                "control_type": "text",
+                "label": "Api version",
+                "type": "string",
+                "name": "api_version"
+              },
+              {
+                "control_type": "text",
+                "label": "Event ID",
+                "type": "string",
+                "name": "event_id"
+              },
+              {
+                "control_type": "text",
+                "label": "Webhook ID",
+                "type": "string",
+                "name": "webhook_id"
+              }
+            ],
+            "label": "Event info",
+            "type": "object",
+            "name": "event_info"
+          },
+          {
+            "control_type": "text",
+            "label": "Executed by",
+            "type": "string",
+            "name": "executed_by"
+          },
+          {
+            "control_type": "text",
+            "label": "Execution date",
+            "type": "string",
+            "name": "execution_date"
+          },
+          {
+            "control_type": "text",
+            "label": "External customer ID",
+            "type": "string",
+            "name": "external_customer_id"
+          },
+          {
+            "control_type": "text",
+            "label": "External opportunity ID",
+            "type": "string",
+            "name": "external_opportunity_id"
+          },
+          {
+            "control_type": "text",
+            "label": "External quote ID",
+            "type": "string",
+            "name": "external_quote_id"
+          },
+          {
+            "control_type": "text",
+            "label": "Primary quote",
+            "render_input": "boolean_conversion",
+            "parse_output": "boolean_conversion",
+            "toggle_hint": "Select from option list",
+            "toggle_field": {
+              "label": "Primary quote",
+              "control_type": "text",
+              "toggle_hint": "Use custom value",
+              "type": "boolean",
+              "name": "primary_quote"
+            },
+            "type": "boolean",
+            "name": "primary_quote"
+          },
+          {
+            "control_type": "text",
+            "label": "Status",
+            "type": "string",
+            "name": "status"
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "extended_input_schema": [
+      {
+        "label": "Payload configuration",
+        "name": "request",
+        "override": true,
+        "properties": [
+          {
+            "control_type": "select",
+            "label": "Webhook type",
+            "pick_list": [
+              [
+                "GET request",
+                "get"
+              ],
+              [
+                "PUT/POST with JSON payload",
+                "json"
+              ],
+              [
+                "PUT/POST with XML payload",
+                "xml"
+              ],
+              [
+                "PUT/POST with FORM encoded payload",
+                "form"
+              ],
+              [
+                "PUT/POST with raw binary data",
+                "rawdata"
+              ],
+              [
+                "PUT/POST with unicode text data",
+                "rawdatatxt"
+              ]
+            ],
+            "hint": "Select the HTTP method and payload data type used by webhook. <a href=\"https://docs.workato.com/developing-connectors/http.html#set-up-your-non-oauth-2-0-connection\" target=\"_blank\">Learn more</a>",
+            "default": "json",
+            "extends_schema": true,
+            "type": "string",
+            "name": "webhook_type"
+          },
+          {
+            "control_type": "schema-designer",
+            "label": "Payload schema",
+            "sample_data_type": "json_http",
+            "extends_schema": true,
+            "empty_schema_title": "Describe all fields in your response.",
+            "optional": true,
+            "sticky": true,
+            "type": "string",
+            "name": "payload_schema"
+          },
+          {
+            "control_type": "schema-designer",
+            "label": "Query params",
+            "extends_schema": true,
+            "empty_schema_title": "Describe all the query params",
+            "optional": true,
+            "sticky": true,
+            "type": "string",
+            "name": "query_params"
+          },
+          {
+            "control_type": "schema-designer",
+            "label": "Headers",
+            "extends_schema": true,
+            "empty_schema_title": "Describe all the webhook headers",
+            "optional": true,
+            "sticky": true,
+            "type": "string",
+            "name": "headers_schema"
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "equals_to",
+                  "lhs": "#{_dp('{\"pill_type\":\"account_property\",\"property_name\":\"Environment\"}')}",
+                  "rhs": "Dev",
+                  "uuid": "347716c6-efb5-4633-8473-40d19b406b10"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 3,
+                "provider": "salesforce",
+                "name": "search_sobjects_soql",
+                "as": "fb0a80de",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "sobject_name": "Opportunity",
+                  "field_list": [
+                    {
+                      "label": "Opportunity ID",
+                      "value": "Id"
+                    },
+                    {
+                      "label": "Quote ID",
+                      "value": "SyncedQuoteId"
+                    }
+                  ]
+                },
+                "input": {
+                  "limit": "150",
+                  "sobject_name": "Opportunity",
+                  "query": "id = '#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"0c977ab4\",\"path\":[\"payload\",\"external_opportunity_id\"]}')}' and\nSyncedQuoteId <> '' and \naccount.Test_Account__c =true ",
+                  "field_list": "Id\nSyncedQuoteId"
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Opportunities",
+                    "name": "Opportunity",
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Opportunity ID",
+                        "optional": true,
+                        "custom": false,
+                        "sfdc_createable": false,
+                        "sfdc_updateable": false,
+                        "type": "string",
+                        "name": "Id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Quote ID",
+                        "optional": true,
+                        "custom": false,
+                        "sfdc_createable": true,
+                        "sfdc_updateable": true,
+                        "type": "string",
+                        "name": "SyncedQuoteId"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "number",
+                            "label": "Total size",
+                            "parse_output": "integer_conversion",
+                            "type": "integer",
+                            "name": "totalSize"
+                          },
+                          {
+                            "label": "Files",
+                            "of": "object",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "ID",
+                                "type": "string",
+                                "name": "Id"
+                              },
+                              {
+                                "control_type": "number",
+                                "label": "Content size",
+                                "parse_output": "integer_conversion",
+                                "type": "integer",
+                                "name": "ContentSize"
+                              },
+                              {
+                                "control_type": "url",
+                                "label": "Content URL",
+                                "type": "string",
+                                "name": "ContentUrl"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "File extension",
+                                "type": "string",
+                                "name": "FileExtension"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "File type",
+                                "type": "string",
+                                "name": "FileType"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Parent ID",
+                                "type": "string",
+                                "name": "ParentId"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Record type",
+                                "type": "string",
+                                "name": "RecordType"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Title",
+                                "type": "string",
+                                "name": "Title"
+                              }
+                            ],
+                            "type": "array",
+                            "name": "records"
+                          }
+                        ],
+                        "label": "Combined attachments",
+                        "sfdc_field_type": "CombinedAttachment",
+                        "type": "object",
+                        "name": "CombinedAttachments"
+                      }
+                    ],
+                    "type": "array"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "List size",
+                    "name": "list_size",
+                    "parse_output": "integer_conversion",
+                    "type": "integer"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Processed all records?",
+                    "name": "done",
+                    "toggle_field": {
+                      "label": "Processed all records?",
+                      "control_type": "text",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean",
+                      "render_input": null,
+                      "parse_output": null,
+                      "name": "done"
+                    },
+                    "toggle_hint": "Select from option list",
+                    "type": "boolean"
+                  },
+                  {
+                    "control_type": "integer",
+                    "label": "Total records",
+                    "name": "total_records",
+                    "parse_output": "integer_conversion",
+                    "type": "integer"
+                  },
+                  {
+                    "control_type": "url",
+                    "label": "Next page URL",
+                    "name": "next_page_url",
+                    "type": "string"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "control_type": "checkbox",
+                    "disable_formula": true,
+                    "extends_schema": true,
+                    "hint": "Select <b>Yes</b> to obtain data from notes, attachments and files associated to the queried records. Default value is <b>Yes</b>.",
+                    "label": "Select combined attachments",
+                    "name": "include_combined_attachments",
+                    "optional": true,
+                    "support_pills": false,
+                    "type": "boolean"
+                  }
+                ],
+                "comment": "get opportunities for test account",
+                "uuid": "28878bb0-cf11-46df-8b34-d1b2989448e6",
+                "skip": false
+              }
+            ],
+            "comment": "Only For dev, get opportunities for test account",
+            "uuid": "7bf2f1f1-d50b-4520-940c-d609234fb3e8"
+          },
+          {
+            "number": 4,
+            "provider": "workato_variable",
+            "name": "declare_variable",
+            "as": "1cf5299e",
+            "keyword": "action",
+            "input": {
+              "variables": {
+                "schema": "[{\"name\":\"quote_id\",\"type\":\"string\",\"optional\":true,\"label\":\"quote_id\",\"details\":{\"real_name\":\"quote_id\"},\"control_type\":\"text\",\"parent\":[\"variables\",\"data\"]}]",
+                "data": {
+                  "quote_id": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"0c977ab4\",\"path\":[\"payload\",\"external_quote_id\"]}')&.slice(0,16)"
+                }
+              }
+            },
+            "extended_output_schema": [
+              {
+                "control_type": "text",
+                "label": "quote_id",
+                "name": "quote_id",
+                "optional": true,
+                "type": "string",
+                "details": {
+                  "real_name": "quote_id"
+                }
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "add_field_label": "Add a variable",
+                "control_type": "form-schema-builder",
+                "empty_schema_title": "Add variables by giving them a name, type and default value",
+                "exclude_fields": [
+                  "hint"
+                ],
+                "item_label": "variable",
+                "label": "Variables",
+                "mark_as_required": true,
+                "name": "variables",
+                "ngIf": "!input.name",
+                "optional": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Schema",
+                    "extends_schema": true,
+                    "broadcast_change_event": true,
+                    "type": "string",
+                    "name": "schema"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "quote_id",
+                        "name": "quote_id",
+                        "type": "string",
+                        "optional": true,
+                        "details": {
+                          "real_name": "quote_id"
+                        },
+                        "parent": [
+                          "variables",
+                          "data"
+                        ],
+                        "hint": "Defaults to nil if not supplied.",
+                        "sticky": true
+                      }
+                    ],
+                    "label": "Data",
+                    "type": "object",
+                    "name": "data"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "visible_config_fields": [
+              "variables.data.quote_id"
+            ],
+            "uuid": "3bc9eb39-3860-42ca-b303-a2df89cf37fe"
+          },
+          {
+            "number": 5,
+            "provider": "rest",
+            "name": "make_request_v2",
+            "as": "7ab7b873",
+            "keyword": "action",
+            "toggleCfg": {
+              "response.ignore_http_errors": true,
+              "disable_retries": true
+            },
+            "input": {
+              "request_name": "Get Quote",
+              "request": {
+                "method": "GET",
+                "content_type": "application/json",
+                "url": "v2/quote/#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"1cf5299e\",\"path\":[\"quote_id\"]}')}?feature=all&external_identifier_flag=true",
+                "headers": [
+                  {
+                    "header": "Accept",
+                    "value": "application/json"
+                  }
+                ]
+              },
+              "response": {
+                "output_type": "json",
+                "expected_encoding": "UTF-8",
+                "ignore_http_errors": "true",
+                "response_schema": "[{\"control_type\":\"text\",\"label\":\"Dealhub quote ID\",\"type\":\"string\",\"name\":\"dealhub_quote_id\"},{\"control_type\":\"text\",\"label\":\"Status\",\"type\":\"string\",\"name\":\"status\"},{\"control_type\":\"text\",\"label\":\"Quote upgrade required\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Quote upgrade required\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"quote_upgrade_required\"},\"type\":\"boolean\",\"name\":\"quote_upgrade_required\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"External opportunity ID\",\"type\":\"string\",\"name\":\"external_opportunity_id\"},{\"control_type\":\"text\",\"label\":\"External quote ID\",\"type\":\"string\",\"name\":\"external_quote_id\"},{\"control_type\":\"text\",\"label\":\"External customer ID\",\"type\":\"string\",\"name\":\"external_customer_id\"},{\"control_type\":\"text\",\"label\":\"Customer ID\",\"type\":\"string\",\"name\":\"customer_id\"},{\"control_type\":\"text\",\"label\":\"Account name\",\"type\":\"string\",\"name\":\"account_name\"},{\"control_type\":\"text\",\"label\":\"Contact name\",\"type\":\"string\",\"name\":\"contact_name\"},{\"control_type\":\"text\",\"label\":\"Contact email\",\"type\":\"string\",\"name\":\"contact_email\"},{\"control_type\":\"text\",\"label\":\"Dealhub opportunity ID\",\"type\":\"string\",\"name\":\"dealhub_opportunity_id\"},{\"control_type\":\"text\",\"label\":\"Dealhub quote name\",\"type\":\"string\",\"name\":\"dealhub_quote_name\"},{\"control_type\":\"text\",\"label\":\"Dealhub quote number\",\"type\":\"string\",\"name\":\"dealhub_quote_number\"},{\"control_type\":\"text\",\"label\":\"Primary quote\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Primary quote\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"primary_quote\"},\"type\":\"boolean\",\"name\":\"primary_quote\"},{\"control_type\":\"text\",\"label\":\"Created by\",\"type\":\"string\",\"name\":\"created_by\"},{\"control_type\":\"text\",\"label\":\"Creation date\",\"type\":\"string\",\"name\":\"creation_date\"},{\"control_type\":\"text\",\"label\":\"Submitted by\",\"type\":\"string\",\"name\":\"submitted_by\"},{\"control_type\":\"text\",\"label\":\"Submission date\",\"type\":\"string\",\"name\":\"submission_date\"},{\"control_type\":\"text\",\"label\":\"Expiration date\",\"type\":\"string\",\"name\":\"expiration_date\"},{\"control_type\":\"text\",\"label\":\"Won date\",\"type\":\"string\",\"name\":\"won_date\"},{\"control_type\":\"text\",\"label\":\"Geo code\",\"type\":\"string\",\"name\":\"geo_code\"},{\"control_type\":\"text\",\"label\":\"Currency\",\"type\":\"string\",\"name\":\"currency\"},{\"control_type\":\"text\",\"label\":\"Playbook\",\"type\":\"string\",\"name\":\"playbook\"},{\"control_type\":\"text\",\"label\":\"Quote URL\",\"type\":\"string\",\"name\":\"quote_url\"},{\"control_type\":\"text\",\"label\":\"Version ID\",\"type\":\"string\",\"name\":\"version_id\"}],\"label\":\"Info\",\"type\":\"object\",\"name\":\"info\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Currency\",\"type\":\"string\",\"name\":\"currency\"},{\"control_type\":\"number\",\"label\":\"Total list price\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"total_list_price\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Total net price\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"total_net_price\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Total discount\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"total_discount\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Sales discount\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"sales_discount\",\"render_input\":\"float_conversion\"}],\"label\":\"Summary\",\"type\":\"object\",\"name\":\"summary\"},{\"label\":\"Line items\",\"type\":\"array\",\"name\":\"line_items\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"ID\",\"type\":\"string\",\"name\":\"id\"},{\"control_type\":\"text\",\"label\":\"Sku\",\"type\":\"string\",\"name\":\"sku\"},{\"control_type\":\"text\",\"label\":\"Name\",\"type\":\"string\",\"name\":\"name\"},{\"control_type\":\"text\",\"label\":\"Primary tag\",\"type\":\"string\",\"name\":\"primary_tag\"},{\"control_type\":\"number\",\"label\":\"Msrp\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"msrp\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Msrp discount\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"msrp_discount\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"List price\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"list_price\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"User price\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"user_price\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Net per unit\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"net_per_unit\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Sales discount\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"sales_discount\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Total discount\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"total_discount\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Net price\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"net_price\",\"render_input\":\"float_conversion\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Duration\",\"type\":\"string\",\"name\":\"duration\"},{\"control_type\":\"text\",\"label\":\"Quantity\",\"type\":\"string\",\"name\":\"quantity\"}],\"label\":\"Product factors\",\"type\":\"object\",\"name\":\"product_factors\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"One- time price\",\"type\":\"string\",\"name\":\"One-Time_Price\"},{\"control_type\":\"text\",\"label\":\"Tiered unit type\",\"type\":\"string\",\"name\":\"Tiered_Unit_Type\"},{\"control_type\":\"text\",\"label\":\"Sub family PPSL\",\"type\":\"string\",\"name\":\"Sub_Family_PPSL\"},{\"control_type\":\"text\",\"label\":\"Full net price\",\"type\":\"string\",\"name\":\"Full_Net_Price\"},{\"control_type\":\"text\",\"label\":\"Is managed service required\",\"type\":\"string\",\"name\":\"Is_Managed_Service_Required\"},{\"control_type\":\"text\",\"label\":\"5 to 25 discount flag\",\"type\":\"string\",\"name\":\"5_to_25_Discount_Flag\"},{\"control_type\":\"text\",\"label\":\"Link to custom scraper ID\",\"type\":\"string\",\"name\":\"Link_to_Custom_Scraper_ID\"},{\"control_type\":\"text\",\"label\":\"Count\",\"type\":\"string\",\"name\":\"Count\"},{\"control_type\":\"text\",\"label\":\"MRR\",\"type\":\"string\",\"name\":\"MRR\"},{\"control_type\":\"text\",\"label\":\"Custom scraper name\",\"type\":\"string\",\"name\":\"Custom_Scraper_Name\"},{\"control_type\":\"text\",\"label\":\"Item type PPSL\",\"type\":\"string\",\"name\":\"Item_Type_PPSL\"},{\"control_type\":\"text\",\"label\":\"Monthly commitment\",\"type\":\"string\",\"name\":\"Monthly_Commitment\"},{\"control_type\":\"text\",\"label\":\"Deal type\",\"type\":\"string\",\"name\":\"Deal_Type\"},{\"control_type\":\"text\",\"label\":\"Billing terms\",\"type\":\"string\",\"name\":\"Billing_Terms\"},{\"control_type\":\"text\",\"label\":\"Set price\",\"type\":\"string\",\"name\":\"Set_Price\"},{\"control_type\":\"text\",\"label\":\"To\",\"type\":\"string\",\"name\":\"To\"},{\"control_type\":\"text\",\"label\":\"100 discount flag\",\"type\":\"string\",\"name\":\"100_Discount_Flag\"},{\"control_type\":\"text\",\"label\":\"Refreshment frequency\",\"type\":\"string\",\"name\":\"Refreshment_Frequency\"},{\"control_type\":\"text\",\"label\":\"Tier type\",\"type\":\"string\",\"name\":\"Tier_Type\"},{\"control_type\":\"text\",\"label\":\"Related dataset SKU\",\"type\":\"string\",\"name\":\"Related_Dataset_SKU\"},{\"control_type\":\"text\",\"label\":\"Units quantity\",\"type\":\"string\",\"name\":\"Units_Quantity\"},{\"control_type\":\"text\",\"label\":\"Comment\",\"type\":\"string\",\"name\":\"Comment\"},{\"control_type\":\"text\",\"label\":\"Commitment products sum\",\"type\":\"string\",\"name\":\"Commitment_Products_Sum\"},{\"control_type\":\"text\",\"label\":\"General duration\",\"type\":\"string\",\"name\":\"General_Duration\"},{\"control_type\":\"text\",\"label\":\"0 to 5 discount flag\",\"type\":\"string\",\"name\":\"0_to_5_Discount_Flag\"},{\"control_type\":\"text\",\"label\":\"0 list price flag\",\"type\":\"string\",\"name\":\"0_List_Price_Flag\"},{\"control_type\":\"text\",\"label\":\"Number per agreement\",\"type\":\"string\",\"name\":\"Number_Per_Agreement\"},{\"control_type\":\"text\",\"label\":\"Show in order form\",\"type\":\"string\",\"name\":\"Show_in_Order_Form\"},{\"control_type\":\"text\",\"label\":\"3 rd party dataset sum\",\"type\":\"string\",\"name\":\"3rd_Party_Dataset_Sum\"},{\"control_type\":\"text\",\"label\":\"Family PPSL\",\"type\":\"string\",\"name\":\"Family_PPSL\"},{\"control_type\":\"text\",\"label\":\"Contract duration\",\"type\":\"string\",\"name\":\"Contract_Duration\"},{\"control_type\":\"text\",\"label\":\"Group line items\",\"type\":\"string\",\"name\":\"Group_line_Items\"},{\"control_type\":\"text\",\"label\":\"From\",\"type\":\"string\",\"name\":\"From\"},{\"control_type\":\"text\",\"label\":\"Marketplace sum\",\"type\":\"string\",\"name\":\"Marketplace_Sum\"},{\"control_type\":\"text\",\"label\":\"Actual net price\",\"type\":\"string\",\"name\":\"Actual_Net_Price\"},{\"control_type\":\"text\",\"label\":\"Dataset name PPSL ATTBT\",\"type\":\"string\",\"name\":\"Dataset_Name_PPSL_ATTBT\"},{\"control_type\":\"text\",\"label\":\"Dataset subscription duration\",\"type\":\"string\",\"name\":\"Dataset_Subscription_Duration\"},{\"control_type\":\"text\",\"label\":\"Custom scraper sum\",\"type\":\"string\",\"name\":\"Custom_Scraper_Sum\"},{\"control_type\":\"text\",\"label\":\"Group name\",\"type\":\"string\",\"name\":\"Group_Name\"},{\"control_type\":\"text\",\"label\":\"Insights sum\",\"type\":\"string\",\"name\":\"Insights_Sum\"},{\"control_type\":\"text\",\"label\":\"Sort index\",\"type\":\"string\",\"name\":\"Sort_Index\"},{\"control_type\":\"text\",\"label\":\"Dataset billing model\",\"type\":\"string\",\"name\":\"Dataset_Billing_Model\"},{\"control_type\":\"text\",\"label\":\"Custom item name\",\"type\":\"string\",\"name\":\"Custom_Item_Name\"},{\"control_type\":\"text\",\"label\":\"Snapshot ID URL\",\"type\":\"string\",\"name\":\"Snapshot_ID_URL\"}],\"label\":\"Attributes\",\"type\":\"object\",\"name\":\"attributes\"},{\"control_type\":\"number\",\"label\":\"Ordinal\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"ordinal\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"System ordinal\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"system_ordinal\",\"render_input\":\"float_conversion\"}]},{\"label\":\"Answers\",\"type\":\"array\",\"name\":\"answers\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"System ID\",\"type\":\"string\",\"name\":\"system_id\"},{\"control_type\":\"text\",\"label\":\"System name\",\"type\":\"string\",\"name\":\"system_name\"},{\"control_type\":\"text\",\"label\":\"Group ID\",\"type\":\"string\",\"name\":\"group_id\"},{\"control_type\":\"text\",\"label\":\"Group name\",\"type\":\"string\",\"name\":\"group_name\"},{\"control_type\":\"text\",\"label\":\"Question ID\",\"type\":\"string\",\"name\":\"question_id\"},{\"control_type\":\"text\",\"label\":\"Question\",\"type\":\"string\",\"name\":\"question\"},{\"control_type\":\"text\",\"label\":\"Answer\",\"type\":\"string\",\"name\":\"answer\"}]}]",
+                "headers_schema": "[{\"control_type\":\"text\",\"label\":\"Date\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"date\"},{\"control_type\":\"text\",\"label\":\"Content type\",\"type\":\"string\",\"name\":\"content_type\"},{\"control_type\":\"text\",\"label\":\"Content length\",\"type\":\"string\",\"name\":\"content_length\"},{\"control_type\":\"text\",\"label\":\"Connection\",\"type\":\"string\",\"name\":\"connection\"},{\"control_type\":\"text\",\"label\":\"Vary\",\"type\":\"string\",\"name\":\"vary\"},{\"control_type\":\"text\",\"label\":\"Referrer policy\",\"type\":\"string\",\"name\":\"referrer_policy\"},{\"control_type\":\"text\",\"label\":\"X xss protection\",\"type\":\"string\",\"name\":\"x_xss_protection\"},{\"control_type\":\"text\",\"label\":\"X dealhub request ID\",\"type\":\"string\",\"name\":\"x_dealhub_request_id\"},{\"control_type\":\"text\",\"label\":\"X content type options\",\"type\":\"string\",\"name\":\"x_content_type_options\"},{\"control_type\":\"text\",\"label\":\"Content security policy\",\"type\":\"string\",\"name\":\"content_security_policy\"},{\"control_type\":\"text\",\"label\":\"Access control allow origin\",\"type\":\"string\",\"name\":\"access_control_allow_origin\"},{\"control_type\":\"text\",\"label\":\"Access control allow headers\",\"type\":\"string\",\"name\":\"access_control_allow_headers\"},{\"control_type\":\"text\",\"label\":\"Access control allow credentials\",\"type\":\"string\",\"name\":\"access_control_allow_credentials\"},{\"control_type\":\"text\",\"label\":\"X permitted cross domain policies\",\"type\":\"string\",\"name\":\"x_permitted_cross_domain_policies\"},{\"control_type\":\"text\",\"label\":\"Strict transport security\",\"type\":\"string\",\"name\":\"strict_transport_security\"}]"
+              },
+              "wait_for_response": "false",
+              "completion_threshold_seconds": "3600",
+              "disable_retries": "false",
+              "enable_streaming": "false"
+            },
+            "extended_output_schema": [
+              {
+                "label": "Headers",
+                "name": "headers",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Date",
+                    "render_input": "date_time_conversion",
+                    "parse_output": "date_time_conversion",
+                    "type": "date_time",
+                    "name": "date"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Content type",
+                    "type": "string",
+                    "name": "content_type"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Content length",
+                    "type": "string",
+                    "name": "content_length"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Connection",
+                    "type": "string",
+                    "name": "connection"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Vary",
+                    "type": "string",
+                    "name": "vary"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Referrer policy",
+                    "type": "string",
+                    "name": "referrer_policy"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "X xss protection",
+                    "type": "string",
+                    "name": "x_xss_protection"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "X dealhub request ID",
+                    "type": "string",
+                    "name": "x_dealhub_request_id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "X content type options",
+                    "type": "string",
+                    "name": "x_content_type_options"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Content security policy",
+                    "type": "string",
+                    "name": "content_security_policy"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Access control allow origin",
+                    "type": "string",
+                    "name": "access_control_allow_origin"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Access control allow headers",
+                    "type": "string",
+                    "name": "access_control_allow_headers"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Access control allow credentials",
+                    "type": "string",
+                    "name": "access_control_allow_credentials"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "X permitted cross domain policies",
+                    "type": "string",
+                    "name": "x_permitted_cross_domain_policies"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Strict transport security",
+                    "type": "string",
+                    "name": "strict_transport_security"
+                  }
+                ],
+                "type": "object"
+              },
+              {
+                "label": "Response",
+                "name": "response",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Dealhub quote ID",
+                    "type": "string",
+                    "name": "dealhub_quote_id"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Status",
+                    "type": "string",
+                    "name": "status"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Quote upgrade required",
+                    "render_input": "boolean_conversion",
+                    "parse_output": "boolean_conversion",
+                    "toggle_hint": "Select from option list",
+                    "toggle_field": {
+                      "label": "Quote upgrade required",
+                      "control_type": "text",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean",
+                      "name": "quote_upgrade_required"
+                    },
+                    "type": "boolean",
+                    "name": "quote_upgrade_required"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "External opportunity ID",
+                        "type": "string",
+                        "name": "external_opportunity_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "External quote ID",
+                        "type": "string",
+                        "name": "external_quote_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "External customer ID",
+                        "type": "string",
+                        "name": "external_customer_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Customer ID",
+                        "type": "string",
+                        "name": "customer_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Account name",
+                        "type": "string",
+                        "name": "account_name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Contact name",
+                        "type": "string",
+                        "name": "contact_name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Contact email",
+                        "type": "string",
+                        "name": "contact_email"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Dealhub opportunity ID",
+                        "type": "string",
+                        "name": "dealhub_opportunity_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Dealhub quote name",
+                        "type": "string",
+                        "name": "dealhub_quote_name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Dealhub quote number",
+                        "type": "string",
+                        "name": "dealhub_quote_number"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Primary quote",
+                        "render_input": "boolean_conversion",
+                        "parse_output": "boolean_conversion",
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                          "label": "Primary quote",
+                          "control_type": "text",
+                          "toggle_hint": "Use custom value",
+                          "type": "boolean",
+                          "name": "primary_quote"
+                        },
+                        "type": "boolean",
+                        "name": "primary_quote"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Created by",
+                        "type": "string",
+                        "name": "created_by"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Creation date",
+                        "type": "string",
+                        "name": "creation_date"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Submitted by",
+                        "type": "string",
+                        "name": "submitted_by"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Submission date",
+                        "type": "string",
+                        "name": "submission_date"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Expiration date",
+                        "type": "string",
+                        "name": "expiration_date"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Won date",
+                        "type": "string",
+                        "name": "won_date"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Geo code",
+                        "type": "string",
+                        "name": "geo_code"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Currency",
+                        "type": "string",
+                        "name": "currency"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Playbook",
+                        "type": "string",
+                        "name": "playbook"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Quote URL",
+                        "type": "string",
+                        "name": "quote_url"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Version ID",
+                        "type": "string",
+                        "name": "version_id"
+                      }
+                    ],
+                    "label": "Info",
+                    "type": "object",
+                    "name": "info"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Currency",
+                        "type": "string",
+                        "name": "currency"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Total list price",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "total_list_price",
+                        "render_input": "float_conversion"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Total net price",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "total_net_price",
+                        "render_input": "float_conversion"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Total discount",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "total_discount",
+                        "render_input": "float_conversion"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Sales discount",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "sales_discount",
+                        "render_input": "float_conversion"
+                      }
+                    ],
+                    "label": "Summary",
+                    "type": "object",
+                    "name": "summary"
+                  },
+                  {
+                    "label": "Line items",
+                    "type": "array",
+                    "name": "line_items",
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "ID",
+                        "type": "string",
+                        "name": "id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Sku",
+                        "type": "string",
+                        "name": "sku"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Name",
+                        "type": "string",
+                        "name": "name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Primary tag",
+                        "type": "string",
+                        "name": "primary_tag"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Msrp",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "msrp",
+                        "render_input": "float_conversion"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Msrp discount",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "msrp_discount",
+                        "render_input": "float_conversion"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "List price",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "list_price",
+                        "render_input": "float_conversion"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "User price",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "user_price",
+                        "render_input": "float_conversion"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Net per unit",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "net_per_unit",
+                        "render_input": "float_conversion"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Sales discount",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "sales_discount",
+                        "render_input": "float_conversion"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Total discount",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "total_discount",
+                        "render_input": "float_conversion"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Net price",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "net_price",
+                        "render_input": "float_conversion"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Duration",
+                            "type": "string",
+                            "name": "duration"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Quantity",
+                            "type": "string",
+                            "name": "quantity"
+                          }
+                        ],
+                        "label": "Product factors",
+                        "type": "object",
+                        "name": "product_factors"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "One- time price",
+                            "type": "string",
+                            "name": "One-Time_Price"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Tiered unit type",
+                            "type": "string",
+                            "name": "Tiered_Unit_Type"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Sub family PPSL",
+                            "type": "string",
+                            "name": "Sub_Family_PPSL"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Full net price",
+                            "type": "string",
+                            "name": "Full_Net_Price"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Is managed service required",
+                            "type": "string",
+                            "name": "Is_Managed_Service_Required"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "5 to 25 discount flag",
+                            "type": "string",
+                            "name": "5_to_25_Discount_Flag"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Link to custom scraper ID",
+                            "type": "string",
+                            "name": "Link_to_Custom_Scraper_ID"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Count",
+                            "type": "string",
+                            "name": "Count"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "MRR",
+                            "type": "string",
+                            "name": "MRR"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Custom scraper name",
+                            "type": "string",
+                            "name": "Custom_Scraper_Name"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Item type PPSL",
+                            "type": "string",
+                            "name": "Item_Type_PPSL"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Monthly commitment",
+                            "type": "string",
+                            "name": "Monthly_Commitment"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Deal type",
+                            "type": "string",
+                            "name": "Deal_Type"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Billing terms",
+                            "type": "string",
+                            "name": "Billing_Terms"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Set price",
+                            "type": "string",
+                            "name": "Set_Price"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "To",
+                            "type": "string",
+                            "name": "To"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "100 discount flag",
+                            "type": "string",
+                            "name": "100_Discount_Flag"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Refreshment frequency",
+                            "type": "string",
+                            "name": "Refreshment_Frequency"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Tier type",
+                            "type": "string",
+                            "name": "Tier_Type"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Related dataset SKU",
+                            "type": "string",
+                            "name": "Related_Dataset_SKU"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Units quantity",
+                            "type": "string",
+                            "name": "Units_Quantity"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Comment",
+                            "type": "string",
+                            "name": "Comment"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Commitment products sum",
+                            "type": "string",
+                            "name": "Commitment_Products_Sum"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "General duration",
+                            "type": "string",
+                            "name": "General_Duration"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "0 to 5 discount flag",
+                            "type": "string",
+                            "name": "0_to_5_Discount_Flag"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "0 list price flag",
+                            "type": "string",
+                            "name": "0_List_Price_Flag"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Number per agreement",
+                            "type": "string",
+                            "name": "Number_Per_Agreement"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Show in order form",
+                            "type": "string",
+                            "name": "Show_in_Order_Form"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "3 rd party dataset sum",
+                            "type": "string",
+                            "name": "3rd_Party_Dataset_Sum"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Family PPSL",
+                            "type": "string",
+                            "name": "Family_PPSL"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Contract duration",
+                            "type": "string",
+                            "name": "Contract_Duration"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Group line items",
+                            "type": "string",
+                            "name": "Group_line_Items"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "From",
+                            "type": "string",
+                            "name": "From"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Marketplace sum",
+                            "type": "string",
+                            "name": "Marketplace_Sum"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Actual net price",
+                            "type": "string",
+                            "name": "Actual_Net_Price"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Dataset name PPSL ATTBT",
+                            "type": "string",
+                            "name": "Dataset_Name_PPSL_ATTBT"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Dataset subscription duration",
+                            "type": "string",
+                            "name": "Dataset_Subscription_Duration"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Custom scraper sum",
+                            "type": "string",
+                            "name": "Custom_Scraper_Sum"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Group name",
+                            "type": "string",
+                            "name": "Group_Name"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Insights sum",
+                            "type": "string",
+                            "name": "Insights_Sum"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Sort index",
+                            "type": "string",
+                            "name": "Sort_Index"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Dataset billing model",
+                            "type": "string",
+                            "name": "Dataset_Billing_Model"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Custom item name",
+                            "type": "string",
+                            "name": "Custom_Item_Name"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Snapshot ID URL",
+                            "type": "string",
+                            "name": "Snapshot_ID_URL"
+                          }
+                        ],
+                        "label": "Attributes",
+                        "type": "object",
+                        "name": "attributes"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "Ordinal",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "ordinal",
+                        "render_input": "float_conversion"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "System ordinal",
+                        "parse_output": "float_conversion",
+                        "type": "number",
+                        "name": "system_ordinal",
+                        "render_input": "float_conversion"
+                      }
+                    ]
+                  },
+                  {
+                    "label": "Answers",
+                    "type": "array",
+                    "name": "answers",
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "System ID",
+                        "type": "string",
+                        "name": "system_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "System name",
+                        "type": "string",
+                        "name": "system_name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Group ID",
+                        "type": "string",
+                        "name": "group_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Group name",
+                        "type": "string",
+                        "name": "group_name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Question ID",
+                        "type": "string",
+                        "name": "question_id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Question",
+                        "type": "string",
+                        "name": "question"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Answer",
+                        "type": "string",
+                        "name": "answer"
+                      }
+                    ]
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "label": "Response",
+                "name": "response",
+                "override": true,
+                "properties": [
+                  {
+                    "control_type": "select",
+                    "label": "Response content type",
+                    "pick_list": [
+                      [
+                        "Text",
+                        "rawdatatxt"
+                      ],
+                      [
+                        "Binary",
+                        "rawdata"
+                      ],
+                      [
+                        "JSON",
+                        "json"
+                      ],
+                      [
+                        "XML",
+                        "xml2"
+                      ],
+                      [
+                        "Multipart",
+                        "multipart"
+                      ]
+                    ],
+                    "hint": "Select expected format of data response type, e.g. JSON or XML. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+                    "default": "json",
+                    "extends_schema": true,
+                    "type": "string",
+                    "name": "output_type"
+                  },
+                  {
+                    "control_type": "select",
+                    "label": "Encoding",
+                    "pick_list": "supported_encodings_without_binary_global_pick_list",
+                    "pick_list_connection_less": true,
+                    "optional": true,
+                    "default": "UTF-8",
+                    "hint": "Default encoding type is set to UTF-8, and typically doesn't need to be changed. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+                    "type": "string",
+                    "name": "expected_encoding"
+                  },
+                  {
+                    "control_type": "schema-designer",
+                    "label": "Response schema",
+                    "sample_data_type": "json_http",
+                    "extends_schema": true,
+                    "empty_schema_title": "Describe all fields in your response.",
+                    "optional": true,
+                    "sticky": true,
+                    "type": "string",
+                    "name": "response_schema"
+                  },
+                  {
+                    "control_type": "schema-designer",
+                    "label": "HTTP response headers",
+                    "extends_schema": true,
+                    "empty_schema_title": "Describe all the response headers",
+                    "optional": true,
+                    "sticky": true,
+                    "type": "string",
+                    "name": "headers_schema"
+                  },
+                  {
+                    "control_type": "schema-designer",
+                    "label": "Multipart part headers",
+                    "extends_schema": true,
+                    "empty_schema_title": "Describe headers within each multipart part",
+                    "optional": true,
+                    "sticky": true,
+                    "hint": "Define the headers that appear in each part of the multipart response (e.g., Content-Type, Content-ID)",
+                    "ngIf": "input.response.output_type == 'multipart'",
+                    "type": "string",
+                    "name": "part_headers_schema"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Mark non-2xx response codes as success?",
+                    "default": "false",
+                    "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+                    "optional": true,
+                    "toggle_hint": "Select from option list",
+                    "toggle_field": {
+                      "label": "Mark non-2xx response codes as success?",
+                      "control_type": "text",
+                      "toggle_hint": "Use custom value",
+                      "default": false,
+                      "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+                      "optional": true,
+                      "render_input": null,
+                      "parse_output": null,
+                      "type": "boolean",
+                      "name": "ignore_http_errors"
+                    },
+                    "type": "boolean",
+                    "name": "ignore_http_errors"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "comment": "Get Quote From Delahub",
+            "uuid": "8c8372ee-89ae-451a-9acc-4475edc8542f",
+            "wizardFinished": true
+          },
+          {
+            "number": 6,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "equals_to",
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"7ab7b873\",\"path\":[\"status_code\"]}')}",
+                  "rhs": "200",
+                  "uuid": "764c3713-4bfa-413a-a24b-a362d7501c3e"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 7,
+                "provider": "workato_custom_code",
+                "name": "invoke_custom_ruby_code",
+                "as": "bb122c8a",
+                "keyword": "action",
+                "input": {
+                  "payload_asset_type": "inline",
+                  "code": "# Inputs: input['answers'] = array of answer objects from DealHub\n\nanswers = input['answers'] || []\n\n# Helper: find an answer by question_id and clean it (strip wrapping quotes + whitespace)\ndef get_answer(answers, qid)\n  found = answers.find { |a| a['question_id'] == qid }\n  return nil if found.nil?\n  raw = found['answer'].to_s.strip\n  raw.gsub(/\\A\"|\"\\z/, '').strip  # remove surrounding quotes if present\nend\n\nquote_type         = get_answer(answers, 'Quote_Type')\nquote_type_confirm = get_answer(answers, 'Quote_Type_Confirm')\n\n# Exclusion rule — HIGHER priority than tiers\nexclude_from_cp = (quote_type == 'Budgetary' && quote_type_confirm == 'Yes')\n\n{\n  'quote_type'         => quote_type,\n  'quote_type_confirm' => quote_type_confirm,\n  'exclude_from_cp'    => exclude_from_cp,\n  'skip_reason'        => exclude_from_cp ? 'Budgetary quote — excluded from CP recipe' : ''\n}\n",
+                  "name": "check_budgetary_exclusion",
+                  "code_input": {
+                    "schema": "[{\"name\":\"answers\",\"type\":\"string\",\"optional\":true,\"label\":\"answers\",\"details\":{\"real_name\":\"answers\"},\"control_type\":\"text\",\"parent\":[\"code_input\",\"data\"]}]",
+                    "data": {
+                      "answers": "=_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"7ab7b873\",\"path\":[\"response\",\"answers\"]}')"
+                    }
+                  },
+                  "code_output_schema_json": "[{\"control_type\":\"text\",\"label\":\"Quote type\",\"name\":\"quote_type\",\"type\":\"string\",\"optional\":true,\"hint\":\"Value of the 'Quote_Type' answer from DealHub (e.g., 'Budgetary' or 'Detailed')\"},{\"control_type\":\"text\",\"label\":\"Quote type confirm\",\"name\":\"quote_type_confirm\",\"type\":\"string\",\"optional\":true,\"hint\":\"Value of the 'Quote_Type_Confirm' answer from DealHub (e.g., 'Yes' or 'No')\"},{\"control_type\":\"checkbox\",\"label\":\"Exclude from cp\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"exclude_from_cp\",\"type\":\"boolean\",\"optional\":false,\"hint\":\"TRUE = skip CP recipe (budgetary quote). FALSE = continue normal flow.\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Exclude from cp\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"name\":\"exclude_from_cp\",\"type\":\"boolean\",\"optional\":false,\"hint\":\"TRUE = skip CP recipe (budgetary quote). FALSE = continue normal flow.\"}},{\"control_type\":\"text\",\"label\":\"Skip reason\",\"name\":\"skip_reason\",\"type\":\"string\",\"optional\":true,\"hint\":\"Human-readable reason for skipping. Empty when exclude_from_cp = false.\"},{\"control_type\":\"date_time\",\"label\":\"Evaluated at\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"name\":\"evaluated_at\",\"type\":\"date_time\",\"optional\":true,\"hint\":\"Timestamp when the exclusion check ran (for logging/debug).\"}]"
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Output",
+                    "name": "output",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Quote type",
+                        "name": "quote_type",
+                        "type": "string",
+                        "optional": true,
+                        "hint": "Value of the 'Quote_Type' answer from DealHub (e.g., 'Budgetary' or 'Detailed')"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Quote type confirm",
+                        "name": "quote_type_confirm",
+                        "type": "string",
+                        "optional": true,
+                        "hint": "Value of the 'Quote_Type_Confirm' answer from DealHub (e.g., 'Yes' or 'No')"
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "label": "Exclude from cp",
+                        "render_input": "boolean_conversion",
+                        "parse_output": "boolean_conversion",
+                        "name": "exclude_from_cp",
+                        "type": "boolean",
+                        "optional": false,
+                        "hint": "TRUE = skip CP recipe (budgetary quote). FALSE = continue normal flow.",
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                          "label": "Exclude from cp",
+                          "control_type": "text",
+                          "toggle_hint": "Use custom value",
+                          "name": "exclude_from_cp",
+                          "type": "boolean",
+                          "optional": false,
+                          "hint": "TRUE = skip CP recipe (budgetary quote). FALSE = continue normal flow."
+                        }
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Skip reason",
+                        "name": "skip_reason",
+                        "type": "string",
+                        "optional": true,
+                        "hint": "Human-readable reason for skipping. Empty when exclude_from_cp = false."
+                      },
+                      {
+                        "control_type": "date_time",
+                        "label": "Evaluated at",
+                        "render_input": "date_time_conversion",
+                        "parse_output": "date_time_conversion",
+                        "name": "evaluated_at",
+                        "type": "date_time",
+                        "optional": true,
+                        "hint": "Timestamp when the exclusion check ran (for logging/debug)."
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "control_type": "form-schema-builder",
+                    "label": "Input",
+                    "name": "code_input",
+                    "optional": true,
+                    "override": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Schema",
+                        "extends_schema": true,
+                        "type": "string",
+                        "name": "schema"
+                      },
+                      {
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "answers",
+                            "name": "answers",
+                            "type": "string",
+                            "optional": true,
+                            "details": {
+                              "real_name": "answers"
+                            },
+                            "parent": [
+                              "code_input",
+                              "data"
+                            ]
+                          }
+                        ],
+                        "label": "Data",
+                        "type": "object",
+                        "name": "data"
+                      }
+                    ],
+                    "sticky": true,
+                    "type": "object"
+                  }
+                ],
+                "visible_config_fields": [
+                  "name",
+                  "code_input",
+                  "code_output_schema_json",
+                  "payload_asset_type",
+                  "code",
+                  "code_input.data.dd",
+                  "code_input.schema",
+                  "code_input.data.answer",
+                  "code_input.data.answers"
+                ],
+                "uuid": "42803291-1c97-49e9-9d66-5dd8d590e3fc"
+              },
+              {
+                "number": 8,
+                "keyword": "if",
+                "input": {
+                  "type": "compound",
+                  "operand": "and",
+                  "conditions": [
+                    {
+                      "operand": "is_not_true",
+                      "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"bb122c8a\",\"path\":[\"output\",\"exclude_from_cp\"]}')}",
+                      "rhs": "",
+                      "uuid": "c5c9191f-d6c0-40d8-82aa-aef47d7bac43"
+                    }
+                  ]
+                },
+                "block": [
+                  {
+                    "number": 9,
+                    "provider": "workato_custom_code",
+                    "name": "invoke_custom_ruby_code",
+                    "as": "0c5bf2e2",
+                    "keyword": "action",
+                    "input": {
+                      "payload_asset_type": "inline",
+                      "code": "{ \"result\" => { \"environment\" => input[\"env\"] }.merge(input[\"quote\"]) }\n",
+                      "name": "Add environment to quote payload",
+                      "code_input": {
+                        "schema": "[{\"control_type\":\"text\",\"label\":\"env\",\"name\":\"env\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"env\"},\"parent\":[\"code_input\",\"data\"]},{\"name\":\"quote\",\"type\":\"string\",\"optional\":true,\"label\":\"quote\",\"details\":{\"real_name\":\"quote\"},\"control_type\":\"text\",\"parent\":[\"code_input\",\"data\"]}]",
+                        "data": {
+                          "quote": "=_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"7ab7b873\",\"path\":[\"response\"]}')",
+                          "env": "#{_dp('{\"pill_type\":\"account_property\",\"property_name\":\"Environment\"}')}"
+                        }
+                      },
+                      "code_output_schema_json": "[{\"name\":\"result\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Result\"}]"
+                    },
+                    "extended_output_schema": [
+                      {
+                        "label": "Output",
+                        "name": "output",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Result",
+                            "name": "result",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ],
+                        "type": "object"
+                      }
+                    ],
+                    "extended_input_schema": [
+                      {
+                        "control_type": "form-schema-builder",
+                        "label": "Input",
+                        "name": "code_input",
+                        "optional": true,
+                        "override": true,
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Schema",
+                            "extends_schema": true,
+                            "type": "string",
+                            "name": "schema"
+                          },
+                          {
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "env",
+                                "name": "env",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "env"
+                                },
+                                "parent": [
+                                  "code_input",
+                                  "data"
+                                ]
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "quote",
+                                "name": "quote",
+                                "type": "string",
+                                "optional": true,
+                                "details": {
+                                  "real_name": "quote"
+                                },
+                                "parent": [
+                                  "code_input",
+                                  "data"
+                                ]
+                              }
+                            ],
+                            "label": "Data",
+                            "type": "object",
+                            "name": "data"
+                          }
+                        ],
+                        "sticky": true,
+                        "type": "object"
+                      }
+                    ],
+                    "visible_config_fields": [
+                      "name",
+                      "code_input",
+                      "code_output_schema_json",
+                      "payload_asset_type",
+                      "code",
+                      "code_input.data.env",
+                      "code_input.schema",
+                      "code_input.data.quote"
+                    ],
+                    "comment": "Add environment to quote payload",
+                    "uuid": "b01b22ff-663c-4534-8bc5-fecf52236bba"
+                  },
+                  {
+                    "number": 10,
+                    "provider": "rest_secondary",
+                    "name": "make_request_v2",
+                    "as": "025acd80",
+                    "keyword": "action",
+                    "toggleCfg": {
+                      "response.ignore_http_errors": true,
+                      "disable_retries": true
+                    },
+                    "input": {
+                      "request_name": "Set Quote",
+                      "request": {
+                        "method": "PUT",
+                        "content_type": "application/json",
+                        "url": "users/quotes/set_quote",
+                        "body": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"0c5bf2e2\",\"path\":[\"output\",\"result\"]}').to_json"
+                      },
+                      "response": {
+                        "output_type": "json",
+                        "expected_encoding": "UTF-8",
+                        "ignore_http_errors": "true",
+                        "response_schema": "[{\"control_type\":\"text\",\"label\":\"Success\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Success\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"success\"},\"type\":\"boolean\",\"name\":\"success\"}]",
+                        "headers_schema": "[{\"control_type\":\"text\",\"label\":\"Date\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"date\"},{\"control_type\":\"text\",\"label\":\"Content type\",\"type\":\"string\",\"name\":\"content_type\"},{\"control_type\":\"text\",\"label\":\"Transfer encoding\",\"type\":\"string\",\"name\":\"transfer_encoding\"},{\"control_type\":\"text\",\"label\":\"Connection\",\"type\":\"string\",\"name\":\"connection\"},{\"control_type\":\"text\",\"label\":\"Server\",\"type\":\"string\",\"name\":\"server\"},{\"control_type\":\"text\",\"label\":\"Vary\",\"type\":\"string\",\"name\":\"vary\"},{\"control_type\":\"text\",\"label\":\"Content security policy\",\"type\":\"string\",\"name\":\"content_security_policy\"},{\"control_type\":\"text\",\"label\":\"Cross origin opener policy\",\"type\":\"string\",\"name\":\"cross_origin_opener_policy\"},{\"control_type\":\"text\",\"label\":\"Origin agent cluster\",\"type\":\"string\",\"name\":\"origin_agent_cluster\"},{\"control_type\":\"text\",\"label\":\"Strict transport security\",\"type\":\"string\",\"name\":\"strict_transport_security\"},{\"control_type\":\"text\",\"label\":\"X content type options\",\"type\":\"string\",\"name\":\"x_content_type_options\"},{\"control_type\":\"text\",\"label\":\"X dns prefetch control\",\"type\":\"string\",\"name\":\"x_dns_prefetch_control\"},{\"control_type\":\"text\",\"label\":\"X download options\",\"type\":\"string\",\"name\":\"x_download_options\"},{\"control_type\":\"text\",\"label\":\"X frame options\",\"type\":\"string\",\"name\":\"x_frame_options\"},{\"control_type\":\"text\",\"label\":\"X permitted cross domain policies\",\"type\":\"string\",\"name\":\"x_permitted_cross_domain_policies\"},{\"control_type\":\"text\",\"label\":\"X xss protection\",\"type\":\"string\",\"name\":\"x_xss_protection\"},{\"control_type\":\"text\",\"label\":\"Etag\",\"type\":\"string\",\"name\":\"etag\"},{\"control_type\":\"text\",\"label\":\"Cf cache status\",\"type\":\"string\",\"name\":\"cf_cache_status\"},{\"control_type\":\"text\",\"label\":\"Cf ray\",\"type\":\"string\",\"name\":\"cf_ray\"},{\"control_type\":\"text\",\"label\":\"Alt svc\",\"type\":\"string\",\"name\":\"alt_svc\"}]"
+                      },
+                      "wait_for_response": "false",
+                      "completion_threshold_seconds": "3600",
+                      "disable_retries": "false",
+                      "enable_streaming": "false"
+                    },
+                    "extended_output_schema": [
+                      {
+                        "label": "Headers",
+                        "name": "headers",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Date",
+                            "render_input": "date_time_conversion",
+                            "parse_output": "date_time_conversion",
+                            "type": "date_time",
+                            "name": "date"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Content type",
+                            "type": "string",
+                            "name": "content_type"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Transfer encoding",
+                            "type": "string",
+                            "name": "transfer_encoding"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Connection",
+                            "type": "string",
+                            "name": "connection"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Server",
+                            "type": "string",
+                            "name": "server"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Vary",
+                            "type": "string",
+                            "name": "vary"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Content security policy",
+                            "type": "string",
+                            "name": "content_security_policy"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Cross origin opener policy",
+                            "type": "string",
+                            "name": "cross_origin_opener_policy"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Origin agent cluster",
+                            "type": "string",
+                            "name": "origin_agent_cluster"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Strict transport security",
+                            "type": "string",
+                            "name": "strict_transport_security"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "X content type options",
+                            "type": "string",
+                            "name": "x_content_type_options"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "X dns prefetch control",
+                            "type": "string",
+                            "name": "x_dns_prefetch_control"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "X download options",
+                            "type": "string",
+                            "name": "x_download_options"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "X frame options",
+                            "type": "string",
+                            "name": "x_frame_options"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "X permitted cross domain policies",
+                            "type": "string",
+                            "name": "x_permitted_cross_domain_policies"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "X xss protection",
+                            "type": "string",
+                            "name": "x_xss_protection"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Etag",
+                            "type": "string",
+                            "name": "etag"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Cf cache status",
+                            "type": "string",
+                            "name": "cf_cache_status"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Cf ray",
+                            "type": "string",
+                            "name": "cf_ray"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Alt svc",
+                            "type": "string",
+                            "name": "alt_svc"
+                          }
+                        ],
+                        "type": "object"
+                      },
+                      {
+                        "label": "Response",
+                        "name": "response",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Success",
+                            "render_input": "boolean_conversion",
+                            "parse_output": "boolean_conversion",
+                            "toggle_hint": "Select from option list",
+                            "toggle_field": {
+                              "label": "Success",
+                              "control_type": "text",
+                              "toggle_hint": "Use custom value",
+                              "type": "boolean",
+                              "name": "success"
+                            },
+                            "type": "boolean",
+                            "name": "success"
+                          }
+                        ],
+                        "type": "object"
+                      }
+                    ],
+                    "extended_input_schema": [
+                      {
+                        "label": "Response",
+                        "name": "response",
+                        "override": true,
+                        "properties": [
+                          {
+                            "control_type": "select",
+                            "label": "Response content type",
+                            "pick_list": [
+                              [
+                                "Text",
+                                "rawdatatxt"
+                              ],
+                              [
+                                "Binary",
+                                "rawdata"
+                              ],
+                              [
+                                "JSON",
+                                "json"
+                              ],
+                              [
+                                "XML",
+                                "xml2"
+                              ],
+                              [
+                                "Multipart",
+                                "multipart"
+                              ]
+                            ],
+                            "hint": "Select expected format of data response type, e.g. JSON or XML. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+                            "default": "json",
+                            "extends_schema": true,
+                            "type": "string",
+                            "name": "output_type"
+                          },
+                          {
+                            "control_type": "select",
+                            "label": "Encoding",
+                            "pick_list": "supported_encodings_without_binary_global_pick_list",
+                            "pick_list_connection_less": true,
+                            "optional": true,
+                            "default": "UTF-8",
+                            "hint": "Default encoding type is set to UTF-8, and typically doesn't need to be changed. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+                            "type": "string",
+                            "name": "expected_encoding"
+                          },
+                          {
+                            "control_type": "schema-designer",
+                            "label": "Response schema",
+                            "sample_data_type": "json_http",
+                            "extends_schema": true,
+                            "empty_schema_title": "Describe all fields in your response.",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "response_schema"
+                          },
+                          {
+                            "control_type": "schema-designer",
+                            "label": "HTTP response headers",
+                            "extends_schema": true,
+                            "empty_schema_title": "Describe all the response headers",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "name": "headers_schema"
+                          },
+                          {
+                            "control_type": "schema-designer",
+                            "label": "Multipart part headers",
+                            "extends_schema": true,
+                            "empty_schema_title": "Describe headers within each multipart part",
+                            "optional": true,
+                            "sticky": true,
+                            "hint": "Define the headers that appear in each part of the multipart response (e.g., Content-Type, Content-ID)",
+                            "ngIf": "input.response.output_type == 'multipart'",
+                            "type": "string",
+                            "name": "part_headers_schema"
+                          },
+                          {
+                            "control_type": "checkbox",
+                            "label": "Mark non-2xx response codes as success?",
+                            "default": "false",
+                            "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+                            "optional": true,
+                            "toggle_hint": "Select from option list",
+                            "toggle_field": {
+                              "label": "Mark non-2xx response codes as success?",
+                              "control_type": "text",
+                              "toggle_hint": "Use custom value",
+                              "default": false,
+                              "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+                              "optional": true,
+                              "render_input": null,
+                              "parse_output": null,
+                              "type": "boolean",
+                              "name": "ignore_http_errors"
+                            },
+                            "type": "boolean",
+                            "name": "ignore_http_errors"
+                          }
+                        ],
+                        "type": "object"
+                      }
+                    ],
+                    "comment": "Set Quote to CP",
+                    "uuid": "49c8ed33-94c3-43b7-b109-9fb5dee145df",
+                    "wizardFinished": true,
+                    "skip": false
+                  },
+                  {
+                    "number": 11,
+                    "keyword": "if",
+                    "input": {
+                      "type": "compound",
+                      "operand": "and",
+                      "conditions": [
+                        {
+                          "operand": "equals_to",
+                          "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest_secondary\",\"line\":\"025acd80\",\"path\":[\"status_code\"]}')}",
+                          "rhs": "200",
+                          "uuid": "68143a3a-71a3-47bd-8ac7-c18390643d5b"
+                        }
+                      ]
+                    },
+                    "block": [
+                      {
+                        "number": 12,
+                        "provider": "slack_bot",
+                        "name": "post_bot_message",
+                        "as": "25910df2",
+                        "keyword": "action",
+                        "dynamicPickListSelection": {
+                          "channel": {
+                            "ids": [
+                              "C0A1LK2KEHG"
+                            ],
+                            "titles": [
+                              "dealhub_to_cp-test"
+                            ]
+                          }
+                        },
+                        "toggleCfg": {
+                          "channel": true
+                        },
+                        "input": {
+                          "text": "🎉 *New Dealhub Won Opportunity*\n> *SFDC ID:* <#{_dp('{\"pill_type\":\"account_property\",\"property_name\":\"Salesforce Domain\"}')}/#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"0c977ab4\",\"path\":[\"payload\",\"external_opportunity_id\"]}')}|#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"0c977ab4\",\"path\":[\"payload\",\"external_opportunity_id\"]}')}>\n> *Dealhub Quote ID:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"0c977ab4\",\"path\":[\"payload\",\"dealhub_quote_id\"]}')}\n> *Executed by:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"0c977ab4\",\"path\":[\"payload\",\"executed_by\"]}')}\n> *Status:* *WON* ✅",
+                          "channel": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"Dealub To CP Channel\"}')}"
+                        },
+                        "uuid": "980f5d31-4b2b-42fd-b22c-fec0abd71656"
+                      },
+                      {
+                        "number": 13,
+                        "keyword": "if",
+                        "input": {
+                          "type": "compound",
+                          "operand": "and",
+                          "conditions": [
+                            {
+                              "operand": "present",
+                              "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"25910df2\",\"path\":[\"ts\"]}')}",
+                              "rhs": "",
+                              "uuid": "f8474900-b636-4cbc-91de-a20b24fd2a44"
+                            }
+                          ]
+                        },
+                        "block": [
+                          {
+                            "number": 14,
+                            "provider": "workato_db_table",
+                            "name": "add_record",
+                            "as": "f9e71813",
+                            "keyword": "action",
+                            "dynamicPickListSelection": {
+                              "table_id": "dealhub_to_cp_sync"
+                            },
+                            "input": {
+                              "table_id": {
+                                "zip_name": "Finance/Billing/Salesforce To Brightdata CP/Dealhub CP Sync/dealhub_to_cp_sync.workato_db_table.json",
+                                "name": "dealhub_to_cp_sync",
+                                "folder": "Finance/Billing/Salesforce To Brightdata CP/Dealhub CP Sync"
+                              },
+                              "parameters": {
+                                "dfb389d7_4e76_4a93_806d_03c18b1f445b": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"0c977ab4\",\"path\":[\"payload\",\"external_opportunity_id\"]}')}",
+                                "e3a11a24_060d_4a22_86f4_93a56e291c90": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"0c977ab4\",\"path\":[\"payload\",\"dealhub_quote_id\"]}')}",
+                                "c252f52b_6d3c_4caf_b7b3_d7d8f6507265": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"25910df2\",\"path\":[\"ts\"]}')}",
+                                "221c79c1_a88b_4bb4_bd03_79c34c882dee": "Success",
+                                "5305b335_cd7b_46aa_bd3d_ec49b5a69f5c": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"0c977ab4\",\"path\":[\"payload\",\"executed_by\"]}')}"
+                              }
+                            },
+                            "extended_output_schema": [
+                              {
+                                "label": "Record",
+                                "name": "record",
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "Record ID",
+                                    "type": "string",
+                                    "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "opportunity_id",
+                                    "type": "string",
+                                    "name": "dfb389d7_4e76_4a93_806d_03c18b1f445b"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "dealhub_quote_id",
+                                    "type": "string",
+                                    "name": "e3a11a24_060d_4a22_86f4_93a56e291c90"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "executed_by",
+                                    "type": "string",
+                                    "name": "5305b335_cd7b_46aa_bd3d_ec49b5a69f5c"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "slack_message_id",
+                                    "type": "string",
+                                    "name": "c252f52b_6d3c_4caf_b7b3_d7d8f6507265"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "sync_status",
+                                    "type": "string",
+                                    "name": "221c79c1_a88b_4bb4_bd03_79c34c882dee"
+                                  },
+                                  {
+                                    "control_type": "date_time",
+                                    "label": "Created at",
+                                    "render_input": "date_time_conversion",
+                                    "parse_output": "date_time_conversion",
+                                    "type": "date_time",
+                                    "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1"
+                                  },
+                                  {
+                                    "control_type": "date_time",
+                                    "label": "Updated at",
+                                    "render_input": "date_time_conversion",
+                                    "parse_output": "date_time_conversion",
+                                    "type": "date_time",
+                                    "name": "61aae604_a95e_4519_9091_bb0bf754a67f"
+                                  }
+                                ],
+                                "type": "object"
+                              }
+                            ],
+                            "extended_input_schema": [
+                              {
+                                "hint": "Fill the fields for the new record",
+                                "label": "New record fields",
+                                "name": "parameters",
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "opportunity_id",
+                                    "optional": false,
+                                    "sticky": true,
+                                    "type": "string",
+                                    "name": "dfb389d7_4e76_4a93_806d_03c18b1f445b"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "dealhub_quote_id",
+                                    "optional": true,
+                                    "sticky": true,
+                                    "type": "string",
+                                    "name": "e3a11a24_060d_4a22_86f4_93a56e291c90"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "executed_by",
+                                    "optional": true,
+                                    "sticky": true,
+                                    "type": "string",
+                                    "name": "5305b335_cd7b_46aa_bd3d_ec49b5a69f5c"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "slack_message_id",
+                                    "optional": true,
+                                    "sticky": true,
+                                    "type": "string",
+                                    "name": "c252f52b_6d3c_4caf_b7b3_d7d8f6507265"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "sync_status",
+                                    "optional": true,
+                                    "sticky": true,
+                                    "type": "string",
+                                    "name": "221c79c1_a88b_4bb4_bd03_79c34c882dee"
+                                  }
+                                ],
+                                "type": "object"
+                              }
+                            ],
+                            "uuid": "90d534a5-3a35-4498-9597-42270d945c13"
+                          },
+                          {
+                            "number": 15,
+                            "keyword": "else",
+                            "input": {
+                            },
+                            "block": [
+                              {
+                                "number": 16,
+                                "as": "1c620e13",
+                                "keyword": "stop",
+                                "input": {
+                                  "stop_with_error": "true",
+                                  "stop_reason": "Failed Send Slack Notification"
+                                },
+                                "uuid": "c26540fa-72d5-4f55-a9ec-c1cc513f3965"
+                              }
+                            ],
+                            "uuid": "fb2711c0-a3ca-4f5b-b4f3-97a4d8ee2344"
+                          }
+                        ],
+                        "uuid": "9846ecd6-48c7-4c57-945f-2ee1e7a314cd"
+                      },
+                      {
+                        "number": 17,
+                        "keyword": "else",
+                        "input": {
+                        },
+                        "block": [
+                          {
+                            "number": 18,
+                            "as": "aebf92e9",
+                            "keyword": "stop",
+                            "input": {
+                              "stop_with_error": "true",
+                              "stop_reason": "Error in Recipe - #{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}\nRecipe ID -#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_id\"]}')}\nExecution ID - #{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}\nRecipe URL - #{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_url\"]}')}\n\nType -#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest_secondary\",\"line\":\"025acd80\",\"path\":[\"status_code\"]}')}\nMessage - #{_dp('{\"pill_type\":\"output\",\"provider\":\"rest_secondary\",\"line\":\"025acd80\",\"path\":[\"error\"]}')}\nDetail -#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest_secondary\",\"line\":\"025acd80\",\"path\":[\"body\"]}')}"
+                            },
+                            "uuid": "9e29782f-7fb0-4414-a920-d7c76b5903da",
+                            "skip": false
+                          }
+                        ],
+                        "comment": "CP Status = Error",
+                        "uuid": "6956818f-74ee-4d00-a363-2ba2b99784f6",
+                        "skip": false
+                      }
+                    ],
+                    "comment": "CP Status = Success",
+                    "uuid": "aac3a13f-4fd9-4569-a8f1-c71d3b9fefec",
+                    "skip": false
+                  }
+                ],
+                "comment": "exclude from cp = false",
+                "uuid": "acf97fdc-6b7f-4548-b574-dad84636423f"
+              },
+              {
+                "number": 19,
+                "keyword": "else",
+                "input": {
+                },
+                "block": [
+                  {
+                    "number": 20,
+                    "as": "a97a5f64",
+                    "keyword": "stop",
+                    "input": {
+                      "stop_with_error": "true",
+                      "stop_reason": "Error in Recipe - #{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}\nRecipe ID -#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_id\"]}')}\nExecution ID - #{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}\nRecipe URL - #{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_url\"]}')}\n\nError Information:\nType -#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"7ab7b873\",\"path\":[\"status_code\"]}')}\nMessage - #{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"7ab7b873\",\"path\":[\"error\"]}')}\nDetail -#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"7ab7b873\",\"path\":[\"body\"]}')}"
+                    },
+                    "uuid": "cffd564c-ff93-4b6a-a5c4-0a1aef00c44f"
+                  }
+                ],
+                "comment": "Dealhub Status = Error",
+                "uuid": "270f4b51-c6f2-4937-8676-b22c999cee66"
+              }
+            ],
+            "comment": "Dealhub Status = Success",
+            "uuid": "a2ea1aa7-fd44-49cd-b27d-4843665da64c"
+          },
+          {
+            "number": 21,
+            "as": "c4153f8b",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 22,
+                "provider": "slack_bot",
+                "name": "post_bot_message",
+                "as": "53f6b2b1",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "channel": {
+                    "ids": [
+                      "C0A1LK2KEHG"
+                    ],
+                    "titles": [
+                      "dealhub_to_cp-test"
+                    ]
+                  }
+                },
+                "toggleCfg": {
+                  "channel": true
+                },
+                "input": {
+                  "text": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c4153f8b\",\"path\":[\"message\"]}')}",
+                  "channel": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"Dealub To CP Channel\"}')}"
+                },
+                "uuid": "05751485-f800-4535-90d3-57885ba13351"
+              },
+              {
+                "number": 23,
+                "provider": "workato_recipe_function",
+                "name": "call_recipe_async",
+                "as": "20b1a002",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "flow_id": "System Error Handling"
+                },
+                "input": {
+                  "flow_id": {
+                    "zip_name": "Common Functions/Error Handling Process/cm_fun_system_error_handling.recipe.json",
+                    "name": "[CM] Fun | System Error Handling",
+                    "folder": "Common Functions/Error Handling Process"
+                  },
+                  "parameters": {
+                    "ErrorDetails": {
+                      "parentProcessName": "None",
+                      "recipe_id": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_id\"]}')}",
+                      "processName": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+                      "process_path": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_path\"]}')}",
+                      "jobUrl": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_url\"]}')}",
+                      "is_repeat": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"is_repeat\"]}')}",
+                      "error_uuid": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c4153f8b\",\"path\":[\"uuid\"]}')}",
+                      "errored_app": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c4153f8b\",\"path\":[\"adapter\"]}')}",
+                      "errored_action": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c4153f8b\",\"path\":[\"action\"]}')}",
+                      "error_step_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c4153f8b\",\"path\":[\"line_number\"]}')}",
+                      "errorType": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c4153f8b\",\"path\":[\"type\"]}')}",
+                      "errorMessage": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c4153f8b\",\"path\":[\"message\"]}')}",
+                      "Timestamp": "=now.in_time_zone(\"Asia/Jerusalem\")",
+                      "job_uuid": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}"
+                    }
+                  }
+                },
+                "extended_input_schema": [
+                  {
+                    "label": "Parameters",
+                    "name": "parameters",
+                    "properties": [
+                      {
+                        "label": "Error Details",
+                        "name": "ErrorDetails",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Parent process name",
+                            "name": "parentProcessName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Recipe Id",
+                            "name": "recipe_id",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job uuid",
+                            "name": "job_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Name",
+                            "name": "processName",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Path",
+                            "name": "process_path",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job URL",
+                            "name": "jobUrl",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Is repeat",
+                            "name": "is_repeat",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error uuid",
+                            "name": "error_uuid",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored app",
+                            "name": "errored_app",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored action",
+                            "name": "errored_action",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error step number",
+                            "name": "error_step_number",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error type",
+                            "name": "errorType",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error message",
+                            "name": "errorMessage",
+                            "type": "string",
+                            "optional": false
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Timestamp",
+                            "name": "Timestamp",
+                            "type": "string",
+                            "optional": false
+                          }
+                        ]
+                      },
+                      {
+                        "label": "Files",
+                        "name": "files",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "File name",
+                            "name": "fileName",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File content",
+                            "name": "fileContent",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "comment": "system error",
+                "uuid": "0aad38ac-4327-46f3-bf8d-3fd9e20b21f7",
+                "skip": false
+              }
+            ],
+            "uuid": "473c2b29-7073-4bb9-bc38-4912e22f0ea4"
+          }
+        ],
+        "uuid": "e22458de-232f-482d-a60c-fb4e294ac422"
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_4",
+        "label": "Account Id"
+      },
+      {
+        "name": "custom_column_0",
+        "label": "Quote Id"
+      },
+      {
+        "name": "custom_column_2",
+        "label": "Opportunity Id"
+      },
+      {
+        "name": "custom_column_1",
+        "label": "Status"
+      },
+      {
+        "name": "custom_column_3",
+        "label": "Executed by"
+      },
+      {
+        "name": "custom_column_7",
+        "label": "Exclude From CP"
+      },
+      {
+        "name": "custom_column_8",
+        "label": "Skip Reason"
+      },
+      {
+        "name": "custom_column_5",
+        "label": "Process Status"
+      },
+      {
+        "name": "custom_column_6",
+        "label": "Error Message"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_4": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"0c977ab4\",\"path\":[\"payload\",\"external_customer_id\"]}')}",
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"0c977ab4\",\"path\":[\"payload\",\"external_quote_id\"]}')}",
+      "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"0c977ab4\",\"path\":[\"payload\",\"external_opportunity_id\"]}')}",
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"0c977ab4\",\"path\":[\"payload\",\"status\"]}')}",
+      "custom_column_3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"0c977ab4\",\"path\":[\"payload\",\"executed_by\"]}')}",
+      "custom_column_7": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"bb122c8a\",\"path\":[\"output\",\"exclude_from_cp\"]}')}",
+      "custom_column_8": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"bb122c8a\",\"path\":[\"output\",\"skip_reason\"]}')}",
+      "custom_column_5": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c4153f8b\",\"path\":[\"message\"]}').present? ? 'Error' : 'Success'",
+      "custom_column_6": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c4153f8b\",\"path\":[\"message\"]}').presence"
+    },
+    "uuid": "1412ff60-0576-467b-bc90-637ce88a7e58",
+    "wizardFinished": true
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "salesforce",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/BizOps App/salesforce_automation_user.connection.json",
+        "name": "Salesforce - Automation User",
+        "folder": "#Connections/BizOps App"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "rest",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/BizOps App/dealhub.connection.json",
+        "name": "DealHub",
+        "folder": "#Connections/BizOps App"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "rest_secondary",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Brightdata/brightdata_cp.connection.json",
+        "name": "Brightdata CP",
+        "folder": "#Connections/Brightdata"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_webhooks",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "slack_bot",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Slack/biz_admin_workbot.connection.json",
+        "name": "Biz Admin Workbot",
+        "folder": "#Connections/Slack"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_db_table",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_custom_code",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_variable",
+      "skip_validation": false,
+      "account_id": null
+    }
+  ]
+}

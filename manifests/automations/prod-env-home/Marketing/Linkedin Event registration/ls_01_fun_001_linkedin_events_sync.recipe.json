@@ -1,0 +1,1938 @@
+{
+  "name": "LS-01 | Fun 001 | LinkedIn Events Sync",
+  "description": "# LS-01 | Fun 001 | LinkedIn Events Sync\n\n**Ticket:** [Monday](https://brightdata-group.monday.com/boards/8667788707/pulses/12418264810)\n\n## What it does\nFetches all lead-gen-enabled events for org 4000016 and stores them in Postgres.\n\n## Details\n- Endpoint: `events?q=organizerLeadGenFormEnabledEvents&amp;organizer=urn:li:organization:4000016`\n- Table: `marketing.linkedin_events`\n- Upsert: ON CONFLICT (id) DO UPDATE (refreshes name/dates)\n- API version: 202608\n",
+  "version": 1,
+  "private": true,
+  "concurrency": 1,
+  "code": {
+    "number": 0,
+    "provider": "workato_recipe_function",
+    "name": "execute",
+    "as": "b0bee66d",
+    "keyword": "trigger",
+    "input": {
+      "result_schema_json": "[{\"name\":\"status\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Status\"},{\"name\":\"message\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Message\"},{\"name\":\"events\",\"type\":\"array\",\"optional\":true,\"properties\":[{\"name\":\"event_id\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Event ID\"},{\"name\":\"event_name\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Event name\"}],\"label\":\"Events\",\"of\":\"object\"}]"
+    },
+    "block": [
+      {
+        "number": 1,
+        "keyword": "try",
+        "input": {
+        },
+        "block": [
+          {
+            "number": 2,
+            "provider": "workato_variable",
+            "name": "declare_variable",
+            "as": "868d1cd8",
+            "keyword": "action",
+            "input": {
+              "variables": {
+                "schema": "[{\"control_type\":\"integer\",\"label\":\"events_start\",\"parse_output\":\"integer_conversion\",\"name\":\"events_start\",\"type\":\"integer\",\"optional\":true,\"details\":{\"real_name\":\"events_start\"},\"parent\":[\"variables\",\"data\"],\"hint\":\"Defaults to nil if not supplied.\",\"sticky\":true},{\"name\":\"events_next_page\",\"type\":\"string\",\"optional\":true,\"label\":\"events_next_page\",\"details\":{\"real_name\":\"events_next_page\"},\"control_type\":\"text\",\"parent\":[\"variables\",\"data\"]}]",
+                "data": {
+                  "events_start": "0",
+                  "events_next_page": "="
+                }
+              }
+            },
+            "extended_output_schema": [
+              {
+                "control_type": "integer",
+                "hint": "Defaults to nil if not supplied.",
+                "label": "events_start",
+                "name": "events_start",
+                "optional": true,
+                "parse_output": "integer_conversion",
+                "sticky": true,
+                "type": "integer",
+                "details": {
+                  "real_name": "events_start"
+                }
+              },
+              {
+                "control_type": "text",
+                "label": "events_next_page",
+                "name": "events_next_page",
+                "optional": true,
+                "type": "string",
+                "details": {
+                  "real_name": "events_next_page"
+                }
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "add_field_label": "Add a variable",
+                "control_type": "form-schema-builder",
+                "empty_schema_title": "Add variables by giving them a name, type and default value",
+                "exclude_fields": [
+                  "hint"
+                ],
+                "item_label": "variable",
+                "label": "Variables",
+                "mark_as_required": true,
+                "name": "variables",
+                "ngIf": "!input.name",
+                "optional": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Schema",
+                    "extends_schema": true,
+                    "broadcast_change_event": true,
+                    "type": "string",
+                    "name": "schema"
+                  },
+                  {
+                    "properties": [
+                      {
+                        "control_type": "integer",
+                        "label": "events_start",
+                        "parse_output": "integer_conversion",
+                        "name": "events_start",
+                        "type": "integer",
+                        "optional": true,
+                        "details": {
+                          "real_name": "events_start"
+                        },
+                        "parent": [
+                          "variables",
+                          "data"
+                        ],
+                        "hint": "Defaults to nil if not supplied.",
+                        "sticky": true
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "events_next_page",
+                        "name": "events_next_page",
+                        "type": "string",
+                        "optional": true,
+                        "details": {
+                          "real_name": "events_next_page"
+                        },
+                        "parent": [
+                          "variables",
+                          "data"
+                        ],
+                        "hint": "Defaults to nil if not supplied.",
+                        "sticky": true
+                      }
+                    ],
+                    "label": "Data",
+                    "type": "object",
+                    "name": "data"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "visible_config_fields": [
+              "variables.data.events_start",
+              "variables",
+              "variables.schema",
+              "variables.data",
+              "variables.data.events_next_page"
+            ],
+            "uuid": "a5634c50-5384-4655-aef7-e1d570984967"
+          },
+          {
+            "number": 3,
+            "provider": "workato_variable",
+            "name": "declare_list",
+            "as": "78d994ea",
+            "keyword": "action",
+            "input": {
+              "name": "events",
+              "list_item_schema_json": "[{\"control_type\":\"text\",\"label\":\"ID\",\"name\":\"id\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Name\",\"name\":\"name\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Vanity name\",\"name\":\"vanity_name\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Lead gen form\",\"name\":\"lead_gen_form\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Organizer\",\"name\":\"organizer\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Event type\",\"name\":\"event_type\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Discovery mode\",\"name\":\"discovery_mode\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Landing URL\",\"name\":\"landing_url\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Description\",\"name\":\"description\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Ugc post\",\"name\":\"ugc_post\",\"type\":\"string\"},{\"control_type\":\"number\",\"label\":\"Starts at\",\"parse_output\":\"integer_conversion\",\"name\":\"starts_at\",\"type\":\"integer\",\"render_input\":\"integer_conversion\"},{\"control_type\":\"number\",\"label\":\"Ends at\",\"parse_output\":\"integer_conversion\",\"name\":\"ends_at\",\"type\":\"integer\",\"render_input\":\"integer_conversion\"},{\"control_type\":\"number\",\"label\":\"Created at\",\"parse_output\":\"integer_conversion\",\"name\":\"created_at\",\"type\":\"integer\",\"render_input\":\"integer_conversion\"},{\"control_type\":\"number\",\"label\":\"Last modified\",\"parse_output\":\"integer_conversion\",\"name\":\"last_modified\",\"type\":\"integer\",\"render_input\":\"integer_conversion\"}]"
+            },
+            "extended_output_schema": [
+              {
+                "hint": "",
+                "label": "events",
+                "name": "list_items",
+                "of": "object",
+                "optional": false,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "ID",
+                    "name": "id",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Name",
+                    "name": "name",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Vanity name",
+                    "name": "vanity_name",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Lead gen form",
+                    "name": "lead_gen_form",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Organizer",
+                    "name": "organizer",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Event type",
+                    "name": "event_type",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Discovery mode",
+                    "name": "discovery_mode",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Landing URL",
+                    "name": "landing_url",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Description",
+                    "name": "description",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Ugc post",
+                    "name": "ugc_post",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Starts at",
+                    "parse_output": "integer_conversion",
+                    "name": "starts_at",
+                    "type": "integer",
+                    "render_input": "integer_conversion"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Ends at",
+                    "parse_output": "integer_conversion",
+                    "name": "ends_at",
+                    "type": "integer",
+                    "render_input": "integer_conversion"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Created at",
+                    "parse_output": "integer_conversion",
+                    "name": "created_at",
+                    "type": "integer",
+                    "render_input": "integer_conversion"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Last modified",
+                    "parse_output": "integer_conversion",
+                    "name": "last_modified",
+                    "type": "integer",
+                    "render_input": "integer_conversion"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "extended_input_schema": [
+              {
+                "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                "label": "Items",
+                "name": "list_items",
+                "of": "object",
+                "optional": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "ID",
+                    "name": "id",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Name",
+                    "name": "name",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Vanity name",
+                    "name": "vanity_name",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Lead gen form",
+                    "name": "lead_gen_form",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Organizer",
+                    "name": "organizer",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Event type",
+                    "name": "event_type",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Discovery mode",
+                    "name": "discovery_mode",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Landing URL",
+                    "name": "landing_url",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Description",
+                    "name": "description",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Ugc post",
+                    "name": "ugc_post",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Starts at",
+                    "parse_output": "integer_conversion",
+                    "name": "starts_at",
+                    "type": "integer",
+                    "render_input": "integer_conversion"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Ends at",
+                    "parse_output": "integer_conversion",
+                    "name": "ends_at",
+                    "type": "integer",
+                    "render_input": "integer_conversion"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Created at",
+                    "parse_output": "integer_conversion",
+                    "name": "created_at",
+                    "type": "integer",
+                    "render_input": "integer_conversion"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "Last modified",
+                    "parse_output": "integer_conversion",
+                    "name": "last_modified",
+                    "type": "integer",
+                    "render_input": "integer_conversion"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "comment": "events list",
+            "uuid": "d7c3db5e-4b3f-41f0-87d0-179ea09e28e6"
+          },
+          {
+            "number": 4,
+            "as": "36d39d4a",
+            "keyword": "repeat",
+            "block": [
+              {
+                "number": 5,
+                "provider": "rest",
+                "name": "make_request_v2",
+                "as": "21eb80cd",
+                "keyword": "action",
+                "toggleCfg": {
+                  "response.ignore_http_errors": true,
+                  "disable_retries": true
+                },
+                "input": {
+                  "request_name": "Get all events",
+                  "request": {
+                    "method": "GET",
+                    "content_type": "application/json",
+                    "url": "events?q=organizerLeadGenFormEnabledEvents&organizer=urn%3Ali%3Aorganization%3A4000016&start=#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"868d1cd8\",\"path\":[\"events_start\"]}')}&count=100",
+                    "headers": [
+                      {
+                        "value": "202608",
+                        "header": "Linkedin-Version"
+                      },
+                      {
+                        "header": "X-Restli-Protocol-Version",
+                        "value": "2.0.0"
+                      }
+                    ]
+                  },
+                  "response": {
+                    "output_type": "json",
+                    "expected_encoding": "UTF-8",
+                    "ignore_http_errors": "false",
+                    "response_schema": "[{\"properties\":[{\"control_type\":\"number\",\"label\":\"Start\",\"parse_output\":\"float_conversion\",\"optional\":true,\"type\":\"number\",\"name\":\"start\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Count\",\"parse_output\":\"float_conversion\",\"optional\":true,\"type\":\"number\",\"name\":\"count\",\"render_input\":\"float_conversion\"},{\"label\":\"Links\",\"optional\":true,\"type\":\"array\",\"name\":\"links\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Type\",\"optional\":true,\"type\":\"string\",\"name\":\"type\"},{\"control_type\":\"text\",\"label\":\"Rel\",\"optional\":true,\"type\":\"string\",\"name\":\"rel\"},{\"control_type\":\"text\",\"label\":\"Href\",\"optional\":true,\"type\":\"string\",\"name\":\"href\"}]},{\"control_type\":\"number\",\"label\":\"Total\",\"parse_output\":\"float_conversion\",\"optional\":true,\"type\":\"number\",\"name\":\"total\",\"render_input\":\"float_conversion\"}],\"label\":\"Paging\",\"optional\":true,\"type\":\"object\",\"name\":\"paging\"},{\"label\":\"Elements\",\"optional\":true,\"type\":\"array\",\"name\":\"elements\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Vanity name\",\"optional\":true,\"type\":\"string\",\"name\":\"vanityName\"},{\"control_type\":\"text\",\"label\":\"Discovery mode\",\"optional\":true,\"type\":\"string\",\"name\":\"discoveryMode\"},{\"control_type\":\"text\",\"label\":\"Ugc post\",\"optional\":true,\"type\":\"string\",\"name\":\"ugcPost\"},{\"control_type\":\"text\",\"label\":\"Lead gen form\",\"optional\":true,\"type\":\"string\",\"name\":\"leadGenForm\"},{\"control_type\":\"text\",\"label\":\"Background image\",\"optional\":true,\"type\":\"string\",\"name\":\"backgroundImage\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Actor\",\"optional\":true,\"type\":\"string\",\"name\":\"actor\"},{\"control_type\":\"number\",\"label\":\"Time\",\"parse_output\":\"float_conversion\",\"optional\":true,\"type\":\"number\",\"name\":\"time\",\"render_input\":\"float_conversion\"}],\"label\":\"Created\",\"optional\":true,\"type\":\"object\",\"name\":\"created\"},{\"properties\":[{\"properties\":[{\"properties\":[{\"control_type\":\"text\",\"label\":\"Raw text\",\"optional\":true,\"type\":\"string\",\"name\":\"rawText\"}],\"label\":\"En US\",\"optional\":true,\"type\":\"object\",\"name\":\"en_US\"}],\"label\":\"Localized\",\"optional\":true,\"type\":\"object\",\"name\":\"localized\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Country\",\"optional\":true,\"type\":\"string\",\"name\":\"country\"},{\"control_type\":\"text\",\"label\":\"Language\",\"optional\":true,\"type\":\"string\",\"name\":\"language\"}],\"label\":\"Preferred locale\",\"optional\":true,\"type\":\"object\",\"name\":\"preferredLocale\"}],\"label\":\"Description\",\"optional\":true,\"type\":\"object\",\"name\":\"description\"},{\"properties\":[{\"properties\":[{\"properties\":[{\"properties\":[{\"control_type\":\"number\",\"label\":\"Ends at\",\"parse_output\":\"float_conversion\",\"optional\":true,\"type\":\"number\",\"name\":\"endsAt\",\"render_input\":\"float_conversion\"},{\"control_type\":\"text\",\"label\":\"URL\",\"optional\":true,\"type\":\"string\",\"name\":\"url\"}],\"label\":\"External\",\"optional\":true,\"type\":\"object\",\"name\":\"external\"}],\"label\":\"Format\",\"optional\":true,\"type\":\"object\",\"name\":\"format\"}],\"label\":\"Online\",\"optional\":true,\"type\":\"object\",\"name\":\"online\"},{\"properties\":[{\"control_type\":\"number\",\"label\":\"Ends at\",\"parse_output\":\"float_conversion\",\"optional\":true,\"type\":\"number\",\"name\":\"endsAt\",\"render_input\":\"float_conversion\"},{\"control_type\":\"text\",\"label\":\"URL\",\"optional\":true,\"type\":\"string\",\"name\":\"url\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Geographic area\",\"optional\":true,\"type\":\"string\",\"name\":\"geographicArea\"},{\"control_type\":\"text\",\"label\":\"Country\",\"optional\":true,\"type\":\"string\",\"name\":\"country\"},{\"control_type\":\"text\",\"label\":\"City\",\"optional\":true,\"type\":\"string\",\"name\":\"city\"},{\"control_type\":\"text\",\"label\":\"Line 1\",\"optional\":true,\"type\":\"string\",\"name\":\"line1\"},{\"control_type\":\"text\",\"label\":\"Line 2\",\"optional\":true,\"type\":\"string\",\"name\":\"line2\"},{\"control_type\":\"text\",\"label\":\"Postal code\",\"optional\":true,\"type\":\"string\",\"name\":\"postalCode\"}],\"label\":\"Address\",\"optional\":true,\"type\":\"object\",\"name\":\"address\"},{\"properties\":[{\"properties\":[{\"properties\":[{\"control_type\":\"text\",\"label\":\"Raw text\",\"optional\":true,\"type\":\"string\",\"name\":\"rawText\"}],\"label\":\"En US\",\"optional\":true,\"type\":\"object\",\"name\":\"en_US\"}],\"label\":\"Localized\",\"optional\":true,\"type\":\"object\",\"name\":\"localized\"}],\"label\":\"Venue details\",\"optional\":true,\"type\":\"object\",\"name\":\"venueDetails\"}],\"label\":\"In person\",\"optional\":true,\"type\":\"object\",\"name\":\"inPerson\"}],\"label\":\"Type\",\"optional\":true,\"type\":\"object\",\"name\":\"type\"},{\"control_type\":\"checkbox\",\"label\":\"Has dark ugc\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"optional\":true,\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Has dark ugc\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"optional\":true,\"type\":\"boolean\",\"name\":\"hasDarkUgc\"},\"type\":\"boolean\",\"name\":\"hasDarkUgc\"},{\"control_type\":\"text\",\"label\":\"Organizer\",\"optional\":true,\"type\":\"string\",\"name\":\"organizer\"},{\"properties\":[{\"properties\":[{\"control_type\":\"text\",\"label\":\"En US\",\"optional\":true,\"type\":\"string\",\"name\":\"en_US\"}],\"label\":\"Localized\",\"optional\":true,\"type\":\"object\",\"name\":\"localized\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Country\",\"optional\":true,\"type\":\"string\",\"name\":\"country\"},{\"control_type\":\"text\",\"label\":\"Language\",\"optional\":true,\"type\":\"string\",\"name\":\"language\"}],\"label\":\"Preferred locale\",\"optional\":true,\"type\":\"object\",\"name\":\"preferredLocale\"}],\"label\":\"Name\",\"optional\":true,\"type\":\"object\",\"name\":\"name\"},{\"control_type\":\"number\",\"label\":\"Starts at\",\"parse_output\":\"float_conversion\",\"optional\":true,\"type\":\"number\",\"name\":\"startsAt\",\"render_input\":\"float_conversion\"},{\"control_type\":\"text\",\"label\":\"ID\",\"optional\":true,\"type\":\"string\",\"name\":\"id\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Actor\",\"optional\":true,\"type\":\"string\",\"name\":\"actor\"},{\"control_type\":\"number\",\"label\":\"Time\",\"parse_output\":\"float_conversion\",\"optional\":true,\"type\":\"number\",\"name\":\"time\",\"render_input\":\"float_conversion\"}],\"label\":\"Last modified\",\"optional\":true,\"type\":\"object\",\"name\":\"lastModified\"}]}]",
+                    "headers_schema": "[{\"control_type\":\"date_time\",\"label\":\"Date\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"date\"},{\"control_type\":\"text\",\"label\":\"Content type\",\"type\":\"string\",\"name\":\"content_type\"},{\"control_type\":\"text\",\"label\":\"Transfer encoding\",\"type\":\"string\",\"name\":\"transfer_encoding\"},{\"control_type\":\"text\",\"label\":\"Connection\",\"type\":\"string\",\"name\":\"connection\"},{\"control_type\":\"text\",\"label\":\"X restli protocol version\",\"type\":\"string\",\"name\":\"x_restli_protocol_version\"},{\"control_type\":\"text\",\"label\":\"X li fabric\",\"type\":\"string\",\"name\":\"x_li_fabric\"},{\"control_type\":\"text\",\"label\":\"Set cookie\",\"type\":\"string\",\"name\":\"set_cookie\"},{\"control_type\":\"text\",\"label\":\"Strict transport security\",\"type\":\"string\",\"name\":\"strict_transport_security\"},{\"control_type\":\"text\",\"label\":\"X li source fabric\",\"type\":\"string\",\"name\":\"x_li_source_fabric\"},{\"control_type\":\"text\",\"label\":\"X li pop\",\"type\":\"string\",\"name\":\"x_li_pop\"},{\"control_type\":\"text\",\"label\":\"X li proto\",\"type\":\"string\",\"name\":\"x_li_proto\"},{\"control_type\":\"text\",\"label\":\"X li uuid\",\"type\":\"string\",\"name\":\"x_li_uuid\"},{\"control_type\":\"text\",\"label\":\"X content type options\",\"type\":\"string\",\"name\":\"x_content_type_options\"},{\"control_type\":\"text\",\"label\":\"X li route key\",\"type\":\"string\",\"name\":\"x_li_route_key\"},{\"control_type\":\"text\",\"label\":\"Cf cache status\",\"type\":\"string\",\"name\":\"cf_cache_status\"},{\"control_type\":\"text\",\"label\":\"Server\",\"type\":\"string\",\"name\":\"server\"},{\"control_type\":\"text\",\"label\":\"Cf ray\",\"type\":\"string\",\"name\":\"cf_ray\"},{\"control_type\":\"text\",\"label\":\"Alt svc\",\"type\":\"string\",\"name\":\"alt_svc\"}]"
+                  },
+                  "wait_for_response": "false",
+                  "completion_threshold_seconds": "3600",
+                  "disable_retries": "false",
+                  "enable_streaming": "false"
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Headers",
+                    "name": "headers",
+                    "properties": [
+                      {
+                        "control_type": "date_time",
+                        "label": "Date",
+                        "render_input": "date_time_conversion",
+                        "parse_output": "date_time_conversion",
+                        "type": "date_time",
+                        "name": "date"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Content type",
+                        "type": "string",
+                        "name": "content_type"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Transfer encoding",
+                        "type": "string",
+                        "name": "transfer_encoding"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Connection",
+                        "type": "string",
+                        "name": "connection"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "X restli protocol version",
+                        "type": "string",
+                        "name": "x_restli_protocol_version"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "X li fabric",
+                        "type": "string",
+                        "name": "x_li_fabric"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Set cookie",
+                        "type": "string",
+                        "name": "set_cookie"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Strict transport security",
+                        "type": "string",
+                        "name": "strict_transport_security"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "X li source fabric",
+                        "type": "string",
+                        "name": "x_li_source_fabric"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "X li pop",
+                        "type": "string",
+                        "name": "x_li_pop"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "X li proto",
+                        "type": "string",
+                        "name": "x_li_proto"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "X li uuid",
+                        "type": "string",
+                        "name": "x_li_uuid"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "X content type options",
+                        "type": "string",
+                        "name": "x_content_type_options"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "X li route key",
+                        "type": "string",
+                        "name": "x_li_route_key"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Cf cache status",
+                        "type": "string",
+                        "name": "cf_cache_status"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Server",
+                        "type": "string",
+                        "name": "server"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Cf ray",
+                        "type": "string",
+                        "name": "cf_ray"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Alt svc",
+                        "type": "string",
+                        "name": "alt_svc"
+                      }
+                    ],
+                    "type": "object"
+                  },
+                  {
+                    "label": "Response",
+                    "name": "response",
+                    "properties": [
+                      {
+                        "properties": [
+                          {
+                            "control_type": "number",
+                            "label": "Start",
+                            "parse_output": "float_conversion",
+                            "optional": true,
+                            "type": "number",
+                            "name": "start",
+                            "render_input": "float_conversion"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Count",
+                            "parse_output": "float_conversion",
+                            "optional": true,
+                            "type": "number",
+                            "name": "count",
+                            "render_input": "float_conversion"
+                          },
+                          {
+                            "label": "Links",
+                            "optional": true,
+                            "type": "array",
+                            "name": "links",
+                            "of": "object",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Type",
+                                "optional": true,
+                                "type": "string",
+                                "name": "type"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Rel",
+                                "optional": true,
+                                "type": "string",
+                                "name": "rel"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Href",
+                                "optional": true,
+                                "type": "string",
+                                "name": "href"
+                              }
+                            ]
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Total",
+                            "parse_output": "float_conversion",
+                            "optional": true,
+                            "type": "number",
+                            "name": "total",
+                            "render_input": "float_conversion"
+                          }
+                        ],
+                        "label": "Paging",
+                        "optional": true,
+                        "type": "object",
+                        "name": "paging"
+                      },
+                      {
+                        "label": "Elements",
+                        "optional": true,
+                        "type": "array",
+                        "name": "elements",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Vanity name",
+                            "optional": true,
+                            "type": "string",
+                            "name": "vanityName"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Discovery mode",
+                            "optional": true,
+                            "type": "string",
+                            "name": "discoveryMode"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Ugc post",
+                            "optional": true,
+                            "type": "string",
+                            "name": "ugcPost"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Lead gen form",
+                            "optional": true,
+                            "type": "string",
+                            "name": "leadGenForm"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Background image",
+                            "optional": true,
+                            "type": "string",
+                            "name": "backgroundImage"
+                          },
+                          {
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Actor",
+                                "optional": true,
+                                "type": "string",
+                                "name": "actor"
+                              },
+                              {
+                                "control_type": "number",
+                                "label": "Time",
+                                "parse_output": "float_conversion",
+                                "optional": true,
+                                "type": "number",
+                                "name": "time",
+                                "render_input": "float_conversion"
+                              }
+                            ],
+                            "label": "Created",
+                            "optional": true,
+                            "type": "object",
+                            "name": "created"
+                          },
+                          {
+                            "properties": [
+                              {
+                                "properties": [
+                                  {
+                                    "properties": [
+                                      {
+                                        "control_type": "text",
+                                        "label": "Raw text",
+                                        "optional": true,
+                                        "type": "string",
+                                        "name": "rawText"
+                                      }
+                                    ],
+                                    "label": "En US",
+                                    "optional": true,
+                                    "type": "object",
+                                    "name": "en_US"
+                                  }
+                                ],
+                                "label": "Localized",
+                                "optional": true,
+                                "type": "object",
+                                "name": "localized"
+                              },
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "Country",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "country"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Language",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "language"
+                                  }
+                                ],
+                                "label": "Preferred locale",
+                                "optional": true,
+                                "type": "object",
+                                "name": "preferredLocale"
+                              }
+                            ],
+                            "label": "Description",
+                            "optional": true,
+                            "type": "object",
+                            "name": "description"
+                          },
+                          {
+                            "properties": [
+                              {
+                                "properties": [
+                                  {
+                                    "properties": [
+                                      {
+                                        "properties": [
+                                          {
+                                            "control_type": "number",
+                                            "label": "Ends at",
+                                            "parse_output": "float_conversion",
+                                            "optional": true,
+                                            "type": "number",
+                                            "name": "endsAt",
+                                            "render_input": "float_conversion"
+                                          },
+                                          {
+                                            "control_type": "text",
+                                            "label": "URL",
+                                            "optional": true,
+                                            "type": "string",
+                                            "name": "url"
+                                          }
+                                        ],
+                                        "label": "External",
+                                        "optional": true,
+                                        "type": "object",
+                                        "name": "external"
+                                      }
+                                    ],
+                                    "label": "Format",
+                                    "optional": true,
+                                    "type": "object",
+                                    "name": "format"
+                                  }
+                                ],
+                                "label": "Online",
+                                "optional": true,
+                                "type": "object",
+                                "name": "online"
+                              },
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "number",
+                                    "label": "Ends at",
+                                    "parse_output": "float_conversion",
+                                    "optional": true,
+                                    "type": "number",
+                                    "name": "endsAt",
+                                    "render_input": "float_conversion"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "URL",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "url"
+                                  },
+                                  {
+                                    "properties": [
+                                      {
+                                        "control_type": "text",
+                                        "label": "Geographic area",
+                                        "optional": true,
+                                        "type": "string",
+                                        "name": "geographicArea"
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "Country",
+                                        "optional": true,
+                                        "type": "string",
+                                        "name": "country"
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "City",
+                                        "optional": true,
+                                        "type": "string",
+                                        "name": "city"
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "Line 1",
+                                        "optional": true,
+                                        "type": "string",
+                                        "name": "line1"
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "Line 2",
+                                        "optional": true,
+                                        "type": "string",
+                                        "name": "line2"
+                                      },
+                                      {
+                                        "control_type": "text",
+                                        "label": "Postal code",
+                                        "optional": true,
+                                        "type": "string",
+                                        "name": "postalCode"
+                                      }
+                                    ],
+                                    "label": "Address",
+                                    "optional": true,
+                                    "type": "object",
+                                    "name": "address"
+                                  },
+                                  {
+                                    "properties": [
+                                      {
+                                        "properties": [
+                                          {
+                                            "properties": [
+                                              {
+                                                "control_type": "text",
+                                                "label": "Raw text",
+                                                "optional": true,
+                                                "type": "string",
+                                                "name": "rawText"
+                                              }
+                                            ],
+                                            "label": "En US",
+                                            "optional": true,
+                                            "type": "object",
+                                            "name": "en_US"
+                                          }
+                                        ],
+                                        "label": "Localized",
+                                        "optional": true,
+                                        "type": "object",
+                                        "name": "localized"
+                                      }
+                                    ],
+                                    "label": "Venue details",
+                                    "optional": true,
+                                    "type": "object",
+                                    "name": "venueDetails"
+                                  }
+                                ],
+                                "label": "In person",
+                                "optional": true,
+                                "type": "object",
+                                "name": "inPerson"
+                              }
+                            ],
+                            "label": "Type",
+                            "optional": true,
+                            "type": "object",
+                            "name": "type"
+                          },
+                          {
+                            "control_type": "checkbox",
+                            "label": "Has dark ugc",
+                            "render_input": "boolean_conversion",
+                            "parse_output": "boolean_conversion",
+                            "optional": true,
+                            "toggle_hint": "Select from option list",
+                            "toggle_field": {
+                              "label": "Has dark ugc",
+                              "control_type": "text",
+                              "toggle_hint": "Use custom value",
+                              "optional": true,
+                              "type": "boolean",
+                              "name": "hasDarkUgc"
+                            },
+                            "type": "boolean",
+                            "name": "hasDarkUgc"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Organizer",
+                            "optional": true,
+                            "type": "string",
+                            "name": "organizer"
+                          },
+                          {
+                            "properties": [
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "En US",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "en_US"
+                                  }
+                                ],
+                                "label": "Localized",
+                                "optional": true,
+                                "type": "object",
+                                "name": "localized"
+                              },
+                              {
+                                "properties": [
+                                  {
+                                    "control_type": "text",
+                                    "label": "Country",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "country"
+                                  },
+                                  {
+                                    "control_type": "text",
+                                    "label": "Language",
+                                    "optional": true,
+                                    "type": "string",
+                                    "name": "language"
+                                  }
+                                ],
+                                "label": "Preferred locale",
+                                "optional": true,
+                                "type": "object",
+                                "name": "preferredLocale"
+                              }
+                            ],
+                            "label": "Name",
+                            "optional": true,
+                            "type": "object",
+                            "name": "name"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Starts at",
+                            "parse_output": "float_conversion",
+                            "optional": true,
+                            "type": "number",
+                            "name": "startsAt",
+                            "render_input": "float_conversion"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "ID",
+                            "optional": true,
+                            "type": "string",
+                            "name": "id"
+                          },
+                          {
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "Actor",
+                                "optional": true,
+                                "type": "string",
+                                "name": "actor"
+                              },
+                              {
+                                "control_type": "number",
+                                "label": "Time",
+                                "parse_output": "float_conversion",
+                                "optional": true,
+                                "type": "number",
+                                "name": "time",
+                                "render_input": "float_conversion"
+                              }
+                            ],
+                            "label": "Last modified",
+                            "optional": true,
+                            "type": "object",
+                            "name": "lastModified"
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "label": "Response",
+                    "name": "response",
+                    "override": true,
+                    "properties": [
+                      {
+                        "control_type": "select",
+                        "label": "Response content type",
+                        "pick_list": [
+                          [
+                            "Text",
+                            "rawdatatxt"
+                          ],
+                          [
+                            "Binary",
+                            "rawdata"
+                          ],
+                          [
+                            "JSON",
+                            "json"
+                          ],
+                          [
+                            "XML",
+                            "xml2"
+                          ],
+                          [
+                            "Multipart",
+                            "multipart"
+                          ]
+                        ],
+                        "hint": "Select expected format of data response type, e.g. JSON or XML. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+                        "default": "json",
+                        "extends_schema": true,
+                        "type": "string",
+                        "name": "output_type"
+                      },
+                      {
+                        "control_type": "select",
+                        "label": "Encoding",
+                        "pick_list": "supported_encodings_without_binary_global_pick_list",
+                        "pick_list_connection_less": true,
+                        "optional": true,
+                        "default": "UTF-8",
+                        "hint": "Default encoding type is set to UTF-8, and typically doesn't need to be changed. <a href=\"https://docs.workato.com/developing-connectors/http.html#response-type\" target=\"_blank\">Learn more</a>",
+                        "type": "string",
+                        "name": "expected_encoding"
+                      },
+                      {
+                        "control_type": "schema-designer",
+                        "label": "Response schema",
+                        "sample_data_type": "json_http",
+                        "extends_schema": true,
+                        "empty_schema_title": "Describe all fields in your response.",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "response_schema"
+                      },
+                      {
+                        "control_type": "schema-designer",
+                        "label": "HTTP response headers",
+                        "extends_schema": true,
+                        "empty_schema_title": "Describe all the response headers",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string",
+                        "name": "headers_schema"
+                      },
+                      {
+                        "control_type": "schema-designer",
+                        "label": "Multipart part headers",
+                        "extends_schema": true,
+                        "empty_schema_title": "Describe headers within each multipart part",
+                        "optional": true,
+                        "sticky": true,
+                        "hint": "Define the headers that appear in each part of the multipart response (e.g., Content-Type, Content-ID)",
+                        "ngIf": "input.response.output_type == 'multipart'",
+                        "type": "string",
+                        "name": "part_headers_schema"
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "label": "Mark non-2xx response codes as success?",
+                        "default": "false",
+                        "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+                        "optional": true,
+                        "toggle_hint": "Select from option list",
+                        "toggle_field": {
+                          "label": "Mark non-2xx response codes as success?",
+                          "control_type": "text",
+                          "toggle_hint": "Use custom value",
+                          "default": false,
+                          "hint": "If <b>yes</b>, non 2xx response codes returned will be marked as a successful action. If <b>no</b>, non 2xx response codes returned will be marked as an error.",
+                          "optional": true,
+                          "render_input": null,
+                          "parse_output": null,
+                          "type": "boolean",
+                          "name": "ignore_http_errors"
+                        },
+                        "type": "boolean",
+                        "name": "ignore_http_errors"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "comment": "Linkedin Events",
+                "uuid": "015cb7aa-a9f8-4134-a7f7-91a01a079f18",
+                "wizardFinished": true
+              },
+              {
+                "number": 6,
+                "keyword": "if",
+                "input": {
+                  "type": "compound",
+                  "operand": "and",
+                  "conditions": [
+                    {
+                      "operand": "present",
+                      "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\"]}')",
+                      "rhs": "",
+                      "uuid": "c2444ba5-dde4-4c32-a993-145d533af6ff"
+                    }
+                  ]
+                },
+                "block": [
+                  {
+                    "number": 7,
+                    "provider": "workato_variable",
+                    "name": "insert_to_list_batch",
+                    "as": "070374d6",
+                    "keyword": "action",
+                    "dynamicPickListSelection": {
+                      "name": "events (step 4)"
+                    },
+                    "input": {
+                      "location": "end",
+                      "name": "d7c3db5e-4b3f-41f0-87d0-179ea09e28e6:78d994ea",
+                      "list_items": {
+                        "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\"]}')}",
+                        "id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"current_item\"},\"id\"]}')}",
+                        "name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"current_item\"},\"name\",\"localized\",\"en_US\"]}')}",
+                        "vanity_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"current_item\"},\"vanityName\"]}')}",
+                        "lead_gen_form": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"current_item\"},\"leadGenForm\"]}')}",
+                        "organizer": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"current_item\"},\"organizer\"]}')}",
+                        "discovery_mode": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"current_item\"},\"discoveryMode\"]}')}",
+                        "description": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"current_item\"},\"description\",\"localized\",\"en_US\",\"rawText\"]}')}",
+                        "starts_at": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"current_item\"},\"startsAt\"]}')}",
+                        "ends_at": "=_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"current_item\"},\"type\",\"online\",\"format\",\"external\",\"endsAt\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"current_item\"},\"type\",\"online\",\"format\",\"external\",\"endsAt\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"current_item\"},\"type\",\"inPerson\",\"endsAt\"]}')",
+                        "ugc_post": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"current_item\"},\"ugcPost\"]}')}",
+                        "created_at": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"current_item\"},\"created\",\"time\"]}')}",
+                        "last_modified": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"current_item\"},\"lastModified\",\"time\"]}')}",
+                        "event_type": "=_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"current_item\"},\"type\",\"online\"]}').present? ? \"online\" : \"inPerson\"",
+                        "landing_url": "=_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"current_item\"},\"type\",\"online\",\"format\",\"external\",\"url\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"current_item\"},\"type\",\"online\",\"format\",\"external\",\"url\"]}') : _dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"current_item\"},\"type\",\"inPerson\",\"url\"]}')"
+                      }
+                    },
+                    "extended_input_schema": [
+                      {
+                        "hint": "",
+                        "label": "List items",
+                        "name": "list_items",
+                        "of": "object",
+                        "optional": false,
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "ID",
+                            "name": "id",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Name",
+                            "name": "name",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Vanity name",
+                            "name": "vanity_name",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Lead gen form",
+                            "name": "lead_gen_form",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Organizer",
+                            "name": "organizer",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Event type",
+                            "name": "event_type",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Discovery mode",
+                            "name": "discovery_mode",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Landing URL",
+                            "name": "landing_url",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Description",
+                            "name": "description",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Ugc post",
+                            "name": "ugc_post",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Starts at",
+                            "parse_output": "integer_conversion",
+                            "name": "starts_at",
+                            "type": "integer",
+                            "render_input": "integer_conversion"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Ends at",
+                            "parse_output": "integer_conversion",
+                            "name": "ends_at",
+                            "type": "integer",
+                            "render_input": "integer_conversion"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Created at",
+                            "parse_output": "integer_conversion",
+                            "name": "created_at",
+                            "type": "integer",
+                            "render_input": "integer_conversion"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Last modified",
+                            "parse_output": "integer_conversion",
+                            "name": "last_modified",
+                            "type": "integer",
+                            "render_input": "integer_conversion"
+                          }
+                        ],
+                        "type": "array"
+                      }
+                    ],
+                    "comment": "events",
+                    "uuid": "180bd6b6-6301-4b13-9452-5729f2de3b5b"
+                  },
+                  {
+                    "number": 8,
+                    "keyword": "if",
+                    "input": {
+                      "type": "compound",
+                      "operand": "and",
+                      "conditions": [
+                        {
+                          "operand": "equals_to",
+                          "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"size\"}]}')}",
+                          "rhs": "100",
+                          "uuid": "3454a83c-7bf6-4681-a73d-3e8802a4692f"
+                        }
+                      ]
+                    },
+                    "block": [
+                      {
+                        "number": 9,
+                        "provider": "workato_variable",
+                        "name": "update_variables",
+                        "as": "861ea8a2",
+                        "keyword": "action",
+                        "dynamicPickListSelection": {
+                          "name": [
+                            {
+                              "label": "events_start (step 3)",
+                              "value": "a5634c50-5384-4655-aef7-e1d570984967:868d1cd8:events_start"
+                            },
+                            {
+                              "label": "events_next_page (step 3)",
+                              "value": "a5634c50-5384-4655-aef7-e1d570984967:868d1cd8:events_next_page"
+                            }
+                          ]
+                        },
+                        "input": {
+                          "input_mode": "raw",
+                          "name": "a5634c50-5384-4655-aef7-e1d570984967:868d1cd8:events_start\na5634c50-5384-4655-aef7-e1d570984967:868d1cd8:events_next_page",
+                          "events_start": "=_dp('{\"pill_type\":\"output\",\"provider\":\"repeat\",\"line\":\"36d39d4a\",\"path\":[\"index\"]}')*100",
+                          "events_next_page": "=_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"paging\",\"links\"]}').where(rel: 'next')&.pluck('href')"
+                        },
+                        "extended_input_schema": [
+                          {
+                            "control_type": "integer",
+                            "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+                            "label": "events_start",
+                            "name": "events_start",
+                            "optional": true,
+                            "parse_output": "integer_conversion",
+                            "sticky": true,
+                            "type": "integer",
+                            "strip_interpolation": true
+                          },
+                          {
+                            "control_type": "text",
+                            "hint": "Provide a value for the variable. When the value is not supplied, the variable is not updated.<br>To clear the value, set the value to <b>nil</b> in formula mode.",
+                            "label": "events_next_page",
+                            "name": "events_next_page",
+                            "optional": true,
+                            "sticky": true,
+                            "type": "string",
+                            "strip_interpolation": true
+                          }
+                        ],
+                        "comment": "index*100",
+                        "uuid": "f0a2afb5-0432-47e4-88fd-7860cf0035d8"
+                      }
+                    ],
+                    "comment": "elements exist",
+                    "uuid": "fe3cf13c-ae0f-4a36-913a-78ffd7bf646b"
+                  }
+                ],
+                "uuid": "acbac039-ea37-46af-9222-d7d46d741ccc"
+              },
+              {
+                "number": 10,
+                "keyword": "while_condition",
+                "input": {
+                  "type": "compound",
+                  "operand": "and",
+                  "conditions": [
+                    {
+                      "operand": "equals_to",
+                      "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"rest\",\"line\":\"21eb80cd\",\"path\":[\"response\",\"elements\",{\"path_element_type\":\"size\"}]}')}",
+                      "rhs": "100",
+                      "uuid": "e9765557-e586-4cae-b681-01dc50dc2241"
+                    }
+                  ]
+                },
+                "uuid": "64a96514-88d2-4594-b0f9-19776e8d55e8"
+              }
+            ],
+            "comment": "events pagination",
+            "uuid": "ecb38b6e-2a01-4221-93cd-bf7a8eda36a6"
+          },
+          {
+            "number": 11,
+            "keyword": "if",
+            "input": {
+              "type": "compound",
+              "operand": "and",
+              "conditions": [
+                {
+                  "operand": "present",
+                  "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"78d994ea\",\"path\":[\"list_items\"]}')",
+                  "rhs": "",
+                  "uuid": "89375e82-e7d7-4739-be47-bab5a803679f"
+                }
+              ]
+            },
+            "block": [
+              {
+                "number": 12,
+                "provider": "logger",
+                "name": "log_message",
+                "as": "c576ab7b",
+                "keyword": "action",
+                "input": {
+                  "user_logs_enabled": "false",
+                  "message": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"78d994ea\",\"path\":[\"list_items\"]}')"
+                },
+                "extended_input_schema": [
+                  {
+                    "control_type": "switch",
+                    "default": false,
+                    "disable_formula": true,
+                    "extends_schema": true,
+                    "hint": "Send a copy of the message to Workato logs.\n<a href=\"https://docs.workato.com/features/logging-service.html\" target=\"_blank\" class=\"ng-scope\">\n  Learn more\n</a>\n",
+                    "label": "Send to Workato log service",
+                    "name": "user_logs_enabled",
+                    "optional": true,
+                    "type": "string"
+                  }
+                ],
+                "comment": "events log",
+                "uuid": "dd6921a6-65fc-4539-a510-644ba2cbeb16"
+              },
+              {
+                "number": 13,
+                "provider": "postgresql",
+                "name": "upsert_rows_batch",
+                "as": "6692f0e5",
+                "keyword": "action",
+                "dynamicPickListSelection": {
+                  "table": "marketing.linkedin_events",
+                  "key_columns": [
+                    {
+                      "label": "id",
+                      "value": "id"
+                    }
+                  ]
+                },
+                "toggleCfg": {
+                  "table": true
+                },
+                "input": {
+                  "table": "marketing.linkedin_events",
+                  "key_columns": "id",
+                  "rows": {
+                    "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"78d994ea\",\"path\":[\"list_items\"]}')}",
+                    "description": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"78d994ea\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"description\"]}')}",
+                    "discovery_mode": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"78d994ea\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"discovery_mode\"]}')}",
+                    "ends_at": "=(_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"78d994ea\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"ends_at\"]}')/ 1000).to_time",
+                    "event_type": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"78d994ea\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"event_type\"]}')}",
+                    "id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"78d994ea\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"id\"]}')}",
+                    "landing_url": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"78d994ea\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"landing_url\"]}')}",
+                    "lead_gen_form": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"78d994ea\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"lead_gen_form\"]}')}",
+                    "name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"78d994ea\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"name\"]}')}",
+                    "organizer": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"78d994ea\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"organizer\"]}')}",
+                    "starts_at": "=(_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"78d994ea\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"starts_at\"]}') / 1000).to_time",
+                    "vanity_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"78d994ea\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"vanity_name\"]}')}"
+                  }
+                },
+                "extended_input_schema": [
+                  {
+                    "label": "Rows",
+                    "name": "rows",
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "description",
+                        "details": {
+                          "primary_key": false,
+                          "data_type": "text",
+                          "column_name": "description"
+                        },
+                        "optional": true,
+                        "hint": "text",
+                        "type": "string",
+                        "name": "description"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "discovery_mode",
+                        "details": {
+                          "primary_key": false,
+                          "data_type": "text",
+                          "column_name": "discovery_mode"
+                        },
+                        "optional": true,
+                        "hint": "text",
+                        "type": "string",
+                        "name": "discovery_mode"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "label": "ends_at",
+                        "render_input": "convert_date_time",
+                        "parse_output": "convert_date_time",
+                        "details": {
+                          "primary_key": false,
+                          "data_type": "timestamp with time zone",
+                          "column_name": "ends_at"
+                        },
+                        "optional": true,
+                        "hint": "timestamp with time zone",
+                        "type": "date_time",
+                        "name": "ends_at"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "event_type",
+                        "details": {
+                          "primary_key": false,
+                          "data_type": "text",
+                          "column_name": "event_type"
+                        },
+                        "optional": true,
+                        "hint": "text",
+                        "type": "string",
+                        "name": "event_type"
+                      },
+                      {
+                        "control_type": "number",
+                        "label": "id",
+                        "parse_output": "parse_integer_output",
+                        "details": {
+                          "primary_key": true,
+                          "data_type": "bigint",
+                          "column_name": "id"
+                        },
+                        "event_title": true,
+                        "hint": "bigint, primary key",
+                        "optional": false,
+                        "type": "integer",
+                        "name": "id"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "landing_url",
+                        "details": {
+                          "primary_key": false,
+                          "data_type": "text",
+                          "column_name": "landing_url"
+                        },
+                        "optional": true,
+                        "hint": "text",
+                        "type": "string",
+                        "name": "landing_url"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "lead_gen_form",
+                        "details": {
+                          "primary_key": false,
+                          "data_type": "text",
+                          "column_name": "lead_gen_form"
+                        },
+                        "optional": true,
+                        "hint": "text",
+                        "type": "string",
+                        "name": "lead_gen_form"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "name",
+                        "details": {
+                          "primary_key": false,
+                          "data_type": "text",
+                          "column_name": "name"
+                        },
+                        "hint": "text",
+                        "optional": true,
+                        "type": "string",
+                        "name": "name"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "organizer",
+                        "details": {
+                          "primary_key": false,
+                          "data_type": "text",
+                          "column_name": "organizer"
+                        },
+                        "optional": true,
+                        "hint": "text",
+                        "type": "string",
+                        "name": "organizer"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "label": "starts_at",
+                        "render_input": "convert_date_time",
+                        "parse_output": "convert_date_time",
+                        "details": {
+                          "primary_key": false,
+                          "data_type": "timestamp with time zone",
+                          "column_name": "starts_at"
+                        },
+                        "optional": true,
+                        "hint": "timestamp with time zone",
+                        "type": "date_time",
+                        "name": "starts_at"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "label": "synced_at",
+                        "render_input": "convert_date_time",
+                        "parse_output": "convert_date_time",
+                        "details": {
+                          "primary_key": false,
+                          "data_type": "timestamp with time zone",
+                          "column_name": "synced_at"
+                        },
+                        "optional": true,
+                        "hint": "timestamp with time zone",
+                        "type": "date_time",
+                        "name": "synced_at"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "vanity_name",
+                        "details": {
+                          "primary_key": false,
+                          "data_type": "text",
+                          "column_name": "vanity_name"
+                        },
+                        "optional": true,
+                        "hint": "text",
+                        "type": "string",
+                        "name": "vanity_name"
+                      }
+                    ],
+                    "type": "array"
+                  },
+                  {
+                    "change_on_blur": true,
+                    "control_type": "multiselect",
+                    "delimiter": "\n",
+                    "extends_schema": true,
+                    "help": {
+                      "title": "Warning",
+                      "text": "A primary key or a column with unique constraint is recommended. Otherwise, multiple rows may be updated with the same data."
+                    },
+                    "hint": "Select a unique key column to deduplicate rows. Performance can be improved if the selected unique key is indexed. <a href=\"https://docs.workato.com/connectors/postgresql.html#unique-key\" target=\"_blank\">Learn more</a>",
+                    "label": "Unique key",
+                    "name": "key_columns",
+                    "optional": true,
+                    "pick_list": "columns_list",
+                    "pick_list_params": {
+                      "table": "table"
+                    },
+                    "sticky": true,
+                    "type": "string"
+                  }
+                ],
+                "visible_config_fields": [
+                  "table",
+                  "key_columns",
+                  "rows.description",
+                  "rows.discovery_mode",
+                  "rows.ends_at",
+                  "rows.event_type",
+                  "rows.landing_url",
+                  "rows.lead_gen_form",
+                  "rows.name",
+                  "rows.organizer",
+                  "rows.starts_at",
+                  "rows.vanity_name",
+                  "rows",
+                  "rows.id"
+                ],
+                "uuid": "56994c10-bac4-4ccc-b0b4-2cd00ffc11e6"
+              },
+              {
+                "number": 14,
+                "provider": "workato_recipe_function",
+                "name": "return_result",
+                "as": "2e273f03",
+                "keyword": "action",
+                "input": {
+                  "result": {
+                    "status": "Success",
+                    "events": {
+                      "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"78d994ea\",\"path\":[\"list_items\"]}')}",
+                      "event_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"78d994ea\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"id\"]}')}",
+                      "event_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"78d994ea\",\"path\":[\"list_items\",{\"path_element_type\":\"current_item\"},\"name\"]}')}"
+                    }
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "label": "Events",
+                        "name": "events",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Event ID",
+                            "name": "event_id",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Event name",
+                            "name": "event_name",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "label": "Events",
+                        "name": "events",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Event ID",
+                            "name": "event_id",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Event name",
+                            "name": "event_name",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "visible_config_fields": [
+                  "result.events.event_name",
+                  "result.events.event_id"
+                ],
+                "comment": "status=success",
+                "uuid": "3f8c20c9-4e3b-441b-8c55-a297ab5ab92d"
+              }
+            ],
+            "uuid": "d055625b-9a4c-4e30-b830-688711a2b34e"
+          },
+          {
+            "number": 15,
+            "as": "c0f97efb",
+            "keyword": "catch",
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "block": [
+              {
+                "number": 16,
+                "provider": "workato_recipe_function",
+                "name": "return_result",
+                "as": "2758eb88",
+                "keyword": "action",
+                "input": {
+                  "result": {
+                    "status": "Error",
+                    "message": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c0f97efb\",\"path\":[\"message\"]}')}"
+                  }
+                },
+                "extended_output_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "label": "Events",
+                        "name": "events",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Event ID",
+                            "name": "event_id",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Event name",
+                            "name": "event_name",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_input_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "type": "string",
+                        "optional": false
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "type": "string",
+                        "optional": true
+                      },
+                      {
+                        "label": "Events",
+                        "name": "events",
+                        "type": "array",
+                        "optional": true,
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Event ID",
+                            "name": "event_id",
+                            "type": "string",
+                            "optional": true
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Event name",
+                            "name": "event_name",
+                            "type": "string",
+                            "optional": true
+                          }
+                        ]
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "visible_config_fields": [
+                  "result",
+                  "result.status",
+                  "result.events",
+                  "result.message"
+                ],
+                "comment": "status=error",
+                "uuid": "d21a6a83-2d01-499f-a8d0-1849e569a10b"
+              }
+            ],
+            "uuid": "2afdda03-1bfd-47d4-881d-0865b201aef8"
+          }
+        ],
+        "uuid": "f6bfafe3-15fc-457f-b5df-79a97b24c73c"
+      }
+    ],
+    "job_report_schema": [
+      {
+        "name": "custom_column_0",
+        "label": "Events"
+      },
+      {
+        "name": "custom_column_1",
+        "label": "Status"
+      },
+      {
+        "name": "custom_column_2",
+        "label": "Message"
+      }
+    ],
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"78d994ea\",\"path\":[\"list_items\",{\"path_element_type\":\"size\"}]}')}",
+      "custom_column_1": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"2e273f03\",\"path\":[\"result\",\"status\"]}') || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"2758eb88\",\"path\":[\"result\",\"status\"]}')",
+      "custom_column_2": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"2e273f03\",\"path\":[\"result\",\"message\"]}') || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"2758eb88\",\"path\":[\"result\",\"message\"]}')"
+    },
+    "uuid": "df61e400-93ed-4056-9357-02f827e09e9e"
+  },
+  "config": [
+    {
+      "keyword": "application",
+      "provider": "workato_recipe_function",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "rest",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/Marketing/linkedin_marketing_custom.connection.json",
+        "name": "LinkedIn Marketing (custom)",
+        "folder": "#Connections/Marketing"
+      }
+    },
+    {
+      "keyword": "application",
+      "provider": "workato_variable",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "logger",
+      "skip_validation": false,
+      "account_id": null
+    },
+    {
+      "keyword": "application",
+      "provider": "postgresql",
+      "skip_validation": false,
+      "account_id": {
+        "zip_name": "#Connections/BizOps App/postgresql_account.connection.json",
+        "name": "PostgreSQL account",
+        "folder": "#Connections/BizOps App"
+      }
+    }
+  ],
+  "tags": [
+    "Recipe Function"
+  ]
+}
