@@ -8,10 +8,113 @@
             "as": "c3c00002",
             "comment": "marketing.luma_sf_campaign_queue: Pending rows due (next_attempt_at)",
             "description": "Select \u003cspan class=\"provider\"\u003erows\u003c/span\u003e using \u003cspan class=\"provider\"\u003ecustom SQL\u003c/span\u003e in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
+            "extended_input_schema": [
+              {
+                "control_type": "form-schema-builder",
+                "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. \u003cb\u003eid\u003c/b\u003e\n                    Second, provide the actual parameter value. Parameter values can be static or datapills.\n                    Select the \u003cb\u003eclosest corresponding data type\u003c/b\u003e that your database is expecting for the bind variable\n                    ",
+                "label": "Parameters",
+                "name": "parameters",
+                "optional": true,
+                "override": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "extends_schema": true,
+                    "label": "Schema",
+                    "name": "schema",
+                    "type": "string"
+                  },
+                  {
+                    "label": "Data",
+                    "name": "data",
+                    "optional": true,
+                    "properties": [],
+                    "type": "object"
+                  }
+                ],
+                "sticky": true,
+                "type": "object"
+              }
+            ],
+            "extended_output_schema": [
+              {
+                "label": "Rows",
+                "name": "rows",
+                "of": "object",
+                "order_by_hint": false,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "details": {
+                      "column_name": "id",
+                      "data_type": "string",
+                      "primary_key": null
+                    },
+                    "hint": "string",
+                    "label": "id",
+                    "name": "id",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "details": {
+                      "column_name": "email",
+                      "data_type": "string",
+                      "primary_key": null
+                    },
+                    "hint": "string",
+                    "label": "email",
+                    "name": "email",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "details": {
+                      "column_name": "luma_url_slug",
+                      "data_type": "string",
+                      "primary_key": null
+                    },
+                    "hint": "string",
+                    "label": "luma_url_slug",
+                    "name": "luma_url_slug",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "details": {
+                      "column_name": "approval_status",
+                      "data_type": "string",
+                      "primary_key": null
+                    },
+                    "hint": "string",
+                    "label": "approval_status",
+                    "name": "approval_status",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "details": {
+                      "column_name": "attempts",
+                      "data_type": "string",
+                      "primary_key": null
+                    },
+                    "hint": "string",
+                    "label": "attempts",
+                    "name": "attempts",
+                    "optional": true,
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
             "input": {
               "output_schema": "[{\"name\": \"id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Id\"}, {\"name\": \"email\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Email\"}, {\"name\": \"luma_url_slug\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Luma url slug\"}, {\"name\": \"approval_status\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Approval status\"}, {\"name\": \"attempts\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Attempts\"}]",
               "parameters": {
-                "data": {},
                 "schema": "[]"
               },
               "sql": "SELECT id, email, luma_url_slug, approval_status, attempts::text AS attempts\nFROM marketing.luma_sf_campaign_queue\nWHERE queue_status = 'Pending'\n  AND next_attempt_at \u003c= now()\nORDER BY next_attempt_at\nLIMIT 500"
@@ -29,24 +132,468 @@
               {
                 "as": "c3c00004",
                 "comment": "LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign",
-                "description": "Call \u003cspan class=\"provider\"\u003eLSC-02 | Fun 002 | Sync Luma Guest to SF Campaign\u003c/span\u003e",
+                "description": "Call a recipe function",
+                "extended_input_schema": [
+                  {
+                    "label": "Parameters",
+                    "name": "parameters",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Queue ID",
+                        "name": "queue_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Email",
+                        "name": "email",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Luma URL slug",
+                        "name": "luma_url_slug",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Approval status",
+                        "name": "approval_status",
+                        "optional": true,
+                        "type": "string"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_output_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Queue status",
+                        "name": "queue_status",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF person type",
+                        "name": "sf_person_type",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF person ID",
+                        "name": "sf_person_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign ID",
+                        "name": "sf_campaign_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign name",
+                        "name": "sf_campaign_name",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign member ID",
+                        "name": "sf_campaign_member_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF member status",
+                        "name": "sf_member_status",
+                        "optional": true,
+                        "type": "string"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
                 "input": {
-                  "flow_id": "83344285"
+                  "flow_id": "83344285",
+                  "parameters": {
+                    "approval_status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"c3c00003\",\"path\":[\"approval_status\"]}')}",
+                    "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"c3c00003\",\"path\":[\"email\"]}')}",
+                    "luma_url_slug": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"c3c00003\",\"path\":[\"luma_url_slug\"]}')}",
+                    "queue_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"c3c00003\",\"path\":[\"id\"]}')}"
+                  }
                 },
                 "keyword": "action",
                 "name": "call_recipe",
                 "number": 4,
                 "provider": "workato_recipe_function",
                 "title": null,
-                "uuid": "002c5189-84dc-5c01-8585-95552d4e823f"
+                "uuid": "002c5189-84dc-5c01-8585-95552d4e823f",
+                "visible_config_fields": [
+                  "flow_id",
+                  "parameters.approval_status",
+                  "parameters.queue_id"
+                ]
               },
               {
                 "as": "c3c00005",
                 "comment": "write result to queue row",
                 "description": "Update \u003cspan class=\"provider\"\u003erows\u003c/span\u003e in \u003cspan class=\"provider\"\u003emarketing.luma_sf_campaign_queue\u003c/span\u003e table in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
+                "extended_input_schema": [
+                  {
+                    "label": "Columns",
+                    "name": "columns",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "approval_status",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "approval_status",
+                        "name": "approval_status",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "number",
+                        "details": {
+                          "column_name": "attempts",
+                          "data_type": "integer",
+                          "primary_key": false
+                        },
+                        "hint": "integer",
+                        "label": "attempts",
+                        "name": "attempts",
+                        "optional": true,
+                        "parse_output": "parse_integer_output",
+                        "type": "integer"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "checked_in_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "checked_in_at",
+                        "name": "checked_in_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "created_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "created_at",
+                        "name": "created_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "email",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "email",
+                        "name": "email",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "error_notified",
+                          "data_type": "boolean",
+                          "primary_key": false
+                        },
+                        "hint": "boolean",
+                        "label": "error_notified",
+                        "name": "error_notified",
+                        "optional": true,
+                        "parse_output": "parse_boolean_output",
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "number",
+                        "details": {
+                          "column_name": "id",
+                          "data_type": "bigint",
+                          "primary_key": true
+                        },
+                        "event_title": true,
+                        "hint": "bigint, primary key",
+                        "label": "id",
+                        "name": "id",
+                        "optional": true,
+                        "parse_output": "parse_integer_output",
+                        "type": "integer"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "luma_event_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "luma_event_id",
+                        "name": "luma_event_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "luma_guest_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "luma_guest_id",
+                        "name": "luma_guest_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "luma_url_slug",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "luma_url_slug",
+                        "name": "luma_url_slug",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "message",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "message",
+                        "name": "message",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "next_attempt_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "next_attempt_at",
+                        "name": "next_attempt_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "not_found_notified",
+                          "data_type": "boolean",
+                          "primary_key": false
+                        },
+                        "hint": "boolean",
+                        "label": "not_found_notified",
+                        "name": "not_found_notified",
+                        "optional": true,
+                        "parse_output": "parse_boolean_output",
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "processed_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "processed_at",
+                        "name": "processed_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "queue_status",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "queue_status",
+                        "name": "queue_status",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_campaign_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_campaign_id",
+                        "name": "sf_campaign_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_campaign_member_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_campaign_member_id",
+                        "name": "sf_campaign_member_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_campaign_name",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_campaign_name",
+                        "name": "sf_campaign_name",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_member_status",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_member_status",
+                        "name": "sf_member_status",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_person_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_person_id",
+                        "name": "sf_person_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_person_type",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_person_type",
+                        "name": "sf_person_type",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "updated_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "updated_at",
+                        "name": "updated_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "hidden_config_fields": [
+                  "where",
+                  "columns.email"
+                ],
                 "input": {
-                  "table": "marketing.luma_sf_campaign_queue",
-                  "where": "id = #{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"c3c00003\",\"path\":[\"id\"]}')}"
+                  "columns": {
+                    "message": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c3c00004\",\"path\":[\"result\",\"message\"]}')}",
+                    "queue_status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c3c00004\",\"path\":[\"result\",\"queue_status\"]}')}",
+                    "sf_campaign_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c3c00004\",\"path\":[\"result\",\"sf_campaign_id\"]}')}",
+                    "sf_campaign_member_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c3c00004\",\"path\":[\"result\",\"sf_campaign_member_id\"]}')}",
+                    "sf_campaign_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c3c00004\",\"path\":[\"result\",\"sf_campaign_name\"]}')}",
+                    "sf_member_status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c3c00004\",\"path\":[\"result\",\"sf_member_status\"]}')}",
+                    "sf_person_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c3c00004\",\"path\":[\"result\",\"sf_person_id\"]}')}",
+                    "sf_person_type": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c3c00004\",\"path\":[\"result\",\"sf_person_type\"]}')}"
+                  },
+                  "table": "marketing.luma_sf_campaign_queue"
                 },
                 "keyword": "action",
                 "name": "update_rows",
@@ -56,7 +603,19 @@
                 "toggleCfg": {
                   "table": true
                 },
-                "uuid": "ad9618ca-02c1-5637-bf77-d0789a94bb33"
+                "uuid": "ad9618ca-02c1-5637-bf77-d0789a94bb33",
+                "visible_config_fields": [
+                  "table",
+                  "columns.sf_person_type",
+                  "columns.sf_person_id",
+                  "columns.sf_member_status",
+                  "columns.sf_campaign_name",
+                  "columns.sf_campaign_member_id",
+                  "columns.sf_campaign_id",
+                  "columns.queue_status",
+                  "columns",
+                  "columns.message"
+                ]
               }
             ],
             "clear_scope": false,
@@ -74,10 +633,74 @@
             "as": "c3c00011",
             "comment": "marketing.luma_sf_campaign_queue: new Not found / Campaign not found rows (after 3h)",
             "description": "Select \u003cspan class=\"provider\"\u003erows\u003c/span\u003e using \u003cspan class=\"provider\"\u003ecustom SQL\u003c/span\u003e in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
+            "extended_input_schema": [
+              {
+                "control_type": "form-schema-builder",
+                "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. \u003cb\u003eid\u003c/b\u003e\n                    Second, provide the actual parameter value. Parameter values can be static or datapills.\n                    Select the \u003cb\u003eclosest corresponding data type\u003c/b\u003e that your database is expecting for the bind variable\n                    ",
+                "label": "Parameters",
+                "name": "parameters",
+                "optional": true,
+                "override": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "extends_schema": true,
+                    "label": "Schema",
+                    "name": "schema",
+                    "type": "string"
+                  },
+                  {
+                    "label": "Data",
+                    "name": "data",
+                    "optional": true,
+                    "properties": [],
+                    "type": "object"
+                  }
+                ],
+                "sticky": true,
+                "type": "object"
+              }
+            ],
+            "extended_output_schema": [
+              {
+                "label": "Rows",
+                "name": "rows",
+                "of": "object",
+                "order_by_hint": false,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "details": {
+                      "column_name": "nf_count",
+                      "data_type": "string",
+                      "primary_key": null
+                    },
+                    "hint": "string",
+                    "label": "nf_count",
+                    "name": "nf_count",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "details": {
+                      "column_name": "lines",
+                      "data_type": "string",
+                      "primary_key": null
+                    },
+                    "hint": "string",
+                    "label": "lines",
+                    "name": "lines",
+                    "optional": true,
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
             "input": {
               "output_schema": "[{\"name\": \"nf_count\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Nf count\"}, {\"name\": \"lines\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Lines\"}]",
               "parameters": {
-                "data": {},
                 "schema": "[]"
               },
               "sql": "SELECT count(*)::text AS nf_count,\n       string_agg('• ' || email || ' | ' || coalesce(sf_campaign_name, sf_campaign_id, luma_url_slug) || ' | ' || coalesce(sf_member_status, approval_status, '') || ' | ' || CASE queue_status WHEN 'Not found' THEN 'No SF Contact/Lead' ELSE 'Campaign not found: ' || coalesce(message, '') END, E'\\n' ORDER BY id) AS lines\nFROM marketing.luma_sf_campaign_queue\nWHERE queue_status IN ('Not found', 'Campaign not found') AND NOT not_found_notified"
@@ -96,8 +719,14 @@
                 "comment": "notify field marketing: not synced after 3h",
                 "description": "Post \u003cspan class=\"provider\"\u003emessage\u003c/span\u003e as \u003cspan class=\"provider\"\u003eSlack Workbot\u003c/span\u003e",
                 "input": {
-                  "channel": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"lsc_field_marketing_channel\"}')}",
-                  "text": ":warning: *Luma → SF campaign:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00011\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"nf_count\"]}')} guest(s) could not be added to a Salesforce campaign after 3 hours.\n*Email | SF campaign | Member status | Reason*\n#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00011\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"lines\"]}')}"
+                  "blocks": [
+                    {
+                      "block_type": "section_with_text",
+                      "button_type": "continue_flow",
+                      "section_text": ":warning: *Luma → SF campaign:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00011\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"nf_count\"]}')} guest(s) could not be added to a Salesforce campaign after 3 hours.\n*Email | SF campaign | Member status | Reason*\n#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00011\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"lines\"]}')}"
+                    }
+                  ],
+                  "channel": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"lsc_field_marketing_channel\"}')}"
                 },
                 "keyword": "action",
                 "name": "post_bot_message",
@@ -113,6 +742,317 @@
                 "as": "c3c00014",
                 "comment": "not_found_notified = true",
                 "description": "Update \u003cspan class=\"provider\"\u003erows\u003c/span\u003e in \u003cspan class=\"provider\"\u003emarketing.luma_sf_campaign_queue\u003c/span\u003e table in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
+                "extended_input_schema": [
+                  {
+                    "label": "Columns",
+                    "name": "columns",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "approval_status",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "approval_status",
+                        "name": "approval_status",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "number",
+                        "details": {
+                          "column_name": "attempts",
+                          "data_type": "integer",
+                          "primary_key": false
+                        },
+                        "hint": "integer",
+                        "label": "attempts",
+                        "name": "attempts",
+                        "optional": true,
+                        "parse_output": "parse_integer_output",
+                        "type": "integer"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "checked_in_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "checked_in_at",
+                        "name": "checked_in_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "created_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "created_at",
+                        "name": "created_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "email",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "email",
+                        "name": "email",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "error_notified",
+                          "data_type": "boolean",
+                          "primary_key": false
+                        },
+                        "hint": "boolean",
+                        "label": "error_notified",
+                        "name": "error_notified",
+                        "optional": true,
+                        "parse_output": "parse_boolean_output",
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "number",
+                        "details": {
+                          "column_name": "id",
+                          "data_type": "bigint",
+                          "primary_key": true
+                        },
+                        "event_title": true,
+                        "hint": "bigint, primary key",
+                        "label": "id",
+                        "name": "id",
+                        "optional": true,
+                        "parse_output": "parse_integer_output",
+                        "type": "integer"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "luma_event_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "luma_event_id",
+                        "name": "luma_event_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "luma_guest_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "luma_guest_id",
+                        "name": "luma_guest_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "luma_url_slug",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "luma_url_slug",
+                        "name": "luma_url_slug",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "message",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "message",
+                        "name": "message",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "next_attempt_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "next_attempt_at",
+                        "name": "next_attempt_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "not_found_notified",
+                          "data_type": "boolean",
+                          "primary_key": false
+                        },
+                        "hint": "boolean",
+                        "label": "not_found_notified",
+                        "name": "not_found_notified",
+                        "optional": true,
+                        "parse_output": "parse_boolean_output",
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "processed_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "processed_at",
+                        "name": "processed_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "queue_status",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "queue_status",
+                        "name": "queue_status",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_campaign_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_campaign_id",
+                        "name": "sf_campaign_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_campaign_member_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_campaign_member_id",
+                        "name": "sf_campaign_member_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_campaign_name",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_campaign_name",
+                        "name": "sf_campaign_name",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_member_status",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_member_status",
+                        "name": "sf_member_status",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_person_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_person_id",
+                        "name": "sf_person_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_person_type",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_person_type",
+                        "name": "sf_person_type",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "updated_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "updated_at",
+                        "name": "updated_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
                 "input": {
                   "table": "marketing.luma_sf_campaign_queue",
                   "where": "queue_status IN ('Not found', 'Campaign not found') AND NOT not_found_notified"
@@ -149,13 +1089,77 @@
             "as": "c3c00006",
             "comment": "marketing.luma_sf_campaign_queue: new Error rows",
             "description": "Select \u003cspan class=\"provider\"\u003erows\u003c/span\u003e using \u003cspan class=\"provider\"\u003ecustom SQL\u003c/span\u003e in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
+            "extended_input_schema": [
+              {
+                "control_type": "form-schema-builder",
+                "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. \u003cb\u003eid\u003c/b\u003e\n                    Second, provide the actual parameter value. Parameter values can be static or datapills.\n                    Select the \u003cb\u003eclosest corresponding data type\u003c/b\u003e that your database is expecting for the bind variable\n                    ",
+                "label": "Parameters",
+                "name": "parameters",
+                "optional": true,
+                "override": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "extends_schema": true,
+                    "label": "Schema",
+                    "name": "schema",
+                    "type": "string"
+                  },
+                  {
+                    "label": "Data",
+                    "name": "data",
+                    "optional": true,
+                    "properties": [],
+                    "type": "object"
+                  }
+                ],
+                "sticky": true,
+                "type": "object"
+              }
+            ],
+            "extended_output_schema": [
+              {
+                "label": "Rows",
+                "name": "rows",
+                "of": "object",
+                "order_by_hint": false,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "details": {
+                      "column_name": "error_count",
+                      "data_type": "string",
+                      "primary_key": null
+                    },
+                    "hint": "string",
+                    "label": "error_count",
+                    "name": "error_count",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "details": {
+                      "column_name": "errors",
+                      "data_type": "string",
+                      "primary_key": null
+                    },
+                    "hint": "string",
+                    "label": "errors",
+                    "name": "errors",
+                    "optional": true,
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
             "input": {
               "output_schema": "[{\"name\": \"error_count\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Error count\"}, {\"name\": \"errors\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Errors\"}]",
               "parameters": {
-                "data": {},
                 "schema": "[]"
               },
-              "sql": "SELECT count(*)::text AS error_count,\n       string_agg('• ' || email || ' / ' || luma_url_slug || ': ' || coalesce(message, ''), E'\\n') AS errors\nFROM marketing.luma_sf_campaign_queue\nWHERE queue_status = 'Error' AND NOT error_notified"
+              "sql": "SELECT count(*)::text AS error_count,\n       string_agg('• ' || coalesce(email, '?') || ' / ' || coalesce(luma_url_slug, '?') || ': ' || coalesce(message, ''), E'\\n') AS errors\nFROM marketing.luma_sf_campaign_queue\nWHERE queue_status = 'Error' AND NOT error_notified"
             },
             "keyword": "action",
             "name": "search_rows_sql",
@@ -170,7 +1174,324 @@
                 "as": "c3c00008",
                 "comment": "error_notified = true",
                 "description": "Update \u003cspan class=\"provider\"\u003erows\u003c/span\u003e in \u003cspan class=\"provider\"\u003emarketing.luma_sf_campaign_queue\u003c/span\u003e table in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
+                "extended_input_schema": [
+                  {
+                    "label": "Columns",
+                    "name": "columns",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "approval_status",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "approval_status",
+                        "name": "approval_status",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "number",
+                        "details": {
+                          "column_name": "attempts",
+                          "data_type": "integer",
+                          "primary_key": false
+                        },
+                        "hint": "integer",
+                        "label": "attempts",
+                        "name": "attempts",
+                        "optional": true,
+                        "parse_output": "parse_integer_output",
+                        "type": "integer"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "checked_in_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "checked_in_at",
+                        "name": "checked_in_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "created_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "created_at",
+                        "name": "created_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "email",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "email",
+                        "name": "email",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "error_notified",
+                          "data_type": "boolean",
+                          "primary_key": false
+                        },
+                        "hint": "boolean",
+                        "label": "error_notified",
+                        "name": "error_notified",
+                        "optional": true,
+                        "parse_output": "parse_boolean_output",
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "number",
+                        "details": {
+                          "column_name": "id",
+                          "data_type": "bigint",
+                          "primary_key": true
+                        },
+                        "event_title": true,
+                        "hint": "bigint, primary key",
+                        "label": "id",
+                        "name": "id",
+                        "optional": true,
+                        "parse_output": "parse_integer_output",
+                        "type": "integer"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "luma_event_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "luma_event_id",
+                        "name": "luma_event_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "luma_guest_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "luma_guest_id",
+                        "name": "luma_guest_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "luma_url_slug",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "luma_url_slug",
+                        "name": "luma_url_slug",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "message",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "message",
+                        "name": "message",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "next_attempt_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "next_attempt_at",
+                        "name": "next_attempt_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "not_found_notified",
+                          "data_type": "boolean",
+                          "primary_key": false
+                        },
+                        "hint": "boolean",
+                        "label": "not_found_notified",
+                        "name": "not_found_notified",
+                        "optional": true,
+                        "parse_output": "parse_boolean_output",
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "processed_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "processed_at",
+                        "name": "processed_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "queue_status",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "queue_status",
+                        "name": "queue_status",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_campaign_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_campaign_id",
+                        "name": "sf_campaign_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_campaign_member_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_campaign_member_id",
+                        "name": "sf_campaign_member_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_campaign_name",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_campaign_name",
+                        "name": "sf_campaign_name",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_member_status",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_member_status",
+                        "name": "sf_member_status",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_person_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_person_id",
+                        "name": "sf_person_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_person_type",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_person_type",
+                        "name": "sf_person_type",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "updated_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "updated_at",
+                        "name": "updated_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "hidden_config_fields": [
+                  "columns.email"
+                ],
                 "input": {
+                  "columns": {
+                    "error_notified": "=true"
+                  },
                   "table": "marketing.luma_sf_campaign_queue",
                   "where": "queue_status = 'Error' AND NOT error_notified"
                 },
@@ -182,7 +1503,12 @@
                 "toggleCfg": {
                   "table": true
                 },
-                "uuid": "95ca91b7-efc9-5865-9a76-e3a0100013bc"
+                "uuid": "95ca91b7-efc9-5865-9a76-e3a0100013bc",
+                "visible_config_fields": [
+                  "table",
+                  "where",
+                  "columns.error_notified"
+                ]
               },
               {
                 "as": "c3c00009",
@@ -227,6 +1553,145 @@
             "dynamicPickListSelection": {
               "flow_id": "[CM] Fun | System Error Handling"
             },
+            "extended_input_schema": [
+              {
+                "label": "Parameters",
+                "name": "parameters",
+                "properties": [
+                  {
+                    "label": "Error Details",
+                    "name": "ErrorDetails",
+                    "of": "object",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Parent process name",
+                        "name": "parentProcessName",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Recipe Id",
+                        "name": "recipe_id",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Job uuid",
+                        "name": "job_uuid",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Process Name",
+                        "name": "processName",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Process Path",
+                        "name": "process_path",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Job URL",
+                        "name": "jobUrl",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Is repeat",
+                        "name": "is_repeat",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Error uuid",
+                        "name": "error_uuid",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Errored app",
+                        "name": "errored_app",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Errored action",
+                        "name": "errored_action",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Error step number",
+                        "name": "error_step_number",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Error type",
+                        "name": "errorType",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Error message",
+                        "name": "errorMessage",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Timestamp",
+                        "name": "Timestamp",
+                        "optional": false,
+                        "type": "string"
+                      }
+                    ],
+                    "type": "array"
+                  },
+                  {
+                    "label": "Files",
+                    "name": "files",
+                    "of": "object",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "File name",
+                        "name": "fileName",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "File content",
+                        "name": "fileContent",
+                        "optional": true,
+                        "type": "string"
+                      }
+                    ],
+                    "type": "array"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
             "input": {
               "flow_id": "69020589"
             },
@@ -251,6 +1716,46 @@
     "dynamicPickListSelection": {
       "time_unit": "Hours"
     },
+    "extended_input_schema": [
+      {
+        "control_type": "integer",
+        "default": "5",
+        "enforce_template_mode": true,
+        "extends_schema": true,
+        "hint": "Define repeating schedule. Enter whole numbers only.This field can be set to a minimum of 5 minutes.",
+        "label": "Trigger every",
+        "name": "trigger_every",
+        "optional": false,
+        "suffix": {
+          "text": "hours"
+        },
+        "type": "string"
+      },
+      {
+        "control_type": "select",
+        "hint": "Select the timezone to use. Leave it blank to use \u003cb\u003e{{authUser.account_timezone}}\u003c/b\u003e",
+        "label": "Timezone",
+        "name": "timezone",
+        "optional": true,
+        "pick_list": "timezone_id_global_pick_list",
+        "pick_list_connection_less": true,
+        "type": "string"
+      },
+      {
+        "control_type": "date_time",
+        "enforce_template_mode": true,
+        "extends_schema": true,
+        "hint": "Set date and time to start or leave blank to start immediately. \u003cb\u003eOnce recipe has been run or tested, value cannot be changed.\u003c/b\u003e",
+        "ignore_timezone": true,
+        "label": "Start after",
+        "name": "start_after",
+        "optional": true,
+        "parse_output": "date_time_conversion",
+        "render_input": "date_time_conversion",
+        "since_field": true,
+        "type": "date_time"
+      }
+    ],
     "input": {
       "time_unit": "hours"
     },
@@ -329,5 +1834,5 @@
   "description": "# LSC-02 | Main | Hourly Luma Guests → SF Campaign Members\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** Scheduler — every hour, Asia/Jerusalem\n\n**PURPOSE:** Sync queued Luma guests to Salesforce campaign members 1h after registration, retrying at 3h.\n\n**FLOW:**\n1. Get Pending rows with `next_attempt_at` ≤ now → PostgreSQL\n2. For each: call Fun 002 → write Done / Skipped / Not found / Error + SF IDs back to the row\n3. Not found / Campaign not found on 1st attempt → stay Pending, retry in 2h; on 2nd → final status\n4. New Not found / Campaign not found rows → Slack field marketing (email, SF campaign, member status, reason)\n5. If new Error rows exist → mark notified and stop with error (→ System Error Handling)\n\n**DB / TABLES:** `marketing.luma_sf_campaign_queue` (read/write)\n**UPSTREAM:** LSC-01 | Fun 001 | Queue Luma Guest for SF Campaign Sync (fills the queue)  \n**DOWNSTREAM:** LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign\n\n## Important logic\n- Attempts: +1h (Fun 001) and +3h (retry). Each Not found / Campaign not found / Error row alerts once.\n- Slack channel: Marketing project property `lsc_field_marketing_channel`.\n- Max 500 rows per run; the rest are picked up next hour.\n",
   "name": "LSC-02 | Main | Hourly Luma Guests → SF Campaign Members",
   "private": false,
-  "version": 4
+  "version": 7
 }

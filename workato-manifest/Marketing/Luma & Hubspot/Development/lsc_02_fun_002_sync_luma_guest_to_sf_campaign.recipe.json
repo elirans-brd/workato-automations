@@ -5,253 +5,502 @@
       {
         "block": [
           {
-            "as": "c2b00002",
-            "comment": "normalize email + map Luma status → member status",
-            "description": "Execute \u003cspan class=\"provider\"\u003eruby\u003c/span\u003e code: \u003cspan class=\"provider\"\u003eprepare_guest\u003c/span\u003e",
-            "input": {
-              "code": "email = input[\"email\"].to_s.strip.downcase\nvalid = email.match?(/\\A[^@\\s'\\\\]+@[^@\\s'\\\\]+\\.[^@\\s'\\\\]+\\z/)\nmember_status = { \"approved\" =\u003e \"Registered = Approved\", \"pending_approval\" =\u003e \"Registered = Pending\" }[input[\"approval_status\"].to_s.strip.downcase]\nskip_reason =\n  if !valid then \"Invalid email: #{email}\"\n  elsif member_status.nil? then \"Unsupported Luma approval status: #{input[\"approval_status\"]}\"\n  end\n{ email: email, member_status: member_status, skip_reason: skip_reason }\n",
-              "code_input": {
-                "data": {},
-                "schema": "[{\"name\": \"email\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Email\", \"parent\": [\"code_input\", \"data\"]}, {\"name\": \"approval_status\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Approval status\", \"parent\": [\"code_input\", \"data\"]}]"
-              },
-              "code_output_schema_json": "[{\"name\": \"email\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Email\"}, {\"name\": \"member_status\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Member status\"}, {\"name\": \"skip_reason\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Skip reason\"}]",
-              "name": "prepare_guest",
-              "payload_asset_type": "inline"
-            },
-            "keyword": "action",
-            "name": "invoke_custom_ruby_code",
-            "number": 2,
-            "provider": "workato_custom_code",
-            "title": null,
-            "uuid": "10c7131f-9152-5b3e-8ea8-ed3761652c3c"
-          },
-          {
-            "block": [
-              {
-                "as": "c2b00004",
-                "comment": "status = Skipped",
-                "description": null,
-                "input": {},
-                "keyword": "action",
-                "name": "return_result",
-                "number": 4,
-                "provider": "workato_recipe_function",
-                "title": null,
-                "uuid": "a972fce5-0829-5101-8f0c-b96241edc5d0"
-              },
-              {
-                "as": "c2b00005",
-                "input": {
-                  "stop_with_error": "false"
-                },
-                "keyword": "stop",
-                "number": 5,
-                "uuid": "1dda8305-c0a4-51d7-a308-b105fc41062b"
-              }
-            ],
-            "comment": "guest can't be synced",
-            "input": {
-              "conditions": [
-                {
-                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00002\",\"path\":[\"output\",\"skip_reason\"]}')}",
-                  "operand": "present",
-                  "rhs": "",
-                  "uuid": "6e10695e-922f-4348-b6c0-789dc035e6e4"
-                }
-              ],
-              "operand": "and",
-              "type": "compound"
-            },
-            "keyword": "if",
-            "number": 3,
-            "uuid": "0c90df76-666d-52b2-9b71-ab4ac5d17e5e"
-          },
-          {
-            "as": "c2b00006",
-            "comment": "search contact by email",
-            "description": "Search \u003cspan class=\"provider\"\u003eContacts\u003c/span\u003e using SOQL query WHERE clause in \u003cspan class=\"provider\"\u003eSalesforce\u003c/span\u003e",
-            "dynamicPickListSelection": {
-              "sobject_name": "Contact"
-            },
-            "input": {
-              "field_list": "Id\nEmail\nAccountId",
-              "limit": "1",
-              "query": "Email = '#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00002\",\"path\":[\"output\",\"email\"]}')}'\nORDER BY LastModifiedDate DESC",
-              "sobject_name": "Contact"
-            },
-            "keyword": "action",
-            "name": "search_sobjects_soql",
-            "number": 6,
-            "provider": "salesforce",
-            "title": "Search Contacts using SOQL query WHERE clause",
-            "uuid": "5b9abb5f-8717-57b6-afff-628bacd439e8"
-          },
-          {
-            "as": "c2b00007",
-            "comment": "search lead by email (not converted)",
-            "description": "Search \u003cspan class=\"provider\"\u003eLeads\u003c/span\u003e using SOQL query WHERE clause in \u003cspan class=\"provider\"\u003eSalesforce\u003c/span\u003e",
-            "dynamicPickListSelection": {
-              "sobject_name": "Lead"
-            },
-            "input": {
-              "field_list": "Id\nEmail",
-              "limit": "1",
-              "query": "Email = '#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00002\",\"path\":[\"output\",\"email\"]}')}' AND IsConverted = false\nORDER BY LastModifiedDate DESC",
-              "sobject_name": "Lead"
-            },
-            "keyword": "action",
-            "name": "search_sobjects_soql",
-            "number": 7,
-            "provider": "salesforce",
-            "title": "Search Leads using SOQL query WHERE clause",
-            "uuid": "dc542edf-33a8-51bf-8193-39f4ce31b00e"
-          },
-          {
-            "as": "c2b00008",
+            "as": "06808035",
             "comment": "campaign sheet: SF campaign ID by Luma slug",
             "description": null,
+            "dynamicPickListSelection": {
+              "team_drives": "My Drive"
+            },
+            "extended_input_schema": [
+              {
+                "control_type": "select",
+                "extends_schema": true,
+                "hint": "Select a sheet to search for rows. The sheet must have at least one header row. \u003ca href='https://docs.workato.com/connectors/google-sheets/action-add-row.html#setting-up-the-google-sheet' target='_blank'\u003eLearn more\u003c/a\u003e",
+                "label": "Sheet",
+                "name": "sheet",
+                "optional": false,
+                "pick_list": [
+                  [
+                    "Sheet1",
+                    "Sheet1"
+                  ]
+                ],
+                "toggle_field": {
+                  "change_on_blur": true,
+                  "control_type": "text",
+                  "extends_schema": true,
+                  "hint": "Use \u003cb\u003eSheet name\u003c/b\u003e pill from the output of other Google Sheets’ triggers/actions. Or enter sheet name manually. The sheet must have at least 1 header row in input field.",
+                  "label": "Sheet name",
+                  "name": "sheet_name",
+                  "toggle_hint": "Use sheet name",
+                  "toggle_to_primary_hint": "Select a sheet",
+                  "toggle_to_secondary_hint": "Use sheet name",
+                  "type": "string"
+                },
+                "toggle_hint": "Select a sheet",
+                "type": "string"
+              },
+              {
+                "hint": "Enter one or more search values. Workato will search for rows matching \u003cb\u003eALL\u003c/b\u003e of the search values below.",
+                "label": "Columns",
+                "name": "data",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
+                    "label": "Luma event slug",
+                    "name": "col_Luma event slug",
+                    "optional": true,
+                    "sticky": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
+                    "label": "SF campaign ID",
+                    "name": "col_SF campaign ID",
+                    "optional": true,
+                    "sticky": true,
+                    "type": "string"
+                  }
+                ],
+                "sticky": true,
+                "type": "object"
+              },
+              {
+                "control_type": "number",
+                "default": 200,
+                "hint": "Maximum number of matched rows to be returned. Minimum accepted value is \u003cb\u003e1\u003c/b\u003e and maximum accepted value is \u003cb\u003e50000\u003c/b\u003e.",
+                "label": "Search result size",
+                "name": "count",
+                "optional": true,
+                "parse_output": "float_conversion",
+                "type": "number"
+              }
+            ],
+            "extended_output_schema": [
+              {
+                "control_type": "text",
+                "label": "Spreadsheet ID",
+                "name": "spreadsheet_id",
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "label": "Spreadsheet name",
+                "name": "spreadsheet_name",
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "label": "Sheet name",
+                "name": "sheet",
+                "type": "string"
+              },
+              {
+                "label": "Rows",
+                "name": "rows",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "number",
+                    "label": "Row number",
+                    "name": "row_number",
+                    "parse_output": "integer_conversion",
+                    "type": "integer"
+                  },
+                  {
+                    "control_type": "text",
+                    "custom_attribute": 1,
+                    "label": "Luma event slug",
+                    "name": "col_Luma event slug",
+                    "old_name": "col_Luma_event_slug",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "custom_attribute": 2,
+                    "label": "SF campaign ID",
+                    "name": "col_SF campaign ID",
+                    "old_name": "col_SF_campaign_ID",
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "hidden_config_fields": [
+              "data.col_SF campaign ID"
+            ],
             "input": {
-              "spreadsheet": "1rShm0qyQFdtqf8b6FEpR6F3pFOEvrdWtdrklsX3axGw",
+              "count": "1",
+              "data": {
+                "col_Luma event slug": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c2b00001\",\"path\":[\"parameters\",\"luma_url_slug\"]}')}"
+              },
+              "sheet": "Sheet1",
+              "spreadsheet_id": "1rShm0qyQFdtqf8b6FEpR6F3pFOEvrdWtdrklsX3axGw",
               "team_drives": "my_drive"
             },
             "keyword": "action",
             "name": "search_spreadsheet_rows_v4_new",
-            "number": 8,
+            "number": 2,
             "provider": "google_sheets",
             "title": null,
-            "uuid": "1b98b53a-aced-55b1-a082-1746ff4ef072"
+            "uuid": "a5cf19c7-c385-42c8-a9a3-5c6ccfb132d7",
+            "visible_config_fields": [
+              "team_drives",
+              "spreadsheet",
+              "sheet",
+              "data",
+              "data.col_Luma event slug",
+              "count"
+            ]
           },
           {
-            "as": "c2b00010",
-            "comment": "resolve person (Contact wins over Lead) + campaign",
-            "description": "Execute \u003cspan class=\"provider\"\u003eruby\u003c/span\u003e code: \u003cspan class=\"provider\"\u003eresolve_person_campaign\u003c/span\u003e",
-            "input": {
-              "code": "sf_id = /\\A[a-zA-Z0-9]{15}([a-zA-Z0-9]{3})?\\z/\ncontact_id = input[\"contact_id\"].to_s.strip\nlead_id    = input[\"lead_id\"].to_s.strip\ncampaign_id = input[\"campaign_id\"].to_s.strip\nperson_type, person_id =\n  if contact_id.match?(sf_id) then [\"Contact\", contact_id]\n  elsif lead_id.match?(sf_id) then [\"Lead\", lead_id]\n  else [nil, nil]\n  end\ncampaign_issue =\n  if campaign_id.empty? then \"Luma slug not found in campaign sheet: #{input[\"luma_url_slug\"]}\"\n  elsif !campaign_id.match?(sf_id) then \"Invalid SF campaign ID in sheet: #{campaign_id}\"\n  end\nresult_status, result_message =\n  if person_id.nil? then [\"Not found\", [\"No Salesforce Contact or Lead for this email\", campaign_issue].compact.join(\" | \")]\n  elsif campaign_issue then [\"Campaign not found\", campaign_issue]\n  end\n{\n  person_type: person_type, person_id: person_id, campaign_id: campaign_id,\n  contact_id: person_type == \"Contact\" ? person_id : nil,\n  lead_id:    person_type == \"Lead\" ? person_id : nil,\n  member_query: person_id \u0026\u0026 \"CampaignId = '#{campaign_id}' AND #{person_type}Id = '#{person_id}'\",\n  campaign_ok: campaign_issue.nil?,\n  result_status: result_status, result_message: result_message\n}\n",
-              "code_input": {
-                "data": {},
-                "schema": "[{\"name\": \"contact_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Contact id\", \"parent\": [\"code_input\", \"data\"]}, {\"name\": \"lead_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Lead id\", \"parent\": [\"code_input\", \"data\"]}, {\"name\": \"campaign_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Campaign id\", \"parent\": [\"code_input\", \"data\"]}, {\"name\": \"luma_url_slug\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Luma url slug\", \"parent\": [\"code_input\", \"data\"]}]"
+            "as": "d70d17ba",
+            "comment": "get campaign name",
+            "description": "Search \u003cspan class=\"provider\"\u003eCampaigns\u003c/span\u003e using SOQL query WHERE clause in \u003cspan class=\"provider\"\u003eSalesforce\u003c/span\u003e",
+            "dynamicPickListSelection": {
+              "sobject_name": "Campaign"
+            },
+            "extended_input_schema": [
+              {
+                "control_type": "checkbox",
+                "disable_formula": true,
+                "extends_schema": true,
+                "hint": "Select \u003cb\u003eYes\u003c/b\u003e to obtain data from notes, attachments and files associated to the queried records. Default value is \u003cb\u003eYes\u003c/b\u003e.",
+                "label": "Select combined attachments",
+                "name": "include_combined_attachments",
+                "optional": true,
+                "support_pills": false,
+                "type": "boolean"
+              }
+            ],
+            "extended_output_schema": [
+              {
+                "label": "Campaigns",
+                "name": "Campaign",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "custom": false,
+                    "label": "Campaign ID",
+                    "name": "Id",
+                    "optional": true,
+                    "sfdc_createable": false,
+                    "sfdc_updateable": false,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "custom": false,
+                    "event_title": true,
+                    "label": "Name",
+                    "name": "Name",
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "type": "string"
+                  },
+                  {
+                    "label": "Combined attachments",
+                    "name": "CombinedAttachments",
+                    "properties": [
+                      {
+                        "control_type": "number",
+                        "label": "Total size",
+                        "name": "totalSize",
+                        "parse_output": "integer_conversion",
+                        "type": "integer"
+                      },
+                      {
+                        "label": "Files",
+                        "name": "records",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "ID",
+                            "name": "Id",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Content size",
+                            "name": "ContentSize",
+                            "parse_output": "integer_conversion",
+                            "type": "integer"
+                          },
+                          {
+                            "control_type": "url",
+                            "label": "Content URL",
+                            "name": "ContentUrl",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File extension",
+                            "name": "FileExtension",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File type",
+                            "name": "FileType",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Parent ID",
+                            "name": "ParentId",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Record type",
+                            "name": "RecordType",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Title",
+                            "name": "Title",
+                            "type": "string"
+                          }
+                        ],
+                        "type": "array"
+                      }
+                    ],
+                    "sfdc_field_type": "CombinedAttachment",
+                    "type": "object"
+                  }
+                ],
+                "type": "array"
               },
-              "code_output_schema_json": "[{\"name\": \"person_type\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Person type\"}, {\"name\": \"person_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Person id\"}, {\"name\": \"campaign_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Campaign id\"}, {\"name\": \"contact_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Contact id\"}, {\"name\": \"lead_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Lead id\"}, {\"name\": \"member_query\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Member query\"}, {\"name\": \"campaign_ok\", \"type\": \"boolean\", \"optional\": true, \"control_type\": \"checkbox\", \"label\": \"Campaign ok\"}, {\"name\": \"result_status\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Result status\"}, {\"name\": \"result_message\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Result message\"}]",
-              "name": "resolve_person_campaign",
-              "payload_asset_type": "inline"
+              {
+                "control_type": "number",
+                "label": "List size",
+                "name": "list_size",
+                "parse_output": "integer_conversion",
+                "type": "integer"
+              },
+              {
+                "control_type": "checkbox",
+                "label": "Processed all records?",
+                "name": "done",
+                "toggle_field": {
+                  "control_type": "text",
+                  "label": "Processed all records?",
+                  "name": "done",
+                  "parse_output": null,
+                  "render_input": null,
+                  "toggle_hint": "Use custom value",
+                  "type": "boolean"
+                },
+                "toggle_hint": "Select from option list",
+                "type": "boolean"
+              },
+              {
+                "control_type": "integer",
+                "label": "Total records",
+                "name": "total_records",
+                "parse_output": "integer_conversion",
+                "type": "integer"
+              },
+              {
+                "control_type": "url",
+                "label": "Next page URL",
+                "name": "next_page_url",
+                "type": "string"
+              }
+            ],
+            "input": {
+              "field_list": "Id\nName",
+              "limit": "1",
+              "query": "Id = '#{_dp('{\"pill_type\":\"output\",\"provider\":\"google_sheets\",\"line\":\"06808035\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"col_SF campaign ID\"]}')}'",
+              "sobject_name": "Campaign"
             },
             "keyword": "action",
-            "name": "invoke_custom_ruby_code",
-            "number": 9,
-            "provider": "workato_custom_code",
-            "title": null,
-            "uuid": "496905da-161b-500a-b5d9-02d26abaaac6"
+            "name": "search_sobjects_soql",
+            "number": 3,
+            "provider": "salesforce",
+            "title": "Search Campaigns using SOQL query WHERE clause",
+            "uuid": "23d26c64-9271-46d2-91aa-1fe1807ceaab"
           },
           {
             "block": [
               {
-                "as": "c2b00020",
-                "comment": "get campaign name",
-                "description": "Search \u003cspan class=\"provider\"\u003eCampaigns\u003c/span\u003e using SOQL query WHERE clause in \u003cspan class=\"provider\"\u003eSalesforce\u003c/span\u003e",
-                "dynamicPickListSelection": {
-                  "sobject_name": "Campaign"
-                },
-                "input": {
-                  "field_list": "Id\nName",
-                  "limit": "1",
-                  "query": "Id = '#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"campaign_id\"]}')}'",
-                  "sobject_name": "Campaign"
-                },
-                "keyword": "action",
-                "name": "search_sobjects_soql",
-                "number": 11,
-                "provider": "salesforce",
-                "title": "Search Campaigns using SOQL query WHERE clause",
-                "uuid": "9a644555-a287-5f3a-8997-229c18aad911"
-              }
-            ],
-            "comment": "campaign ID valid",
-            "input": {
-              "conditions": [
-                {
-                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"campaign_ok\"]}')}",
-                  "operand": "is_true",
-                  "rhs": "",
-                  "uuid": "faeb61b3-a29e-4387-8eb4-9b6ca0ac422f"
-                }
-              ],
-              "operand": "and",
-              "type": "compound"
-            },
-            "keyword": "if",
-            "number": 10,
-            "uuid": "054884a3-51c9-580e-8b02-e2d7a3924cdd"
-          },
-          {
-            "block": [
-              {
-                "as": "c2b00021",
-                "comment": "status = Not found / Campaign not found",
-                "description": null,
-                "input": {},
-                "keyword": "action",
-                "name": "return_result",
-                "number": 13,
-                "provider": "workato_recipe_function",
-                "title": null,
-                "uuid": "c32ece65-dfe5-575c-a7ab-1d5c6a99c63a"
-              },
-              {
-                "as": "c2b00022",
-                "input": {
-                  "stop_with_error": "false"
-                },
-                "keyword": "stop",
-                "number": 14,
-                "uuid": "14f303b3-87b5-596f-be67-e2dfa17aa30c"
-              }
-            ],
-            "comment": "no Contact/Lead, or campaign not in sheet",
-            "input": {
-              "conditions": [
-                {
-                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"result_status\"]}')}",
-                  "operand": "present",
-                  "rhs": "",
-                  "uuid": "71fe6d50-2d2b-401f-9d49-bf178dfd6865"
-                }
-              ],
-              "operand": "and",
-              "type": "compound"
-            },
-            "keyword": "if",
-            "number": 12,
-            "uuid": "71152dfb-5b69-5e0d-9b54-f1852c2951b2"
-          },
-          {
-            "block": [
-              {
-                "as": "c2b00011",
+                "as": "ff992f8d",
                 "comment": "status = Campaign not found",
                 "description": null,
-                "input": {},
+                "extended_input_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Queue status",
+                        "name": "queue_status",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF person type",
+                        "name": "sf_person_type",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF person ID",
+                        "name": "sf_person_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign ID",
+                        "name": "sf_campaign_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign name",
+                        "name": "sf_campaign_name",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign member ID",
+                        "name": "sf_campaign_member_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF member status",
+                        "name": "sf_member_status",
+                        "optional": true,
+                        "type": "string"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_output_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Queue status",
+                        "name": "queue_status",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF person type",
+                        "name": "sf_person_type",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF person ID",
+                        "name": "sf_person_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign ID",
+                        "name": "sf_campaign_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign name",
+                        "name": "sf_campaign_name",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign member ID",
+                        "name": "sf_campaign_member_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF member status",
+                        "name": "sf_member_status",
+                        "optional": true,
+                        "type": "string"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "input": {
+                  "result": {
+                    "queue_status": "Campaign not found",
+                    "status": "Success"
+                  }
+                },
                 "keyword": "action",
                 "name": "return_result",
-                "number": 16,
+                "number": 5,
                 "provider": "workato_recipe_function",
                 "title": null,
-                "uuid": "5d5a3f68-cb5c-5e30-8bc5-4659c9fcae6f"
-              },
-              {
-                "as": "c2b00012",
-                "input": {
-                  "stop_with_error": "false"
-                },
-                "keyword": "stop",
-                "number": 17,
-                "uuid": "63f351c9-6d2f-5be9-a6ca-05fccec64709"
+                "uuid": "b1580717-adf5-460c-a7b5-03cc98eff17f",
+                "visible_config_fields": [
+                  "result",
+                  "result.status",
+                  "result.queue_status"
+                ]
               }
             ],
             "comment": "campaign ID not found in Salesforce",
             "input": {
               "conditions": [
                 {
-                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00020\",\"path\":[\"Campaign\",{\"path_element_type\":\"current_item\"},\"Id\"]}')}",
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"d70d17ba\",\"path\":[\"Campaign\",{\"path_element_type\":\"current_item\"},\"Id\"]}')}",
                   "operand": "blank",
                   "rhs": "",
                   "uuid": "1e1e6b33-1e1c-486e-83a1-4aa243e1669e"
@@ -261,79 +510,1348 @@
               "type": "compound"
             },
             "keyword": "if",
-            "number": 15,
-            "uuid": "239920b3-ad23-5a4b-8b69-1abe37892150"
+            "number": 4,
+            "uuid": "6b537935-db2f-4c44-9d2d-7e945e661917"
           },
           {
-            "as": "c2b00013",
+            "as": "7bb9767a",
+            "comment": "search contact by email",
+            "description": "Search \u003cspan class=\"provider\"\u003eContacts\u003c/span\u003e using SOQL query WHERE clause in \u003cspan class=\"provider\"\u003eSalesforce\u003c/span\u003e",
+            "dynamicPickListSelection": {
+              "sobject_name": "Contact"
+            },
+            "extended_input_schema": [
+              {
+                "control_type": "checkbox",
+                "disable_formula": true,
+                "extends_schema": true,
+                "hint": "Select \u003cb\u003eYes\u003c/b\u003e to obtain data from notes, attachments and files associated to the queried records. Default value is \u003cb\u003eYes\u003c/b\u003e.",
+                "label": "Select combined attachments",
+                "name": "include_combined_attachments",
+                "optional": true,
+                "support_pills": false,
+                "type": "boolean"
+              }
+            ],
+            "extended_output_schema": [
+              {
+                "label": "Contacts",
+                "name": "Contact",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "custom": false,
+                    "label": "Account ID",
+                    "name": "AccountId",
+                    "optional": true,
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "custom": false,
+                    "label": "Contact ID",
+                    "name": "Id",
+                    "optional": true,
+                    "sfdc_createable": false,
+                    "sfdc_updateable": false,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "custom": false,
+                    "label": "Email",
+                    "name": "Email",
+                    "optional": true,
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "type": "string"
+                  },
+                  {
+                    "label": "Combined attachments",
+                    "name": "CombinedAttachments",
+                    "properties": [
+                      {
+                        "control_type": "number",
+                        "label": "Total size",
+                        "name": "totalSize",
+                        "parse_output": "integer_conversion",
+                        "type": "integer"
+                      },
+                      {
+                        "label": "Files",
+                        "name": "records",
+                        "of": "object",
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "ID",
+                            "name": "Id",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "number",
+                            "label": "Content size",
+                            "name": "ContentSize",
+                            "parse_output": "integer_conversion",
+                            "type": "integer"
+                          },
+                          {
+                            "control_type": "url",
+                            "label": "Content URL",
+                            "name": "ContentUrl",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File extension",
+                            "name": "FileExtension",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File type",
+                            "name": "FileType",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Parent ID",
+                            "name": "ParentId",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Record type",
+                            "name": "RecordType",
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Title",
+                            "name": "Title",
+                            "type": "string"
+                          }
+                        ],
+                        "type": "array"
+                      }
+                    ],
+                    "sfdc_field_type": "CombinedAttachment",
+                    "type": "object"
+                  }
+                ],
+                "type": "array"
+              },
+              {
+                "control_type": "number",
+                "label": "List size",
+                "name": "list_size",
+                "parse_output": "integer_conversion",
+                "type": "integer"
+              },
+              {
+                "control_type": "checkbox",
+                "label": "Processed all records?",
+                "name": "done",
+                "toggle_field": {
+                  "control_type": "text",
+                  "label": "Processed all records?",
+                  "name": "done",
+                  "parse_output": null,
+                  "render_input": null,
+                  "toggle_hint": "Use custom value",
+                  "type": "boolean"
+                },
+                "toggle_hint": "Select from option list",
+                "type": "boolean"
+              },
+              {
+                "control_type": "integer",
+                "label": "Total records",
+                "name": "total_records",
+                "parse_output": "integer_conversion",
+                "type": "integer"
+              },
+              {
+                "control_type": "url",
+                "label": "Next page URL",
+                "name": "next_page_url",
+                "type": "string"
+              }
+            ],
+            "input": {
+              "field_list": "Id\nEmail\nAccountId",
+              "limit": "1",
+              "query": "Email = '#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c2b00001\",\"path\":[\"parameters\",\"email\"]}')}'\nORDER BY LastModifiedDate DESC",
+              "sobject_name": "Contact"
+            },
+            "keyword": "action",
+            "name": "search_sobjects_soql",
+            "number": 6,
+            "provider": "salesforce",
+            "title": "Search Contacts using SOQL query WHERE clause",
+            "uuid": "48b208c4-c6f5-422a-bc35-90b0e3621e91"
+          },
+          {
+            "block": [
+              {
+                "as": "77e44c77",
+                "comment": "search lead by email (not converted)",
+                "description": "Search \u003cspan class=\"provider\"\u003eLeads\u003c/span\u003e using SOQL query WHERE clause in \u003cspan class=\"provider\"\u003eSalesforce\u003c/span\u003e",
+                "dynamicPickListSelection": {
+                  "sobject_name": "Lead"
+                },
+                "extended_input_schema": [
+                  {
+                    "control_type": "checkbox",
+                    "disable_formula": true,
+                    "extends_schema": true,
+                    "hint": "Select \u003cb\u003eYes\u003c/b\u003e to obtain data from notes, attachments and files associated to the queried records. Default value is \u003cb\u003eYes\u003c/b\u003e.",
+                    "label": "Select combined attachments",
+                    "name": "include_combined_attachments",
+                    "optional": true,
+                    "support_pills": false,
+                    "type": "boolean"
+                  }
+                ],
+                "extended_output_schema": [
+                  {
+                    "label": "Leads",
+                    "name": "Lead",
+                    "of": "object",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "custom": false,
+                        "label": "Email",
+                        "name": "Email",
+                        "optional": true,
+                        "sfdc_createable": true,
+                        "sfdc_updateable": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "custom": false,
+                        "label": "Lead ID",
+                        "name": "Id",
+                        "optional": true,
+                        "sfdc_createable": false,
+                        "sfdc_updateable": false,
+                        "type": "string"
+                      },
+                      {
+                        "label": "Combined attachments",
+                        "name": "CombinedAttachments",
+                        "properties": [
+                          {
+                            "control_type": "number",
+                            "label": "Total size",
+                            "name": "totalSize",
+                            "parse_output": "integer_conversion",
+                            "type": "integer"
+                          },
+                          {
+                            "label": "Files",
+                            "name": "records",
+                            "of": "object",
+                            "properties": [
+                              {
+                                "control_type": "text",
+                                "label": "ID",
+                                "name": "Id",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "number",
+                                "label": "Content size",
+                                "name": "ContentSize",
+                                "parse_output": "integer_conversion",
+                                "type": "integer"
+                              },
+                              {
+                                "control_type": "url",
+                                "label": "Content URL",
+                                "name": "ContentUrl",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "File extension",
+                                "name": "FileExtension",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "File type",
+                                "name": "FileType",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Parent ID",
+                                "name": "ParentId",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Record type",
+                                "name": "RecordType",
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "label": "Title",
+                                "name": "Title",
+                                "type": "string"
+                              }
+                            ],
+                            "type": "array"
+                          }
+                        ],
+                        "sfdc_field_type": "CombinedAttachment",
+                        "type": "object"
+                      }
+                    ],
+                    "type": "array"
+                  },
+                  {
+                    "control_type": "number",
+                    "label": "List size",
+                    "name": "list_size",
+                    "parse_output": "integer_conversion",
+                    "type": "integer"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Processed all records?",
+                    "name": "done",
+                    "toggle_field": {
+                      "control_type": "text",
+                      "label": "Processed all records?",
+                      "name": "done",
+                      "parse_output": null,
+                      "render_input": null,
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean"
+                    },
+                    "toggle_hint": "Select from option list",
+                    "type": "boolean"
+                  },
+                  {
+                    "control_type": "integer",
+                    "label": "Total records",
+                    "name": "total_records",
+                    "parse_output": "integer_conversion",
+                    "type": "integer"
+                  },
+                  {
+                    "control_type": "url",
+                    "label": "Next page URL",
+                    "name": "next_page_url",
+                    "type": "string"
+                  }
+                ],
+                "input": {
+                  "field_list": "Id\nEmail",
+                  "limit": "1",
+                  "query": "Email = '#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"7bb9767a\",\"path\":[\"Contact\",{\"path_element_type\":\"current_item\"},\"Email\"]}')}' AND IsConverted = false\nORDER BY LastModifiedDate DESC",
+                  "sobject_name": "Lead"
+                },
+                "keyword": "action",
+                "name": "search_sobjects_soql",
+                "number": 8,
+                "provider": "salesforce",
+                "title": "Search Leads using SOQL query WHERE clause",
+                "uuid": "e259000f-1da0-4860-8bb6-e7d1fc25600f"
+              }
+            ],
+            "comment": "contact not exist",
+            "input": {
+              "conditions": [
+                {
+                  "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"7bb9767a\",\"path\":[\"Contact\"]}')",
+                  "operand": "blank",
+                  "rhs": "",
+                  "uuid": "946371e3-e8b7-4039-87dd-7193f1a1834a"
+                }
+              ],
+              "operand": "and",
+              "type": "compound"
+            },
+            "keyword": "if",
+            "number": 7,
+            "uuid": "20ec4877-1435-4634-ab0f-946e9c40a3ef"
+          },
+          {
+            "as": "78332562",
+            "comment": "resolve person (Contact wins over Lead) + campaign",
+            "description": "Execute \u003cspan class=\"provider\"\u003eruby\u003c/span\u003e code: \u003cspan class=\"provider\"\u003eresolve_person_campaign\u003c/span\u003e",
+            "extended_input_schema": [
+              {
+                "control_type": "form-schema-builder",
+                "label": "Input",
+                "name": "code_input",
+                "optional": true,
+                "override": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "extends_schema": true,
+                    "label": "Schema",
+                    "name": "schema",
+                    "type": "string"
+                  },
+                  {
+                    "label": "Data",
+                    "name": "data",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Email",
+                        "name": "email",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Approval status",
+                        "name": "approval_status",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Contact ID",
+                        "name": "contact_id",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Lead ID",
+                        "name": "lead_id",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "hint": "SF campaign ID from the Google Sheet",
+                        "label": "Campaign ID",
+                        "name": "campaign_id",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Luma URL slug",
+                        "name": "luma_url_slug",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "sticky": true,
+                "type": "object"
+              }
+            ],
+            "extended_output_schema": [
+              {
+                "label": "Output",
+                "name": "output",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Email",
+                    "name": "email",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Member status",
+                    "name": "member_status",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Skip reason",
+                    "name": "skip_reason",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Parent type (Account / Lead)",
+                    "name": "parent_type",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Person ID",
+                    "name": "person_id",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Campaign ID",
+                    "name": "campaign_id",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Contact ID",
+                    "name": "contact_id",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Lead ID",
+                    "name": "lead_id",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Member query",
+                    "name": "member_query",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Campaign ok",
+                    "name": "campaign_ok",
+                    "parse_output": "boolean_conversion",
+                    "render_input": "boolean_conversion",
+                    "toggle_field": {
+                      "control_type": "text",
+                      "label": "Campaign ok",
+                      "name": "campaign_ok",
+                      "parse_output": "boolean_conversion",
+                      "render_input": "boolean_conversion",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean"
+                    },
+                    "toggle_hint": "Select from option list",
+                    "type": "boolean"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Result status",
+                    "name": "result_status",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Result message",
+                    "name": "result_message",
+                    "type": "string"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "input": {
+              "code": "# ==========================================================\n# Prepare campaign member: validate email + status, resolve person, check campaign ID\n# (merge of the \"email / member status\" step and the \"person / campaign\" step)\n# ==========================================================\n\n# ===== 1. EMAIL + MEMBER STATUS =====\nemail = input[\"email\"].to_s.strip.downcase\nvalid = email.match?(/\\A[^@\\s'\\\\]+@[^@\\s'\\\\]+\\.[^@\\s'\\\\]+\\z/)\nmember_status = { \"approved\" =\u003e \"Registered = Approved\", \"pending_approval\" =\u003e \"Registered = Pending\" }[input[\"approval_status\"].to_s.strip.downcase]\nskip_reason =\n  if !valid then \"Invalid email: #{email}\"\n  elsif member_status.nil? then \"Unsupported Luma approval status: #{input[\"approval_status\"]}\"\n  end\n\n# ===== 2. PERSON (Contact first, then Lead) + CAMPAIGN CHECK =====\nsf_id = /\\A[a-zA-Z0-9]{15}([a-zA-Z0-9]{3})?\\z/\ncontact_id  = input[\"contact_id\"].to_s.strip\nlead_id     = input[\"lead_id\"].to_s.strip\ncampaign_id = input[\"campaign_id\"].to_s.strip\nperson_type, person_id =\n  if contact_id.match?(sf_id) then [\"Contact\", contact_id]\n  elsif lead_id.match?(sf_id) then [\"Lead\", lead_id]\n  else [nil, nil]\n  end\ncampaign_issue =\n  if campaign_id.empty? then \"Luma slug not found in campaign sheet: #{input[\"luma_url_slug\"]}\"\n  elsif !campaign_id.match?(sf_id) then \"Invalid SF campaign ID in sheet: #{campaign_id}\"\n  end\nresult_status, result_message =\n  if person_id.nil? then [\"Not found\", [\"No Salesforce Contact or Lead for this email\", campaign_issue].compact.join(\" | \")]\n  elsif campaign_issue then [\"Campaign not found\", campaign_issue]\n  end\n\n{\n  email: email, member_status: member_status, skip_reason: skip_reason,\n  parent_type: person_type == \"Contact\" ? \"Account\" : person_type, # Account | Lead | nil\n  person_id: person_id, campaign_id: campaign_id,\n  contact_id: person_type == \"Contact\" ? person_id : nil,\n  lead_id:    person_type == \"Lead\" ? person_id : nil,\n  member_query: person_id \u0026\u0026 \"CampaignId = '#{campaign_id}' AND #{person_type}Id = '#{person_id}'\",\n  campaign_ok: campaign_issue.nil?,\n  result_status: result_status, result_message: result_message\n}",
+              "code_input": {
+                "data": {
+                  "approval_status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c2b00001\",\"path\":[\"parameters\",\"approval_status\"]}')}",
+                  "campaign_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"google_sheets\",\"line\":\"06808035\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"col_SF campaign ID\"]}')}",
+                  "contact_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"7bb9767a\",\"path\":[\"Contact\",{\"path_element_type\":\"current_item\"},\"Id\"]}')}",
+                  "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c2b00001\",\"path\":[\"parameters\",\"email\"]}')}",
+                  "lead_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"77e44c77\",\"path\":[\"Lead\",{\"path_element_type\":\"current_item\"},\"Id\"]}')}",
+                  "luma_url_slug": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c2b00001\",\"path\":[\"parameters\",\"luma_url_slug\"]}')}"
+                },
+                "schema": "[{\"control_type\":\"text\",\"label\":\"Email\",\"name\":\"email\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Approval status\",\"name\":\"approval_status\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Contact ID\",\"name\":\"contact_id\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Lead ID\",\"name\":\"lead_id\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Campaign ID\",\"name\":\"campaign_id\",\"type\":\"string\",\"optional\":true,\"hint\":\"SF campaign ID from the Google Sheet\",\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Luma URL slug\",\"name\":\"luma_url_slug\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]}]"
+              },
+              "code_output_schema_json": "[{\"control_type\":\"text\",\"label\":\"Email\",\"name\":\"email\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Member status\",\"name\":\"member_status\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Skip reason\",\"name\":\"skip_reason\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Parent type (Account / Lead)\",\"name\":\"parent_type\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Person ID\",\"name\":\"person_id\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Campaign ID\",\"name\":\"campaign_id\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Contact ID\",\"name\":\"contact_id\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Lead ID\",\"name\":\"lead_id\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Member query\",\"name\":\"member_query\",\"type\":\"string\"},{\"control_type\":\"checkbox\",\"label\":\"Campaign ok\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"campaign_ok\",\"type\":\"boolean\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Campaign ok\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"campaign_ok\",\"type\":\"boolean\"}},{\"control_type\":\"text\",\"label\":\"Result status\",\"name\":\"result_status\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Result message\",\"name\":\"result_message\",\"type\":\"string\"}]",
+              "name": "resolve_person_campaign",
+              "payload_asset_type": "inline"
+            },
+            "keyword": "action",
+            "name": "invoke_custom_ruby_code",
+            "number": 9,
+            "provider": "workato_custom_code",
+            "title": null,
+            "uuid": "051ebb77-6426-4b15-ad56-60268ec496f6",
+            "visible_config_fields": [
+              "name",
+              "code_input",
+              "code_input.schema",
+              "code_output_schema_json",
+              "payload_asset_type",
+              "code",
+              "code_input.data.dd",
+              "code_input.data.fff",
+              "code_input.data.contact_id",
+              "code_input.data.lead_id",
+              "code_input.data.campaign_id",
+              "code_input.data.luma_url_slug",
+              "code_input.data",
+              "code_input.data.email",
+              "code_input.data.approval_status"
+            ]
+          },
+          {
+            "block": [
+              {
+                "as": "5c8fa5ed",
+                "comment": "status = Not found / Campaign not found",
+                "description": null,
+                "extended_input_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Queue status",
+                        "name": "queue_status",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF person type",
+                        "name": "sf_person_type",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF person ID",
+                        "name": "sf_person_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign ID",
+                        "name": "sf_campaign_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign name",
+                        "name": "sf_campaign_name",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign member ID",
+                        "name": "sf_campaign_member_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF member status",
+                        "name": "sf_member_status",
+                        "optional": true,
+                        "type": "string"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_output_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Queue status",
+                        "name": "queue_status",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF person type",
+                        "name": "sf_person_type",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF person ID",
+                        "name": "sf_person_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign ID",
+                        "name": "sf_campaign_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign name",
+                        "name": "sf_campaign_name",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign member ID",
+                        "name": "sf_campaign_member_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF member status",
+                        "name": "sf_member_status",
+                        "optional": true,
+                        "type": "string"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "input": {
+                  "result": {
+                    "message": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"result_message\"]}')}",
+                    "queue_status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"result_status\"]}')}",
+                    "status": "Success"
+                  }
+                },
+                "keyword": "action",
+                "name": "return_result",
+                "number": 11,
+                "provider": "workato_recipe_function",
+                "title": null,
+                "uuid": "c1f6d05c-b968-4792-8d83-f4cfde9f0186",
+                "visible_config_fields": [
+                  "result",
+                  "result.status",
+                  "result.queue_status",
+                  "result.message"
+                ]
+              },
+              {
+                "as": "425f534e",
+                "input": {
+                  "stop_with_error": "false"
+                },
+                "keyword": "stop",
+                "number": 12,
+                "uuid": "2735823e-0ea3-43c1-8ab5-9b05015dc14d"
+              }
+            ],
+            "comment": "no Contact/Lead, or campaign not in sheet",
+            "input": {
+              "conditions": [
+                {
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"result_status\"]}')}",
+                  "operand": "present",
+                  "rhs": "",
+                  "uuid": "71fe6d50-2d2b-401f-9d49-bf178dfd6865"
+                }
+              ],
+              "operand": "and",
+              "type": "compound"
+            },
+            "keyword": "if",
+            "number": 10,
+            "uuid": "4684f353-45a7-4652-bf0c-4b3aecfe81aa"
+          },
+          {
+            "as": "f318d45f",
             "comment": "search campaign member",
             "description": "Search \u003cspan class=\"provider\"\u003eCampaignMembers\u003c/span\u003e using SOQL query WHERE clause in \u003cspan class=\"provider\"\u003eSalesforce\u003c/span\u003e",
             "dynamicPickListSelection": {
               "sobject_name": "CampaignMember"
             },
+            "extended_output_schema": [
+              {
+                "label": "Campaign Members",
+                "name": "CampaignMember",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "custom": false,
+                    "label": "Campaign Member ID",
+                    "name": "Id",
+                    "optional": true,
+                    "sfdc_createable": false,
+                    "sfdc_updateable": false,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "select",
+                    "custom": false,
+                    "label": "Status",
+                    "name": "Status",
+                    "optional": true,
+                    "pick_list": "sobject_field_values_list",
+                    "pick_list_params": {
+                      "field_name": "\"Status\"",
+                      "sobject_name": "\"CampaignMember\""
+                    },
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "toggle_field": {
+                      "control_type": "text",
+                      "custom": false,
+                      "label": "Status",
+                      "name": "Status",
+                      "optional": true,
+                      "sfdc_createable": true,
+                      "sfdc_updateable": true,
+                      "toggle_hint": "Enter custom value",
+                      "type": "string"
+                    },
+                    "toggle_hint": "Select from list",
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              },
+              {
+                "control_type": "number",
+                "label": "List size",
+                "name": "list_size",
+                "parse_output": "integer_conversion",
+                "type": "integer"
+              },
+              {
+                "control_type": "checkbox",
+                "label": "Processed all records?",
+                "name": "done",
+                "toggle_field": {
+                  "control_type": "text",
+                  "label": "Processed all records?",
+                  "name": "done",
+                  "parse_output": null,
+                  "render_input": null,
+                  "toggle_hint": "Use custom value",
+                  "type": "boolean"
+                },
+                "toggle_hint": "Select from option list",
+                "type": "boolean"
+              },
+              {
+                "control_type": "integer",
+                "label": "Total records",
+                "name": "total_records",
+                "parse_output": "integer_conversion",
+                "type": "integer"
+              },
+              {
+                "control_type": "url",
+                "label": "Next page URL",
+                "name": "next_page_url",
+                "type": "string"
+              }
+            ],
             "input": {
               "field_list": "Id\nStatus",
               "limit": "1",
-              "query": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"member_query\"]}')}",
+              "query": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"member_query\"]}')}",
               "sobject_name": "CampaignMember"
             },
             "keyword": "action",
             "name": "search_sobjects_soql",
-            "number": 18,
+            "number": 13,
             "provider": "salesforce",
             "title": "Search CampaignMembers using SOQL query WHERE clause",
-            "uuid": "1c11f35b-a70a-5abe-a2fb-704077c77d96"
+            "uuid": "800e4507-f785-42ec-bc15-afb7fa927139"
           },
           {
             "block": [
               {
-                "as": "c2b00015",
+                "as": "aad55fc9",
                 "comment": "update campaign member status",
                 "description": "Update \u003cspan class=\"provider\"\u003eCampaignMember\u003c/span\u003e in \u003cspan class=\"provider\"\u003eSalesforce\u003c/span\u003e",
                 "dynamicPickListSelection": {
                   "sobject_name": "CampaignMember"
                 },
+                "extended_input_schema": [
+                  {
+                    "control_type": "text",
+                    "hint": "Salesforce internal ID of Campaign Member to update",
+                    "key_scope": "campaignmember",
+                    "label": "Campaign Member ID",
+                    "name": "id",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "select",
+                    "custom": false,
+                    "label": "Status",
+                    "name": "Status",
+                    "optional": true,
+                    "pick_list": "sobject_field_values_list",
+                    "pick_list_params": {
+                      "field_name": "\"Status\"",
+                      "sobject_name": "\"CampaignMember\""
+                    },
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "sticky": true,
+                    "toggle_field": {
+                      "control_type": "text",
+                      "custom": false,
+                      "label": "Status",
+                      "name": "Status",
+                      "optional": true,
+                      "sfdc_createable": true,
+                      "sfdc_updateable": true,
+                      "toggle_hint": "Enter custom value",
+                      "type": "string"
+                    },
+                    "toggle_hint": "Select from list",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "custom": true,
+                    "label": "Attended Status Date",
+                    "name": "Attended_Status_Date__c",
+                    "optional": true,
+                    "parse_output": "parse_iso8601_timestamp",
+                    "render_input": "render_iso8601_timestamp",
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "type": "date_time"
+                  },
+                  {
+                    "control_type": "text-area",
+                    "custom": true,
+                    "label": "Before Event notes",
+                    "name": "Before_Event_notes__c",
+                    "optional": true,
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "custom": true,
+                    "label": "Clicked Recording Email Link Status Date",
+                    "name": "Clicked_Recording_Email_Link_Status_Date__c",
+                    "optional": true,
+                    "parse_output": "parse_iso8601_timestamp",
+                    "render_input": "render_iso8601_timestamp",
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "type": "date_time"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "custom": true,
+                    "label": "Contact Us Status Change Date",
+                    "name": "Contact_Us_Status_Change_Date__c",
+                    "optional": true,
+                    "parse_output": "parse_iso8601_timestamp",
+                    "render_input": "render_iso8601_timestamp",
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "type": "date_time"
+                  },
+                  {
+                    "control_type": "text-area",
+                    "custom": true,
+                    "label": "During/After event notes",
+                    "name": "During_After_event_notes__c",
+                    "optional": true,
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "custom": true,
+                    "label": "Joined Activity Status Date",
+                    "name": "Joined_Activity_Status_Date__c",
+                    "optional": true,
+                    "parse_output": "parse_iso8601_timestamp",
+                    "render_input": "render_iso8601_timestamp",
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "type": "date_time"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "custom": true,
+                    "label": "Meeting At Event Status Date",
+                    "name": "Meeting_At_Event_Status_Date__c",
+                    "optional": true,
+                    "parse_output": "parse_iso8601_timestamp",
+                    "render_input": "render_iso8601_timestamp",
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "type": "date_time"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "custom": true,
+                    "label": "Requested a Demo Status Date",
+                    "name": "Requested_a_Demo_Status_Date__c",
+                    "optional": true,
+                    "parse_output": "parse_iso8601_timestamp",
+                    "render_input": "render_iso8601_timestamp",
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "type": "date_time"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "custom": true,
+                    "label": "Timestamp",
+                    "name": "Timestamp__c",
+                    "optional": true,
+                    "parse_output": "parse_iso8601_timestamp",
+                    "render_input": "render_iso8601_timestamp",
+                    "sfdc_createable": true,
+                    "sfdc_updateable": true,
+                    "type": "date_time"
+                  },
+                  {
+                    "allow_formula_mode": true,
+                    "control_type": "code",
+                    "hint": "JSON object of field API names and values (standard or custom) merged into the update payload. Values here override the same fields set in the form above. Example: {\"Description\": \"value\", \"NextStep\": \"Follow up\"}.",
+                    "label": "Additional fields",
+                    "language": "json",
+                    "name": "additional_fields",
+                    "optional": true,
+                    "sticky": true,
+                    "support_pills": true,
+                    "type": "string"
+                  }
+                ],
                 "input": {
+                  "Status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"member_status\"]}')}",
+                  "id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"f318d45f\",\"path\":[\"CampaignMember\",{\"path_element_type\":\"current_item\"},\"Id\"]}')}",
                   "sobject_name": "CampaignMember"
                 },
                 "keyword": "action",
                 "name": "update_sobject",
-                "number": 20,
+                "number": 15,
                 "provider": "salesforce",
                 "title": "Update CampaignMember",
-                "uuid": "ff04b4e5-2f15-5552-9f05-e0e86865f817"
+                "toggleCfg": {
+                  "Status": false
+                },
+                "uuid": "50c5b6c0-f143-4694-8c5b-6230a05a9b60"
               },
               {
                 "block": [
                   {
-                    "as": "c2b00017",
+                    "as": "e2013770",
                     "comment": "create campaign member",
                     "description": "Create \u003cspan class=\"provider\"\u003eCampaignMember\u003c/span\u003e in \u003cspan class=\"provider\"\u003eSalesforce\u003c/span\u003e",
                     "dynamicPickListSelection": {
                       "sobject_name": "CampaignMember"
                     },
+                    "extended_input_schema": [
+                      {
+                        "control_type": "text",
+                        "custom": false,
+                        "label": "Campaign ID",
+                        "name": "CampaignId",
+                        "sfdc_createable": true,
+                        "sfdc_updateable": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "custom": false,
+                        "label": "Account ID",
+                        "name": "AccountId",
+                        "optional": true,
+                        "sfdc_createable": true,
+                        "sfdc_updateable": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "custom": false,
+                        "label": "Contact ID",
+                        "name": "ContactId",
+                        "optional": true,
+                        "sfdc_createable": true,
+                        "sfdc_updateable": false,
+                        "sticky": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "custom": false,
+                        "label": "Created By ID",
+                        "name": "CreatedById",
+                        "optional": true,
+                        "sfdc_createable": true,
+                        "sfdc_updateable": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "custom": false,
+                        "label": "Created Date",
+                        "name": "CreatedDate",
+                        "optional": true,
+                        "parse_output": "parse_iso8601_timestamp",
+                        "render_input": "render_iso8601_timestamp",
+                        "sfdc_createable": true,
+                        "sfdc_updateable": false,
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "text",
+                        "custom": false,
+                        "label": "Last Modified By ID",
+                        "name": "LastModifiedById",
+                        "optional": true,
+                        "sfdc_createable": true,
+                        "sfdc_updateable": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "custom": false,
+                        "label": "Last Modified Date",
+                        "name": "LastModifiedDate",
+                        "optional": true,
+                        "parse_output": "parse_iso8601_timestamp",
+                        "render_input": "render_iso8601_timestamp",
+                        "sfdc_createable": true,
+                        "sfdc_updateable": false,
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "text",
+                        "custom": false,
+                        "label": "Lead ID",
+                        "name": "LeadId",
+                        "optional": true,
+                        "sfdc_createable": true,
+                        "sfdc_updateable": false,
+                        "sticky": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "select",
+                        "custom": false,
+                        "label": "Status",
+                        "name": "Status",
+                        "optional": true,
+                        "pick_list": "sobject_field_values_list",
+                        "pick_list_params": {
+                          "field_name": "\"Status\"",
+                          "sobject_name": "\"CampaignMember\""
+                        },
+                        "sfdc_createable": true,
+                        "sfdc_updateable": true,
+                        "sticky": true,
+                        "toggle_field": {
+                          "control_type": "text",
+                          "custom": false,
+                          "label": "Status",
+                          "name": "Status",
+                          "optional": true,
+                          "sfdc_createable": true,
+                          "sfdc_updateable": true,
+                          "toggle_hint": "Enter custom value",
+                          "type": "string"
+                        },
+                        "toggle_hint": "Select from list",
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "custom": true,
+                        "label": "Attended Status Date",
+                        "name": "Attended_Status_Date__c",
+                        "optional": true,
+                        "parse_output": "parse_iso8601_timestamp",
+                        "render_input": "render_iso8601_timestamp",
+                        "sfdc_createable": true,
+                        "sfdc_updateable": true,
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "text-area",
+                        "custom": true,
+                        "label": "Before Event notes",
+                        "name": "Before_Event_notes__c",
+                        "optional": true,
+                        "sfdc_createable": true,
+                        "sfdc_updateable": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "custom": true,
+                        "label": "Clicked Recording Email Link Status Date",
+                        "name": "Clicked_Recording_Email_Link_Status_Date__c",
+                        "optional": true,
+                        "parse_output": "parse_iso8601_timestamp",
+                        "render_input": "render_iso8601_timestamp",
+                        "sfdc_createable": true,
+                        "sfdc_updateable": true,
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "custom": true,
+                        "label": "Contact Us Status Change Date",
+                        "name": "Contact_Us_Status_Change_Date__c",
+                        "optional": true,
+                        "parse_output": "parse_iso8601_timestamp",
+                        "render_input": "render_iso8601_timestamp",
+                        "sfdc_createable": true,
+                        "sfdc_updateable": true,
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "text-area",
+                        "custom": true,
+                        "label": "During/After event notes",
+                        "name": "During_After_event_notes__c",
+                        "optional": true,
+                        "sfdc_createable": true,
+                        "sfdc_updateable": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "custom": true,
+                        "label": "Joined Activity Status Date",
+                        "name": "Joined_Activity_Status_Date__c",
+                        "optional": true,
+                        "parse_output": "parse_iso8601_timestamp",
+                        "render_input": "render_iso8601_timestamp",
+                        "sfdc_createable": true,
+                        "sfdc_updateable": true,
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "custom": true,
+                        "label": "Meeting At Event Status Date",
+                        "name": "Meeting_At_Event_Status_Date__c",
+                        "optional": true,
+                        "parse_output": "parse_iso8601_timestamp",
+                        "render_input": "render_iso8601_timestamp",
+                        "sfdc_createable": true,
+                        "sfdc_updateable": true,
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "custom": true,
+                        "label": "Requested a Demo Status Date",
+                        "name": "Requested_a_Demo_Status_Date__c",
+                        "optional": true,
+                        "parse_output": "parse_iso8601_timestamp",
+                        "render_input": "render_iso8601_timestamp",
+                        "sfdc_createable": true,
+                        "sfdc_updateable": true,
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "custom": true,
+                        "label": "Timestamp",
+                        "name": "Timestamp__c",
+                        "optional": true,
+                        "parse_output": "parse_iso8601_timestamp",
+                        "render_input": "render_iso8601_timestamp",
+                        "sfdc_createable": true,
+                        "sfdc_updateable": true,
+                        "type": "date_time"
+                      }
+                    ],
                     "input": {
+                      "CampaignId": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"campaign_id\"]}') ||_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"d70d17ba\",\"path\":[\"Campaign\",{\"path_element_type\":\"current_item\"},\"Id\"]}')",
+                      "ContactId": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"contact_id\"]}')}",
+                      "LeadId": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"lead_id\"]}')}",
+                      "Status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"member_status\"]}')}",
                       "sobject_name": "CampaignMember"
                     },
                     "keyword": "action",
                     "name": "create_custom_object",
-                    "number": 22,
+                    "number": 17,
                     "provider": "salesforce",
                     "title": "Create CampaignMember",
-                    "uuid": "b0e664a7-6ab5-5195-83dc-31e7d1dfb0ad"
+                    "toggleCfg": {
+                      "Status": false
+                    },
+                    "uuid": "923265b2-f705-4f53-a833-2e4d07db00e1"
                   }
                 ],
                 "comment": "campaign member doesn't exist",
                 "keyword": "else",
-                "number": 21,
-                "uuid": "5f188db5-c242-58dd-aa7a-3bce9b8926c9"
+                "number": 16,
+                "uuid": "b88440b7-49c2-4929-a0e3-c2ed961dba13"
               }
             ],
             "comment": "campaign member exists",
             "input": {
               "conditions": [
                 {
-                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00013\",\"path\":[\"CampaignMember\",{\"path_element_type\":\"current_item\"},\"Id\"]}')}",
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"f318d45f\",\"path\":[\"CampaignMember\",{\"path_element_type\":\"current_item\"},\"Id\"]}')}",
                   "operand": "present",
                   "rhs": "",
                   "uuid": "7b5db1cd-a3fd-47d4-bb0d-951a9fc4cef1"
@@ -343,117 +1861,389 @@
               "type": "compound"
             },
             "keyword": "if",
-            "number": 19,
-            "uuid": "73b1688a-e5e2-5eaa-a415-145bc6a804b2"
+            "number": 14,
+            "uuid": "a25545f7-2c00-4fb0-8e26-b7510c58d208"
           },
           {
-            "as": "c2b00018",
+            "as": "748792f8",
             "comment": "status = Success",
             "description": null,
-            "input": {},
+            "extended_input_schema": [
+              {
+                "label": "Result",
+                "name": "result",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Status",
+                    "name": "status",
+                    "optional": false,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Message",
+                    "name": "message",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Queue status",
+                    "name": "queue_status",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "SF person type",
+                    "name": "sf_person_type",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "SF person ID",
+                    "name": "sf_person_id",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "SF campaign ID",
+                    "name": "sf_campaign_id",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "SF campaign name",
+                    "name": "sf_campaign_name",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "SF campaign member ID",
+                    "name": "sf_campaign_member_id",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "SF member status",
+                    "name": "sf_member_status",
+                    "optional": true,
+                    "type": "string"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "extended_output_schema": [
+              {
+                "label": "Result",
+                "name": "result",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Status",
+                    "name": "status",
+                    "optional": false,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Message",
+                    "name": "message",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Queue status",
+                    "name": "queue_status",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "SF person type",
+                    "name": "sf_person_type",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "SF person ID",
+                    "name": "sf_person_id",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "SF campaign ID",
+                    "name": "sf_campaign_id",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "SF campaign name",
+                    "name": "sf_campaign_name",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "SF campaign member ID",
+                    "name": "sf_campaign_member_id",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "SF member status",
+                    "name": "sf_member_status",
+                    "optional": true,
+                    "type": "string"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "input": {
+              "result": {
+                "message": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"result_message\"]}')}",
+                "queue_status": "Done",
+                "sf_campaign_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"campaign_id\"]}')}",
+                "sf_campaign_member_id": "=_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"f318d45f\",\"path\":[\"CampaignMember\",{\"path_element_type\":\"current_item\"},\"Id\"]}') || _dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"e2013770\",\"path\":[\"id\"]}')",
+                "sf_campaign_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"d70d17ba\",\"path\":[\"Campaign\",{\"path_element_type\":\"current_item\"},\"Name\"]}')}",
+                "sf_member_status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"member_status\"]}')}",
+                "sf_person_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"person_id\"]}')}",
+                "sf_person_type": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"parent_type\"]}')}",
+                "status": "Success"
+              }
+            },
             "keyword": "action",
             "name": "return_result",
-            "number": 23,
+            "number": 18,
             "provider": "workato_recipe_function",
             "title": null,
-            "uuid": "7884b145-1eb9-5dbe-9efc-128a1324c428"
+            "uuid": "9ca97d33-dfd3-47c2-99e8-fc2e9d9f94a5",
+            "visible_config_fields": [
+              "result",
+              "result.status",
+              "result.sf_person_type",
+              "result.sf_person_id",
+              "result.sf_campaign_id",
+              "result.sf_campaign_name",
+              "result.sf_campaign_member_id",
+              "result.sf_member_status",
+              "result.queue_status",
+              "result.message"
+            ]
+          },
+          {
+            "as": "2b1380d4",
+            "block": [
+              {
+                "as": "6579070a",
+                "comment": "status = Error",
+                "description": null,
+                "extended_input_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Queue status",
+                        "name": "queue_status",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF person type",
+                        "name": "sf_person_type",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF person ID",
+                        "name": "sf_person_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign ID",
+                        "name": "sf_campaign_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign name",
+                        "name": "sf_campaign_name",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign member ID",
+                        "name": "sf_campaign_member_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF member status",
+                        "name": "sf_member_status",
+                        "optional": true,
+                        "type": "string"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_output_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Queue status",
+                        "name": "queue_status",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF person type",
+                        "name": "sf_person_type",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF person ID",
+                        "name": "sf_person_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign ID",
+                        "name": "sf_campaign_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign name",
+                        "name": "sf_campaign_name",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF campaign member ID",
+                        "name": "sf_campaign_member_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "SF member status",
+                        "name": "sf_member_status",
+                        "optional": true,
+                        "type": "string"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "input": {
+                  "result": {
+                    "message": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"2b1380d4\",\"path\":[\"message\"]}')}",
+                    "queue_status": "Error",
+                    "sf_campaign_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"campaign_id\"]}')}",
+                    "sf_campaign_member_id": "=_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"f318d45f\",\"path\":[\"CampaignMember\",{\"path_element_type\":\"current_item\"},\"Id\"]}') || _dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"e2013770\",\"path\":[\"id\"]}')",
+                    "sf_campaign_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"d70d17ba\",\"path\":[\"Campaign\",{\"path_element_type\":\"current_item\"},\"Name\"]}')}",
+                    "sf_member_status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"member_status\"]}')}",
+                    "sf_person_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"person_id\"]}')}",
+                    "sf_person_type": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"parent_type\"]}')}",
+                    "status": "Error"
+                  }
+                },
+                "keyword": "action",
+                "name": "return_result",
+                "number": 20,
+                "provider": "workato_recipe_function",
+                "title": null,
+                "uuid": "eaab5cc7-e628-4beb-97e0-ec3ddb7e14d6",
+                "visible_config_fields": [
+                  "result",
+                  "result.status",
+                  "result.sf_person_type",
+                  "result.sf_person_id",
+                  "result.sf_campaign_id",
+                  "result.sf_campaign_name",
+                  "result.sf_campaign_member_id",
+                  "result.sf_member_status",
+                  "result.message",
+                  "result.queue_status"
+                ]
+              }
+            ],
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "keyword": "catch",
+            "number": 19,
+            "uuid": "1bd9596c-6c4a-4b38-b921-364ce2b71a2a"
           }
         ],
+        "input": {},
         "keyword": "try",
         "number": 1,
-        "uuid": "c691ad47-37de-5467-89ce-1b403a8da281"
-      },
-      {
-        "as": "c2b0c001",
-        "block": [
-          {
-            "as": "c2b00019",
-            "comment": "status = Error",
-            "description": null,
-            "input": {},
-            "keyword": "action",
-            "name": "return_result",
-            "number": 25,
-            "provider": "workato_recipe_function",
-            "title": null,
-            "uuid": "802192d9-292a-5c22-afa0-d2d2a348c543"
-          }
-        ],
-        "input": {
-          "max_retry_count": "0",
-          "retry_interval": "2"
-        },
-        "keyword": "catch",
-        "number": 24,
-        "uuid": "74c99e0c-9271-5ba0-b375-ce3bfb091aff"
+        "uuid": "3f4f5c60-d2cf-4d5a-ae5f-d9531bf894aa"
       }
     ],
     "description": null,
-    "extended_input_schema": [
-      {
-        "label": "Result",
-        "name": "result",
-        "properties": [
-          {
-            "control_type": "text",
-            "label": "Status",
-            "name": "status",
-            "optional": false,
-            "type": "string"
-          },
-          {
-            "control_type": "text",
-            "label": "Message",
-            "name": "message",
-            "optional": true,
-            "type": "string"
-          },
-          {
-            "control_type": "text",
-            "label": "SF person type",
-            "name": "sf_person_type",
-            "optional": true,
-            "type": "string"
-          },
-          {
-            "control_type": "text",
-            "label": "SF person ID",
-            "name": "sf_person_id",
-            "optional": true,
-            "type": "string"
-          },
-          {
-            "control_type": "text",
-            "label": "SF campaign ID",
-            "name": "sf_campaign_id",
-            "optional": true,
-            "type": "string"
-          },
-          {
-            "control_type": "text",
-            "label": "SF campaign name",
-            "name": "sf_campaign_name",
-            "optional": true,
-            "type": "string"
-          },
-          {
-            "control_type": "text",
-            "label": "SF campaign member ID",
-            "name": "sf_campaign_member_id",
-            "optional": true,
-            "type": "string"
-          },
-          {
-            "control_type": "text",
-            "label": "SF member status",
-            "name": "sf_member_status",
-            "optional": true,
-            "type": "string"
-          }
-        ],
-        "type": "object"
-      }
-    ],
     "extended_output_schema": [
       {
         "label": "Parameters",
@@ -493,19 +2283,19 @@
     ],
     "input": {
       "parameters_schema_json": "[{\"name\": \"queue_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Queue ID\"}, {\"name\": \"email\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Email\"}, {\"name\": \"luma_url_slug\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Luma URL slug\"}, {\"name\": \"approval_status\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Approval status\"}]",
-      "result_schema_json": "[{\"name\": \"status\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Status\"}, {\"name\": \"message\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Message\"}, {\"name\": \"sf_person_type\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"SF person type\"}, {\"name\": \"sf_person_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"SF person ID\"}, {\"name\": \"sf_campaign_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"SF campaign ID\"}, {\"name\": \"sf_campaign_name\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"SF campaign name\"}, {\"name\": \"sf_campaign_member_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"SF campaign member ID\"}, {\"name\": \"sf_member_status\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"SF member status\"}]"
+      "result_schema_json": "[{\"name\":\"status\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Status\"},{\"name\":\"message\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Message\"},{\"name\":\"queue_status\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Queue status\"},{\"name\":\"sf_person_type\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"SF person type\"},{\"name\":\"sf_person_id\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"SF person ID\"},{\"name\":\"sf_campaign_id\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"SF campaign ID\"},{\"name\":\"sf_campaign_name\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"SF campaign name\"},{\"name\":\"sf_campaign_member_id\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"SF campaign member ID\"},{\"name\":\"sf_member_status\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"SF member status\"}]"
     },
     "job_report_config": {
       "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c2b00001\",\"path\":[\"parameters\",\"email\"]}')}",
       "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c2b00001\",\"path\":[\"parameters\",\"luma_url_slug\"]}')}",
       "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c2b00001\",\"path\":[\"parameters\",\"queue_id\"]}')}",
-      "custom_column_3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00002\",\"path\":[\"output\",\"member_status\"]}')}",
-      "custom_column_4": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"person_type\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"person_type\"]}') + \" \" + _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"person_id\"]}') : skip",
-      "custom_column_5": "=_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00020\",\"path\":[\"Campaign\",{\"path_element_type\":\"current_item\"},\"Name\"]}').presence || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"campaign_id\"]}')",
-      "custom_column_6": "=_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00013\",\"path\":[\"CampaignMember\",{\"path_element_type\":\"current_item\"},\"Id\"]}').presence || _dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00017\",\"path\":[\"id\"]}')",
-      "custom_column_7": "=_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00013\",\"path\":[\"CampaignMember\",{\"path_element_type\":\"current_item\"},\"Id\"]}').present? ? \"Updated\" : (_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00017\",\"path\":[\"id\"]}').present? ? \"Created\" : skip)",
-      "custom_column_8": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c2b0c001\",\"path\":[\"message\"]}').present? ? \"Error\" : (_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00002\",\"path\":[\"output\",\"skip_reason\"]}').present? ? \"Skipped\" : (_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"result_status\"]}').presence || (_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"c2b00020\",\"path\":[\"Campaign\",{\"path_element_type\":\"current_item\"},\"Id\"]}').present? ? \"Success\" : \"Campaign not found\")))",
-      "custom_column_9": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c2b0c001\",\"path\":[\"message\"]}').presence || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00002\",\"path\":[\"output\",\"skip_reason\"]}').presence || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"c2b00010\",\"path\":[\"output\",\"result_message\"]}').presence || skip"
+      "custom_column_3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"member_status\"]}')}",
+      "custom_column_4": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"parent_type\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"parent_type\"]}') + \" \" + _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"parent_type\"]}') : skip",
+      "custom_column_5": "=_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"d70d17ba\",\"path\":[\"Campaign\",{\"path_element_type\":\"current_item\"},\"Id\"]}').presence || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"campaign_id\"]}')",
+      "custom_column_6": "=_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"f318d45f\",\"path\":[\"CampaignMember\",{\"path_element_type\":\"current_item\"},\"Id\"]}').presence || _dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"e2013770\",\"path\":[\"id\"]}')",
+      "custom_column_7": "=_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"f318d45f\",\"path\":[\"CampaignMember\",{\"path_element_type\":\"current_item\"},\"Id\"]}').present? ? \"Updated\" : (_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"e2013770\",\"path\":[\"id\"]}').present? ? \"Created\" : skip)",
+      "custom_column_8": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"2b1380d4\",\"path\":[\"message\"]}').present? ? \"Error\" : (_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"skip_reason\"]}').present? ? \"Skipped\" : (_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"result_status\"]}').presence || (_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"d70d17ba\",\"path\":[\"Campaign\",{\"path_element_type\":\"current_item\"},\"Id\"]}').present? ? \"Success\" : \"Campaign not found\")))",
+      "custom_column_9": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"2b1380d4\",\"path\":[\"message\"]}').presence || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"skip_reason\"]}').presence || _dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"78332562\",\"path\":[\"output\",\"result_message\"]}').presence || skip"
     },
     "job_report_schema": [
       {
@@ -541,7 +2331,7 @@
         "name": "custom_column_7"
       },
       {
-        "label": "Result",
+        "label": "Status",
         "name": "custom_column_8"
       },
       {
@@ -566,10 +2356,10 @@
       "skip_validation": false
     },
     {
-      "account_id": null,
+      "account_id": 18690101,
       "keyword": "application",
-      "name": "workato_custom_code",
-      "provider": "workato_custom_code",
+      "name": "google_sheets",
+      "provider": "google_sheets",
       "skip_validation": false
     },
     {
@@ -580,15 +2370,15 @@
       "skip_validation": false
     },
     {
-      "account_id": 18690101,
+      "account_id": null,
       "keyword": "application",
-      "name": "google_sheets",
-      "provider": "google_sheets",
+      "name": "workato_custom_code",
+      "provider": "workato_custom_code",
       "skip_validation": false
     }
   ],
-  "description": "# LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** Called by LSC-02 | Main | Hourly Luma Guests → SF Campaign Members\n\n**PURPOSE:** Add a Luma guest to the Salesforce campaign mapped to the Luma event, with the Luma approval status.\n\n**FLOW:**\n1. Normalize email, map status (approved → Registered = Approved, pending_approval → Registered = Pending)\n2. Search Contact and Lead by email → Salesforce (Contact wins when both exist)\n3. Find SF campaign ID by Luma slug → Google Sheet; get Campaign name → Salesforce\n4. Search CampaignMember → update Status or create\n\n**DB / TABLES:** Google Sheet `1rShm0qyQFdtqf8b6FEpR6F3pFOEvrdWtdrklsX3axGw` / Sheet1 (`Luma event slug` → `SF campaign ID`)\n**UPSTREAM:** LSC-02 | Main | Hourly Luma Guests → SF Campaign Members  \n**DOWNSTREAM:** none\n\n## Important logic\n- Returns `Skipped` when: invalid email or unsupported Luma status.\n- Returns `Not found` when no Contact/Lead exists yet (message also notes a campaign issue).\n- Returns `Campaign not found` when Contact/Lead exists but the slug is not in the sheet, the ID is invalid, or the campaign doesn't exist in SF.\n- Campaign must have member statuses **Registered = Approved** and **Registered = Pending**.\n- Email and IDs are validated in Ruby before being placed in SOQL.\n",
+  "description": "",
   "name": "LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign",
   "private": false,
-  "version": 4
+  "version": 7
 }

@@ -1,0 +1,1411 @@
+{
+  "code": {
+    "as": "e0f00001",
+    "block": [
+      {
+        "block": [
+          {
+            "as": "612c4a7d",
+            "comment": "marketing.ignore_list: email / domain / prefix / suffix",
+            "description": "Select \u003cspan class=\"provider\"\u003erows\u003c/span\u003e using \u003cspan class=\"provider\"\u003ecustom SQL\u003c/span\u003e in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
+            "extended_input_schema": [
+              {
+                "control_type": "form-schema-builder",
+                "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. \u003cb\u003eid\u003c/b\u003e\n                    Second, provide the actual parameter value. Parameter values can be static or datapills.\n                    Select the \u003cb\u003eclosest corresponding data type\u003c/b\u003e that your database is expecting for the bind variable\n                    ",
+                "label": "Parameters",
+                "name": "parameters",
+                "optional": true,
+                "override": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "extends_schema": true,
+                    "label": "Schema",
+                    "name": "schema",
+                    "type": "string"
+                  },
+                  {
+                    "label": "Data",
+                    "name": "data",
+                    "optional": true,
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "real_name": "email"
+                        },
+                        "label": "email",
+                        "name": "email",
+                        "optional": true,
+                        "parent": [
+                          "parameters",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "real_name": "domain"
+                        },
+                        "label": "domain",
+                        "name": "domain",
+                        "optional": true,
+                        "parent": [
+                          "parameters",
+                          "data"
+                        ],
+                        "type": "string"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "sticky": true,
+                "type": "object"
+              }
+            ],
+            "extended_output_schema": [
+              {
+                "label": "Rows",
+                "name": "rows",
+                "of": "object",
+                "order_by_hint": false,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "details": {
+                      "column_name": "match_type",
+                      "data_type": "string",
+                      "primary_key": null
+                    },
+                    "hint": "string",
+                    "label": "match_type",
+                    "name": "match_type",
+                    "optional": true,
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "input": {
+              "output_schema": "[{\"control_type\":\"text\",\"label\":\"Match type\",\"optional\":true,\"type\":\"string\",\"name\":\"match_type\"}]",
+              "parameters": {
+                "data": {
+                  "domain": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"user_email\"]}').downcase.strip.split(\"@\").last",
+                  "email": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"user_email\"]}').downcase.strip"
+                },
+                "schema": "[{\"control_type\":\"text\",\"label\":\"email\",\"name\":\"email\",\"type\":\"string\",\"optional\":true,\"details\":{\"real_name\":\"email\"},\"parent\":[\"parameters\",\"data\"]},{\"name\":\"domain\",\"type\":\"string\",\"optional\":true,\"label\":\"domain\",\"details\":{\"real_name\":\"domain\"},\"control_type\":\"text\",\"parent\":[\"parameters\",\"data\"]}]"
+              },
+              "sql": "SELECT match_type\nFROM marketing.ignore_list\nWHERE\n     (match_type = 'email'  AND lower(value) = :email)\n  OR (match_type = 'domain' AND (lower(value) = :domain\n                                 OR :domain LIKE '%.' || lower(value)))\n  OR (match_type = 'prefix' AND :email LIKE lower(value) || '%')\n  OR (match_type = 'suffix' AND :domain LIKE '%' || lower(value))\nLIMIT 1\n"
+            },
+            "keyword": "action",
+            "name": "search_rows_sql",
+            "number": 2,
+            "provider": "postgresql",
+            "title": "Select rows using custom SQL",
+            "uuid": "e17c477c-b453-4139-ba1e-709e174edfcc",
+            "visible_config_fields": [
+              "sql",
+              "parameters",
+              "parameters.data.email",
+              "parameters.schema",
+              "parameters.data.domain",
+              "parameters.data",
+              "output_schema"
+            ]
+          },
+          {
+            "as": "067016fd",
+            "comment": "blocked_countries",
+            "description": "Search records in \u003cspan class=\"provider\"\u003eblocked_countries\u003c/span\u003e data table",
+            "dynamicPickListSelection": {
+              "filters.0.field_id": "status",
+              "table_id": "blocked_countries"
+            },
+            "extended_input_schema": [
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_74709fa1-294c-41f0-bc06-f879298df914",
+                "name": "74709fa1-294c-41f0-bc06-f879298df914",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_36fb0373-c7c3-4764-9bce-4a56436d4922",
+                "name": "36fb0373-c7c3-4764-9bce-4a56436d4922",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "string",
+                "label": "$internal_value_b44d1c02-ef98-4ff2-b5a2-906d3b465c53",
+                "name": "b44d1c02-ef98-4ff2-b5a2-906d3b465c53",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "id",
+                "label": "$internal_value_11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+                "name": "11fbe9a6-a16d-4d7e-86ea-afe42ec03005",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "date_time",
+                "label": "$internal_value_a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+                "name": "a5612739-5401-4ae7-bd07-782c1a6fb2d1",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              },
+              {
+                "control_type": "text",
+                "default": "date_time",
+                "label": "$internal_value_61aae604-a95e-4519-9091-bb0bf754a67f",
+                "name": "61aae604-a95e-4519-9091-bb0bf754a67f",
+                "ngIf": "false",
+                "optional": true,
+                "type": "string"
+              }
+            ],
+            "extended_output_schema": [
+              {
+                "label": "Records",
+                "name": "records",
+                "of": "object",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Record ID",
+                    "name": "11fbe9a6_a16d_4d7e_86ea_afe42ec03005",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "country",
+                    "name": "74709fa1_294c_41f0_bc06_f879298df914",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "country_iso_code",
+                    "name": "36fb0373_c7c3_4764_9bce_4a56436d4922",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "status",
+                    "name": "b44d1c02_ef98_4ff2_b5a2_906d3b465c53",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Created at",
+                    "name": "a5612739_5401_4ae7_bd07_782c1a6fb2d1",
+                    "parse_output": "date_time_conversion",
+                    "render_input": "date_time_conversion",
+                    "type": "date_time"
+                  },
+                  {
+                    "control_type": "date_time",
+                    "label": "Updated at",
+                    "name": "61aae604_a95e_4519_9091_bb0bf754a67f",
+                    "parse_output": "date_time_conversion",
+                    "render_input": "date_time_conversion",
+                    "type": "date_time"
+                  }
+                ],
+                "type": "array"
+              },
+              {
+                "control_type": "text",
+                "label": "Next Page Token",
+                "name": "continuation_token",
+                "type": "string"
+              }
+            ],
+            "input": {
+              "11fbe9a6-a16d-4d7e-86ea-afe42ec03005": "id",
+              "36fb0373-c7c3-4764-9bce-4a56436d4922": "string",
+              "61aae604-a95e-4519-9091-bb0bf754a67f": "date_time",
+              "74709fa1-294c-41f0-bc06-f879298df914": "string",
+              "a5612739-5401-4ae7-bd07-782c1a6fb2d1": "date_time",
+              "b44d1c02-ef98-4ff2-b5a2-906d3b465c53": "string",
+              "filters": [
+                {
+                  "field_id": "b44d1c02-ef98-4ff2-b5a2-906d3b465c53",
+                  "op_default": "eq",
+                  "value_default": "active"
+                }
+              ],
+              "limit": "100",
+              "order_direction": "asc",
+              "table_id": "156909"
+            },
+            "keyword": "action",
+            "name": "get_records",
+            "number": 3,
+            "provider": "workato_db_table",
+            "title": null,
+            "uuid": "18dd3efd-8183-4cae-ac55-0c7a2917e757"
+          },
+          {
+            "as": "a679b3c7",
+            "comment": "blocked_countries",
+            "description": "Create \u003cspan class=\"provider\"\u003eblocked_countries\u003c/span\u003e list",
+            "extended_input_schema": [
+              {
+                "hint": "Set the initial items in the list. Defaults to an empty list if not supplied.",
+                "label": "Items",
+                "name": "list_items",
+                "of": "object",
+                "optional": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Country",
+                    "name": "country",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Country iso code",
+                    "name": "country_iso_code",
+                    "optional": true,
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "extended_output_schema": [
+              {
+                "hint": "",
+                "label": "blocked_countries",
+                "name": "list_items",
+                "of": "object",
+                "optional": false,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Country",
+                    "name": "country",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Country iso code",
+                    "name": "country_iso_code",
+                    "optional": true,
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "input": {
+              "list_item_schema_json": "[{\"name\":\"country\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Country\"},{\"name\":\"country_iso_code\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Country iso code\"}]",
+              "list_items": {
+                "____source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"067016fd\",\"path\":[\"records\"]}')}",
+                "country": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"067016fd\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"74709fa1_294c_41f0_bc06_f879298df914\"]}')}",
+                "country_iso_code": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_db_table\",\"line\":\"067016fd\",\"path\":[\"records\",{\"path_element_type\":\"current_item\"},\"36fb0373_c7c3_4764_9bce_4a56436d4922\"]}')}"
+              },
+              "name": "blocked_countries"
+            },
+            "keyword": "action",
+            "name": "declare_list",
+            "number": 4,
+            "provider": "workato_variable",
+            "title": " Create blocked_countries list",
+            "uuid": "d3784a2d-e7ec-4a3e-80a9-9fc47640fa4c",
+            "visible_config_fields": [
+              "name",
+              "list_item_schema_json",
+              "list_items.country_iso_code",
+              "list_items.country"
+            ]
+          },
+          {
+            "as": "dce81a7d",
+            "comment": "validate_route",
+            "description": "Execute \u003cspan class=\"provider\"\u003eruby\u003c/span\u003e code: \u003cspan class=\"provider\"\u003evalidate_route\u003c/span\u003e",
+            "extended_input_schema": [
+              {
+                "control_type": "form-schema-builder",
+                "label": "Input",
+                "name": "code_input",
+                "optional": true,
+                "override": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "extends_schema": true,
+                    "label": "Schema",
+                    "name": "schema",
+                    "type": "string"
+                  },
+                  {
+                    "label": "Data",
+                    "name": "data",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "registration_answers",
+                        "name": "registration_answers",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Approval status",
+                        "name": "approval_status",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Start at",
+                        "name": "start_at",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "event_date",
+                        "name": "event_date",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Timezone",
+                        "name": "timezone",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "hint": "Type 2026-11-01 or leave empty",
+                        "label": "New flow start date (YYYY-MM-DD)",
+                        "name": "new_flow_start_date",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Pg match count",
+                        "name": "pg_match_count",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Pg match type",
+                        "name": "pg_match_type",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "blocked_countries",
+                        "name": "blocked_countries",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "sticky": true,
+                "type": "object"
+              }
+            ],
+            "extended_output_schema": [
+              {
+                "label": "Output",
+                "name": "output",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Status",
+                    "name": "status",
+                    "optional": false,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Message",
+                    "name": "message",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Action (create / ignore / skip)",
+                    "name": "action",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Country",
+                    "name": "country",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Route",
+                    "name": "route",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Route reason",
+                    "name": "route_reason",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Should ignore",
+                    "name": "should_ignore",
+                    "parse_output": "boolean_conversion",
+                    "render_input": "boolean_conversion",
+                    "toggle_field": {
+                      "control_type": "text",
+                      "label": "Should ignore",
+                      "name": "should_ignore",
+                      "parse_output": "boolean_conversion",
+                      "render_input": "boolean_conversion",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean"
+                    },
+                    "toggle_hint": "Select from option list",
+                    "type": "boolean"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Ignore reason",
+                    "name": "ignore_reason",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Country blocked",
+                    "name": "country_blocked",
+                    "parse_output": "boolean_conversion",
+                    "render_input": "boolean_conversion",
+                    "toggle_field": {
+                      "control_type": "text",
+                      "label": "Country blocked",
+                      "name": "country_blocked",
+                      "parse_output": "boolean_conversion",
+                      "render_input": "boolean_conversion",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean"
+                    },
+                    "toggle_hint": "Select from option list",
+                    "type": "boolean"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Blocked country ISO",
+                    "name": "blocked_country_iso",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Pg checked",
+                    "name": "pg_checked",
+                    "parse_output": "boolean_conversion",
+                    "render_input": "boolean_conversion",
+                    "toggle_field": {
+                      "control_type": "text",
+                      "label": "Pg checked",
+                      "name": "pg_checked",
+                      "parse_output": "boolean_conversion",
+                      "render_input": "boolean_conversion",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean"
+                    },
+                    "toggle_hint": "Select from option list",
+                    "type": "boolean"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "input": {
+              "code": "# ==========================================================\n# LUMA-00 | Fun 001 | Check Guest Ignore Rules  -  Ruby step \"validate_route\"\n# Inputs come from the function trigger (raw values) and from the steps above it\n# (pg_match_count / pg_match_type from the Postgres step, blocked_countries from the list step).\n# It finds the country itself from registration_answers.\n# Returns status (Success | Error) + message, and one `action`: create | ignore | skip\n# ==========================================================\n\nclean = -\u003e(v) { (v.nil? || v.to_s.strip.empty?) ? nil : v }\nnorm  = -\u003e(v) { v.to_s.strip.downcase.gsub(/\\s+/, \" \") }\n\nparse_time = -\u003e(v) {\n  begin\n    if v.nil?\n      nil\n    elsif v.is_a?(String)\n      v.strip.empty? ? nil : Time.parse(v)\n    else\n      v.to_time\n    end\n  rescue\n    nil\n  end\n}\n\n# ===== registration_answers (only what is needed for country) =====\nraw = input[\"registration_answers\"]\nra =\n  if raw.is_a?(Array)\n    raw\n  elsif raw.is_a?(String) \u0026\u0026 !raw.strip.empty?\n    (parse_json(raw) rescue [])\n  else\n    []\n  end\nra = [] unless ra.is_a?(Array)\nra = ra.select { |a| a.is_a?(Hash) }\n\nby_label = -\u003e(label, key = \"answer\") {\n  hit = ra.find { |a| a[\"label\"] == label }\n  hit \u0026\u0026 hit[key]\n}\nby_keyword = -\u003e(words, key = \"answer\") {\n  hit = ra.find { |a|\n    l = a[\"label\"].to_s.downcase\n    words.any? { |w| l.include?(w) }\n  }\n  hit \u0026\u0026 hit[key]\n}\n\n# ===== country (same lookup order as the parse step) =====\ncountry = clean.(by_label.(\"What country are you from?\")) ||\n          clean.(by_label.(\"Where are you from?\"))        ||\n          clean.(by_label.(\"Country of residence\"))        ||\n          clean.(by_keyword.([\n            \"what country\", \"which country\", \"country\",\n            \"where are you from\", \"where are you based\",\n            \"based in\", \"residence\", \"nationality\"\n          ]))\n\n# ===== event day (same logic as the parse step) =====\nstart_time     = parse_time.(clean.(input[\"start_at\"]) || input[\"event_date\"])\nevent_timezone = clean.(input[\"timezone\"])\nstart_local =\n  begin\n    (start_time \u0026\u0026 event_timezone) ? start_time.in_time_zone(event_timezone) : nil\n  rescue\n    nil\n  end\nevent_day = start_local ? start_local.strftime(\"%Y-%m-%d\") : (start_time ? start_time.utc.strftime(\"%Y-%m-%d\") : nil)\n\n# ===== status =====\nstatus = norm.(input[\"approval_status\"])\n\n# ===== COUNTRY ALIASES (compliance check: extend after reviewing real answers) =====\n# key = normalized free text, value = normalized canonical name used in the blocklist\ncountry_aliases = {\n  \"uk\" =\u003e \"united kingdom\", \"u.k.\" =\u003e \"united kingdom\", \"united kingdon\" =\u003e \"united kingdom\",\n  \"great britain\" =\u003e \"united kingdom\", \"england\" =\u003e \"united kingdom\", \"scotland\" =\u003e \"united kingdom\",\n  \"wales\" =\u003e \"united kingdom\", \"northern ireland\" =\u003e \"united kingdom\",\n  \"usa\" =\u003e \"united states\", \"us\" =\u003e \"united states\", \"u.s.\" =\u003e \"united states\",\n  \"u.s.a.\" =\u003e \"united states\", \"united states of america\" =\u003e \"united states\", \"america\" =\u003e \"united states\",\n  \"uae\" =\u003e \"united arab emirates\",\n  \"russian federation\" =\u003e \"russia\",\n  \"dprk\" =\u003e \"north korea\", \"democratic people's republic of korea\" =\u003e \"north korea\",\n  \"iran, islamic republic of\" =\u003e \"iran\", \"islamic republic of iran\" =\u003e \"iran\",\n  \"syrian arab republic\" =\u003e \"syria\"\n}\ncanon = -\u003e(v) { n = norm.(v); country_aliases[n] || n }\n\n# ===== BLOCKED COUNTRIES =====\nraw_bc = input[\"blocked_countries\"]\nblocked_list =\n  if raw_bc.is_a?(Array)\n    raw_bc\n  elsif raw_bc.is_a?(String) \u0026\u0026 !raw_bc.strip.empty?\n    (parse_json(raw_bc) rescue [])\n  else\n    []\n  end\nblocked_list = [] unless blocked_list.is_a?(Array)\n\ncountry_c = canon.(country)\n\nmatched_block =\n  if country_c.empty?\n    nil\n  else\n    blocked_list.find { |b|\n      next false unless b.is_a?(Hash)\n      b_name = canon.(b[\"country\"])\n      b_iso  = norm.(b[\"country_iso_code\"])\n      (!b_name.empty? \u0026\u0026 b_name == country_c) || (!b_iso.empty? \u0026\u0026 b_iso == country_c)\n    }\n  end\n\ncountry_blocked     = !matched_block.nil?\nblocked_country_iso = country_blocked ? matched_block[\"country_iso_code\"] : nil\n\n# ===== POSTGRES RESULT (fail closed: blank count = lookup did not run) =====\npg_checked = !clean.(input[\"pg_match_count\"]).nil?\npg_match   = input[\"pg_match_count\"].to_i \u003e 0\n\nreasons = []\nreasons \u003c\u003c (clean.(input[\"pg_match_type\"]) || \"email_match\") if pg_match\nreasons \u003c\u003c \"blocked_country: #{country}\"                     if country_blocked\n\nshould_ignore = !reasons.empty?\nignore_reason = should_ignore ? reasons.join(\" | \") : nil\n\n# ===== ROUTING: new flow (cutoff+) vs old flow =====\ncutoff = clean.(input[\"new_flow_start_date\"]).to_s.strip\ncutoff = \"2026-11-01\" unless cutoff =~ /\\A\\d{4}-\\d{2}-\\d{2}\\z/\n\nis_new_event = !event_day.nil? \u0026\u0026 event_day \u003e= cutoff\n\nnew_flow_statuses = [\"approved\", \"pending_approval\"]\nold_flow_statuses = [\"approved\"]\n\nroute, route_reason =\n  if event_day.nil?\n    [\"skip\", \"missing event start date\"]\n  elsif !pg_checked\n    [\"skip\", \"postgres check did not run (pg_match_count is blank)\"]\n  elsif is_new_event\n    new_flow_statuses.include?(status) ? [\"new\", nil] : [\"skip\", \"new flow: status '#{status}' not handled\"]\n  else\n    old_flow_statuses.include?(status) ? [\"old\", nil] : [\"skip\", \"old flow: status '#{status}' not handled\"]\n  end\n\n# ===== SINGLE BRANCH VALUE FOR THE RECIPE =====\naction =\n  if route == \"skip\"\n    \"skip\"\n  elsif should_ignore\n    \"ignore\"\n  else\n    \"create\"\n  end\n\n{\n  \"status\"              =\u003e pg_checked ? \"Success\" : \"Error\",\n  \"message\"             =\u003e pg_checked ? nil : \"Postgres check did not run: pg_match_count is blank\",\n  \"action\"              =\u003e action,\n  \"country\"             =\u003e country,\n  \"route\"               =\u003e route,\n  \"route_reason\"        =\u003e route_reason,\n  \"should_ignore\"       =\u003e should_ignore,\n  \"ignore_reason\"       =\u003e ignore_reason,\n  \"country_blocked\"     =\u003e country_blocked,\n  \"blocked_country_iso\" =\u003e blocked_country_iso,\n  \"pg_checked\"          =\u003e pg_checked\n}",
+              "code_input": {
+                "data": {
+                  "approval_status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"approval_status\"]}')}",
+                  "blocked_countries": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_variable\",\"line\":\"a679b3c7\",\"path\":[\"list_items\"]}')",
+                  "event_date": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"event_date\"]}')}",
+                  "new_flow_start_date": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"new_flow_start_date\"]}')}",
+                  "pg_match_count": "=_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"612c4a7d\",\"path\":[\"rows\",{\"path_element_type\":\"size\"}]}')",
+                  "pg_match_type": "=_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"612c4a7d\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"match_type\"]}')",
+                  "registration_answers": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"registration_answers\"]}')}",
+                  "start_at": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"start_at\"]}')}",
+                  "timezone": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"timezone\"]}')}"
+                },
+                "schema": "[{\"control_type\":\"text\",\"label\":\"registration_answers\",\"name\":\"registration_answers\",\"optional\":true,\"type\":\"string\",\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Approval status\",\"name\":\"approval_status\",\"optional\":true,\"type\":\"string\",\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Start at\",\"name\":\"start_at\",\"optional\":true,\"type\":\"string\",\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"event_date\",\"name\":\"event_date\",\"optional\":true,\"type\":\"string\",\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Timezone\",\"name\":\"timezone\",\"optional\":true,\"type\":\"string\",\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"New flow start date (YYYY-MM-DD)\",\"name\":\"new_flow_start_date\",\"optional\":true,\"type\":\"string\",\"hint\":\"Type 2026-11-01 or leave empty\",\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Pg match count\",\"name\":\"pg_match_count\",\"optional\":true,\"type\":\"string\",\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Pg match type\",\"name\":\"pg_match_type\",\"optional\":true,\"type\":\"string\",\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"blocked_countries\",\"name\":\"blocked_countries\",\"optional\":true,\"type\":\"string\",\"parent\":[\"code_input\",\"data\"]}]"
+              },
+              "code_output_schema_json": "[{\"control_type\":\"text\",\"label\":\"Status\",\"name\":\"status\",\"optional\":false,\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Message\",\"name\":\"message\",\"optional\":true,\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Action (create / ignore / skip)\",\"name\":\"action\",\"optional\":true,\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Country\",\"name\":\"country\",\"optional\":true,\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Route\",\"name\":\"route\",\"optional\":true,\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Route reason\",\"name\":\"route_reason\",\"optional\":true,\"type\":\"string\"},{\"control_type\":\"checkbox\",\"label\":\"Should ignore\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"should_ignore\",\"type\":\"boolean\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Should ignore\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"should_ignore\",\"type\":\"boolean\"}},{\"control_type\":\"text\",\"label\":\"Ignore reason\",\"name\":\"ignore_reason\",\"optional\":true,\"type\":\"string\"},{\"control_type\":\"checkbox\",\"label\":\"Country blocked\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"country_blocked\",\"type\":\"boolean\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Country blocked\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"country_blocked\",\"type\":\"boolean\"}},{\"control_type\":\"text\",\"label\":\"Blocked country ISO\",\"name\":\"blocked_country_iso\",\"optional\":true,\"type\":\"string\"},{\"control_type\":\"checkbox\",\"label\":\"Pg checked\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"pg_checked\",\"type\":\"boolean\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Pg checked\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"pg_checked\",\"type\":\"boolean\"}}]",
+              "name": "validate_route",
+              "payload_asset_type": "inline"
+            },
+            "keyword": "action",
+            "name": "invoke_custom_ruby_code",
+            "number": 5,
+            "provider": "workato_custom_code",
+            "title": null,
+            "uuid": "c0d309d3-404a-4238-8ef3-b0bb9558cd19",
+            "visible_config_fields": [
+              "name",
+              "code_input",
+              "code_output_schema_json",
+              "payload_asset_type",
+              "code",
+              "code_input.data.url",
+              "code_input.data.name",
+              "code_input.data.user_first_name",
+              "code_input.data.user_last_name",
+              "code_input.data.user_email",
+              "code_input.data.phone_number",
+              "code_input.data.check_in_date",
+              "code_input.data.registration_answers",
+              "registration_answers.label",
+              "registration_answers.answer",
+              "registration_answers.value",
+              "registration_answers.question_id",
+              "registration_answers.question_type",
+              "registration_answers.answer_company",
+              "registration_answers.answer_job_title",
+              "code_input.schema",
+              "code_input.data.registration_answers.answer_job_title",
+              "code_input.data.registration_answers.answer_company",
+              "code_input.data.registration_answers.question_type",
+              "code_input.data.registration_answers.question_id",
+              "code_input.data.registration_answers.value",
+              "code_input.data.registration_answers.answer",
+              "code_input.data.registration_answers.label",
+              "code_input.data",
+              "code_input.data.pg_match_count",
+              "code_input.data.pg_match_type",
+              "code_input.data.blocked_countries",
+              "code_input.data.event_date",
+              "code_input.data.guest_id",
+              "code_input.data.approval_status",
+              "code_input.data.source",
+              "code_input.data.start_at",
+              "code_input.data.end_at",
+              "code_input.data.timezone",
+              "code_input.data.new_flow_start_date"
+            ]
+          },
+          {
+            "as": "752751a8",
+            "comment": "status = Success",
+            "description": null,
+            "extended_input_schema": [
+              {
+                "label": "Result",
+                "name": "result",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Status",
+                    "name": "status",
+                    "optional": false,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Message",
+                    "name": "message",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Action (create / ignore / skip)",
+                    "name": "action",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Route",
+                    "name": "route",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Route reason",
+                    "name": "route_reason",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Should ignore",
+                    "name": "should_ignore",
+                    "parse_output": "boolean_conversion",
+                    "render_input": "boolean_conversion",
+                    "toggle_field": {
+                      "control_type": "text",
+                      "label": "Should ignore",
+                      "name": "should_ignore",
+                      "parse_output": "boolean_conversion",
+                      "render_input": "boolean_conversion",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean"
+                    },
+                    "toggle_hint": "Select from option list",
+                    "type": "boolean"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Ignore reason",
+                    "name": "ignore_reason",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Country",
+                    "name": "country",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Country blocked",
+                    "name": "country_blocked",
+                    "parse_output": "boolean_conversion",
+                    "render_input": "boolean_conversion",
+                    "toggle_field": {
+                      "control_type": "text",
+                      "label": "Country blocked",
+                      "name": "country_blocked",
+                      "parse_output": "boolean_conversion",
+                      "render_input": "boolean_conversion",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean"
+                    },
+                    "toggle_hint": "Select from option list",
+                    "type": "boolean"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Blocked country ISO",
+                    "name": "blocked_country_iso",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Pg checked",
+                    "name": "pg_checked",
+                    "parse_output": "boolean_conversion",
+                    "render_input": "boolean_conversion",
+                    "toggle_field": {
+                      "control_type": "text",
+                      "label": "Pg checked",
+                      "name": "pg_checked",
+                      "parse_output": "boolean_conversion",
+                      "render_input": "boolean_conversion",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean"
+                    },
+                    "toggle_hint": "Select from option list",
+                    "type": "boolean"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "extended_output_schema": [
+              {
+                "label": "Result",
+                "name": "result",
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "label": "Status",
+                    "name": "status",
+                    "optional": false,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Message",
+                    "name": "message",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Action (create / ignore / skip)",
+                    "name": "action",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Route",
+                    "name": "route",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Route reason",
+                    "name": "route_reason",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Should ignore",
+                    "name": "should_ignore",
+                    "parse_output": "boolean_conversion",
+                    "render_input": "boolean_conversion",
+                    "toggle_field": {
+                      "control_type": "text",
+                      "label": "Should ignore",
+                      "name": "should_ignore",
+                      "parse_output": "boolean_conversion",
+                      "render_input": "boolean_conversion",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean"
+                    },
+                    "toggle_hint": "Select from option list",
+                    "type": "boolean"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Ignore reason",
+                    "name": "ignore_reason",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Country",
+                    "name": "country",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Country blocked",
+                    "name": "country_blocked",
+                    "parse_output": "boolean_conversion",
+                    "render_input": "boolean_conversion",
+                    "toggle_field": {
+                      "control_type": "text",
+                      "label": "Country blocked",
+                      "name": "country_blocked",
+                      "parse_output": "boolean_conversion",
+                      "render_input": "boolean_conversion",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean"
+                    },
+                    "toggle_hint": "Select from option list",
+                    "type": "boolean"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Blocked country ISO",
+                    "name": "blocked_country_iso",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Pg checked",
+                    "name": "pg_checked",
+                    "parse_output": "boolean_conversion",
+                    "render_input": "boolean_conversion",
+                    "toggle_field": {
+                      "control_type": "text",
+                      "label": "Pg checked",
+                      "name": "pg_checked",
+                      "parse_output": "boolean_conversion",
+                      "render_input": "boolean_conversion",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean"
+                    },
+                    "toggle_hint": "Select from option list",
+                    "type": "boolean"
+                  }
+                ],
+                "type": "object"
+              }
+            ],
+            "input": {
+              "result": {
+                "action": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"action\"]}')}",
+                "blocked_country_iso": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"blocked_country_iso\"]}')}",
+                "country": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"country\"]}')}",
+                "country_blocked": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"country_blocked\"]}')}",
+                "ignore_reason": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"ignore_reason\"]}')}",
+                "pg_checked": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"pg_checked\"]}')}",
+                "route": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"route\"]}')}",
+                "route_reason": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"route_reason\"]}')}",
+                "should_ignore": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"should_ignore\"]}')}",
+                "status": "Success"
+              }
+            },
+            "keyword": "action",
+            "name": "return_result",
+            "number": 6,
+            "provider": "workato_recipe_function",
+            "title": null,
+            "toggleCfg": {
+              "result.country_blocked": false,
+              "result.pg_checked": false,
+              "result.should_ignore": false
+            },
+            "uuid": "f7336b48-f10c-4ea9-9741-556f7488d4dd",
+            "visible_config_fields": [
+              "result.blocked_country_iso",
+              "result.ignore_reason",
+              "result.route_reason",
+              "result.route",
+              "result.action",
+              "result",
+              "result.status",
+              "result.should_ignore",
+              "result.country_blocked",
+              "result.pg_checked",
+              "result.country"
+            ]
+          },
+          {
+            "as": "033b0e74",
+            "block": [
+              {
+                "as": "911453d1",
+                "comment": "status = Error",
+                "description": null,
+                "extended_input_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Action (create / ignore / skip)",
+                        "name": "action",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Route",
+                        "name": "route",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Route reason",
+                        "name": "route_reason",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "label": "Should ignore",
+                        "name": "should_ignore",
+                        "parse_output": "boolean_conversion",
+                        "render_input": "boolean_conversion",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Should ignore",
+                          "name": "should_ignore",
+                          "parse_output": "boolean_conversion",
+                          "render_input": "boolean_conversion",
+                          "toggle_hint": "Use custom value",
+                          "type": "boolean"
+                        },
+                        "toggle_hint": "Select from option list",
+                        "type": "boolean"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ignore reason",
+                        "name": "ignore_reason",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Country",
+                        "name": "country",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "label": "Country blocked",
+                        "name": "country_blocked",
+                        "parse_output": "boolean_conversion",
+                        "render_input": "boolean_conversion",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Country blocked",
+                          "name": "country_blocked",
+                          "parse_output": "boolean_conversion",
+                          "render_input": "boolean_conversion",
+                          "toggle_hint": "Use custom value",
+                          "type": "boolean"
+                        },
+                        "toggle_hint": "Select from option list",
+                        "type": "boolean"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Blocked country ISO",
+                        "name": "blocked_country_iso",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "label": "Pg checked",
+                        "name": "pg_checked",
+                        "parse_output": "boolean_conversion",
+                        "render_input": "boolean_conversion",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Pg checked",
+                          "name": "pg_checked",
+                          "parse_output": "boolean_conversion",
+                          "render_input": "boolean_conversion",
+                          "toggle_hint": "Use custom value",
+                          "type": "boolean"
+                        },
+                        "toggle_hint": "Select from option list",
+                        "type": "boolean"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "extended_output_schema": [
+                  {
+                    "label": "Result",
+                    "name": "result",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Status",
+                        "name": "status",
+                        "optional": false,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Message",
+                        "name": "message",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Action (create / ignore / skip)",
+                        "name": "action",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Route",
+                        "name": "route",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Route reason",
+                        "name": "route_reason",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "label": "Should ignore",
+                        "name": "should_ignore",
+                        "parse_output": "boolean_conversion",
+                        "render_input": "boolean_conversion",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Should ignore",
+                          "name": "should_ignore",
+                          "parse_output": "boolean_conversion",
+                          "render_input": "boolean_conversion",
+                          "toggle_hint": "Use custom value",
+                          "type": "boolean"
+                        },
+                        "toggle_hint": "Select from option list",
+                        "type": "boolean"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Ignore reason",
+                        "name": "ignore_reason",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Country",
+                        "name": "country",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "label": "Country blocked",
+                        "name": "country_blocked",
+                        "parse_output": "boolean_conversion",
+                        "render_input": "boolean_conversion",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Country blocked",
+                          "name": "country_blocked",
+                          "parse_output": "boolean_conversion",
+                          "render_input": "boolean_conversion",
+                          "toggle_hint": "Use custom value",
+                          "type": "boolean"
+                        },
+                        "toggle_hint": "Select from option list",
+                        "type": "boolean"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Blocked country ISO",
+                        "name": "blocked_country_iso",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "checkbox",
+                        "label": "Pg checked",
+                        "name": "pg_checked",
+                        "parse_output": "boolean_conversion",
+                        "render_input": "boolean_conversion",
+                        "toggle_field": {
+                          "control_type": "text",
+                          "label": "Pg checked",
+                          "name": "pg_checked",
+                          "parse_output": "boolean_conversion",
+                          "render_input": "boolean_conversion",
+                          "toggle_hint": "Use custom value",
+                          "type": "boolean"
+                        },
+                        "toggle_hint": "Select from option list",
+                        "type": "boolean"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "input": {
+                  "result": {
+                    "action": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"action\"]}')}",
+                    "blocked_country_iso": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"blocked_country_iso\"]}')}",
+                    "country": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"country\"]}')}",
+                    "country_blocked": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"country_blocked\"]}')}",
+                    "ignore_reason": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"ignore_reason\"]}')}",
+                    "message": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"033b0e74\",\"path\":[\"message\"]}')}",
+                    "pg_checked": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"pg_checked\"]}')}",
+                    "route": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"route\"]}')}",
+                    "route_reason": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"route_reason\"]}')}",
+                    "should_ignore": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"should_ignore\"]}')}",
+                    "status": "Error"
+                  }
+                },
+                "keyword": "action",
+                "name": "return_result",
+                "number": 8,
+                "provider": "workato_recipe_function",
+                "title": null,
+                "toggleCfg": {
+                  "result.country_blocked": false,
+                  "result.pg_checked": false,
+                  "result.should_ignore": false
+                },
+                "uuid": "3f22604a-a144-478b-a530-f6e320739614",
+                "visible_config_fields": [
+                  "result.blocked_country_iso",
+                  "result.ignore_reason",
+                  "result.route_reason",
+                  "result.route",
+                  "result.action",
+                  "result",
+                  "result.status",
+                  "result.should_ignore",
+                  "result.country_blocked",
+                  "result.pg_checked",
+                  "result.message",
+                  "result.country"
+                ]
+              }
+            ],
+            "input": {
+              "max_retry_count": "0",
+              "retry_interval": "2"
+            },
+            "keyword": "catch",
+            "number": 7,
+            "uuid": "6c5a43fc-24b2-4c6d-b0c8-c9aa0c2bc02b"
+          }
+        ],
+        "input": {},
+        "keyword": "try",
+        "number": 1,
+        "uuid": "5075d58c-c7e0-4504-9239-d2c6cd059700"
+      }
+    ],
+    "description": null,
+    "extended_output_schema": [
+      {
+        "label": "Parameters",
+        "name": "parameters",
+        "properties": [
+          {
+            "control_type": "text",
+            "label": "User email",
+            "name": "user_email",
+            "optional": false,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "registration_answers",
+            "name": "registration_answers",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Approval status",
+            "name": "approval_status",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Start at",
+            "name": "start_at",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "event_date",
+            "name": "event_date",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Timezone",
+            "name": "timezone",
+            "optional": true,
+            "type": "string"
+          },
+          {
+            "control_type": "text",
+            "hint": "Type 2026-11-01 or leave empty",
+            "label": "New flow start date (YYYY-MM-DD)",
+            "name": "new_flow_start_date",
+            "optional": true,
+            "type": "string"
+          }
+        ],
+        "type": "object"
+      }
+    ],
+    "input": {
+      "parameters_schema_json": "[{\"control_type\":\"text\",\"label\":\"User email\",\"name\":\"user_email\",\"optional\":false,\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"registration_answers\",\"name\":\"registration_answers\",\"optional\":true,\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Approval status\",\"name\":\"approval_status\",\"optional\":true,\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Start at\",\"name\":\"start_at\",\"optional\":true,\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"event_date\",\"name\":\"event_date\",\"optional\":true,\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Timezone\",\"name\":\"timezone\",\"optional\":true,\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"New flow start date (YYYY-MM-DD)\",\"name\":\"new_flow_start_date\",\"optional\":true,\"type\":\"string\",\"hint\":\"Type 2026-11-01 or leave empty\"}]",
+      "result_schema_json": "[{\"control_type\":\"text\",\"label\":\"Status\",\"name\":\"status\",\"optional\":false,\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Message\",\"name\":\"message\",\"optional\":true,\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Action (create / ignore / skip)\",\"name\":\"action\",\"optional\":true,\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Route\",\"name\":\"route\",\"optional\":true,\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Route reason\",\"name\":\"route_reason\",\"optional\":true,\"type\":\"string\"},{\"control_type\":\"checkbox\",\"label\":\"Should ignore\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"should_ignore\",\"type\":\"boolean\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Should ignore\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"should_ignore\",\"type\":\"boolean\"}},{\"control_type\":\"text\",\"label\":\"Ignore reason\",\"name\":\"ignore_reason\",\"optional\":true,\"type\":\"string\"},{\"name\":\"country\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Country\"},{\"control_type\":\"checkbox\",\"label\":\"Country blocked\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"country_blocked\",\"type\":\"boolean\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Country blocked\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"country_blocked\",\"type\":\"boolean\"}},{\"control_type\":\"text\",\"label\":\"Blocked country ISO\",\"name\":\"blocked_country_iso\",\"optional\":true,\"type\":\"string\"},{\"control_type\":\"checkbox\",\"label\":\"Pg checked\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"pg_checked\",\"type\":\"boolean\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Pg checked\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"pg_checked\",\"type\":\"boolean\"}}]"
+    },
+    "job_report_config": {
+      "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"user_email\"]}')}",
+      "custom_column_10": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"start_at\"]}')}",
+      "custom_column_11": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"route_reason\"]}')}",
+      "custom_column_3": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"country\"]}')}",
+      "custom_column_4": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"e0f00001\",\"path\":[\"parameters\",\"approval_status\"]}')}",
+      "custom_column_5": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"should_ignore\"]}').is_true? ? \"Yes\" : \"No\"",
+      "custom_column_6": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"ignore_reason\"]}')}",
+      "custom_column_7": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"dce81a7d\",\"path\":[\"output\",\"route\"]}')",
+      "custom_column_8": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"033b0e74\",\"path\":[\"message\"]}').present? ? \"Error\" : \"Success\"",
+      "custom_column_9": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"033b0e74\",\"path\":[\"message\"]}').presence"
+    },
+    "job_report_schema": [
+      {
+        "label": "Email",
+        "name": "custom_column_0"
+      },
+      {
+        "label": "Country",
+        "name": "custom_column_3"
+      },
+      {
+        "label": "Start At",
+        "name": "custom_column_10"
+      },
+      {
+        "label": "Approval Status",
+        "name": "custom_column_4"
+      },
+      {
+        "label": "Should Ignore",
+        "name": "custom_column_5"
+      },
+      {
+        "label": "Ignore Reason",
+        "name": "custom_column_6"
+      },
+      {
+        "label": "Route",
+        "name": "custom_column_7"
+      },
+      {
+        "label": "Route Reason",
+        "name": "custom_column_11"
+      },
+      {
+        "label": "Status",
+        "name": "custom_column_8"
+      },
+      {
+        "label": "Message",
+        "name": "custom_column_9"
+      }
+    ],
+    "keyword": "trigger",
+    "name": "execute",
+    "number": 0,
+    "provider": "workato_recipe_function",
+    "title": null,
+    "uuid": "94cdad1e-a403-5c08-a784-9d8a14a8c83c"
+  },
+  "concurrency": 1,
+  "config": [
+    {
+      "account_id": null,
+      "keyword": "application",
+      "name": "workato_recipe_function",
+      "provider": "workato_recipe_function",
+      "skip_validation": false
+    },
+    {
+      "account_id": 19837231,
+      "keyword": "application",
+      "name": "postgresql",
+      "provider": "postgresql",
+      "skip_validation": false
+    },
+    {
+      "account_id": null,
+      "keyword": "application",
+      "name": "workato_db_table",
+      "provider": "workato_db_table",
+      "skip_validation": false
+    },
+    {
+      "account_id": null,
+      "keyword": "application",
+      "name": "workato_variable",
+      "provider": "workato_variable",
+      "skip_validation": false
+    },
+    {
+      "account_id": null,
+      "keyword": "application",
+      "name": "workato_custom_code",
+      "provider": "workato_custom_code",
+      "skip_validation": false
+    }
+  ],
+  "description": "Fun 001 | Validate Guest \u0026amp; Route\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** Called by `Webhook: Luma-to-HubSpot Guest Sync` (first step). Reusable by any Luma / event process.\n\n**PURPOSE:** Decide whether a Luma guest is ignored (ignore list or blocked country) and which flow (new, old or skip) handles it, before any processing.\n\n**FLOW:**\n1. Match email / domain against `marketing.ignore_list` → PostgreSQL\n2. Get active `blocked_countries` → Data table → list\n3. Ruby `validate_route`: find country in `registration_answers`, apply ignore rules, route by event date and approval status, return one `action`\n4. Return `status`, `message` and the results\n\n**DB / TABLES:** `marketing.ignore_list` (read), `blocked_countries` data table (read)\n**UPSTREAM:** Webhook: Luma-to-HubSpot Guest Sync\n**DOWNSTREAM:** none\n\n## Input\n`user_email`, `registration_answers` (pass a JSON string, `.to_json`), `approval_status`, `start_at`, `event_date`, `timezone`, `new_flow_start_date` (YYYY-MM-DD, optional).\n\n## Output\n`status`, `message`, `action` (create / ignore / skip), `country`, `route`, `route_reason`, `should_ignore`, `ignore_reason`, `country_blocked`, `blocked_country_iso`, `pg_checked`.\n\n## Important logic\n- Guest and HubSpot fields are not parsed here. Main does the parsing (Parse registration step).\n- `should_ignore` = ignore-list match OR blocked country. `ignore_reason` joins all reasons with ` | `.\n- Country is matched against the blocklist by name (with an alias map, e.g. UK, USA, Russian Federation) or ISO code.\n- Routing: `new` when the event day is on or after `new_flow_start_date` (default 01/11/2026) and status is approved or pending_approval; `old` when earlier and status is approved; otherwise `skip`.\n- `action`: `skip` wins over `ignore`; otherwise `ignore` if `should_ignore`, else `create`.\n- Fails closed: a blank `pg_match_count` (Postgres step did not run) returns `status = Error`.\n- Caller must stop when `status = Error`, then branch on `action`.",
+  "name": "Fun 001 | Validate Guest \u0026 Route",
+  "private": false,
+  "version": 3
+}
