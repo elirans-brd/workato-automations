@@ -1,6 +1,7 @@
 {
   "name": "API: Account Product Pricing Plan",
-  "version": 12,
+  "description": "# API: Account Product Pricing Plan\n\n---\n\n**TRIGGER:** API Platform — `POST account_product_pricing_plan` (Brightdata CP API collection), called by Brightdata CP\n\n**PURPOSE:** Sync a customer's CP pricing plan to Salesforce Account Products and Account Zone Products.\n\n**FLOW:**\n1. Find the Account by `customer_id` → Salesforce\n2. No Account → find Lead; no Lead → Slack alert \"Account not found in SFDC\" and stop\n3. Get all entries of `BRD Account Product` lookup table\n4. Call Fun-1.1 | Account Product Sync (account / lead products)\n5. Call Fun-1.2 | Account Zone Product Sync (Web Unlocker zone overrides)\n6. Log the results to the job report and return\n\n**DB / TABLES:** Salesforce Account, Lead; `BRD Account Product` lookup table\n**UPSTREAM:** Brightdata CP\n**DOWNSTREAM:** Fun-1.1 | Account Product Sync, Fun-1.2 | Account Zone Product Sync, [CM] Fun | System Error Handling\n\n## Input\n`customer_id`, `pricing` (`plan_title`, `base_plan_id`, `products`, `prices_overrides`, `comt`).\n\n## Output\nHTTP 200 OK / 400 Bad Request / 500 Internal Server Error.\n\n## Important logic\n- Slack channel for missing accounts: project property `Dealub To CP Channel`.\n- Errors go to System Error Handling.",
+  "version": 13,
   "private": true,
   "concurrency": 15,
   "code": {

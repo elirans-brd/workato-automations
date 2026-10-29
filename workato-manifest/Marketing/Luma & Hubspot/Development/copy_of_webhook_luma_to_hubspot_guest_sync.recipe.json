@@ -333272,8 +333272,8 @@
       "skip_validation": false
     }
   ],
-  "description": "",
+  "description": "# Copy of Webhook: Luma-to-HubSpot Guest Sync\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** HTTP webhook — Luma guest updated\n\n**PURPOSE:** Sync a Luma guest to HubSpot (contact + event registration) and queue it for the Salesforce campaign sync.\n\n**FLOW:**\n1. Call Fun 001 | Validate Guest \u0026amp; Route → stop on `status = Error` or `action = ignore / skip`\n2. Ruby `parse_registration`: parse guest and registration answers\n3. Route `new`: search / create / update HubSpot contact → search / update or create event registration → associate contact → submit Luma event form\n4. Route `old` (approved only): search / create / update HubSpot contact → submit Luma event form\n5. Guest has email + Luma slug → call LSC-01 Fun 001 (async) to queue the SF campaign sync\n\n**DB / TABLES:** HubSpot Contact, Event Registration (p7697697_event_registration)\n**UPSTREAM:** Luma webhook\n**DOWNSTREAM:** Fun 001 | Validate Guest \u0026amp; Route, LSC-01 | Fun 001 | Queue Luma Guest for SF Campaign Sync, [CM] Fun | System Error Handling\n\n## Important logic\n- Copy of the live `Webhook: Luma-to-HubSpot Guest Sync` with the new routing and SF campaign queue.\n- Errors go to System Error Handling (async).",
   "name": "Copy of Webhook: Luma-to-HubSpot Guest Sync",
   "private": false,
-  "version": 22
+  "version": 23
 }

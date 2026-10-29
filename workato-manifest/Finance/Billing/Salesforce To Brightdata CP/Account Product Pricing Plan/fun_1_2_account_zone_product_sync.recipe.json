@@ -1,6 +1,7 @@
 {
   "name": "Fun-1.2 | Account Zone Product Sync",
-  "version": 2,
+  "description": "# Fun-1.2 | Account Zone Product Sync\n\n---\n\n**TRIGGER:** Called by `API: Account Product Pricing Plan`\n\n**PURPOSE:** Upsert the customer's Web Unlocker zone price overrides to Salesforce `Account_Zone_Product__c`.\n\n**FLOW:**\n1. Get Web Unlocker products (Product2) → Salesforce\n2. Get the account's Web Unlocker zones (`Account_Zone__c`) → Salesforce\n3. Ruby Transform: map CP `prices_overrides` (`zn:`) to zone product records\n4. Get existing Account Zone Products → Salesforce\n5. Ruby Compare: classify New / Changed / Unchanged / Skipped / Orphan\n6. Upsert changed records; upsert orphans (set Inactive) → Salesforce (batches)\n7. Failed records → [CM] Fun | Application Error Handling (async)\n8. Return `process_status`\n\n**DB / TABLES:** Salesforce `Product2`, `Account_Zone__c` (read), `Account_Zone_Product__c` (read/write)\n**UPSTREAM:** API: Account Product Pricing Plan\n**DOWNSTREAM:** [CM] Fun | Application Error Handling\n\n## Input\n`customer_id`, `account_id` (required); `pricing` (optional).\n\n## Output\n`process_status`, `error_message`, `account_id`.\n\n## Important logic\n- Only `zn:` overrides; dataset zones (`zn:v__ds_*`) are ignored.\n- Only price keys `req`, `gb`, `req_premium`, `gb_premium`.\n- SFDC zone name = `_`. Key: `External_Zone_Override_ID__c` = `__`.\n- `not_bill` → Status Inactive (skipped if new, inactivated if exists).\n- Zones are on Accounts only (no Lead).",
+  "version": 3,
   "private": true,
   "concurrency": 10,
   "code": {

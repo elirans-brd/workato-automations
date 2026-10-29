@@ -2377,8 +2377,8 @@
       "skip_validation": false
     }
   ],
-  "description": "",
+  "description": "# LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** Called by `LSC-02 | Main | Hourly Luma Guests → SF Campaign Members` for each queued guest\n\n**PURPOSE:** Add or update one Luma guest as a Salesforce campaign member.\n\n**FLOW:**\n1. Find the SF campaign ID by Luma slug → Google Sheet (campaign sheet)\n2. Get the campaign in Salesforce → not found = return `Campaign not found`\n3. Find Contact by email; if none, find unconverted Lead → Salesforce\n4. Ruby `resolve_person_campaign`: validate email + status, pick person (Contact wins over Lead), check campaign ID\n5. No person or bad campaign → return `Not found` / `Campaign not found`\n6. Campaign member exists → update status; else create → Salesforce\n7. Return `status` and SF IDs\n\n**DB / TABLES:** Google Sheet (Luma slug → SF campaign), Salesforce Campaign, Contact, Lead, CampaignMember\n**UPSTREAM:** LSC-02 | Main\n**DOWNSTREAM:** none\n\n## Input\n`email`, `luma_url_slug` (required); `queue_id`, `approval_status` (optional).\n\n## Output\n`status`, `message`, `queue_status`, `sf_person_type`, `sf_person_id`, `sf_campaign_id`, `sf_campaign_name`, `sf_campaign_member_id`, `sf_member_status`.\n\n## Important logic\n- Member status: `approved` → \"Registered = Approved\", `pending_approval` → \"Registered = Pending\". Other statuses are skipped.\n- Invalid email → skipped.\n- On error returns `status = Error`; Main writes it to the queue.",
   "name": "LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign",
   "private": false,
-  "version": 7
+  "version": 8
 }

@@ -2412,8 +2412,8 @@
       "skip_validation": false
     }
   ],
-  "description": "",
+  "description": "# LSC-02 | Main | Hourly Luma Guests → SF Campaign Members\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** Scheduler — every hour\n\n**PURPOSE:** Sync queued Luma guests to Salesforce campaign members and alert field marketing on guests that could not be synced.\n\n**FLOW:**\n1. Get Pending rows with `next_attempt_at` ≤ now (max 500) → PostgreSQL\n2. For each: call LSC-02 Fun 002 → write status, message, SF IDs, `attempts + 1`, `processed_at` back to the row\n3. New `Not found` rows older than 3h → one Slack list to field marketing → mark `not_found_notified`\n4. New `Campaign not found` rows older than 3h → one Slack alert per Luma event (guests + reasons) → mark `not_found_notified`\n5. New `Error` rows → mark `error_notified` and stop with error (→ System Error Handling)\n\n**DB / TABLES:** `marketing.luma_sf_campaign_queue` (read/write)\n**UPSTREAM:** LSC-01 | Fun 001 | Queue Luma Guest for SF Campaign Sync (fills the queue)\n**DOWNSTREAM:** LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign, [CM] Fun | System Error Handling\n\n## Important logic\n- Each Not found / Campaign not found / Error row alerts once (notified flags).\n- Slack channel: Marketing project property `lsc_field_marketing_channel`.\n- Rows over the 500 limit are picked up next hour.",
   "name": "LSC-02 | Main | Hourly Luma Guests → SF Campaign Members",
   "private": false,
-  "version": 14
+  "version": 15
 }

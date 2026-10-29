@@ -1,6 +1,7 @@
 {
   "name": "Fun-1.1 | Account Product Sync",
-  "version": 6,
+  "description": "# Fun-1.1 | Account Product Sync\n\n---\n\n**TRIGGER:** Called by `API: Account Product Pricing Plan`\n\n**PURPOSE:** Upsert the customer's product prices from the CP pricing plan to Salesforce `Account_Product__c`.\n\n**FLOW:**\n1. Ruby Transform: map CP `products.prices` to Account Product records using the `BRD Account Product` lookup\n2. Get existing Account Products for the account / lead → Salesforce\n3. Ruby Compare: classify New / Changed / Unchanged / Skipped / Orphan\n4. Upsert changed records; upsert orphans (set Inactive) → Salesforce (batches)\n5. Failed records → [CM] Fun | Application Error Handling (async)\n6. Return `status`\n\n**DB / TABLES:** Salesforce `Account_Product__c` (read/write)\n**UPSTREAM:** API: Account Product Pricing Plan\n**DOWNSTREAM:** [CM] Fun | Application Error Handling\n\n## Input\n`customer_id`, `pricing`, `account_id`, `lead_id`, `brd_products` (lookup table entries).\n\n## Important logic\n- Key: `External_Account_Product_ID` = `_`.\n- Flat price → `Pricing_Type` \"Product Price\". Usage tiers → \"Tiered Slides\" / \"Tiered Steps\" with `Tiers` text and price 0.\n- IP tiers (unlimited shared / dedicated) → one product per tier qty.\n- `not_bill` → `Bill_Product` Inactive. New Inactive products are not created.\n- Only changed records are upserted.",
+  "version": 7,
   "private": true,
   "concurrency": 10,
   "code": {

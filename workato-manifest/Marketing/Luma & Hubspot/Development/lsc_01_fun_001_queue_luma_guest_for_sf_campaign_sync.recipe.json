@@ -1238,8 +1238,8 @@
       "skip_validation": false
     }
   ],
-  "description": "",
+  "description": "# LSC-01 | Fun 001 | Queue Luma Guest for SF Campaign Sync\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** Called async by `Copy of Webhook: Luma-to-HubSpot Guest Sync` (when the guest has an email and a Luma slug)\n\n**PURPOSE:** Queue every Luma guest registration for the hourly Salesforce campaign sync.\n\n**FLOW:**\n1. Look up the row by `luma_guest_id` + `luma_url_slug` → PostgreSQL\n2. Row exists and approval status changed → update `approval_status` and set back to Pending\n3. Row does not exist → insert a Pending row\n4. Return `status` (Success / Error)\n\n**DB / TABLES:** `marketing.luma_sf_campaign_queue` (read/write)\n**UPSTREAM:** Copy of Webhook: Luma-to-HubSpot Guest Sync\n**DOWNSTREAM:** LSC-02 | Main (reads the queue)\n\n## Input\n`luma_guest_id`, `luma_url_slug`, `email` (required); `luma_event_id`, `approval_status`, `sf_campaign_id`, `sf_campaign_name` (optional).\n\n## Output\n`status`, `message`, `queue_id`.\n\n## Important logic\n- One row per guest + event (unique key). A webhook retry with the same status does nothing.\n- On error returns `status = Error`; the caller handles it.",
   "name": "LSC-01 | Fun 001 | Queue Luma Guest for SF Campaign Sync",
   "private": false,
-  "version": 7
+  "version": 8
 }
