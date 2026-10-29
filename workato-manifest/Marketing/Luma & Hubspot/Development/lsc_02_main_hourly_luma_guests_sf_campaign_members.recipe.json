@@ -1,11 +1,11 @@
 {
   "code": {
-    "as": "c3c00001",
+    "as": "60dc6d71",
     "block": [
       {
         "block": [
           {
-            "as": "c3c00002",
+            "as": "d3da2adf",
             "comment": "marketing.luma_sf_campaign_queue: Pending rows due (next_attempt_at)",
             "description": "Select \u003cspan class=\"provider\"\u003erows\u003c/span\u003e using \u003cspan class=\"provider\"\u003ecustom SQL\u003c/span\u003e in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
             "extended_input_schema": [
@@ -124,15 +124,18 @@
             "number": 2,
             "provider": "postgresql",
             "title": "Select rows using custom SQL",
-            "uuid": "d9299fde-b3d0-5fbb-aaae-467d9ead34b0"
+            "uuid": "3e6c4196-5ac2-4213-b6e8-b6d3277c0d5c"
           },
           {
-            "as": "c3c00003",
+            "as": "0d219a4d",
             "block": [
               {
-                "as": "c3c00004",
+                "as": "66c65da0",
                 "comment": "LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign",
-                "description": "Call a recipe function",
+                "description": "Call \u003cspan class=\"provider\"\u003eLSC-02 | Fun 002 | Sync Luma Guest to SF Campaign\u003c/span\u003e",
+                "dynamicPickListSelection": {
+                  "flow_id": "LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign"
+                },
                 "extended_input_schema": [
                   {
                     "label": "Parameters",
@@ -243,12 +246,12 @@
                   }
                 ],
                 "input": {
-                  "flow_id": "83344285",
+                  "flow_id": "83409751",
                   "parameters": {
-                    "approval_status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"c3c00003\",\"path\":[\"approval_status\"]}')}",
-                    "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"c3c00003\",\"path\":[\"email\"]}')}",
-                    "luma_url_slug": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"c3c00003\",\"path\":[\"luma_url_slug\"]}')}",
-                    "queue_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"c3c00003\",\"path\":[\"id\"]}')}"
+                    "approval_status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"0d219a4d\",\"path\":[\"approval_status\"]}')}",
+                    "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"0d219a4d\",\"path\":[\"email\"]}')}",
+                    "luma_url_slug": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"0d219a4d\",\"path\":[\"luma_url_slug\"]}')}",
+                    "queue_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"0d219a4d\",\"path\":[\"id\"]}')}"
                   }
                 },
                 "keyword": "action",
@@ -256,7 +259,7 @@
                 "number": 4,
                 "provider": "workato_recipe_function",
                 "title": null,
-                "uuid": "002c5189-84dc-5c01-8585-95552d4e823f",
+                "uuid": "d7fa8663-3647-43bd-917f-6afd91cd26ec",
                 "visible_config_fields": [
                   "flow_id",
                   "parameters.approval_status",
@@ -264,7 +267,7 @@
                 ]
               },
               {
-                "as": "c3c00005",
+                "as": "55754248",
                 "comment": "write result to queue row",
                 "description": "Update \u003cspan class=\"provider\"\u003erows\u003c/span\u003e in \u003cspan class=\"provider\"\u003emarketing.luma_sf_campaign_queue\u003c/span\u003e table in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
                 "extended_input_schema": [
@@ -579,21 +582,23 @@
                   }
                 ],
                 "hidden_config_fields": [
-                  "where",
                   "columns.email"
                 ],
                 "input": {
                   "columns": {
-                    "message": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c3c00004\",\"path\":[\"result\",\"message\"]}')}",
-                    "queue_status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c3c00004\",\"path\":[\"result\",\"queue_status\"]}')}",
-                    "sf_campaign_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c3c00004\",\"path\":[\"result\",\"sf_campaign_id\"]}')}",
-                    "sf_campaign_member_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c3c00004\",\"path\":[\"result\",\"sf_campaign_member_id\"]}')}",
-                    "sf_campaign_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c3c00004\",\"path\":[\"result\",\"sf_campaign_name\"]}')}",
-                    "sf_member_status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c3c00004\",\"path\":[\"result\",\"sf_member_status\"]}')}",
-                    "sf_person_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c3c00004\",\"path\":[\"result\",\"sf_person_id\"]}')}",
-                    "sf_person_type": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c3c00004\",\"path\":[\"result\",\"sf_person_type\"]}')}"
+                    "attempts": "=_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"d3da2adf\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"attempts\"]}') + 1",
+                    "message": "=_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"66c65da0\",\"path\":[\"result\",\"message\"]}').present? ? _dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"66c65da0\",\"path\":[\"result\",\"message\"]}') : skip",
+                    "processed_at": "=_dp('{\"pill_type\":\"output\",\"provider\":\"clock\",\"line\":\"60dc6d71\",\"path\":[\"scheduled_time\"]}')",
+                    "queue_status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"66c65da0\",\"path\":[\"result\",\"queue_status\"]}')}",
+                    "sf_campaign_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"66c65da0\",\"path\":[\"result\",\"sf_campaign_id\"]}')}",
+                    "sf_campaign_member_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"66c65da0\",\"path\":[\"result\",\"sf_campaign_member_id\"]}')}",
+                    "sf_campaign_name": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"66c65da0\",\"path\":[\"result\",\"sf_campaign_name\"]}')}",
+                    "sf_member_status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"66c65da0\",\"path\":[\"result\",\"sf_member_status\"]}')}",
+                    "sf_person_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"66c65da0\",\"path\":[\"result\",\"sf_person_id\"]}')}",
+                    "sf_person_type": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"66c65da0\",\"path\":[\"result\",\"sf_person_type\"]}')}"
                   },
-                  "table": "marketing.luma_sf_campaign_queue"
+                  "table": "marketing.luma_sf_campaign_queue",
+                  "where": "id = '#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"0d219a4d\",\"path\":[\"id\"]}')}'"
                 },
                 "keyword": "action",
                 "name": "update_rows",
@@ -603,7 +608,7 @@
                 "toggleCfg": {
                   "table": true
                 },
-                "uuid": "ad9618ca-02c1-5637-bf77-d0789a94bb33",
+                "uuid": "a2ffb816-e3b0-4d23-8b12-511c15b592d0",
                 "visible_config_fields": [
                   "table",
                   "columns.sf_person_type",
@@ -614,23 +619,26 @@
                   "columns.sf_campaign_id",
                   "columns.queue_status",
                   "columns",
-                  "columns.message"
+                  "columns.message",
+                  "where",
+                  "columns.attempts",
+                  "columns.processed_at"
                 ]
               }
             ],
             "clear_scope": false,
             "comment": "each queued guest",
             "input": {
-              "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00002\",\"path\":[\"rows\"]}')}"
+              "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"d3da2adf\",\"path\":[\"rows\"]}')}"
             },
             "keyword": "foreach",
             "number": 3,
             "repeat_mode": "simple",
-            "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00002\",\"path\":[\"rows\"]}')}",
-            "uuid": "2506aed1-afa5-5795-a8df-7db4c4bfe54c"
+            "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"d3da2adf\",\"path\":[\"rows\"]}')}",
+            "uuid": "d3d879f5-f2d0-4880-b2a3-2348bb329d7a"
           },
           {
-            "as": "c3c00011",
+            "as": "8cfeeeb2",
             "comment": "marketing.luma_sf_campaign_queue: new Not found / Campaign not found rows (after 3h)",
             "description": "Select \u003cspan class=\"provider\"\u003erows\u003c/span\u003e using \u003cspan class=\"provider\"\u003ecustom SQL\u003c/span\u003e in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
             "extended_input_schema": [
@@ -703,19 +711,19 @@
               "parameters": {
                 "schema": "[]"
               },
-              "sql": "SELECT count(*)::text AS nf_count,\n       string_agg('• ' || email || ' | ' || coalesce(sf_campaign_name, sf_campaign_id, luma_url_slug) || ' | ' || coalesce(sf_member_status, approval_status, '') || ' | ' || CASE queue_status WHEN 'Not found' THEN 'No SF Contact/Lead' ELSE 'Campaign not found: ' || coalesce(message, '') END, E'\\n' ORDER BY id) AS lines\nFROM marketing.luma_sf_campaign_queue\nWHERE queue_status IN ('Not found', 'Campaign not found') AND NOT not_found_notified"
+              "sql": "SELECT count(*)::text AS nf_count,\n       string_agg(\n           '• ' || email || ' | ' ||\n           coalesce(sf_campaign_name, sf_campaign_id, luma_url_slug) || ' | ' ||\n           coalesce(sf_member_status, approval_status, '') || ' | No SF Contact/Lead',\n           E'\\n' ORDER BY id\n       ) AS lines\nFROM marketing.luma_sf_campaign_queue\nWHERE queue_status = 'Not found'\n  AND NOT not_found_notified\n  AND created_at \u003c= now() - interval '3 hours'\n"
             },
             "keyword": "action",
             "name": "search_rows_sql",
             "number": 6,
             "provider": "postgresql",
             "title": "Select rows using custom SQL",
-            "uuid": "019746f8-d0c6-50c6-b228-a161b536a7da"
+            "uuid": "b995ca47-d51c-457e-83bd-361dcbe9e97a"
           },
           {
             "block": [
               {
-                "as": "c3c00013",
+                "as": "94afc566",
                 "comment": "notify field marketing: not synced after 3h",
                 "description": "Post \u003cspan class=\"provider\"\u003emessage\u003c/span\u003e as \u003cspan class=\"provider\"\u003eSlack Workbot\u003c/span\u003e",
                 "input": {
@@ -723,7 +731,7 @@
                     {
                       "block_type": "section_with_text",
                       "button_type": "continue_flow",
-                      "section_text": ":warning: *Luma → SF campaign:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00011\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"nf_count\"]}')} guest(s) could not be added to a Salesforce campaign after 3 hours.\n*Email | SF campaign | Member status | Reason*\n#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00011\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"lines\"]}')}"
+                      "section_text": ":warning: *Luma → SF campaign:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"8cfeeeb2\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"nf_count\"]}')} guest(s) could not be added to a Salesforce campaign after 3 hours.\n*Email | SF campaign | Member status | Reason*\n#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"8cfeeeb2\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"lines\"]}')}"
                     }
                   ],
                   "channel": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"lsc_field_marketing_channel\"}')}"
@@ -732,14 +740,15 @@
                 "name": "post_bot_message",
                 "number": 8,
                 "provider": "slack_bot",
+                "skip": false,
                 "title": null,
                 "toggleCfg": {
                   "channel": true
                 },
-                "uuid": "b4a88dde-b00d-5ef7-80d0-ba607fa208b7"
+                "uuid": "0552d473-50c1-4471-b86e-0bbca51d7d5f"
               },
               {
-                "as": "c3c00014",
+                "as": "dea51341",
                 "comment": "not_found_notified = true",
                 "description": "Update \u003cspan class=\"provider\"\u003erows\u003c/span\u003e in \u003cspan class=\"provider\"\u003emarketing.luma_sf_campaign_queue\u003c/span\u003e table in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
                 "extended_input_schema": [
@@ -1053,9 +1062,15 @@
                     "type": "object"
                   }
                 ],
+                "hidden_config_fields": [
+                  "columns.email"
+                ],
                 "input": {
+                  "columns": {
+                    "not_found_notified": "=true"
+                  },
                   "table": "marketing.luma_sf_campaign_queue",
-                  "where": "queue_status IN ('Not found', 'Campaign not found') AND NOT not_found_notified"
+                  "where": "queue_status = 'Not found'\nAND NOT not_found_notified\nAND created_at \u003c= now() - interval '3 hours'\n"
                 },
                 "keyword": "action",
                 "name": "update_rows",
@@ -1065,14 +1080,19 @@
                 "toggleCfg": {
                   "table": true
                 },
-                "uuid": "4d2588e5-9961-5148-ba22-f1b9e4b6e2bb"
+                "uuid": "40bf160b-13ae-4047-b758-aaa7be485049",
+                "visible_config_fields": [
+                  "table",
+                  "where",
+                  "columns.not_found_notified"
+                ]
               }
             ],
             "comment": "not-synced rows exist",
             "input": {
               "conditions": [
                 {
-                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00011\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"nf_count\"]}')}",
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"8cfeeeb2\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"nf_count\"]}')}",
                   "operand": "not_equals_to",
                   "rhs": "0",
                   "uuid": "18c32884-123b-4656-8364-04d7c8da1be9"
@@ -1083,10 +1103,545 @@
             },
             "keyword": "if",
             "number": 7,
-            "uuid": "bc39a598-19ab-55c7-89d0-514f334eca31"
+            "uuid": "03211297-31e8-48dd-95de-11c6038350fc"
           },
           {
-            "as": "c3c00006",
+            "as": "8bde4ef0",
+            "comment": "Group unnotified campaign issues by Luma event (3h+)\nReturns one row per Luma slug with affected guests, issue reasons, and queue IDs for the grouped Slack alert.",
+            "description": "Select \u003cspan class=\"provider\"\u003erows\u003c/span\u003e using \u003cspan class=\"provider\"\u003ecustom SQL\u003c/span\u003e in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
+            "extended_input_schema": [
+              {
+                "control_type": "form-schema-builder",
+                "hint": "First provide the full name assigned to your bind variable in the WHERE condition. e.g. \u003cb\u003eid\u003c/b\u003e\n                    Second, provide the actual parameter value. Parameter values can be static or datapills.\n                    Select the \u003cb\u003eclosest corresponding data type\u003c/b\u003e that your database is expecting for the bind variable\n                    ",
+                "label": "Parameters",
+                "name": "parameters",
+                "optional": true,
+                "override": true,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "extends_schema": true,
+                    "label": "Schema",
+                    "name": "schema",
+                    "type": "string"
+                  },
+                  {
+                    "label": "Data",
+                    "name": "data",
+                    "optional": true,
+                    "properties": [],
+                    "type": "object"
+                  }
+                ],
+                "sticky": true,
+                "type": "object"
+              }
+            ],
+            "extended_output_schema": [
+              {
+                "label": "Rows",
+                "name": "rows",
+                "of": "object",
+                "order_by_hint": false,
+                "properties": [
+                  {
+                    "control_type": "text",
+                    "details": {
+                      "column_name": "luma_url_slug",
+                      "data_type": "string",
+                      "primary_key": null
+                    },
+                    "hint": "string",
+                    "label": "luma_url_slug",
+                    "name": "luma_url_slug",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "number",
+                    "details": {
+                      "column_name": "guest_count",
+                      "data_type": "integer",
+                      "primary_key": null
+                    },
+                    "hint": "integer",
+                    "label": "guest_count",
+                    "name": "guest_count",
+                    "optional": true,
+                    "parse_output": "parse_integer_output",
+                    "type": "integer"
+                  },
+                  {
+                    "control_type": "text",
+                    "details": {
+                      "column_name": "guests",
+                      "data_type": "string",
+                      "primary_key": null
+                    },
+                    "hint": "string",
+                    "label": "guests",
+                    "name": "guests",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "details": {
+                      "column_name": "reasons",
+                      "data_type": "string",
+                      "primary_key": null
+                    },
+                    "hint": "string",
+                    "label": "reasons",
+                    "name": "reasons",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "details": {
+                      "column_name": "queue_ids_csv",
+                      "data_type": "string",
+                      "primary_key": null
+                    },
+                    "hint": "string",
+                    "label": "queue_ids_csv",
+                    "name": "queue_ids_csv",
+                    "optional": true,
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "text",
+                    "details": {
+                      "column_name": "all_queue_ids_csv",
+                      "data_type": "string",
+                      "primary_key": null
+                    },
+                    "hint": "string",
+                    "label": "all_queue_ids_csv",
+                    "name": "all_queue_ids_csv",
+                    "optional": true,
+                    "type": "string"
+                  }
+                ],
+                "type": "array"
+              }
+            ],
+            "input": {
+              "output_schema": "[{\"control_type\":\"text\",\"label\":\"Luma URL slug\",\"name\":\"luma_url_slug\",\"type\":\"string\",\"optional\":true},{\"control_type\":\"number\",\"label\":\"Guest count\",\"parse_output\":\"integer_conversion\",\"name\":\"guest_count\",\"type\":\"integer\",\"optional\":true,\"render_input\":\"integer_conversion\"},{\"control_type\":\"text\",\"label\":\"Guests\",\"name\":\"guests\",\"type\":\"string\",\"optional\":true},{\"control_type\":\"text\",\"label\":\"Reasons\",\"name\":\"reasons\",\"type\":\"string\",\"optional\":true},{\"control_type\":\"text\",\"label\":\"Queue IDs CSV\",\"name\":\"queue_ids_csv\",\"type\":\"string\",\"optional\":true},{\"control_type\":\"text\",\"label\":\"All queue IDs CSV\",\"name\":\"all_queue_ids_csv\",\"type\":\"string\",\"optional\":true}]",
+              "parameters": {
+                "schema": "[]"
+              },
+              "sql": "WITH grouped AS (\n    SELECT\n        luma_url_slug,\n        count(*) AS guest_count,\n        string_agg('• ' || email, E'\\n' ORDER BY id) AS guests,\n        string_agg(\n            DISTINCT coalesce(message, 'Campaign not found'),\n            E'\\n' ORDER BY coalesce(message, 'Campaign not found')\n        ) AS reasons,\n        string_agg(id::text, ',' ORDER BY id) AS queue_ids_csv\n    FROM marketing.luma_sf_campaign_queue\n    WHERE queue_status = 'Campaign not found'\n      AND NOT not_found_notified\n      AND created_at \u003c= now() - interval '3 hours'\n    GROUP BY luma_url_slug\n)\nSELECT grouped.*,\n       string_agg(queue_ids_csv, ',') OVER () AS all_queue_ids_csv\nFROM grouped\nORDER BY luma_url_slug\n"
+            },
+            "keyword": "action",
+            "name": "search_rows_sql",
+            "number": 10,
+            "provider": "postgresql",
+            "skip": false,
+            "title": "Select rows using custom SQL",
+            "uuid": "e6fffb7f-e18c-4d23-a1c1-9d38cb982cbe"
+          },
+          {
+            "block": [
+              {
+                "as": "e3f23860",
+                "block": [
+                  {
+                    "as": "e71c6927",
+                    "comment": "Notify Slack: one campaign-issue alert per Luma event, with affected guests and reasons",
+                    "description": "Post \u003cspan class=\"provider\"\u003emessage\u003c/span\u003e as \u003cspan class=\"provider\"\u003eSlack Workbot\u003c/span\u003e",
+                    "input": {
+                      "blocks": [
+                        {
+                          "block_type": "section_with_text",
+                          "button_type": "continue_flow",
+                          "section_text": "🚨*Luma event needs Salesforce campaign attention*\n\n*Luma slug:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"e3f23860\",\"path\":[\"luma_url_slug\"]}')}\n*Affected guests:* #{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"e3f23860\",\"path\":[\"guest_count\"]}')}\n#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"e3f23860\",\"path\":[\"guests\"]}')}\n\n*Issue:*\n#{_dp('{\"pill_type\":\"output\",\"provider\":\"foreach\",\"line\":\"e3f23860\",\"path\":[\"reasons\"]}')}\n\n*Action:* Fix the campaign issue, then reprocess these guests."
+                        }
+                      ],
+                      "channel": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"lsc_field_marketing_channel\"}')}"
+                    },
+                    "keyword": "action",
+                    "name": "post_bot_message",
+                    "number": 13,
+                    "provider": "slack_bot",
+                    "skip": false,
+                    "title": null,
+                    "toggleCfg": {
+                      "channel": true
+                    },
+                    "uuid": "45b7c688-1bec-4e22-9de8-079766d4648b"
+                  }
+                ],
+                "clear_scope": "false",
+                "input": {},
+                "keyword": "foreach",
+                "number": 12,
+                "repeat_mode": "simple",
+                "source": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"8bde4ef0\",\"path\":[\"rows\"]}')}",
+                "uuid": "8fd90419-3e7d-492c-bed1-936a43a75e4e"
+              },
+              {
+                "as": "7788b501",
+                "comment": "not_found_notified = true",
+                "description": "Update \u003cspan class=\"provider\"\u003erows\u003c/span\u003e in \u003cspan class=\"provider\"\u003emarketing.luma_sf_campaign_queue\u003c/span\u003e table in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
+                "extended_input_schema": [
+                  {
+                    "label": "Columns",
+                    "name": "columns",
+                    "properties": [
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "approval_status",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "approval_status",
+                        "name": "approval_status",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "number",
+                        "details": {
+                          "column_name": "attempts",
+                          "data_type": "integer",
+                          "primary_key": false
+                        },
+                        "hint": "integer",
+                        "label": "attempts",
+                        "name": "attempts",
+                        "optional": true,
+                        "parse_output": "parse_integer_output",
+                        "type": "integer"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "checked_in_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "checked_in_at",
+                        "name": "checked_in_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "created_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "created_at",
+                        "name": "created_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "email",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "email",
+                        "name": "email",
+                        "optional": true,
+                        "sticky": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "error_notified",
+                          "data_type": "boolean",
+                          "primary_key": false
+                        },
+                        "hint": "boolean",
+                        "label": "error_notified",
+                        "name": "error_notified",
+                        "optional": true,
+                        "parse_output": "parse_boolean_output",
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "number",
+                        "details": {
+                          "column_name": "id",
+                          "data_type": "bigint",
+                          "primary_key": true
+                        },
+                        "event_title": true,
+                        "hint": "bigint, primary key",
+                        "label": "id",
+                        "name": "id",
+                        "optional": true,
+                        "parse_output": "parse_integer_output",
+                        "type": "integer"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "luma_event_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "luma_event_id",
+                        "name": "luma_event_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "luma_guest_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "luma_guest_id",
+                        "name": "luma_guest_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "luma_url_slug",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "luma_url_slug",
+                        "name": "luma_url_slug",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "message",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "message",
+                        "name": "message",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "next_attempt_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "next_attempt_at",
+                        "name": "next_attempt_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "not_found_notified",
+                          "data_type": "boolean",
+                          "primary_key": false
+                        },
+                        "hint": "boolean",
+                        "label": "not_found_notified",
+                        "name": "not_found_notified",
+                        "optional": true,
+                        "parse_output": "parse_boolean_output",
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "processed_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "processed_at",
+                        "name": "processed_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "queue_status",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "queue_status",
+                        "name": "queue_status",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_campaign_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_campaign_id",
+                        "name": "sf_campaign_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_campaign_member_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_campaign_member_id",
+                        "name": "sf_campaign_member_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_campaign_name",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_campaign_name",
+                        "name": "sf_campaign_name",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_member_status",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_member_status",
+                        "name": "sf_member_status",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_person_id",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_person_id",
+                        "name": "sf_person_id",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "details": {
+                          "column_name": "sf_person_type",
+                          "data_type": "text",
+                          "primary_key": false
+                        },
+                        "hint": "text",
+                        "label": "sf_person_type",
+                        "name": "sf_person_type",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "date_time",
+                        "details": {
+                          "column_name": "updated_at",
+                          "data_type": "timestamp with time zone",
+                          "primary_key": false
+                        },
+                        "hint": "timestamp with time zone",
+                        "label": "updated_at",
+                        "name": "updated_at",
+                        "optional": true,
+                        "parse_output": "convert_date_time",
+                        "render_input": "convert_date_time",
+                        "type": "date_time"
+                      }
+                    ],
+                    "type": "object"
+                  }
+                ],
+                "hidden_config_fields": [
+                  "columns.email"
+                ],
+                "input": {
+                  "columns": {
+                    "not_found_notified": "=true"
+                  },
+                  "table": "marketing.luma_sf_campaign_queue",
+                  "where": "id IN (#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"8bde4ef0\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"all_queue_ids_csv\"]}')})\nAND queue_status = 'Campaign not found'\nAND NOT not_found_notified\n"
+                },
+                "keyword": "action",
+                "name": "update_rows",
+                "number": 14,
+                "provider": "postgresql",
+                "title": "Update rows in marketing.luma_sf_campaign_queue",
+                "toggleCfg": {
+                  "table": true
+                },
+                "uuid": "f7ee7361-a772-422e-bba3-dbfcfa96590e",
+                "visible_config_fields": [
+                  "table",
+                  "where",
+                  "columns",
+                  "columns.not_found_notified"
+                ]
+              }
+            ],
+            "comment": "campaign issues by Luma event (3h+)",
+            "input": {
+              "conditions": [
+                {
+                  "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"8bde4ef0\",\"path\":[\"rows\"]}')",
+                  "operand": "present",
+                  "rhs": "",
+                  "uuid": "1b0668da-a252-4c54-ba76-4aedc54f60b5"
+                }
+              ],
+              "operand": "and",
+              "type": "compound"
+            },
+            "keyword": "if",
+            "number": 11,
+            "uuid": "b1218bdd-3724-4793-a0f1-21ae59737eda"
+          },
+          {
+            "as": "2b4695b1",
             "comment": "marketing.luma_sf_campaign_queue: new Error rows",
             "description": "Select \u003cspan class=\"provider\"\u003erows\u003c/span\u003e using \u003cspan class=\"provider\"\u003ecustom SQL\u003c/span\u003e in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
             "extended_input_schema": [
@@ -1163,15 +1718,15 @@
             },
             "keyword": "action",
             "name": "search_rows_sql",
-            "number": 10,
+            "number": 15,
             "provider": "postgresql",
             "title": "Select rows using custom SQL",
-            "uuid": "cbfda3bc-dd84-5a8c-bb94-a93e216bd4cc"
+            "uuid": "cec34cbb-a340-480a-88db-6351744ae64d"
           },
           {
             "block": [
               {
-                "as": "c3c00008",
+                "as": "f49ade91",
                 "comment": "error_notified = true",
                 "description": "Update \u003cspan class=\"provider\"\u003erows\u003c/span\u003e in \u003cspan class=\"provider\"\u003emarketing.luma_sf_campaign_queue\u003c/span\u003e table in \u003cspan class=\"provider\"\u003ePostgreSQL\u003c/span\u003e",
                 "extended_input_schema": [
@@ -1497,13 +2052,13 @@
                 },
                 "keyword": "action",
                 "name": "update_rows",
-                "number": 12,
+                "number": 17,
                 "provider": "postgresql",
                 "title": "Update rows in marketing.luma_sf_campaign_queue",
                 "toggleCfg": {
                   "table": true
                 },
-                "uuid": "95ca91b7-efc9-5865-9a76-e3a0100013bc",
+                "uuid": "21201ddc-03c1-453e-9dda-d496b8e97e77",
                 "visible_config_fields": [
                   "table",
                   "where",
@@ -1511,21 +2066,21 @@
                 ]
               },
               {
-                "as": "c3c00009",
+                "as": "d48033c9",
                 "input": {
-                  "stop_reason": "🚨 Luma → SF campaign sync: #{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00006\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"error_count\"]}')} guest(s) failed\n#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00006\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"errors\"]}')}",
+                  "stop_reason": "🚨 Luma → SF campaign sync: #{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"2b4695b1\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"error_count\"]}')} guest(s) failed\n#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"2b4695b1\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"errors\"]}')}",
                   "stop_with_error": "true"
                 },
                 "keyword": "stop",
-                "number": 13,
-                "uuid": "a501a5d9-8eec-59ab-ae87-11c017bfd6a5"
+                "number": 18,
+                "uuid": "ef729945-7771-4978-9b73-ca0ed98e258c"
               }
             ],
             "comment": "Error rows exist",
             "input": {
               "conditions": [
                 {
-                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00006\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"error_count\"]}')}",
+                  "lhs": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"2b4695b1\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"error_count\"]}')}",
                   "operand": "not_equals_to",
                   "rhs": "0",
                   "uuid": "4374cbb5-6f4f-4b31-b526-727635189704"
@@ -1535,184 +2090,204 @@
               "type": "compound"
             },
             "keyword": "if",
-            "number": 11,
-            "uuid": "37d59c12-0815-5292-b55e-0f96d072c625"
-          }
-        ],
-        "keyword": "try",
-        "number": 1,
-        "uuid": "c691ad47-37de-5467-89ce-1b403a8da281"
-      },
-      {
-        "as": "c3c0c001",
-        "block": [
+            "number": 16,
+            "uuid": "5f942a7b-5260-4563-a0e6-5b60a1bfb9c1"
+          },
           {
-            "as": "c3c00010",
-            "comment": "system error function",
-            "description": "Call \u003cspan class=\"provider\"\u003e[CM] Fun | System Error Handling\u003c/span\u003e (async)",
-            "dynamicPickListSelection": {
-              "flow_id": "[CM] Fun | System Error Handling"
-            },
-            "extended_input_schema": [
+            "as": "5a3347bd",
+            "block": [
               {
-                "label": "Parameters",
-                "name": "parameters",
-                "properties": [
+                "as": "25d408eb",
+                "comment": "system error function",
+                "description": "Call \u003cspan class=\"provider\"\u003e[CM] Fun | System Error Handling\u003c/span\u003e (async)",
+                "dynamicPickListSelection": {
+                  "flow_id": "System Error Handling"
+                },
+                "extended_input_schema": [
                   {
-                    "label": "Error Details",
-                    "name": "ErrorDetails",
-                    "of": "object",
-                    "optional": true,
+                    "label": "Parameters",
+                    "name": "parameters",
                     "properties": [
                       {
-                        "control_type": "text",
-                        "label": "Parent process name",
-                        "name": "parentProcessName",
-                        "optional": false,
-                        "type": "string"
+                        "label": "Error Details",
+                        "name": "ErrorDetails",
+                        "of": "object",
+                        "optional": true,
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "Parent process name",
+                            "name": "parentProcessName",
+                            "optional": false,
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Recipe Id",
+                            "name": "recipe_id",
+                            "optional": false,
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job uuid",
+                            "name": "job_uuid",
+                            "optional": false,
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Name",
+                            "name": "processName",
+                            "optional": false,
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Process Path",
+                            "name": "process_path",
+                            "optional": false,
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Job URL",
+                            "name": "jobUrl",
+                            "optional": false,
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Is repeat",
+                            "name": "is_repeat",
+                            "optional": false,
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error uuid",
+                            "name": "error_uuid",
+                            "optional": false,
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored app",
+                            "name": "errored_app",
+                            "optional": false,
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Errored action",
+                            "name": "errored_action",
+                            "optional": false,
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error step number",
+                            "name": "error_step_number",
+                            "optional": false,
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error type",
+                            "name": "errorType",
+                            "optional": false,
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Error message",
+                            "name": "errorMessage",
+                            "optional": false,
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "Timestamp",
+                            "name": "Timestamp",
+                            "optional": false,
+                            "type": "string"
+                          }
+                        ],
+                        "type": "array"
                       },
                       {
-                        "control_type": "text",
-                        "label": "Recipe Id",
-                        "name": "recipe_id",
-                        "optional": false,
-                        "type": "string"
-                      },
-                      {
-                        "control_type": "text",
-                        "label": "Job uuid",
-                        "name": "job_uuid",
-                        "optional": false,
-                        "type": "string"
-                      },
-                      {
-                        "control_type": "text",
-                        "label": "Process Name",
-                        "name": "processName",
-                        "optional": false,
-                        "type": "string"
-                      },
-                      {
-                        "control_type": "text",
-                        "label": "Process Path",
-                        "name": "process_path",
-                        "optional": false,
-                        "type": "string"
-                      },
-                      {
-                        "control_type": "text",
-                        "label": "Job URL",
-                        "name": "jobUrl",
-                        "optional": false,
-                        "type": "string"
-                      },
-                      {
-                        "control_type": "text",
-                        "label": "Is repeat",
-                        "name": "is_repeat",
-                        "optional": false,
-                        "type": "string"
-                      },
-                      {
-                        "control_type": "text",
-                        "label": "Error uuid",
-                        "name": "error_uuid",
-                        "optional": false,
-                        "type": "string"
-                      },
-                      {
-                        "control_type": "text",
-                        "label": "Errored app",
-                        "name": "errored_app",
-                        "optional": false,
-                        "type": "string"
-                      },
-                      {
-                        "control_type": "text",
-                        "label": "Errored action",
-                        "name": "errored_action",
-                        "optional": false,
-                        "type": "string"
-                      },
-                      {
-                        "control_type": "text",
-                        "label": "Error step number",
-                        "name": "error_step_number",
-                        "optional": false,
-                        "type": "string"
-                      },
-                      {
-                        "control_type": "text",
-                        "label": "Error type",
-                        "name": "errorType",
-                        "optional": false,
-                        "type": "string"
-                      },
-                      {
-                        "control_type": "text",
-                        "label": "Error message",
-                        "name": "errorMessage",
-                        "optional": false,
-                        "type": "string"
-                      },
-                      {
-                        "control_type": "text",
-                        "label": "Timestamp",
-                        "name": "Timestamp",
-                        "optional": false,
-                        "type": "string"
+                        "label": "Files",
+                        "name": "files",
+                        "of": "object",
+                        "optional": true,
+                        "properties": [
+                          {
+                            "control_type": "text",
+                            "label": "File name",
+                            "name": "fileName",
+                            "optional": true,
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "label": "File content",
+                            "name": "fileContent",
+                            "optional": true,
+                            "type": "string"
+                          }
+                        ],
+                        "type": "array"
                       }
                     ],
-                    "type": "array"
-                  },
-                  {
-                    "label": "Files",
-                    "name": "files",
-                    "of": "object",
-                    "optional": true,
-                    "properties": [
-                      {
-                        "control_type": "text",
-                        "label": "File name",
-                        "name": "fileName",
-                        "optional": true,
-                        "type": "string"
-                      },
-                      {
-                        "control_type": "text",
-                        "label": "File content",
-                        "name": "fileContent",
-                        "optional": true,
-                        "type": "string"
-                      }
-                    ],
-                    "type": "array"
+                    "type": "object"
                   }
                 ],
-                "type": "object"
+                "input": {
+                  "flow_id": "69020589",
+                  "parameters": {
+                    "ErrorDetails": {
+                      "Timestamp": "=now.in_time_zone(\"Asia/Jerusalem\")",
+                      "errorMessage": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"5a3347bd\",\"path\":[\"message\"]}')}",
+                      "errorType": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"5a3347bd\",\"path\":[\"type\"]}')}",
+                      "error_step_number": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"5a3347bd\",\"path\":[\"line_number\"]}')}",
+                      "error_uuid": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"5a3347bd\",\"path\":[\"uuid\"]}')}",
+                      "errored_action": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"5a3347bd\",\"path\":[\"action\"]}')}",
+                      "errored_app": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"5a3347bd\",\"path\":[\"adapter\"]}')}",
+                      "is_repeat": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"is_repeat\"]}')}",
+                      "jobUrl": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_url\"]}')}",
+                      "job_uuid": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"job_id\"]}')}",
+                      "parentProcessName": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+                      "processName": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_name\"]}')}",
+                      "process_path": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_path\"]}')}",
+                      "recipe_id": "#{_dp('{\"pill_type\":\"job_context\",\"path\":[\"recipe_id\"]}')}"
+                    }
+                  }
+                },
+                "keyword": "action",
+                "name": "call_recipe_async",
+                "number": 20,
+                "provider": "workato_recipe_function",
+                "skip": false,
+                "title": null,
+                "uuid": "468c8cdb-1874-42db-9c01-2a159d03b915"
               }
             ],
             "input": {
-              "flow_id": "69020589"
+              "max_retry_count": "0",
+              "retry_interval": "2"
             },
-            "keyword": "action",
-            "name": "call_recipe_async",
-            "number": 15,
-            "provider": "workato_recipe_function",
-            "title": null,
-            "uuid": "36266531-42b3-572f-9acf-06bc6eb9a70f"
+            "keyword": "catch",
+            "number": 19,
+            "uuid": "3d430078-f099-421d-818f-b38a52d515f1"
           }
         ],
-        "input": {
-          "max_retry_count": "0",
-          "retry_interval": "2"
-        },
-        "keyword": "catch",
-        "number": 14,
-        "uuid": "0a2bed16-14dd-565b-98b9-fe146c7e7267"
+        "input": {},
+        "keyword": "try",
+        "number": 1,
+        "uuid": "1c223fb5-0c40-460a-bebb-8c7b6f242864"
       }
     ],
-    "description": "\u003cspan class=\"provider\"\u003eTrigger\u003c/span\u003e on a \u003cspan class=\"provider\"\u003especified schedule\u003c/span\u003e",
+    "description": "\u003cspan class=\"provider\"\u003eTrigger\u003c/span\u003e every 1 hours",
     "dynamicPickListSelection": {
       "time_unit": "Hours"
     },
@@ -1757,15 +2332,17 @@
       }
     ],
     "input": {
-      "time_unit": "hours"
+      "time_unit": "hours",
+      "trigger_every": "1"
     },
     "job_report_config": {
-      "custom_column_0": "=_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00002\",\"path\":[\"rows\"]}').size",
-      "custom_column_1": "=_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00011\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"nf_count\"]}')",
-      "custom_column_2": "=_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"c3c00006\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"error_count\"]}')",
-      "custom_column_3": "=_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"c3c00013\",\"path\":[\"ts\"]}').present? ? \"Yes\" : \"No\"",
-      "custom_column_4": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c3c0c001\",\"path\":[\"message\"]}').present? ? \"Error\" : \"Success\"",
-      "custom_column_5": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"c3c0c001\",\"path\":[\"message\"]}').presence"
+      "custom_column_0": "=_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"d3da2adf\",\"path\":[\"rows\",{\"path_element_type\":\"size\"}]}')",
+      "custom_column_1": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"8cfeeeb2\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"nf_count\"]}')}",
+      "custom_column_2": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"2b4695b1\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"error_count\"]}')}",
+      "custom_column_3": "=_dp('{\"pill_type\":\"output\",\"provider\":\"slack_bot\",\"line\":\"94afc566\",\"path\":[\"ts\"]}').present? ? \"Yes\" : \"No\"",
+      "custom_column_4": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"5a3347bd\",\"path\":[\"message\"]}').present? ? \"Error\" : \"Success\"",
+      "custom_column_5": "=_dp('{\"pill_type\":\"output\",\"provider\":\"catch\",\"line\":\"5a3347bd\",\"path\":[\"message\"]}').presence",
+      "custom_column_6": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"postgresql\",\"line\":\"8bde4ef0\",\"path\":[\"rows\",{\"path_element_type\":\"size\"}]}')}"
     },
     "job_report_schema": [
       {
@@ -1779,6 +2356,10 @@
       {
         "label": "New Errors",
         "name": "custom_column_2"
+      },
+      {
+        "label": "Campaign issue events (3h+)",
+        "name": "custom_column_6"
       },
       {
         "label": "Field Marketing Notified",
@@ -1798,17 +2379,10 @@
     "number": 0,
     "provider": "clock",
     "title": null,
-    "uuid": "ccd85e84-c8f4-5a69-a459-cad911aed519"
+    "uuid": "a5623daf-92e2-44d9-882c-e4854cd0ef79"
   },
   "concurrency": 1,
   "config": [
-    {
-      "account_id": null,
-      "keyword": "application",
-      "name": "clock",
-      "provider": "clock",
-      "skip_validation": false
-    },
     {
       "account_id": 19837231,
       "keyword": "application",
@@ -1829,10 +2403,17 @@
       "name": "slack_bot",
       "provider": "slack_bot",
       "skip_validation": false
+    },
+    {
+      "account_id": null,
+      "keyword": "application",
+      "name": "clock",
+      "provider": "clock",
+      "skip_validation": false
     }
   ],
-  "description": "# LSC-02 | Main | Hourly Luma Guests → SF Campaign Members\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** Scheduler — every hour, Asia/Jerusalem\n\n**PURPOSE:** Sync queued Luma guests to Salesforce campaign members 1h after registration, retrying at 3h.\n\n**FLOW:**\n1. Get Pending rows with `next_attempt_at` ≤ now → PostgreSQL\n2. For each: call Fun 002 → write Done / Skipped / Not found / Error + SF IDs back to the row\n3. Not found / Campaign not found on 1st attempt → stay Pending, retry in 2h; on 2nd → final status\n4. New Not found / Campaign not found rows → Slack field marketing (email, SF campaign, member status, reason)\n5. If new Error rows exist → mark notified and stop with error (→ System Error Handling)\n\n**DB / TABLES:** `marketing.luma_sf_campaign_queue` (read/write)\n**UPSTREAM:** LSC-01 | Fun 001 | Queue Luma Guest for SF Campaign Sync (fills the queue)  \n**DOWNSTREAM:** LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign\n\n## Important logic\n- Attempts: +1h (Fun 001) and +3h (retry). Each Not found / Campaign not found / Error row alerts once.\n- Slack channel: Marketing project property `lsc_field_marketing_channel`.\n- Max 500 rows per run; the rest are picked up next hour.\n",
+  "description": "",
   "name": "LSC-02 | Main | Hourly Luma Guests → SF Campaign Members",
   "private": false,
-  "version": 7
+  "version": 14
 }

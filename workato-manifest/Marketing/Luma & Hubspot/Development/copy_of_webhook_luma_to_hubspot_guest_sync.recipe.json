@@ -55392,6 +55392,17 @@
                           {
                             "control_type": "text",
                             "custom": false,
+                            "hint": "Connected accounts that mirror data to this record. Used exclusively with multi-account management.",
+                            "label": "Cross-account data mirroring sources",
+                            "name": "hs_cross_account_data_mirroring_source_account_ids",
+                            "optional": true,
+                            "pick_list": [],
+                            "sticky": false,
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "custom": false,
                             "hint": "Add cross-account note property to Contact, allowing users to set a note when copying or editing a contact in another account.",
                             "label": "Cross-Account Note",
                             "name": "hs_cross_account_note",
@@ -137375,6 +137386,17 @@
                                 "render_input": "date_field_to_milliseconds",
                                 "sticky": false,
                                 "type": "date_time"
+                              },
+                              {
+                                "control_type": "text",
+                                "custom": false,
+                                "hint": "Connected accounts that mirror data to this record. Used exclusively with multi-account management.",
+                                "label": "Cross-account data mirroring sources",
+                                "name": "hs_cross_account_data_mirroring_source_account_ids",
+                                "optional": true,
+                                "pick_list": [],
+                                "sticky": false,
+                                "type": "string"
                               },
                               {
                                 "control_type": "text",
@@ -222008,6 +222030,17 @@
                           {
                             "control_type": "text",
                             "custom": false,
+                            "hint": "Connected accounts that mirror data to this record. Used exclusively with multi-account management.",
+                            "label": "Cross-account data mirroring sources",
+                            "name": "hs_cross_account_data_mirroring_source_account_ids",
+                            "optional": true,
+                            "pick_list": [],
+                            "sticky": false,
+                            "type": "string"
+                          },
+                          {
+                            "control_type": "text",
+                            "custom": false,
                             "hint": "Add cross-account note property to Contact, allowing users to set a note when copying or editing a contact in another account.",
                             "label": "Cross-Account Note",
                             "name": "hs_cross_account_note",
@@ -303994,6 +304027,17 @@
                               {
                                 "control_type": "text",
                                 "custom": false,
+                                "hint": "Connected accounts that mirror data to this record. Used exclusively with multi-account management.",
+                                "label": "Cross-account data mirroring sources",
+                                "name": "hs_cross_account_data_mirroring_source_account_ids",
+                                "optional": true,
+                                "pick_list": [],
+                                "sticky": false,
+                                "type": "string"
+                              },
+                              {
+                                "control_type": "text",
+                                "custom": false,
                                 "hint": "Add cross-account note property to Contact, allowing users to set a note when copying or editing a contact in another account.",
                                 "label": "Cross-Account Note",
                                 "name": "hs_cross_account_note",
@@ -331979,202 +332023,6 @@
           {
             "block": [
               {
-                "as": "0880020f",
-                "comment": "Luma events \u003c\u003e SF campaign mapping",
-                "description": null,
-                "dynamicPickListSelection": {
-                  "team_drives": "Brightdata"
-                },
-                "extended_input_schema": [
-                  {
-                    "control_type": "select",
-                    "extends_schema": true,
-                    "hint": "Select a sheet to search for rows. The sheet must have at least one header row. \u003ca href='https://docs.workato.com/connectors/google-sheets/action-add-row.html#setting-up-the-google-sheet' target='_blank'\u003eLearn more\u003c/a\u003e",
-                    "label": "Sheet",
-                    "name": "sheet",
-                    "optional": false,
-                    "pick_list": [
-                      [
-                        "Sheet1",
-                        "Sheet1"
-                      ]
-                    ],
-                    "toggle_field": {
-                      "change_on_blur": true,
-                      "control_type": "text",
-                      "extends_schema": true,
-                      "hint": "Use \u003cb\u003eSheet name\u003c/b\u003e pill from the output of other Google Sheets’ triggers/actions. Or enter sheet name manually. The sheet must have at least 1 header row in input field.",
-                      "label": "Sheet name",
-                      "name": "sheet_name",
-                      "toggle_hint": "Use sheet name",
-                      "toggle_to_primary_hint": "Select a sheet",
-                      "toggle_to_secondary_hint": "Use sheet name",
-                      "type": "string"
-                    },
-                    "toggle_hint": "Select a sheet",
-                    "type": "string"
-                  },
-                  {
-                    "hint": "Enter one or more search values. Workato will search for rows matching \u003cb\u003eALL\u003c/b\u003e of the search values below.",
-                    "label": "Columns",
-                    "name": "data",
-                    "properties": [
-                      {
-                        "control_type": "text",
-                        "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
-                        "label": "Luma event slug",
-                        "name": "col_Luma event slug",
-                        "optional": true,
-                        "sticky": true,
-                        "type": "string"
-                      },
-                      {
-                        "control_type": "text",
-                        "hint": "Search for an exact match of the search value you enter here. Search value is case-sensitive and can contain space.",
-                        "label": "SF campaign ID",
-                        "name": "col_SF campaign ID",
-                        "optional": true,
-                        "sticky": true,
-                        "type": "string"
-                      }
-                    ],
-                    "sticky": true,
-                    "type": "object"
-                  },
-                  {
-                    "control_type": "number",
-                    "default": 200,
-                    "hint": "Maximum number of matched rows to be returned. Minimum accepted value is \u003cb\u003e1\u003c/b\u003e and maximum accepted value is \u003cb\u003e50000\u003c/b\u003e.",
-                    "label": "Search result size",
-                    "name": "count",
-                    "optional": true,
-                    "parse_output": "float_conversion",
-                    "type": "number"
-                  }
-                ],
-                "extended_output_schema": [
-                  {
-                    "control_type": "text",
-                    "label": "Spreadsheet ID",
-                    "name": "spreadsheet_id",
-                    "type": "string"
-                  },
-                  {
-                    "control_type": "text",
-                    "label": "Spreadsheet name",
-                    "name": "spreadsheet_name",
-                    "type": "string"
-                  },
-                  {
-                    "control_type": "text",
-                    "label": "Sheet name",
-                    "name": "sheet",
-                    "type": "string"
-                  },
-                  {
-                    "label": "Rows",
-                    "name": "rows",
-                    "of": "object",
-                    "properties": [
-                      {
-                        "control_type": "number",
-                        "label": "Row number",
-                        "name": "row_number",
-                        "parse_output": "integer_conversion",
-                        "type": "integer"
-                      },
-                      {
-                        "control_type": "text",
-                        "custom_attribute": 1,
-                        "label": "Luma event slug",
-                        "name": "col_Luma event slug",
-                        "old_name": "col_Luma_event_slug",
-                        "type": "string"
-                      },
-                      {
-                        "control_type": "text",
-                        "custom_attribute": 2,
-                        "label": "SF campaign ID",
-                        "name": "col_SF campaign ID",
-                        "old_name": "col_SF_campaign_ID",
-                        "type": "string"
-                      }
-                    ],
-                    "type": "array"
-                  }
-                ],
-                "hidden_config_fields": [
-                  "data.col_SF campaign ID"
-                ],
-                "input": {
-                  "count": "1",
-                  "data": {
-                    "col_Luma event slug": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"e70aa292\",\"path\":[\"output\",\"luma_url_slug\"]}')}"
-                  },
-                  "sheet": "Sheet1",
-                  "spreadsheet_id": "1rShm0qyQFdtqf8b6FEpR6F3pFOEvrdWtdrklsX3axGw",
-                  "team_drives": "0AL-ppzyd8MmDUk9PVA/0AL-ppzyd8MmDUk9PVA"
-                },
-                "keyword": "action",
-                "name": "search_spreadsheet_rows_v4_new",
-                "number": 29,
-                "provider": "google_sheets",
-                "title": null,
-                "uuid": "3f1b7917-37d5-475c-b06b-d8816053a366",
-                "visible_config_fields": [
-                  "team_drives",
-                  "spreadsheet",
-                  "sheet",
-                  "data",
-                  "data.col_Luma event slug",
-                  "count"
-                ]
-              },
-              {
-                "block": [
-                  {
-                    "as": "6fc0b6be",
-                    "comment": "🚨 Luma event has no Salesforce campaign",
-                    "description": "Post \u003cspan class=\"provider\"\u003emessage\u003c/span\u003e as \u003cspan class=\"provider\"\u003eSlack Workbot\u003c/span\u003e",
-                    "input": {
-                      "blocks": [
-                        {
-                          "block_type": "section_with_text",
-                          "button_type": "continue_flow",
-                          "section_text": "🚨 Luma event has no Salesforce campaign\n\nEvent: #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"e70aa292\",\"path\":[\"output\",\"event_name\"]}')}\nLuma slug: #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"e70aa292\",\"path\":[\"output\",\"luma_url_slug\"]}')}\nEvent date: #{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"e70aa292\",\"path\":[\"output\",\"event_date\"]}')}\nGuest that triggered it:#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"e70aa292\",\"path\":[\"output\",\"email\"]}')}\n\nIssue: the slug was not found in the sf_campaign Google Sheet, so the guest was not added to a campaign.\n\nAction: add the slug and its Salesforce campaign ID to the sheet, then reprocess the guest.\n\n"
-                        }
-                      ],
-                      "channel": "#{_dp('{\"pill_type\":\"project_property\",\"property_name\":\"lsc_field_marketing_channel\"}')}"
-                    },
-                    "keyword": "action",
-                    "name": "post_bot_message",
-                    "number": 31,
-                    "provider": "slack_bot",
-                    "title": null,
-                    "toggleCfg": {
-                      "channel": true
-                    },
-                    "uuid": "0d77dbfa-2916-43d8-a155-adb427d64cf7"
-                  }
-                ],
-                "comment": "SF campaign  isn't exist",
-                "input": {
-                  "conditions": [
-                    {
-                      "lhs": "=_dp('{\"pill_type\":\"output\",\"provider\":\"google_sheets\",\"line\":\"0880020f\",\"path\":[\"rows\"]}')",
-                      "operand": "present",
-                      "rhs": "",
-                      "uuid": "0f523b11-bec7-4675-9343-50486779732a"
-                    }
-                  ],
-                  "operand": "and",
-                  "type": "compound"
-                },
-                "keyword": "if",
-                "number": 30,
-                "uuid": "9db2b8c9-adf4-4507-8204-3d5c0a2863df"
-              },
-              {
                 "as": "c1a0aa01",
                 "comment": "LSC-01 | Fun 001 | queue guest for SF campaign sync",
                 "description": "Call \u003cspan class=\"provider\"\u003eLSC-01 | Fun 001 | Queue Luma Guest for SF Campaign Sync\u003c/span\u003e (async)",
@@ -332186,6 +332034,20 @@
                     "label": "Parameters",
                     "name": "parameters",
                     "properties": [
+                      {
+                        "control_type": "text",
+                        "label": "Sf campaign name",
+                        "name": "sf_campaign_name",
+                        "optional": true,
+                        "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "label": "Sf campaign ID",
+                        "name": "sf_campaign_id",
+                        "optional": true,
+                        "type": "string"
+                      },
                       {
                         "control_type": "text",
                         "label": "Luma guest ID",
@@ -332226,7 +332088,7 @@
                   }
                 ],
                 "input": {
-                  "flow_id": "83344284",
+                  "flow_id": "83460780",
                   "parameters": {
                     "approval_status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"e70aa292\",\"path\":[\"output\",\"luma_approval_status\"]}')}",
                     "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_custom_code\",\"line\":\"e70aa292\",\"path\":[\"output\",\"email\"]}')}",
@@ -332237,7 +332099,7 @@
                 },
                 "keyword": "action",
                 "name": "call_recipe_async",
-                "number": 32,
+                "number": 29,
                 "provider": "workato_recipe_function",
                 "title": null,
                 "uuid": "19ca21fa-3de0-4f2d-ab63-0d6cd02d5fc1",
@@ -332449,7 +332311,7 @@
                     },
                     "keyword": "action",
                     "name": "call_recipe_async",
-                    "number": 35,
+                    "number": 32,
                     "provider": "workato_recipe_function",
                     "skip": false,
                     "title": null,
@@ -332469,7 +332331,7 @@
                   "type": "compound"
                 },
                 "keyword": "if",
-                "number": 34,
+                "number": 31,
                 "uuid": "36046bd8-09e1-4a62-a62f-f0d0607c271a"
               }
             ],
@@ -332478,7 +332340,7 @@
               "retry_interval": "2"
             },
             "keyword": "catch",
-            "number": 33,
+            "number": 30,
             "uuid": "46a0e659-f048-457f-b120-ddb8725bc6b2"
           }
         ],
@@ -332488,7 +332350,7 @@
         "uuid": "2d80bd9e-f7a5-4ea5-91e5-dcbfe6424571"
       }
     ],
-    "description": "\u003cspan class=\"provider\"\u003eLuma-guest-updated\u003c/span\u003e via \u003cspan class=\"provider\"\u003eHTTP webhook\u003c/span\u003e",
+    "description": "\u003cspan class=\"provider\"\u003eLuma-guest-updated-test\u003c/span\u003e via \u003cspan class=\"provider\"\u003eHTTP webhook\u003c/span\u003e",
     "extended_input_schema": [
       {
         "label": "Payload configuration",
@@ -333315,7 +333177,7 @@
         "payload_schema": "[{\"properties\":[{\"control_type\":\"text\",\"label\":\"ID\",\"type\":\"string\",\"name\":\"id\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"ID\",\"type\":\"string\",\"name\":\"id\"},{\"control_type\":\"text\",\"label\":\"URL\",\"type\":\"string\",\"name\":\"url\"},{\"control_type\":\"text\",\"label\":\"Name\",\"type\":\"string\",\"name\":\"name\"},{\"control_type\":\"text\",\"label\":\"Api ID\",\"type\":\"string\",\"name\":\"api_id\"},{\"control_type\":\"text\",\"label\":\"End at\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"end_at\"},{\"control_type\":\"text\",\"label\":\"User ID\",\"type\":\"string\",\"name\":\"user_id\"},{\"control_type\":\"text\",\"label\":\"Platform\",\"type\":\"string\",\"name\":\"platform\"},{\"control_type\":\"text\",\"label\":\"Start at\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"start_at\"},{\"control_type\":\"text\",\"label\":\"Timezone\",\"type\":\"string\",\"name\":\"timezone\"},{\"control_type\":\"text\",\"label\":\"Cover URL\",\"type\":\"string\",\"name\":\"cover_url\"},{\"properties\":[{\"control_type\":\"number\",\"label\":\"Latitude\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"latitude\",\"render_input\":\"float_conversion\"},{\"control_type\":\"number\",\"label\":\"Longitude\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"longitude\",\"render_input\":\"float_conversion\"}],\"label\":\"Coordinate\",\"type\":\"object\",\"name\":\"coordinate\"},{\"control_type\":\"text\",\"label\":\"Created at\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"created_at\"},{\"control_type\":\"text\",\"label\":\"Visibility\",\"type\":\"string\",\"name\":\"visibility\"},{\"control_type\":\"text\",\"label\":\"Calendar ID\",\"type\":\"string\",\"name\":\"calendar_id\"},{\"control_type\":\"text\",\"label\":\"Description\",\"type\":\"string\",\"name\":\"description\"},{\"control_type\":\"text\",\"label\":\"Meeting URL\",\"type\":\"string\",\"name\":\"meeting_url\"},{\"control_type\":\"text\",\"label\":\"User api ID\",\"type\":\"string\",\"name\":\"user_api_id\"},{\"control_type\":\"text\",\"label\":\"Geo latitude\",\"type\":\"string\",\"name\":\"geo_latitude\"},{\"control_type\":\"text\",\"label\":\"Geo longitude\",\"type\":\"string\",\"name\":\"geo_longitude\"},{\"control_type\":\"text\",\"label\":\"Description md\",\"type\":\"string\",\"name\":\"description_md\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"Enabled\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Enabled\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"enabled\"},\"type\":\"boolean\",\"name\":\"enabled\"}],\"label\":\"Feedback email\",\"type\":\"object\",\"name\":\"feedback_email\"},{\"control_type\":\"text\",\"label\":\"Calendar api ID\",\"type\":\"string\",\"name\":\"calendar_api_id\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"City\",\"type\":\"string\",\"name\":\"city\"},{\"control_type\":\"text\",\"label\":\"Region\",\"type\":\"string\",\"name\":\"region\"},{\"control_type\":\"text\",\"label\":\"Address\",\"type\":\"string\",\"name\":\"address\"},{\"control_type\":\"text\",\"label\":\"Country\",\"type\":\"string\",\"name\":\"country\"},{\"control_type\":\"text\",\"label\":\"City state\",\"type\":\"string\",\"name\":\"city_state\"},{\"control_type\":\"text\",\"label\":\"Description\",\"type\":\"string\",\"name\":\"description\"},{\"control_type\":\"text\",\"label\":\"Full address\",\"type\":\"string\",\"name\":\"full_address\"},{\"control_type\":\"text\",\"label\":\"Apple maps place ID\",\"type\":\"string\",\"name\":\"apple_maps_place_id\"},{\"control_type\":\"text\",\"label\":\"Google maps place ID\",\"type\":\"string\",\"name\":\"google_maps_place_id\"}],\"label\":\"Geo address json\",\"type\":\"object\",\"name\":\"geo_address_json\"},{\"control_type\":\"text\",\"label\":\"Zoom meeting URL\",\"type\":\"string\",\"name\":\"zoom_meeting_url\"},{\"control_type\":\"text\",\"label\":\"Duration interval\",\"type\":\"string\",\"name\":\"duration_interval\"},{\"label\":\"Registration questions\",\"type\":\"array\",\"name\":\"registration_questions\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"ID\",\"type\":\"string\",\"name\":\"id\"},{\"control_type\":\"text\",\"label\":\"Label\",\"type\":\"string\",\"name\":\"label\"},{\"control_type\":\"text\",\"label\":\"Required\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Required\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"required\"},\"type\":\"boolean\",\"name\":\"required\"},{\"control_type\":\"text\",\"label\":\"Question type\",\"type\":\"string\",\"name\":\"question_type\"}]}],\"label\":\"Event\",\"type\":\"object\",\"name\":\"event\"},{\"control_type\":\"text\",\"label\":\"Api ID\",\"type\":\"string\",\"name\":\"api_id\"},{\"control_type\":\"text\",\"label\":\"User ID\",\"type\":\"string\",\"name\":\"user_id\"},{\"control_type\":\"text\",\"label\":\"Joined at\",\"type\":\"string\",\"name\":\"joined_at\"},{\"control_type\":\"text\",\"label\":\"User name\",\"type\":\"string\",\"name\":\"user_name\"},{\"control_type\":\"text\",\"label\":\"Created at\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"created_at\"},{\"control_type\":\"text\",\"label\":\"Invited at\",\"type\":\"string\",\"name\":\"invited_at\"},{\"control_type\":\"text\",\"label\":\"User email\",\"type\":\"string\",\"name\":\"user_email\"},{\"control_type\":\"text\",\"label\":\"Utm source\",\"type\":\"string\",\"name\":\"utm_source\"},{\"control_type\":\"text\",\"label\":\"Eth address\",\"type\":\"string\",\"name\":\"eth_address\"},{\"control_type\":\"text\",\"label\":\"User api ID\",\"type\":\"string\",\"name\":\"user_api_id\"},{\"properties\":[{\"control_type\":\"text\",\"label\":\"ID\",\"type\":\"string\",\"name\":\"id\"},{\"control_type\":\"text\",\"label\":\"Name\",\"type\":\"string\",\"name\":\"name\"},{\"control_type\":\"number\",\"label\":\"Amount\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"amount\",\"render_input\":\"float_conversion\"},{\"control_type\":\"text\",\"label\":\"Api ID\",\"type\":\"string\",\"name\":\"api_id\"},{\"control_type\":\"text\",\"label\":\"Currency\",\"type\":\"string\",\"name\":\"currency\"},{\"control_type\":\"number\",\"label\":\"Amount tax\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"amount_tax\",\"render_input\":\"float_conversion\"},{\"control_type\":\"text\",\"label\":\"Is captured\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Is captured\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"is_captured\"},\"type\":\"boolean\",\"name\":\"is_captured\"},{\"control_type\":\"text\",\"label\":\"Checked in at\",\"type\":\"string\",\"name\":\"checked_in_at\"},{\"control_type\":\"number\",\"label\":\"Amount discount\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"amount_discount\",\"render_input\":\"float_conversion\"},{\"control_type\":\"text\",\"label\":\"Event ticket type ID\",\"type\":\"string\",\"name\":\"event_ticket_type_id\"}],\"label\":\"Event ticket\",\"type\":\"object\",\"name\":\"event_ticket\"},{\"control_type\":\"text\",\"label\":\"Phone number\",\"type\":\"string\",\"name\":\"phone_number\"},{\"control_type\":\"text\",\"label\":\"Checked in at\",\"type\":\"string\",\"name\":\"checked_in_at\"},{\"control_type\":\"text\",\"label\":\"Custom source\",\"type\":\"string\",\"name\":\"custom_source\"},{\"label\":\"Event tickets\",\"type\":\"array\",\"name\":\"event_tickets\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"ID\",\"type\":\"string\",\"name\":\"id\"},{\"control_type\":\"text\",\"label\":\"Name\",\"type\":\"string\",\"name\":\"name\"},{\"control_type\":\"number\",\"label\":\"Amount\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"amount\",\"render_input\":\"float_conversion\"},{\"control_type\":\"text\",\"label\":\"Api ID\",\"type\":\"string\",\"name\":\"api_id\"},{\"control_type\":\"text\",\"label\":\"Currency\",\"type\":\"string\",\"name\":\"currency\"},{\"control_type\":\"number\",\"label\":\"Amount tax\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"amount_tax\",\"render_input\":\"float_conversion\"},{\"control_type\":\"text\",\"label\":\"Is captured\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Is captured\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"is_captured\"},\"type\":\"boolean\",\"name\":\"is_captured\"},{\"control_type\":\"text\",\"label\":\"Checked in at\",\"type\":\"string\",\"name\":\"checked_in_at\"},{\"control_type\":\"number\",\"label\":\"Amount discount\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"amount_discount\",\"render_input\":\"float_conversion\"},{\"control_type\":\"text\",\"label\":\"Event ticket type ID\",\"type\":\"string\",\"name\":\"event_ticket_type_id\"}]},{\"control_type\":\"text\",\"label\":\"Registered at\",\"render_input\":\"date_time_conversion\",\"parse_output\":\"date_time_conversion\",\"type\":\"date_time\",\"name\":\"registered_at\"},{\"control_type\":\"text\",\"label\":\"Solana address\",\"type\":\"string\",\"name\":\"solana_address\"},{\"control_type\":\"text\",\"label\":\"User last name\",\"type\":\"string\",\"name\":\"user_last_name\"},{\"control_type\":\"text\",\"label\":\"Approval status\",\"type\":\"string\",\"name\":\"approval_status\"},{\"control_type\":\"text\",\"label\":\"User first name\",\"type\":\"string\",\"name\":\"user_first_name\"},{\"control_type\":\"text\",\"label\":\"Check in qr code\",\"type\":\"string\",\"name\":\"check_in_qr_code\"},{\"label\":\"Event ticket orders\",\"type\":\"array\",\"name\":\"event_ticket_orders\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"ID\",\"type\":\"string\",\"name\":\"id\"},{\"control_type\":\"number\",\"label\":\"Amount\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"amount\",\"render_input\":\"float_conversion\"},{\"control_type\":\"text\",\"label\":\"Api ID\",\"type\":\"string\",\"name\":\"api_id\"},{\"control_type\":\"text\",\"label\":\"Currency\",\"type\":\"string\",\"name\":\"currency\"},{\"control_type\":\"number\",\"label\":\"Amount tax\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"amount_tax\",\"render_input\":\"float_conversion\"},{\"control_type\":\"text\",\"label\":\"Coupon info\",\"type\":\"string\",\"name\":\"coupon_info\"},{\"control_type\":\"text\",\"label\":\"Is captured\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Is captured\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"type\":\"boolean\",\"name\":\"is_captured\"},\"type\":\"boolean\",\"name\":\"is_captured\"},{\"control_type\":\"number\",\"label\":\"Amount discount\",\"parse_output\":\"float_conversion\",\"type\":\"number\",\"name\":\"amount_discount\",\"render_input\":\"float_conversion\"}]},{\"label\":\"Registration answers\",\"type\":\"array\",\"name\":\"registration_answers\",\"of\":\"object\",\"properties\":[{\"control_type\":\"text\",\"label\":\"Label\",\"type\":\"string\",\"name\":\"label\"},{\"control_type\":\"text\",\"label\":\"Value\",\"type\":\"string\",\"name\":\"value\"},{\"control_type\":\"text\",\"label\":\"Answer\",\"type\":\"string\",\"name\":\"answer\"},{\"control_type\":\"text\",\"label\":\"Question ID\",\"type\":\"string\",\"name\":\"question_id\"},{\"control_type\":\"text\",\"label\":\"Question type\",\"type\":\"string\",\"name\":\"question_type\"}]}],\"label\":\"Data\",\"type\":\"object\",\"name\":\"data\"},{\"control_type\":\"text\",\"label\":\"Type\",\"type\":\"string\",\"name\":\"type\"}]",
         "webhook_type": "json"
       },
-      "webhook_suffix": "luma-guest-updated"
+      "webhook_suffix": "luma-guest-updated-test"
     },
     "job_report_config": {
       "custom_column_0": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_webhooks\",\"line\":\"2ec6f99f\",\"path\":[\"payload\",\"data\",\"user_email\"]}')}",
@@ -333408,24 +333270,10 @@
       "name": "workato_custom_code",
       "provider": "workato_custom_code",
       "skip_validation": false
-    },
-    {
-      "account_id": 18690101,
-      "keyword": "application",
-      "name": "google_sheets",
-      "provider": "google_sheets",
-      "skip_validation": false
-    },
-    {
-      "account_id": 18690104,
-      "keyword": "application",
-      "name": "slack_bot",
-      "provider": "slack_bot",
-      "skip_validation": false
     }
   ],
   "description": "",
   "name": "Copy of Webhook: Luma-to-HubSpot Guest Sync",
   "private": false,
-  "version": 17
+  "version": 22
 }
