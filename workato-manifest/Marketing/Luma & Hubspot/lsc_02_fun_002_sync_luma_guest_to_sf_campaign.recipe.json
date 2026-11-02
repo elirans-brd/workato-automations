@@ -857,7 +857,7 @@
                 "input": {
                   "field_list": "Id\nEmail",
                   "limit": "1",
-                  "query": "Email = '#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"7bb9767a\",\"path\":[\"Contact\",{\"path_element_type\":\"current_item\"},\"Email\"]}')}' AND IsConverted = false\nORDER BY LastModifiedDate DESC",
+                  "query": "Email = '#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c2b00001\",\"path\":[\"parameters\",\"email\"]}')}' AND IsConverted = false\nORDER BY LastModifiedDate DESC",
                   "sobject_name": "Lead"
                 },
                 "keyword": "action",
@@ -974,6 +974,18 @@
                           "data"
                         ],
                         "type": "string"
+                      },
+                      {
+                        "control_type": "text",
+                        "hint": "Luma check-in timestamp from the queue row. Empty = not checked in",
+                        "label": "Checked in at",
+                        "name": "checked_in_at",
+                        "optional": true,
+                        "parent": [
+                          "code_input",
+                          "data"
+                        ],
+                        "type": "string"
                       }
                     ],
                     "type": "object"
@@ -1071,25 +1083,59 @@
                     "label": "Result message",
                     "name": "result_message",
                     "type": "string"
+                  },
+                  {
+                    "control_type": "checkbox",
+                    "label": "Checked in",
+                    "name": "checked_in",
+                    "parse_output": "boolean_conversion",
+                    "render_input": "boolean_conversion",
+                    "toggle_field": {
+                      "control_type": "text",
+                      "label": "Checked in",
+                      "name": "checked_in",
+                      "parse_output": "boolean_conversion",
+                      "render_input": "boolean_conversion",
+                      "toggle_hint": "Use custom value",
+                      "type": "boolean"
+                    },
+                    "toggle_hint": "Select from option list",
+                    "type": "boolean"
+                  },
+                  {
+                    "control_type": "text",
+                    "label": "Checked in at",
+                    "name": "checked_in_at",
+                    "type": "string"
+                  },
+                  {
+                    "control_type": "integer",
+                    "hint": "1 = Registered Pending, 2 = Registered Approved, 3 = Joined our activity",
+                    "label": "Member status rank",
+                    "name": "member_status_rank",
+                    "parse_output": "integer_conversion",
+                    "render_input": "integer_conversion",
+                    "type": "integer"
                   }
                 ],
                 "type": "object"
               }
             ],
             "input": {
-              "code": "# ==========================================================\n# Prepare campaign member: validate email + status, resolve person, check campaign ID\n# (merge of the \"email / member status\" step and the \"person / campaign\" step)\n# ==========================================================\n\n# ===== 1. EMAIL + MEMBER STATUS =====\nemail = input[\"email\"].to_s.strip.downcase\nvalid = email.match?(/\\A[^@\\s'\\\\]+@[^@\\s'\\\\]+\\.[^@\\s'\\\\]+\\z/)\nmember_status = { \"approved\" =\u003e \"Registered = Approved\", \"pending_approval\" =\u003e \"Registered = Pending\" }[input[\"approval_status\"].to_s.strip.downcase]\nskip_reason =\n  if !valid then \"Invalid email: #{email}\"\n  elsif member_status.nil? then \"Unsupported Luma approval status: #{input[\"approval_status\"]}\"\n  end\n\n# ===== 2. PERSON (Contact first, then Lead) + CAMPAIGN CHECK =====\nsf_id = /\\A[a-zA-Z0-9]{15}([a-zA-Z0-9]{3})?\\z/\ncontact_id  = input[\"contact_id\"].to_s.strip\nlead_id     = input[\"lead_id\"].to_s.strip\ncampaign_id = input[\"campaign_id\"].to_s.strip\nperson_type, person_id =\n  if contact_id.match?(sf_id) then [\"Contact\", contact_id]\n  elsif lead_id.match?(sf_id) then [\"Lead\", lead_id]\n  else [nil, nil]\n  end\ncampaign_issue =\n  if campaign_id.empty? then \"Luma slug not found in campaign sheet: #{input[\"luma_url_slug\"]}\"\n  elsif !campaign_id.match?(sf_id) then \"Invalid SF campaign ID in sheet: #{campaign_id}\"\n  end\nresult_status, result_message =\n  if person_id.nil? then [\"Not found\", [\"No Salesforce Contact or Lead for this email\", campaign_issue].compact.join(\" | \")]\n  elsif campaign_issue then [\"Campaign not found\", campaign_issue]\n  end\n\n{\n  email: email, member_status: member_status, skip_reason: skip_reason,\n  parent_type: person_type == \"Contact\" ? \"Account\" : person_type, # Account | Lead | nil\n  person_id: person_id, campaign_id: campaign_id,\n  contact_id: person_type == \"Contact\" ? person_id : nil,\n  lead_id:    person_type == \"Lead\" ? person_id : nil,\n  member_query: person_id \u0026\u0026 \"CampaignId = '#{campaign_id}' AND #{person_type}Id = '#{person_id}'\",\n  campaign_ok: campaign_issue.nil?,\n  result_status: result_status, result_message: result_message\n}",
+              "code": "# ==========================================================\n# Prepare campaign member: validate email + status, resolve person, check campaign ID\n# ==========================================================\n\n# ===== 1. EMAIL + MEMBER STATUS =====\nemail = input[\"email\"].to_s.strip.downcase\nvalid = email.match?(/\\A[^@\\s'\\\\]+@[^@\\s'\\\\]+\\.[^@\\s'\\\\]+\\z/)\n\nchecked_in_at = input[\"checked_in_at\"].to_s.strip\nchecked_in    = !checked_in_at.empty? \u0026\u0026 checked_in_at.downcase != \"null\"\n\nmember_status =\n  if checked_in then \"Joined our activity\"\n  else { \"approved\"         =\u003e \"Registered = Approved\",\n         \"pending_approval\" =\u003e \"Registered = Pending\" }[input[\"approval_status\"].to_s.strip.downcase]\n  end\n\nskip_reason =\n  if !valid then \"Invalid email: #{email}\"\n  elsif member_status.nil? then \"Unsupported Luma approval status: #{input[\"approval_status\"]}\"\n  end\n\n# Used later so a member is never downgraded (Joined → Registered)\nmember_status_rank = {\n  \"Registered = Pending\"  =\u003e 1,\n  \"Registered = Approved\" =\u003e 2,\n  \"Joined our activity\"   =\u003e 3\n}[member_status]\n\n# ===== 2. PERSON (Contact first, then Lead) + CAMPAIGN CHECK =====\nsf_id = /\\A[a-zA-Z0-9]{15}([a-zA-Z0-9]{3})?\\z/\ncontact_id  = input[\"contact_id\"].to_s.strip\nlead_id     = input[\"lead_id\"].to_s.strip\ncampaign_id = input[\"campaign_id\"].to_s.strip\nperson_type, person_id =\n  if contact_id.match?(sf_id) then [\"Contact\", contact_id]\n  elsif lead_id.match?(sf_id) then [\"Lead\", lead_id]\n  else [nil, nil]\n  end\ncampaign_issue =\n  if campaign_id.empty? then \"Luma slug not found in campaign sheet: #{input[\"luma_url_slug\"]}\"\n  elsif !campaign_id.match?(sf_id) then \"Invalid SF campaign ID in sheet: #{campaign_id}\"\n  end\nresult_status, result_message =\n  if person_id.nil? then [\"Not found\", [\"No Salesforce Contact or Lead for this email\", campaign_issue].compact.join(\" | \")]\n  elsif campaign_issue then [\"Campaign not found\", campaign_issue]\n  end\n\n{\n  email: email, member_status: member_status, skip_reason: skip_reason,\n  checked_in: checked_in, checked_in_at: (checked_in ? checked_in_at : nil),\n  member_status_rank: member_status_rank,\n  parent_type: person_type == \"Contact\" ? \"Account\" : person_type, # Account | Lead | nil\n  person_id: person_id, campaign_id: campaign_id,\n  contact_id: person_type == \"Contact\" ? person_id : nil,\n  lead_id:    person_type == \"Lead\" ? person_id : nil,\n  member_query: person_id \u0026\u0026 \"CampaignId = '#{campaign_id}' AND #{person_type}Id = '#{person_id}'\",\n  campaign_ok: campaign_issue.nil?,\n  result_status: result_status, result_message: result_message\n}",
               "code_input": {
                 "data": {
                   "approval_status": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c2b00001\",\"path\":[\"parameters\",\"approval_status\"]}')}",
                   "campaign_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"google_sheets\",\"line\":\"06808035\",\"path\":[\"rows\",{\"path_element_type\":\"current_item\"},\"col_SF campaign ID\"]}')}",
+                  "checked_in_at": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c2b00001\",\"path\":[\"parameters\",\"checked_it_at\"]}')}",
                   "contact_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"7bb9767a\",\"path\":[\"Contact\",{\"path_element_type\":\"current_item\"},\"Id\"]}')}",
                   "email": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c2b00001\",\"path\":[\"parameters\",\"email\"]}')}",
                   "lead_id": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"salesforce\",\"line\":\"77e44c77\",\"path\":[\"Lead\",{\"path_element_type\":\"current_item\"},\"Id\"]}')}",
                   "luma_url_slug": "#{_dp('{\"pill_type\":\"output\",\"provider\":\"workato_recipe_function\",\"line\":\"c2b00001\",\"path\":[\"parameters\",\"luma_url_slug\"]}')}"
                 },
-                "schema": "[{\"control_type\":\"text\",\"label\":\"Email\",\"name\":\"email\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Approval status\",\"name\":\"approval_status\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Contact ID\",\"name\":\"contact_id\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Lead ID\",\"name\":\"lead_id\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Campaign ID\",\"name\":\"campaign_id\",\"type\":\"string\",\"optional\":true,\"hint\":\"SF campaign ID from the Google Sheet\",\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Luma URL slug\",\"name\":\"luma_url_slug\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]}]"
+                "schema": "[{\"control_type\":\"text\",\"label\":\"Email\",\"name\":\"email\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Approval status\",\"name\":\"approval_status\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Contact ID\",\"name\":\"contact_id\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Lead ID\",\"name\":\"lead_id\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Campaign ID\",\"name\":\"campaign_id\",\"type\":\"string\",\"optional\":true,\"hint\":\"SF campaign ID from the Google Sheet\",\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Luma URL slug\",\"name\":\"luma_url_slug\",\"type\":\"string\",\"optional\":true,\"parent\":[\"code_input\",\"data\"]},{\"control_type\":\"text\",\"label\":\"Checked in at\",\"name\":\"checked_in_at\",\"type\":\"string\",\"optional\":true,\"hint\":\"Luma check-in timestamp from the queue row. Empty = not checked in\",\"parent\":[\"code_input\",\"data\"]}]"
               },
-              "code_output_schema_json": "[{\"control_type\":\"text\",\"label\":\"Email\",\"name\":\"email\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Member status\",\"name\":\"member_status\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Skip reason\",\"name\":\"skip_reason\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Parent type (Account / Lead)\",\"name\":\"parent_type\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Person ID\",\"name\":\"person_id\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Campaign ID\",\"name\":\"campaign_id\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Contact ID\",\"name\":\"contact_id\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Lead ID\",\"name\":\"lead_id\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Member query\",\"name\":\"member_query\",\"type\":\"string\"},{\"control_type\":\"checkbox\",\"label\":\"Campaign ok\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"campaign_ok\",\"type\":\"boolean\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Campaign ok\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"campaign_ok\",\"type\":\"boolean\"}},{\"control_type\":\"text\",\"label\":\"Result status\",\"name\":\"result_status\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Result message\",\"name\":\"result_message\",\"type\":\"string\"}]",
+              "code_output_schema_json": "[{\"control_type\":\"text\",\"label\":\"Email\",\"name\":\"email\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Member status\",\"name\":\"member_status\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Skip reason\",\"name\":\"skip_reason\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Parent type (Account / Lead)\",\"name\":\"parent_type\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Person ID\",\"name\":\"person_id\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Campaign ID\",\"name\":\"campaign_id\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Contact ID\",\"name\":\"contact_id\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Lead ID\",\"name\":\"lead_id\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Member query\",\"name\":\"member_query\",\"type\":\"string\"},{\"control_type\":\"checkbox\",\"label\":\"Campaign ok\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"campaign_ok\",\"type\":\"boolean\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Campaign ok\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"campaign_ok\",\"type\":\"boolean\"}},{\"control_type\":\"text\",\"label\":\"Result status\",\"name\":\"result_status\",\"type\":\"string\"},{\"control_type\":\"text\",\"label\":\"Result message\",\"name\":\"result_message\",\"type\":\"string\"},{\"control_type\":\"checkbox\",\"label\":\"Checked in\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"checked_in\",\"type\":\"boolean\",\"toggle_hint\":\"Select from option list\",\"toggle_field\":{\"label\":\"Checked in\",\"control_type\":\"text\",\"toggle_hint\":\"Use custom value\",\"render_input\":\"boolean_conversion\",\"parse_output\":\"boolean_conversion\",\"name\":\"checked_in\",\"type\":\"boolean\"}},{\"control_type\":\"text\",\"label\":\"Checked in at\",\"name\":\"checked_in_at\",\"type\":\"string\"},{\"control_type\":\"integer\",\"label\":\"Member status rank\",\"parse_output\":\"integer_conversion\",\"name\":\"member_status_rank\",\"type\":\"integer\",\"hint\":\"1 = Registered Pending, 2 = Registered Approved, 3 = Joined our activity\",\"render_input\":\"integer_conversion\"}]",
               "name": "resolve_person_campaign",
               "payload_asset_type": "inline"
             },
@@ -1114,7 +1160,9 @@
               "code_input.data.luma_url_slug",
               "code_input.data",
               "code_input.data.email",
-              "code_input.data.approval_status"
+              "code_input.data.approval_status",
+              "code_input.data.checked_it_at",
+              "code_input.data.checked_in_at"
             ]
           },
           {
@@ -2276,13 +2324,20 @@
             "name": "approval_status",
             "optional": true,
             "type": "string"
+          },
+          {
+            "control_type": "text",
+            "label": "Checked it at",
+            "name": "checked_it_at",
+            "optional": true,
+            "type": "string"
           }
         ],
         "type": "object"
       }
     ],
     "input": {
-      "parameters_schema_json": "[{\"name\": \"queue_id\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Queue ID\"}, {\"name\": \"email\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Email\"}, {\"name\": \"luma_url_slug\", \"type\": \"string\", \"optional\": false, \"control_type\": \"text\", \"label\": \"Luma URL slug\"}, {\"name\": \"approval_status\", \"type\": \"string\", \"optional\": true, \"control_type\": \"text\", \"label\": \"Approval status\"}]",
+      "parameters_schema_json": "[{\"name\":\"queue_id\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Queue ID\"},{\"name\":\"email\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Email\"},{\"name\":\"luma_url_slug\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Luma URL slug\"},{\"name\":\"approval_status\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Approval status\"},{\"name\":\"checked_it_at\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Checked it at\"}]",
       "result_schema_json": "[{\"name\":\"status\",\"type\":\"string\",\"optional\":false,\"control_type\":\"text\",\"label\":\"Status\"},{\"name\":\"message\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Message\"},{\"name\":\"queue_status\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"Queue status\"},{\"name\":\"sf_person_type\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"SF person type\"},{\"name\":\"sf_person_id\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"SF person ID\"},{\"name\":\"sf_campaign_id\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"SF campaign ID\"},{\"name\":\"sf_campaign_name\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"SF campaign name\"},{\"name\":\"sf_campaign_member_id\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"SF campaign member ID\"},{\"name\":\"sf_member_status\",\"type\":\"string\",\"optional\":true,\"control_type\":\"text\",\"label\":\"SF member status\"}]"
     },
     "job_report_config": {
@@ -2380,5 +2435,5 @@
   "description": "# LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign\n\n**📋 Ticket:** [Luma guests → Salesforce campaign members](https://brightdata-group.monday.com/boards/8667788707/pulses/13343839880)\n\n---\n\n**TRIGGER:** Called by `LSC-02 | Main | Hourly Luma Guests → SF Campaign Members` for each queued guest\n\n**PURPOSE:** Add or update one Luma guest as a Salesforce campaign member.\n\n**FLOW:**\n1. Find the SF campaign ID by Luma slug → Google Sheet (campaign sheet)\n2. Get the campaign in Salesforce → not found = return `Campaign not found`\n3. Find Contact by email; if none, find unconverted Lead → Salesforce\n4. Ruby `resolve_person_campaign`: validate email + status, pick person (Contact wins over Lead), check campaign ID\n5. No person or bad campaign → return `Not found` / `Campaign not found`\n6. Campaign member exists → update status; else create → Salesforce\n7. Return `status` and SF IDs\n\n**DB / TABLES:** Google Sheet (Luma slug → SF campaign), Salesforce Campaign, Contact, Lead, CampaignMember\n**UPSTREAM:** LSC-02 | Main\n**DOWNSTREAM:** none\n\n## Input\n`email`, `luma_url_slug` (required); `queue_id`, `approval_status` (optional).\n\n## Output\n`status`, `message`, `queue_status`, `sf_person_type`, `sf_person_id`, `sf_campaign_id`, `sf_campaign_name`, `sf_campaign_member_id`, `sf_member_status`.\n\n## Important logic\n- Member status: `approved` → \"Registered = Approved\", `pending_approval` → \"Registered = Pending\". Other statuses are skipped.\n- Invalid email → skipped.\n- On error returns `status = Error`; Main writes it to the queue.",
   "name": "LSC-02 | Fun 002 | Sync Luma Guest to SF Campaign",
   "private": false,
-  "version": 8
+  "version": 10
 }
